@@ -1,8 +1,14 @@
+import {AuthModal} from "../shared/ui/modals/auth-modal/ui";
+
 function App() {
 
   return (
     <>
-      App
+      <AuthModal>
+          <div>
+              asdf
+          </div>
+      </AuthModal>
     </>
   )
 }
