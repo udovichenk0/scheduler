@@ -1,8 +1,18 @@
+import {AuthModal} from "../shared/ui/modals/auth-modal/ui";
+import {modalFactory} from "../shared/lib/modal";
+
+
+const modal = modalFactory()
 function App() {
 
   return (
     <>
-      App
+        <button onClick={() => modal.toggleTriggered()}>Open modal</button>
+      <AuthModal modal={modal}>
+          <div>
+              asdf
+          </div>
+      </AuthModal>
     </>
   )
 }
