@@ -1,15 +1,15 @@
 import { Event, Store } from 'effector'
-import {useUnit} from "effector-react";
+import { useUnit } from "effector-react";
 interface ModalProps {
-    children: Element,
+    children: any,
     modal: {
         toggleTriggered: Event<void>,
         $isOpened: Store<boolean>
     }
 }
-export const AuthModal = ({children, modal}: ModalProps) => {
+export const AuthModal = ({ children, modal }: ModalProps) => {
     const isOpened = useUnit(modal.$isOpened)
-    if(!isOpened){
+    if (!isOpened) {
         return null
     }
     return (
