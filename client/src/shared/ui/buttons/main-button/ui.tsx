@@ -1,36 +1,48 @@
-import {cva, VariantProps} from "class-variance-authority";
-import {ButtonHTMLAttributes} from "react";
+import { cva, VariantProps } from "class-variance-authority";
+import { ButtonHTMLAttributes, ReactNode } from "react";
 
-const buttonCva = cva('', {
+const buttonCva = cva('text-white outline-none transition-colors duration-150', {
     variants: {
         intent: {
-            primary: [
-                "text-white",
+            outline: [
                 "border-[1px]",
                 "hover:bg-[#151a2f]",
-                "transition-colors duration-150",
                 "rounded-[5px]"
             ],
-            // **or**
-            // primary: "bg-blue-500 text-white border-transparent hover:bg-blue-600",
-            secondary: [
-                "bg-white",
-                "text-gray-800",
-                "border-gray-400",
-                "hover:bg-gray-100",
+            "base-white": [
+                "hover:bg-[#0e162e]",
+                "rounded-[5px]",
+                "w-full"
             ],
+            "base-gray": [
+                "hover:bg-[#0e162e]",
+                "rounded-[5px]",
+                "text-white/50",
+                "w-full"
+            ]
         },
         size: {
-            medium: ["text-sm", "py-2", "px-5"],
+            base: ["text-sm", "p-1"],
+            small: ["text-[12px]", "py-1", "px-2"],
+            medium: ["text-sm", "py-1", "px-2"],
+            large: ["text-sm", "py-2", "px-5"],
         },
     },
-
+    defaultVariants: {
+        intent: 'outline'
+    }
 })
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonCva> {
+    logo?: ReactNode,
+    title?: string
 }
-export const Button = ({intent, size, ...props}: ButtonProps) => {
+export const Button = ({ intent, size, logo, title, ...props }: ButtonProps) => {
     return (
-        <button className={buttonCva({size: "medium", intent: "primary"})} {...props}/>
+        <button className={buttonCva({ size, intent })} {...props}>
+            <div className="flex gap-2">
+                {logo} {title}
+            </div>
+        </button>
     )
 }

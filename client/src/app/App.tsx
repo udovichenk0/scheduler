@@ -10,17 +10,19 @@ appStarted()
 const modal = modalFactory()
 function App() {
   return (
-    <Suspense fallback={false}>
-      <RouterProvider router={router}>
-        <RoutesView />
-        {/* <button onClick={() => modal.toggleTriggered()}>Open modal</button>
-        <AuthModal modal={modal}>
-            <div>
-                asdf
-            </div>
-        </AuthModal> */}
-      </RouterProvider>
-    </Suspense>
+    <div className="text-white bg-main-blue">
+      <Suspense fallback={false}>
+        <RouterProvider router={router}>
+          <RoutesView />
+          {/* <button onClick={() => modal.toggleTriggered()}>Open modal</button>
+          <AuthModal modal={modal}>
+              <div>
+                  asdf
+              </div>
+          </AuthModal> */}
+        </RouterProvider>
+      </Suspense>
+    </div>
   )
 }
 
