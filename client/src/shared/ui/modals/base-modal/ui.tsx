@@ -7,7 +7,7 @@ interface ModalProps {
         $isOpened: Store<boolean>
     }
 }
-export const AuthModal = ({ children, modal }: ModalProps) => {
+export const BaseModal = ({ children, modal }: ModalProps) => {
     const isOpened = useUnit(modal.$isOpened)
     if (!isOpened) {
         return null

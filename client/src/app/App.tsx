@@ -1,4 +1,4 @@
-import { AuthModal } from "../shared/ui/modals/auth-modal/ui";
+import { BaseModal } from "../shared/ui/modals/base-modal/ui";
 import { modalFactory } from "../shared/lib/modal";
 //@ts-expect-error
 import { RouterProvider } from 'atomic-router-react';
