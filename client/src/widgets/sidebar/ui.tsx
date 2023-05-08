@@ -6,7 +6,8 @@ import { UpcomingSvg } from "./assets/upcoming.svg"
 import { CalendarSvg } from "./assets/calendar.svg"
 import { AddSvg } from "./assets/add.svg"
 import { SettingSvg } from "./assets/settings.svg"
-
+import { BaseModal } from "@/shared/ui/modals/base-modal/ui"
+import { modal } from './sidebar.modal'
 export const Sidebar = () => {
 	return (
 		<div className="border-r-[1px] border-white/10">
@@ -33,7 +34,10 @@ export const Sidebar = () => {
 				</div>
 				<div className="px-2 py-1 border-t-[1px] border-white/10 flex">
 					<span>
-						<Button intent={'base-white'} size={'base'} logo={<SettingSvg />} />
+						<Button onClick={() => modal.toggleTriggered()} intent={'base-white'} size={'base'} logo={<SettingSvg />} />
+						<BaseModal modal={modal}>
+
+						</BaseModal>
 					</span>
 				</div>
 			</div>
