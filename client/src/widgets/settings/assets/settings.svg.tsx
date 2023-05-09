@@ -1,8 +1,8 @@
 export const SettingSvg = () => {
 	return (
-		<svg width="20px" height="20px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="none">
+		<svg width="32px" fill={'inherit'} height="32px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
 
-			<g fill="#2ebcff" fillRule="evenodd" clipRule="evenodd">
+			<g fillRule="evenodd" clipRule="evenodd">
 
 				<path d="M8 5a3 3 0 100 6 3 3 0 000-6zM6.5 8a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
 
