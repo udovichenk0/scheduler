@@ -20,7 +20,7 @@ export const BaseModal = ({ children, modal }: ModalProps) => {
                         <span className={'after:absolute after:content-[""] after:rotate-[45deg] after:top-[10px] after:left-[5px] after:bg-white after:w-[12px] after:h-[1px] before:absolute before:content-[""] before:rotate-[-45deg] before:top-[10px] before:left-[5px] before:bg-white before:w-[12px] before:h-[1px]'}></span>
                     </button>
                 </div>
-                <div className={'mx-auto pt-4 pb-6 px-8'}>
+                <div className={'mx-auto pt-4 pb-6'}>
                     {children}
                 </div>
             </div>
