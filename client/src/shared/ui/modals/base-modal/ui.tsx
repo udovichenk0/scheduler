@@ -1,7 +1,8 @@
 import { Event, Store } from 'effector'
+import { ReactNode } from 'react'
 import { useUnit } from "effector-react";
 interface ModalProps {
-    children: any,
+    children: ReactNode,
     modal: {
         toggleTriggered: Event<void>,
         $isOpened: Store<boolean>
