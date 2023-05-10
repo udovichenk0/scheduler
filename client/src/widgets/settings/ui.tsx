@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { Children, useState } from "react";
 import { SettingSvg } from "./assets/settings.svg";
 import { Synchronization } from "./assets/synchronization.svg";
-import { SynchronizationTab } from './tabs'
-
+import { SynchronizationTab, GeneralTab } from './tabs'
+import { ReactNode } from 'react'
+import { Tab } from "@/shared/ui/tab";
 enum Tabs {
-	general = 'general',
-	synchronization = 'synchronization'
+	general,
+	synchronization
 }
 const settingElements = [
 	{ Icon: SettingSvg, title: 'General', label: Tabs.general },
@@ -29,7 +30,8 @@ export const Settings = () => {
 				})}
 			</div>
 			<div>
-				<SynchronizationTab/>
+				<Tab activeValue={active} label={Tabs.general}><GeneralTab/></Tab>
+				<Tab activeValue={active} label={Tabs.synchronization}><SynchronizationTab/></Tab>
 			</div>
 		</div>
 	)
