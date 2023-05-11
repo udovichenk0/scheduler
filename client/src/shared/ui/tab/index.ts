@@ -1,1 +1,2 @@
-export * from './ui'
+export * from './tab-panel'
+export * from './tab-list'

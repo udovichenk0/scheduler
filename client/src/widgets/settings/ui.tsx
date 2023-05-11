@@ -3,7 +3,7 @@ import { SettingSvg } from "./assets/settings.svg";
 import { Synchronization } from "./assets/synchronization.svg";
 import { SynchronizationTab, GeneralTab } from './tabs'
 import { ReactNode } from 'react'
-import { Tab } from "@/shared/ui/tab";
+import { TabList, TabPanel } from "@/shared/ui/tab";
 enum Tabs {
 	general,
 	synchronization
@@ -29,10 +29,10 @@ export const Settings = () => {
 					)
 				})}
 			</div>
-			<div>
-				<Tab activeValue={active} label={Tabs.general}><GeneralTab/></Tab>
-				<Tab activeValue={active} label={Tabs.synchronization}><SynchronizationTab/></Tab>
-			</div>
+			<TabList className="">
+				<TabPanel activeValue={active} label={Tabs.general}><GeneralTab/></TabPanel>
+				<TabPanel activeValue={active} label={Tabs.synchronization}><SynchronizationTab/></TabPanel>
+			</TabList>
 		</div>
 	)
 }

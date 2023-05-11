@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 
-export function Tab({
+export function TabPanel({
 	activeValue,
 	label,
 	children
