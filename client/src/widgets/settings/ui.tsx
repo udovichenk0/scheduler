@@ -1,38 +1,38 @@
-import { Children, useState } from "react";
+import { useState } from "react";
 import { SettingSvg } from "./assets/settings.svg";
 import { Synchronization } from "./assets/synchronization.svg";
 import { SynchronizationTab, GeneralTab } from './tabs'
-import { ReactNode } from 'react'
-import { TabList, TabPanel } from "@/shared/ui/tab";
-enum Tabs {
+import { Tab, TabPanel, Tabs } from "@/shared/ui/tab";
+enum TabsEnum {
 	general,
 	synchronization
 }
-const settingElements = [
-	{ Icon: SettingSvg, title: 'General', label: Tabs.general },
-	{ Icon: Synchronization, title: 'Synchronization', label: Tabs.synchronization}
+const tabs = [
+	{ Icon: SettingSvg, title: 'General', label: TabsEnum.general },
+	{ Icon: Synchronization, title: 'Synchronization', label: TabsEnum.synchronization}
 ]
 
+const tabClassName = 'flex aria-[pressed=true]:text-white aria-[pressed=true]:fill-white fill-[#76899b] text-[#76899b] aria-[pressed=false]:hover:fill-white/60 aria-[pressed=false]:hover:text-white/60  flex-col gap-3 items-center'
+
 export const Settings = () => {
-	const [active, setActive] = useState<Tabs>(Tabs.general)
+	const [active, setActive] = useState<TabsEnum>(TabsEnum.general)
 	return (
 		<div>
 			<div className="flex gap-5 border-b-[1px] border-white/10 px-6 pb-3">
-				{settingElements.map((elem, id) => {
-					return (
-						<button key={id} onClick={() => setActive(elem.label)}
-							className={`flex ${active == elem.label ? 'text-white fill-white' : 'fill-[#76899b] text-[#76899b]'}
-											 ${active != elem.label && 'hover:fill-white/60 hover:text-white/60'} flex-col gap-3 items-center`}>
-							<elem.Icon />
-							<span className="text-inherit">{elem.title}</span>
-						</button>
-					)
-				})}
+				<Tabs onChange={setActive}>
+					{tabs.map(({Icon, title, label}) => 
+						<Tab label={label} aria-pressed={active == label} key={label} className={tabClassName}>
+							<Icon />
+							<span className="text-inherit">{title}</span>
+						</Tab>
+					)}
+				</Tabs>
 			</div>
-			<TabList className="">
-				<TabPanel activeValue={active} label={Tabs.general}><GeneralTab/></TabPanel>
-				<TabPanel activeValue={active} label={Tabs.synchronization}><SynchronizationTab/></TabPanel>
-			</TabList>
+				<TabPanel activeValue={active} label={TabsEnum.general}><GeneralTab/></TabPanel>
+				<TabPanel activeValue={active} label={TabsEnum.synchronization}><SynchronizationTab/></TabPanel>
 		</div>
 	)
 }
+
+
+

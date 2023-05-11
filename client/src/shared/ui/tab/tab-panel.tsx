@@ -10,8 +10,8 @@ export function TabPanel({
 	children: ReactNode
 }){
 	return (
-		<li hidden={activeValue != label}>
+		<div hidden={activeValue != label}>
 			{activeValue == label && children}
-		</li>
+		</div>
 	)
 }
