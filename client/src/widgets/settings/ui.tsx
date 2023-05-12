@@ -1,11 +1,10 @@
 import { useState } from "react";
 
-
-import { Tab, TabPanel, Tabs } from "@/shared/ui/tab";
-
 import { SettingSvg } from "./assets/settings.svg";
 import { Synchronization } from "./assets/synchronization.svg";
 import { SynchronizationTab, GeneralTab } from './tabs'
+
+import { Tab, TabPanel, Tabs } from "@/shared/ui/tab";
 
 enum TabsEnum {
 	general,

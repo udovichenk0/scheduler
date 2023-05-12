@@ -25,7 +25,7 @@ const buttonCva = cva('text-white outline-none transition-colors duration-150', 
             base: ["text-sm", "p-1"],
             small: ["text-[12px]", "py-1", "px-2"],
             medium: ["text-sm", "py-1", "px-2"],
-            large: ["text-sm", "py-2", "px-5"],
+            large: ["text-sm", "py-3", "px-6"],
         },
     },
     defaultVariants: {
@@ -34,14 +34,14 @@ const buttonCva = cva('text-white outline-none transition-colors duration-150', 
 })
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonCva> {
-    logo?: ReactNode,
+        icon?: ReactNode,
     title?: string
 }
-export const Button = ({ intent, size, logo, title, ...props }: ButtonProps) => {
+export const Button = ({ intent, size, icon, title, ...props }: ButtonProps) => {
     return (
         <button className={buttonCva({ size, intent })} {...props}>
-            <div className="flex gap-2">
-                {logo} {title}
+            <div className="flex gap-4 items-center jusfity-center">
+                {!!icon && icon } {title}
             </div>
         </button>
     )

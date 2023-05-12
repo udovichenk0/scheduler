@@ -13,16 +13,10 @@ function App() {
       <Suspense fallback={false}>
         <RouterProvider router={router}>
           <RoutesView />
-          {/* <button onClick={() => modal.toggleTriggered()}>Open modal</button>
-          <AuthModal modal={modal}>
-              <div>
-                  asdf
-              </div>
-          </AuthModal> */}
-        </RouterProvider>
+        </RouterProvider> 
       </Suspense>
     </div>
   )
 }
-
+//FSD PLUGIN
 export default App
