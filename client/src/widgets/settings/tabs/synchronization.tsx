@@ -1,8 +1,9 @@
 import { useState } from "react"
 
+import { Button } from "@/shared/ui/buttons/main-button"
 import { MailSvg } from "./assets"
 
-import { Button } from "@/shared/ui/buttons/main-button/ui"
+
 
 export const SynchronizationTab = () => {
     const [isLoginModalSet, setLoginModal] = useState(false)

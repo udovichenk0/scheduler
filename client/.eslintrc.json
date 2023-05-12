@@ -5,7 +5,9 @@
     "plugin:@typescript-eslint/recommended",
     "eslint:recommended",
     "plugin:import/warnings",
-    "plugin:import/typescript"
+    "plugin:import/typescript",
+    "@feature-sliced/eslint-config/rules/import-order",
+    "@feature-sliced/eslint-config/rules/layers-slices"
   ],
   "settings": {
     "import/resolver": { 
@@ -30,91 +32,6 @@
     "@typescript-eslint/no-require-imports": "error",
     "@typescript-eslint/no-explicit-any": "warn",
     "import/no-unresolved": "off",
-    "import/no-cycle": "error",
-    "import/order": [
-      "error",
-      {
-        "alphabetize": { "order": "asc", "caseInsensitive": true },
-        "newlines-between": "always",
-        "pathGroups": [
-          {
-            "pattern": "@processes/**",
-            "group": "internal",
-            "position": "after"
-          },
-          {
-            "pattern": "@pages/**",
-            "group": "internal",
-            "position": "after"
-          },
-          {
-            "pattern": "@widgets/**",
-            "group": "internal",
-            "position": "after"
-          },
-          {
-            "pattern": "@features/**",
-            "group": "internal",
-            "position": "after"
-          },
-          {
-            "pattern": "@entities/**",
-            "group": "internal",
-            "position": "after"
-          },
-          {
-            "pattern": "@shared/**",
-            "group": "internal",
-            "position": "after"
-          }
-        ],
-        "pathGroupsExcludedImportTypes": ["builtin"],
-        "distinctGroup": true,
-        "groups": [
-          "builtin",
-          "external",
-          "internal",
-          "parent",
-          "sibling",
-          "index"
-        ]
-      }
-    ],
-    "import/no-restricted-paths": ["error",
-    {
-        "zones": [ 
-      //app
-      {
-        "target": ["./src/processes", "./src/pages", "./src/widgets","./src/features","./src/entities","./src/shared"],
-        "from": "./src/app"
-      }, 
-      //process
-      {
-        "target": ["./src/pages", "./src/widgets","./src/features","./src/entities","./src/shared"],
-        "from": "./src/process"
-      },
-      //pages
-      {
-        "target": ["./src/widgets","./src/features","./src/entities","./src/shared"],
-        "from": "./src/pages"
-      },
-      //widgets
-      {
-        "target": ["./src/features","./src/entities","./src/shared"],
-        "from": "./src/widgets"
-      },
-      //features
-      {
-        "target": ["./src/entities","./src/shared"],
-        "from": "./src/features"
-      },
-      //entities
-      {
-        "target": ["./src/shared"],
-        "from": "./src/entities"
-      }
-    ]
-    }
-    ]
+    "import/no-cycle": "error"
   }
 }

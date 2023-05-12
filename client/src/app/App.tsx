@@ -18,5 +18,4 @@ function App() {
     </div>
   )
 }
-//FSD PLUGIN
 export default App
