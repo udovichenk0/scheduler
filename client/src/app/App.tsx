@@ -1,13 +1,12 @@
-import { BaseModal } from "../shared/ui/modals/base-modal/ui";
-import { modalFactory } from "../shared/lib/modal";
 //@ts-expect-error
 import { RouterProvider } from 'atomic-router-react';
-import { RoutesView } from "@/pages";
-import { router } from "@/shared/config/router/router";
-import { appStarted } from "@/shared/config/init";
 import { Suspense } from "react";
+
+import { RoutesView } from "@/pages";
+import { appStarted } from "@/shared/config/init";
+import { router } from "@/shared/config/router/router";
+
 appStarted()
-const modal = modalFactory()
 function App() {
   return (
     <div className="text-white bg-main-blue">

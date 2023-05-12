@@ -1,6 +1,7 @@
-import { Sidebar } from "@/widgets/sidebar/ui"
 import { PropsWithChildren } from "react"
+
 import { Header } from '@/widgets/header'
+import { Sidebar } from "@/widgets/sidebar/ui"
 export const MainLayout = ({ children }: PropsWithChildren) => {
 	return (
 		<div>

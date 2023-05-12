@@ -1,7 +1,8 @@
 import {createHistoryRouter, createRoute} from "atomic-router";
-import {createBrowserHistory} from "history";
-import {appStarted} from "../init";
 import {sample} from "effector";
+import {createBrowserHistory} from "history";
+
+import {appStarted} from "../init";
 export const routes = {
     home: createRoute()
 }

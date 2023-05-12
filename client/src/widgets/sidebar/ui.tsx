@@ -1,14 +1,19 @@
+
 import { Button } from "@/shared/ui/buttons/main-button/ui"
-import { LogoSvg } from "./assets/logo.svg"
+import { BaseModal } from "@/shared/ui/modals/base-modal/ui"
+
+import { Settings } from "../settings"
+
+import { AddSvg } from "./assets/add.svg"
+import { CalendarSvg } from "./assets/calendar.svg"
 import { DownloadSvg } from "./assets/inbox.svg"
+import { LogoSvg } from "./assets/logo.svg"
+import { SettingSvg } from "./assets/settings.svg"
 import { StarSvg } from "./assets/star.svg"
 import { UpcomingSvg } from "./assets/upcoming.svg"
-import { CalendarSvg } from "./assets/calendar.svg"
-import { AddSvg } from "./assets/add.svg"
-import { SettingSvg } from "./assets/settings.svg"
-import { BaseModal } from "@/shared/ui/modals/base-modal/ui"
 import { modal } from './sidebar.modal'
-import { Settings } from "../settings"
+
+
 export const Sidebar = () => {
 	return (
 		<div className="border-r-[1px] border-white/10">

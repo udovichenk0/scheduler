@@ -1,6 +1,6 @@
 import { Event, Store } from 'effector'
-import { ReactNode } from 'react'
 import { useUnit } from "effector-react";
+import { ReactNode } from 'react'
 interface ModalProps {
     children: ReactNode,
     modal: {
