@@ -1,6 +1,6 @@
 import { useUnit } from "effector-react"
 import { useEffect } from "react"
-import { Button } from "@/shared/ui/buttons/main-button"
+import { DisableButton } from "@/shared/ui/buttons/disable-button"
 import { Input } from "@/shared/ui/input"
 import { $email, $emailError, emailChanged, onSubmit, resetTriggered } from "./modal"
 
@@ -20,7 +20,7 @@ export const ByEmailForm = () => {
                     {error && <EmailValidationError/>}
                 </div>
                 <span>
-                    <Button intent={'blue-filled'} size={'medium'} title="Resume"/>
+                    <DisableButton action={onSubmit} disabled={!email}/>
                 </span>
             </form>
         </div>

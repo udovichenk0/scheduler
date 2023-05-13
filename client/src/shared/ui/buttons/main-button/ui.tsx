@@ -1,4 +1,5 @@
 import { cva, VariantProps } from "class-variance-authority";
+import clsx from "clsx";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
 const buttonCva = cva('text-white outline-none transition-colors duration-150', {
@@ -41,12 +42,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonCva> {
     icon?: ReactNode,
     title?: string,
-    customClasses?: string
 }
-export const Button = ({ intent, size, icon, title, customClasses = '', ...props }: ButtonProps) => {
+export const Button = ({ intent, size, icon, title, ...props }: ButtonProps) => {
     return (
         <button className={buttonCva({ size, intent })} {...props}>
-            <div className={`flex gap-4 items-center jusfity-center ${customClasses}`}>
+            <div className='flex gap-4 items-center jusfity-center'>
                 {!!icon && icon } {title}
             </div>
         </button>

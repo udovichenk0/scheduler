@@ -3,6 +3,7 @@ interface InputProps {
     name: string,
     value: string,
     label: string,
+    disabled?: boolean,
     error?: string | null
 }
 export const Input = ({
@@ -10,12 +11,13 @@ export const Input = ({
     name,
     value,
     label,
+    disabled,
     error
 }:InputProps) => {
     return (
         <label className="w-full flex flex-col" htmlFor={name}>
             <span className="text-left text-white/50 text-[12px]">{label}</span>
-            <input onChange={(e) => onChange(e.target.value)} value={value} className={`w-full outline-none ${error && 'text-error'} bg-transparent pb-1 border-b-[1px] border-[#76899b]`} type="text" />
+            <input disabled={disabled} onChange={(e) => onChange(e.target.value)} value={value} className={`w-full outline-none ${error && 'text-error'} bg-transparent pb-1 border-b-[1px] border-[#76899b]`} type="text" />
         </label>
     )
 }

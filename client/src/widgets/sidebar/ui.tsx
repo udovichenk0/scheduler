@@ -36,7 +36,7 @@ export const Sidebar = () => {
 					</div>
 				</div>
 				<div className="px-2 py-1 h-full">
-					<Button customClasses="text-[12px]" size={'small'} title="New Project" intent={'base-gray'} icon={<AddSvg />} />
+					<Button size={'small'} title="New Project" intent={'base-gray'} icon={<AddSvg />} />
 				</div>
 				<div className="px-2 py-1 border-t-[1px] border-white/10 flex">
 					<span>
