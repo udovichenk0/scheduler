@@ -21,7 +21,7 @@ export const Settings = () => {
 	const [active, setActive] = useState<TabsEnum>(TabsEnum.general)
 	return (
 		<div>
-			<div className="flex gap-5 border-b-[1px] border-white/10 px-6 pb-3">
+			<div className="flex gap-5 border-b-[1px] border-white/10 px-6 pb-4">
 				<Tabs onChange={setActive}>
 					{tabs.map(({Icon, title, label}) => 
 						<Tab label={label} aria-pressed={active == label} key={label} className={tabClassName}>

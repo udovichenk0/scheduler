@@ -10,7 +10,7 @@ export function TabPanel({
 	children: ReactNode
 }){
 	return (
-		<div className="px-6 py-3" hidden={activeValue != label}>
+		<div className="px-6 py-4" hidden={activeValue != label}>
 			{activeValue == label && children}
 		</div>
 	)
