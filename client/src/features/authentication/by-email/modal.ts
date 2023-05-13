@@ -5,9 +5,12 @@ import { z } from 'zod'
 
 export const emailChanged = createEvent<string>()
 export const submitTriggered = createEvent()
+export const resetTriggered = createEvent()
+
 export const $email = createStore('')
 export const $emailError = createStore<'too_small' | 'invalid_string' |  null>(null)
 const emailSchema = z.string().email().min(4)
+
 export const onSubmit = (e: FormEvent) => {
     e.preventDefault()
     submitTriggered()
@@ -23,6 +26,7 @@ sample({
     target: $email
 })
 
+// fetch after success email validation
 sample({
     clock: submitTriggered,
     source: $email,
@@ -30,6 +34,7 @@ sample({
     target: checkUserFx
 })
 
+// store an error after failure validation
 sample({
     clock: submitTriggered,
     source: $email,
@@ -37,12 +42,11 @@ sample({
     fn: checkError,
     target: $emailError
 })
-
-// const result = emailSchema.safeParse('')
-
-// if(!result.success){
-//     console.log(result.error.issues)
-// }
+// restore emailError
+sample({
+    clock: resetTriggered,
+    target: [$emailError.reinit!, $email.reinit!]
+})
 
 function checkError(email:string){
     if(email.length < 4){

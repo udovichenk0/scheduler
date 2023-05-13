@@ -8,7 +8,8 @@ export default {
     extend: {
       colors: {
         'main-blue': '#0b0417',
-        'azure': '#2ebcff'
+        'azure': '#2ebcff',
+        'error': '#ff5f58'
       }
     },
   },
