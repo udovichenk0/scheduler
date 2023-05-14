@@ -1,5 +1,5 @@
 import { FormEvent } from 'react'
-export const DisableButton = ({
+export const DisableButton = ({ // rename
     disabled,
     action
 }:{
@@ -7,7 +7,7 @@ export const DisableButton = ({
     action: (e: FormEvent) => void
 }) => {
     return (
-        <button onSubmit={(e) => action(e)} disabled={disabled} className={`text-white outline-none transition-colors duration-150 bg-[#2384b9] rounded-[5px] ${disabled ? 'bg-[#195178]' : 'hover:bg-[#1e6795]'} text-sm py-2 px-4`}>
+        <button onSubmit={(e) => action(e)} disabled={disabled} className={`text-white outline-none transition-colors duration-150 bg-[#2384b9] rounded-[5px] ${disabled ? 'bg-[#27658f]' : 'hover:bg-[#1e6795]'} text-sm py-2 px-6`}>
             Resume
         </button>
     )

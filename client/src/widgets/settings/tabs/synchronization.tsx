@@ -7,12 +7,12 @@ import { MailSvg } from "./assets"
 
 
 export const SynchronizationTab = () => {
-    const [isLoginModalSet, setLoginModal] = useState(false)
+    const [isEmailFormShown, showEmailForm] = useState(false)
     return (
         <div className="flex flex-col items-center">
             <div className="text-center w-[391px]">
-                {!isLoginModalSet && <LoginOptions onClick={setLoginModal}/>}
-                {isLoginModalSet && <ByEmailForm/>}
+                {!isEmailFormShown && <LoginOptions onClick={showEmailForm}/>}
+                {isEmailFormShown && <ByEmailForm showEmailForm={showEmailForm}/>}
             </div>
         </div>
     )
