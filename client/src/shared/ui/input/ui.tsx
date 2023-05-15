@@ -23,8 +23,8 @@ export const Input = ({
     return (
         <label className="w-full flex flex-col" htmlFor={name}>
             <span className="text-left text-grey text-[12px]">{label}</span>
-            <div className="relative w-full flex items-center">
-                <input type={type} disabled={disabled} onChange={(e) => onChange(e.target.value)} value={value} className={`w-full outline-none ${error && 'text-error'} bg-transparent pb-1 border-b-[1px] border-[#76899b]`} />
+            <div className="relative w-full flex items-center text-sm">
+                <input type={type} disabled={disabled} onChange={(e) => onChange(e.target.value)} value={value} className={`w-full outline-none ${error && 'text-error'} pr-8 bg-transparent pb-1 border-b-[1px] border-[#76899b]`} />
                 <span className="absolute right-0">{icon}</span>
             </div>
         </label>
