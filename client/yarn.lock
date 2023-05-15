@@ -369,6 +369,11 @@
   resolved "https://registry.yarnpkg.com/@farfetched/core/-/core-0.8.11.tgz#661115409db9c8d8c89b90f5bfb97cce273b04b6"
   integrity sha512-aFXorJu9X3bUNVHxBRKJvk76FyokkgAJjnejsyNSaRjCtHGWRyAwrYyhCl0vwlE23DUpew6BXMJwtrg0NKt0bw==
 
+"@farfetched/zod@^0.8.12":
+  version "0.8.12"
+  resolved "https://registry.yarnpkg.com/@farfetched/zod/-/zod-0.8.12.tgz#9b227b930b5a8f600f1db745ba955efac73e2fd4"
+  integrity sha512-OsxDaBU3H5SVQhT9+2XpI8Pod1yvfTHnAO5IDOcbL5uaYgQxHVIRMjRq/NoVxcYbtCTDhS6OxFiGs9QK5ldq5Q==
+
 "@feature-sliced/eslint-config@^0.1.0-beta.6":
   version "0.1.0-beta.6"
   resolved "https://registry.yarnpkg.com/@feature-sliced/eslint-config/-/eslint-config-0.1.0-beta.6.tgz#ba818d630449c97b802c0e5dda874f12b6b51cf2"
