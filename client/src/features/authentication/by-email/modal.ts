@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 export const emailChanged = createEvent<string>()
 export const submitTriggered = createEvent()
-export const resetTriggered = createEvent()
+export const resetEmailTriggered = createEvent()
 
 export const $email = createStore('')
 export const $emailError = createStore<'too_small' | 'invalid_string' |  null>(null)
@@ -38,7 +38,7 @@ sample({
 
 // restore emailError
 sample({
-    clock: resetTriggered,
+    clock: resetEmailTriggered,
     target: [$emailError.reinit!, $email.reinit!]
 })
 

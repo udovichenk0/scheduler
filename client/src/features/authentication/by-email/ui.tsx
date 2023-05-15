@@ -4,7 +4,7 @@ import { DisableButton } from "@/shared/ui/buttons/disable-button"
 import { HoverIconButton } from "@/shared/ui/buttons/hover-icon-button"
 import { Arrow } from "@/shared/ui/icons/arrow.svg"
 import { Input } from "@/shared/ui/input"
-import { $email, $emailError, emailChanged, resetTriggered, submitTriggered } from "./modal"
+import { $email, $emailError, emailChanged, resetEmailTriggered, submitTriggered } from "./modal"
 
 const onSubmit = (e: FormEvent) => {
     e.preventDefault()

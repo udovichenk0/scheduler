@@ -1,5 +1,5 @@
 import { createEvent, createStore, sample } from "effector";
-import { checkUserFx } from "@/features/authentication/by-email";
+import { checkUserFx, resetEmailTriggered } from "@/features/authentication/by-email";
 
 
 export enum Form {
@@ -35,5 +35,5 @@ sample({
 // reset form to options
 sample({
     clock: resetFormTriggered,
-    target: $formToShow.reinit!
+    target: [$formToShow.reinit!, resetEmailTriggered]
 })
