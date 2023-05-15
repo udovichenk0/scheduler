@@ -1,5 +1,6 @@
 import { createEvent, createStore, sample } from "effector";
-import { checkUserFx, resetEmailTriggered } from "@/features/authentication/by-email";
+import { resetEmailTriggered } from "@/features/authentication/by-email";
+import { getUserQuery } from "@/shared/api/user";
 
 
 export enum Form {
@@ -20,14 +21,14 @@ sample({
 })
 
 sample({
-    clock: checkUserFx.doneData,
-    filter: (data) => data === 1,
+    clock: getUserQuery.finished.success,
+    filter: ({result}) => !result.id,
     fn: () => Form.register,
     target: $formToShow
 })
 sample({
-    clock: checkUserFx.doneData,
-    filter: (data) => data === 2,
+    clock: getUserQuery.finished.success,
+    filter: ({result}) => Boolean(result.id),
     fn: () => Form.login,
     target: $formToShow
 })

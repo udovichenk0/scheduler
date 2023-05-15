@@ -1,5 +1,7 @@
-import { createEvent, createStore, sample, createEffect } from "effector";
+import { createEvent, createStore, sample, createEffect, attach } from "effector";
+import { debug } from "patronum";
 import { z } from 'zod'
+import { getUserQuery } from "@/shared/api/user";
 
 export const emailChanged = createEvent<string>()
 export const submitTriggered = createEvent()
@@ -10,22 +12,23 @@ export const $emailError = createStore<'too_small' | 'invalid_string' |  null>(n
 
 const emailSchema = z.string().email().min(4)
 
-export const checkUserFx = createEffect<string, number>(async(email) => {
-    return 1
-})
-
 sample({
     clock: emailChanged,
     target: $email
 })
+
 
 // fetch after success email validation
 sample({
     clock: submitTriggered,
     source: $email,
     filter: (email) => emailSchema.safeParse(email).success,
-    target: checkUserFx
+    fn: (email) => ({email}),
+    target: getUserQuery.start
 })
+
+//denzel2.eni@gmail.com
+debug(getUserQuery.$data)
 
 // store an error after failure validation
 sample({
