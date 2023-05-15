@@ -1,6 +1,5 @@
 import { createEvent, createStore, sample } from "effector";
 import { createEffect } from "effector/effector.mjs";
-import { FormEvent } from "react";
 import { z } from 'zod'
 
 export const emailChanged = createEvent<string>()
@@ -9,16 +8,12 @@ export const resetTriggered = createEvent()
 
 export const $email = createStore('')
 export const $emailError = createStore<'too_small' | 'invalid_string' |  null>(null)
+
 const emailSchema = z.string().email().min(4)
 
-export const onSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    submitTriggered()
-}
-
-const checkUserFx = createEffect(async(email:string) => {
+export const checkUserFx = createEffect<string, number>(async(email) => {
     console.log(email)
-    return email
+    return 1
 })
 
 sample({
@@ -42,6 +37,7 @@ sample({
     fn: checkError,
     target: $emailError
 })
+
 // restore emailError
 sample({
     clock: resetTriggered,

@@ -1,10 +1,15 @@
 import { useUnit } from "effector-react"
-import { useEffect } from "react"
+import { FormEvent, useEffect } from "react"
 import { Arrow } from "@/shared/ui/arrow"
 import { DisableButton } from "@/shared/ui/buttons/disable-button"
 import { HoverIconButton } from "@/shared/ui/buttons/hover-icon-button"
 import { Input } from "@/shared/ui/input"
-import { $email, $emailError, emailChanged, onSubmit, resetTriggered } from "./modal"
+import { $email, $emailError, emailChanged, resetTriggered, submitTriggered } from "./modal"
+
+const onSubmit = (e: FormEvent) => {
+    e.preventDefault()
+    submitTriggered()
+}
 
 export const ByEmailForm = ({showEmailForm}:{showEmailForm: (v: boolean) => void}) => {
     const email = useUnit($email)

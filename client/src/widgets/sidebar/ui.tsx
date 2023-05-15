@@ -1,3 +1,4 @@
+import { HoverIconButton } from "@/shared/ui/buttons/hover-icon-button"
 import { Button } from "@/shared/ui/buttons/main-button/ui"
 import { BaseModal } from "@/shared/ui/modals/base-modal/ui"
 // eslint-disable-next-line boundaries/element-types
@@ -40,7 +41,8 @@ export const Sidebar = () => {
 				</div>
 				<div className="px-2 py-1 border-t-[1px] border-white/10 flex">
 					<span>
-						<Button onClick={() => modal.toggleTriggered()} intent={'base-white'} size={'base'} icon={<SettingSvg />} />
+						<HoverIconButton icon={<SettingSvg />} action={() => modal.toggleTriggered()}/>
+						{/* <Button onClick={() => modal.toggleTriggered()} intent={'base-white'} size={'base'} icon={<SettingSvg />} /> */}
 						<BaseModal modal={modal}>
 							<Settings />
 						</BaseModal>
