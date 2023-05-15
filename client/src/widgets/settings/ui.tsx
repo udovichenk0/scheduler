@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Tab, TabPanel, Tabs } from "@/shared/ui/tab";
 import { SettingSvg } from "./assets/settings.svg";

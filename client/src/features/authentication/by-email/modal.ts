@@ -1,5 +1,4 @@
-import { createEvent, createStore, sample } from "effector";
-import { createEffect } from "effector/effector.mjs";
+import { createEvent, createStore, sample, createEffect } from "effector";
 import { z } from 'zod'
 
 export const emailChanged = createEvent<string>()
@@ -12,8 +11,7 @@ export const $emailError = createStore<'too_small' | 'invalid_string' |  null>(n
 const emailSchema = z.string().email().min(4)
 
 export const checkUserFx = createEffect<string, number>(async(email) => {
-    console.log(email)
-    return 1
+    return 2
 })
 
 sample({

@@ -9,7 +9,8 @@ export default {
       colors: {
         'main-blue': '#0b0417',
         'azure': '#2ebcff',
-        'error': '#ff5f58'
+        'error': '#ff5f58',
+        'grey': '#76899b'
       }
     },
   },

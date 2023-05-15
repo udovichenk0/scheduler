@@ -1,10 +1,14 @@
+import { ReactNode } from "react"
+
 interface InputProps {
     onChange: (v: string) => void,
     name: string,
     value: string,
     label: string,
     disabled?: boolean,
-    error?: string | null
+    error?: string | null,
+    icon?: ReactNode,
+    type?: 'text' | 'password'
 }
 export const Input = ({
     onChange,
@@ -12,12 +16,17 @@ export const Input = ({
     value,
     label,
     disabled,
-    error
+    error,
+    icon,
+    type = 'text',
 }:InputProps) => {
     return (
         <label className="w-full flex flex-col" htmlFor={name}>
-            <span className="text-left text-white/50 text-[12px]">{label}</span>
-            <input disabled={disabled} onChange={(e) => onChange(e.target.value)} value={value} className={`w-full outline-none ${error && 'text-error'} bg-transparent pb-1 border-b-[1px] border-[#76899b]`} type="text" />
+            <span className="text-left text-grey text-[12px]">{label}</span>
+            <div className="relative w-full flex items-center">
+                <input type={type} disabled={disabled} onChange={(e) => onChange(e.target.value)} value={value} className={`w-full outline-none ${error && 'text-error'} bg-transparent pb-1 border-b-[1px] border-[#76899b]`} />
+                <span className="absolute right-0">{icon}</span>
+            </div>
         </label>
     )
 }

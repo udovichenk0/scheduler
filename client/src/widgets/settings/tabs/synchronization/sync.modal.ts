@@ -8,8 +8,10 @@ export enum Form {
     register,
     options
 }
+export const setFormTriggered = createEvent<Form>()
+export const resetFormTriggered = createEvent()
+
 export const $formToShow = createStore<Form>(Form.options)
-export const setFormTriggered = createEvent<Form.email | Form.options>()
 
 
 sample({
@@ -28,4 +30,10 @@ sample({
     filter: (data) => data === 2,
     fn: () => Form.login,
     target: $formToShow
+})
+
+// reset form to options
+sample({
+    clock: resetFormTriggered,
+    target: $formToShow.reinit!
 })
