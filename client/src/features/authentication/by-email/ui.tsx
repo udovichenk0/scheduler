@@ -13,15 +13,12 @@ const onSubmit = (e: FormEvent) => {
 
 export const ByEmailForm = ({showEmailForm}:{showEmailForm: () => void}) => {
     const [email, error] = useUnit([$email, $emailError])
-    useEffect(() => {
-        return () => resetTriggered()
-    }, [])
     return (
         <div className="relative">
             <span className="absolute left-[-20px]">
                 <HoverIconButton icon={<Arrow/>} action={() => showEmailForm()}/>
             </span>
-            <h2 className="text-lg mb-3 font-semibold">Log in by email</h2>
+            <h2 className="text-lg mb-3 font-medium">Log in by email</h2>
             <p className="text-sm mb-7">Specify the address to log in to your account or register</p>
             <form className="flex w-full flex-col" onSubmit={(e) => onSubmit(e)}>
                 <Input onChange={emailChanged} error={error} value={email} label="Email" name="email"/>

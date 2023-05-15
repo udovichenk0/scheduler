@@ -19,8 +19,8 @@ export const SynchronizationTab = () => {
             <div className="text-center w-[391px]">
                 {formToShow === Form.options && <LoginOptions onClick={() => setFormTriggered(Form.email)}/>}
                 {formToShow === Form.email && <ByEmailForm showEmailForm={() => setFormTriggered(Form.options)}/>}
-                {formToShow === Form.login && <Signin showLoginForm={() => setFormTriggered(Form.login)}/>}
-                {formToShow === Form.register && <Signup/>}
+                {formToShow === Form.login && <Signin showEmailForm={() => setFormTriggered(Form.email)}/>}
+                {formToShow === Form.register && <Signup showEmailForm={() => setFormTriggered(Form.email)}/>}
             </div>
         </div>
     )

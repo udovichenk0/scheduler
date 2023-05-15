@@ -11,7 +11,7 @@ export const $emailError = createStore<'too_small' | 'invalid_string' |  null>(n
 const emailSchema = z.string().email().min(4)
 
 export const checkUserFx = createEffect<string, number>(async(email) => {
-    return 2
+    return 1
 })
 
 sample({
