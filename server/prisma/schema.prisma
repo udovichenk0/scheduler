@@ -10,17 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model user {
   id        Int     @default(autoincrement()) @id
   email     String  @unique
   hash      String
   verified  Boolean @default(false)
-  token     Token?
+  token     refreshToken?
 }
 
-model Token {
+model refreshToken {
   id      Int    @default(autoincrement()) @id
   token   String
   userId  Int    @unique()
-  user    User   @relation(fields: [userId], references: [id])
+  user    user   @relation(fields: [userId], references: [id])
 }

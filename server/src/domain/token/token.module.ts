@@ -5,7 +5,7 @@ import { RefreshModule } from './refreshToken/refresh.module';
 
 @Module({
   imports: [RefreshModule],
-  providers: [TokenService, PrismaService],
+  providers: [TokenService],
   exports: [TokenService, RefreshModule],
 })
 export class TokenModule {}
