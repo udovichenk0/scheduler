@@ -15,13 +15,4 @@ model user {
   email     String  @unique
   hash      String
   verified  Boolean @default(false)
-  token     refreshToken?
-}
-
-model refreshToken {
-  id        Int    @default(autoincrement()) @id
-  token     String
-  expiresIn DateTime
-  userId    Int    @unique()
-  user      user   @relation(fields: [userId], references: [id])
 }
