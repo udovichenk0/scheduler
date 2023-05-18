@@ -10,22 +10,23 @@ import { UserDto } from 'src/domain/user/dto/user.dto';
 @Injectable()
 export class RefreshService {
   constructor(private prismaService: PrismaService) {}
-  async create(userId: number): Promise<string> {
-    const user = await this.prismaService.user.findUnique({
-      where: { id: userId },
-    });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    const token = randomStringGenerator();
-    await this.prismaService.refreshToken.create({
-      data: {
-        token,
-        userId,
-      },
-    });
+  async signRefresh(payload: UserDto) {
+    return payload;
+    // const user = await this.prismaService.user.findUnique({
+    //   where: { id: userId },
+    // });
+    // if (!user) {
+    //   throw new NotFoundException('User not found');
+    // }
+    // const token = randomStringGenerator();
+    // await this.prismaService.refreshToken.create({
+    //   data: {
+    //     token,
+    //     userId,
+    //   },
+    // });
 
-    return token;
+    // return token;
   }
   async validate(userId: number) {
     const token = await this.prismaService.refreshToken.findUnique({
