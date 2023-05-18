@@ -10,7 +10,7 @@ import {
 export class JWTService {
   async signToken(userData: UserDto): Promise<string> {
     const token = await sign(userData, process.env.JWT_SECRET, {
-      expiresIn: '15d',
+      expiresIn: '30m',
     });
     return token;
   }
