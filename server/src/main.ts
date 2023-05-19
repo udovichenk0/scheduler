@@ -14,6 +14,9 @@ async function bootstrap() {
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+      }
     }),
   );
   const prismaService = app.get(PrismaService);
