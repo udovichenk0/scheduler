@@ -5,7 +5,10 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class UserService {
   constructor(private prismaService: PrismaService) {}
-  findOne(userData: { email: string }) {
-    return 'iosjfo';
+  findOne(where: Prisma.userWhereUniqueInput) {
+    const user = this.prismaService.user.findUnique({
+      where,
+    });
+    return user;
   }
 }
