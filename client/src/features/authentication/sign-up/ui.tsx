@@ -1,17 +1,22 @@
 import { useUnit } from "effector-react"
-import { FormEvent, useState } from "react"
+import { FormEvent, useEffect, useRef, useState } from "react"
 import { DisableButton } from "@/shared/ui/buttons/disable-button"
 import { HoverIconButton } from "@/shared/ui/buttons/hover-icon-button"
 import { Arrow, HideEye, EyeSvg } from "@/shared/ui/icons"
 import { Input } from "@/shared/ui/input"
 import { $email } from "../by-email"
-import { $password, $passwordError, passwordChanged } from "./signup.modal"
+import { $password, $passwordError, passwordChanged, submitTriggered } from "./signup.modal"
 const onSubmit = (e: FormEvent) => {
-    return e
+    e.preventDefault()
+    submitTriggered()
 }
 export const Signup = ({showEmailForm}:{showEmailForm: () => void}) => {
     const [password, error, email] = useUnit([$password, $passwordError, $email])
     const [isPasswordShown, togglePasswortView] = useState(false)
+    const ref = useRef<HTMLInputElement>(null)
+    useEffect(() => {
+        ref.current && ref.current.focus()
+    })
     return (
         <div className="relative">
         <span className="absolute left-[-20px]">
@@ -25,6 +30,7 @@ export const Signup = ({showEmailForm}:{showEmailForm: () => void}) => {
             error={error} 
             value={password} 
             label="Password" 
+            focusRef={ref}
             name="login"
             type={isPasswordShown ? 'text' : 'password'}
             icon={

@@ -1,10 +1,10 @@
 import { useUnit } from "effector-react"
-import { FormEvent, useEffect } from "react"
+import { FormEvent, useEffect, useRef } from "react"
 import { DisableButton } from "@/shared/ui/buttons/disable-button"
 import { HoverIconButton } from "@/shared/ui/buttons/hover-icon-button"
 import { Arrow } from "@/shared/ui/icons/arrow.svg"
 import { Input } from "@/shared/ui/input"
-import { $email, $emailError, emailChanged, resetEmailTriggered, submitTriggered } from "./modal"
+import { $email, $emailError, emailChanged, submitTriggered } from "./modal"
 
 const onSubmit = (e: FormEvent) => {
     e.preventDefault()
@@ -13,6 +13,10 @@ const onSubmit = (e: FormEvent) => {
 
 export const ByEmailForm = ({showEmailForm}:{showEmailForm: () => void}) => {
     const [email, error] = useUnit([$email, $emailError])
+    const ref = useRef<HTMLInputElement>(null)
+    useEffect(() => {
+        ref.current && ref.current.focus()
+    })
     return (
         <div className="relative">
             <span className="absolute left-[-20px]">
@@ -21,7 +25,13 @@ export const ByEmailForm = ({showEmailForm}:{showEmailForm: () => void}) => {
             <h2 className="text-lg mb-3 font-medium">Log in by email</h2>
             <p className="text-sm mb-7">Specify the address to log in to your account or register</p>
             <form className="flex w-full flex-col" onSubmit={(e) => onSubmit(e)}>
-                <Input onChange={emailChanged} error={error} value={email} label="Email" name="email"/>
+                <Input 
+                onChange={emailChanged} 
+                error={error}
+                focusRef={ref} 
+                value={email} 
+                label="Email" 
+                name="email"/>
                 <div className="h-[40px] text-sm text-error mt-1">
                     {error && <EmailValidationError/>}
                 </div>

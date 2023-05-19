@@ -1,4 +1,4 @@
-import { createEvent, createStore, sample, createEffect, attach } from "effector";
+import { createEvent, createStore, sample } from "effector";
 import { debug } from "patronum";
 import { z } from 'zod'
 import { getUserQuery } from "@/shared/api/user";

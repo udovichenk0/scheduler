@@ -9,6 +9,7 @@ export class AuthController {
   @Post('sign-up')
   async Signup(
     @Body() body: AuthCredentialsDto,
+    @Req() req: Request,
     @Session() session: Record<string, any>,
   ) {
     const data = await this.authService.createUser(body);

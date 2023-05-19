@@ -1,9 +1,10 @@
-import { ReactNode } from "react"
+import { ReactNode, RefObject } from "react"
 
 interface InputProps {
     onChange: (v: string) => void,
     name: string,
     value: string,
+    focusRef?: RefObject<HTMLInputElement>,
     label: string,
     disabled?: boolean,
     error?: string | null,
@@ -15,6 +16,7 @@ export const Input = ({
     name,
     value,
     label,
+    focusRef,
     disabled,
     error,
     icon,
@@ -24,7 +26,9 @@ export const Input = ({
         <label className="w-full flex flex-col" htmlFor={name}>
             <span className="text-left text-grey text-[12px]">{label}</span>
             <div className="relative w-full flex items-center text-sm">
-                <input type={type} 
+                <input 
+                ref={focusRef}
+                type={type} 
                 disabled={disabled} 
                 onChange={(e) => onChange(e.target.value)} 
                 value={value} 

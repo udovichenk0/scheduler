@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
-import { Prisma } from '@prisma/client';
 import { AuthCredentialsDto } from './dto/auth.dto';
 import { encryptPassword } from 'src/lib/hash-password/encrypt';
 import { TokenService } from '../token/token.service';
@@ -28,7 +27,7 @@ export class AuthService {
       throw new ConflictException('User already exist');
     }
     const hash = await encryptPassword(credentials.password);
-    const user = this.prismaService.user.create({
+    const user = await this.prismaService.user.create({
       data: {
         email: credentials.email,
         hash,
