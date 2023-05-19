@@ -24,5 +24,3 @@ sample({
     filter: ({password}) => loginSchema.safeParse(password).success,
     target: signupFx
 })
-
-debug(signupFx.doneData)

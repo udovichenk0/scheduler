@@ -5,9 +5,10 @@ import { HoverIconButton } from "@/shared/ui/buttons/hover-icon-button"
 import { Arrow, HideEye, EyeSvg } from "@/shared/ui/icons"
 import { Input } from "@/shared/ui/input"
 import { $email } from "../by-email"
-import { $password, $passwordError, passwordChanged } from "./signin.modal"
+import { $password, $passwordError, passwordChanged, submitTriggered } from "./signin.modal"
 const onSubmit = (e: FormEvent) => {
-    return e
+    e.preventDefault()
+    submitTriggered()
 }
 export const Signin = ({showEmailForm}:{showEmailForm: () => void}) => {
     const [password, error, email] = useUnit([$password, $passwordError, $email])

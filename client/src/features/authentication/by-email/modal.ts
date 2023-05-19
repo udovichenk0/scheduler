@@ -27,9 +27,6 @@ sample({
     target: getUserQuery.start
 })
 
-//denzel2.eni@gmail.com
-debug(getUserQuery.$data)
-
 // store an error after failure validation
 sample({
     clock: submitTriggered,
