@@ -3,9 +3,14 @@ import { PrismaService } from 'src/database/prisma.service';
 import { Prisma } from '@prisma/client';
 import { AuthCredentialsDto } from './dto/auth.dto';
 import { encryptPassword } from 'src/lib/hash-password/encrypt';
+import { TokenService } from '../token/token.service';
+import { UserDto } from '../user/dto/user.dto';
 @Injectable()
 export class AuthService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private tokenService: TokenService,
+  ) {}
 
   async createUser(credentials: AuthCredentialsDto) {
     const potentialUser = await this.prismaService.user.findUnique({
@@ -23,6 +28,13 @@ export class AuthService {
         hash,
       },
     });
-    return user;
+    const { access_token, refresh_token } = await this.tokenService.issueTokens(
+      UserDto.create(user),
+    );
+    return {
+      user,
+      access_token,
+      refresh_token,
+    };
   }
 }
