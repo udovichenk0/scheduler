@@ -3,6 +3,7 @@ import { debug } from "patronum"
 import { z } from "zod"
 import { signupFx, signupQuery } from "@/shared/api/auth/signup"
 import { $email } from "../by-email"
+import { setTokenTriggered } from "@/shared/api/token"
 
 export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()
@@ -23,4 +24,10 @@ sample({
     source: {email: $email,password: $password},
     filter: ({password}) => loginSchema.safeParse(password).success,
     target: signupQuery.start
+})
+
+sample({
+    clock: signupQuery.finished.success,
+    fn: ({result}) => result.access_token,
+    target: setTokenTriggered
 })

@@ -3,6 +3,7 @@ import { debug } from 'patronum'
 import { z } from "zod"
 import { signinQuery } from "@/shared/api/auth/signin"
 import { $email } from "../by-email"
+import { setTokenTriggered } from "@/shared/api/token"
 
 export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()
@@ -29,4 +30,10 @@ sample({
     target: signinQuery.start
 })
 
+
+sample({
+    clock: signinQuery.finished.success,
+    fn: ({result}) => result.access_token,
+    target: setTokenTriggered
+})
 debug(signinQuery.$data)
