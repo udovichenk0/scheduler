@@ -1,6 +1,7 @@
-import { createEffect, createEvent, createStore, sample } from "effector"
+import { createEvent, createStore, sample } from "effector"
+import { debug } from 'patronum'
 import { z } from "zod"
-import { signinFx } from "@/shared/api/auth/signin"
+import { signinQuery } from "@/shared/api/auth/signin"
 import { $email } from "../by-email"
 
 export const passwordChanged = createEvent<string>()
@@ -25,5 +26,7 @@ sample({
     clock: submitTriggered,
     source: {email: $email,password: $password},
     filter: ({password}) => loginSchema.safeParse(password).success,
-    target: signinFx
+    target: signinQuery.start
 })
+
+debug(signinQuery.$data)
