@@ -18,7 +18,7 @@ export const ByEmailForm = ({showEmailForm}:{showEmailForm: () => void}) => {
         ref.current && ref.current.focus()
     })
     return (
-        <div className="relative">
+        <div className="relative text-center">
             <span className="absolute left-[-20px]">
                 <HoverIconButton icon={<Arrow/>} action={() => showEmailForm()}/>
             </span>
