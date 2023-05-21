@@ -25,6 +25,7 @@ export class AuthController {
     session.refresh_token = data.refresh_token;
     return AuthDto.create(data);
   }
+  @Post('logout')
   async Logout(@Session() session: Record<string, any>) {
     session['refresh_token'] = null;
     return;
