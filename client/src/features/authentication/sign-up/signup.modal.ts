@@ -1,9 +1,10 @@
 import { createEvent, createStore, sample } from "effector"
-import { debug } from "patronum"
+import { spread } from "patronum"
 import { z } from "zod"
-import { signupFx, signupQuery } from "@/shared/api/auth/signup"
-import { $email } from "../by-email"
+import { setAuthorized, setSessionUserTriggered } from "@/entities/session/session.model"
+import { signupQuery } from "@/shared/api/auth/signup"
 import { setTokenTriggered } from "@/shared/api/token"
+import { $email } from "../by-email"
 
 export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()
@@ -12,22 +13,31 @@ export const resetTriggered = createEvent()
 export const $password = createStore('')
 export const $passwordError = createStore<'too_small' | 'invalid_string' |  null>(null)
 
-const loginSchema = z.string().min(8)   
+const signupSchema = z.string().min(8)   
 
+sample({
+    clock: submitTriggered,
+    source: {email: $email,password: $password},
+    filter: ({password}) => signupSchema.safeParse(password).success,
+    target: signupQuery.start
+})
 
 sample({
     clock: passwordChanged,
     target: $password
 })
 sample({
-    clock: submitTriggered,
-    source: {email: $email,password: $password},
-    filter: ({password}) => loginSchema.safeParse(password).success,
-    target: signupQuery.start
-})
-
-sample({
     clock: signupQuery.finished.success,
-    fn: ({result}) => result.access_token,
-    target: setTokenTriggered
+    fn: ({result}) => ({
+        user: result.user,
+        token: result.access_token,
+        isAuthorized: true
+    }),
+    target: spread({
+        targets: {
+            user: setSessionUserTriggered,
+            token: setTokenTriggered,
+            isAuthorized: setAuthorized
+        }
+    })
 })

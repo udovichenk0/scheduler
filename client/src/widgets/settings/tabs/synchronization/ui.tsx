@@ -1,6 +1,8 @@
 import { useUnit } from "effector-react/effector-react.mjs"
 import { useEffect } from "react"
 import { ByEmailForm, Signin, Signup } from "@/features/authentication"
+import { Logout } from "@/features/authentication/logout"
+import { $isAuthorized } from "@/entities/session/session.model"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { MailSvg } from "../assets"
 import { $formToShow, Form, resetFormTriggered, setFormTriggered } from "./sync.modal"
@@ -8,7 +10,7 @@ import { $formToShow, Form, resetFormTriggered, setFormTriggered } from "./sync.
 
 
 export const SynchronizationTab = () => {
-    const formToShow = useUnit($formToShow)
+    const [formToShow, isAuthorized] = useUnit([$formToShow, $isAuthorized])
     useEffect(() => {
         return () => {
             resetFormTriggered()
@@ -21,6 +23,7 @@ export const SynchronizationTab = () => {
                 {formToShow === Form.email && <ByEmailForm showEmailForm={() => setFormTriggered(Form.options)}/>}
                 {formToShow === Form.login && <Signin showEmailForm={() => setFormTriggered(Form.email)}/>}
                 {formToShow === Form.register && <Signup showEmailForm={() => setFormTriggered(Form.email)}/>}
+                {isAuthorized && <Logout/>}
             </div>
         </div>
     )

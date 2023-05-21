@@ -1,5 +1,8 @@
 import { createEvent, createStore, sample } from "effector";
 import { resetEmailTriggered } from "@/features/authentication/by-email";
+import { signinQuery } from "@/shared/api/auth/signin";
+import { signupQuery } from "@/shared/api/auth/signup";
+import { logoutQuery } from "@/shared/api/logout";
 import { getUserQuery } from "@/shared/api/user";
 
 
@@ -7,7 +10,8 @@ export enum Form {
     email,
     login,
     register,
-    options
+    options,
+    logout
 }
 export const setFormTriggered = createEvent<Form>()
 export const resetFormTriggered = createEvent()
@@ -20,18 +24,36 @@ sample({
     target: $formToShow
 })
 
+// if user entered email that does not exist, show register form
 sample({
     clock: getUserQuery.finished.success,
     filter: ({result}) => !result.id,
     fn: () => Form.register,
     target: $formToShow
 })
+
+//otherwise show login form
 sample({
     clock: getUserQuery.finished.success,
     filter: ({result}) => Boolean(result.id),
     fn: () => Form.login,
     target: $formToShow
 })
+
+// set email form after successful logout
+sample({
+    clock: logoutQuery.finished.success,
+    fiilter: Boolean,
+    fn: () => Form.email,
+    target: $formToShow
+})
+// set logout form after being authorized
+sample({
+    clock: [signinQuery.finished.success, signupQuery.finished.success],
+    fn: () => Form.logout,
+    target: $formToShow
+})
+
 
 // reset form to options
 sample({
