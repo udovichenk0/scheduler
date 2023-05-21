@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UsePipes, Session } from '@nestjs/common';
+import { Body, Controller, Post, Req, UsePipes, Session, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto, AuthDto } from './dto/auth.dto';
 import { Request } from 'express';
@@ -26,8 +26,9 @@ export class AuthController {
     return AuthDto.create(data);
   }
   @Post('logout')
-  async Logout(@Session() session: Record<string, any>) {
-    session['refresh_token'] = null;
-    return;
+  @HttpCode(200)
+  async logout(@Req() req: Request) {
+    req.session['refresh_token'] = null;
+    return { message: 'The user session has ended' };
   }
 }
