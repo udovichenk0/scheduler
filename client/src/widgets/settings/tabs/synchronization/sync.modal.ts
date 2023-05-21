@@ -1,8 +1,6 @@
 import { createEvent, createStore, sample } from "effector";
 import { resetEmailTriggered } from "@/features/authentication/by-email";
-import { signinQuery } from "@/shared/api/auth/signin";
-import { signupQuery } from "@/shared/api/auth/signup";
-import { logoutQuery } from "@/shared/api/logout";
+import { logoutQuery, signinQuery, signupQuery } from "@/shared/api/auth";
 import { getUserQuery } from "@/shared/api/user";
 
 

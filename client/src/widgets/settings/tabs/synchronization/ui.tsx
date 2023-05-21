@@ -18,12 +18,11 @@ export const SynchronizationTab = () => {
     return (
         <div className="flex flex-col items-center">
             <div className="w-[391px]">
-                {/* {formToShow === Form.options && <LoginOptions onClick={() => setFormTriggered(Form.email)}/>}
+                {formToShow === Form.options && <LoginOptions onClick={() => setFormTriggered(Form.email)}/>}
                 {formToShow === Form.email && <ByEmailForm showEmailForm={() => setFormTriggered(Form.options)}/>}
                 {formToShow === Form.login && <Signin showEmailForm={() => setFormTriggered(Form.email)}/>}
                 {formToShow === Form.register && <Signup showEmailForm={() => setFormTriggered(Form.email)}/>}
-                {formToShow === Form.logout && <Logout/>} */}
-                <Logout/>
+                {formToShow === Form.logout && <Logout/>}
             </div>
         </div>
     )

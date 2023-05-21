@@ -5,10 +5,9 @@ const logoutFx = createEffect(async () => {
     const data = await fetch("http://localhost:3000/auth/logout", {
         method: 'POST',
         credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json;charset=utf-8'
-        },
     })
+    const res = await data.json()
+    return res
 })
 
 export const logoutQuery = createQuery({
