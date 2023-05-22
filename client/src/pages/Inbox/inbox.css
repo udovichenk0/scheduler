@@ -1,0 +1,3 @@
+#checkbox:checked ~ #check {
+    display: block;
+}
