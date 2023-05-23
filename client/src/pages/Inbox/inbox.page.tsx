@@ -1,23 +1,29 @@
 import { useUnit } from "effector-react"
-import { Fragment, MutableRefObject, useRef, useState, MouseEvent, RefObject } from "react"
+import { Fragment, useRef, MouseEvent, RefObject } from "react"
 import { AddSvg } from "./assets/add.svg"
 import { DoneSvg } from "./assets/done.svg"
 import { DownloadSvg } from "./assets/inbox.svg"
 import './inbox.css'
-import { $tasks, Task, getTasksFx, toggleDoneTask } from "./inbox.model"
+import { 
+    doneTasktoggled, 
+    expandedTask,
+} from "./inbox.model"
 
-getTasksFx()
+expandedTask.getTasks()
+
 const onClickOutside = (e:MouseEvent, ref:RefObject<HTMLDivElement>, action: () => void) => {
     if(!(ref.current && ref.current.contains(e.target as Node))){
+        expandedTask.saveActiveTaskTriggered()
         action()
     }
 }
 const Inbox = () => {
-    const [activeTask, setActiveTask] = useState<number | null>(null)
-    const data = useUnit($tasks) 
+    const {$activeTaskId, setActiveTriggered, resetActiveTriggered} = expandedTask
+    const activeTask = useUnit($activeTaskId)
+    const data = useUnit(expandedTask.$tasks) 
     const ref = useRef<HTMLDivElement>(null)
     return (
-        <div onClick={(e) => onClickOutside(e, ref, () => setActiveTask(null))} className="px-5">
+        <div onClick={(e) => onClickOutside(e, ref, () => resetActiveTriggered())} className="px-5">
             <div className="flex gap-4 items-center">
                 <DownloadSvg/>
                 <h1 className="text-2xl">Inbox</h1>
@@ -27,13 +33,13 @@ const Inbox = () => {
                 return (
                     <Fragment key={id} >
                         {item.id === activeTask ? 
-                        <Window focusRef={ref} item={item} onChangeCheckbox={() => toggleDoneTask({id:item.id, done: !item.done})}/>
-                        : <CheckBox onDoubleClick={() => setActiveTask(item.id)} title={item.title} done={item.done} 
-                        onChange={() => toggleDoneTask({id:item.id, done: !item.done})}/>    
-                    }
+                        <Window focusRef={ref}/>
+                        : <CheckBox onDoubleClick={() => setActiveTriggered(item.id)} title={item.title} done={item.done} 
+                        onChange={() => doneTasktoggled({id:item.id, done: !item.done})}/>}
                     </Fragment>
                 )
             })}
+            {/* <Window focusRef={ref}/> */}
             </div>
                 <CreateTask/>  
         </div>  
@@ -48,18 +54,22 @@ function CreateTask(){
     )
 }
 
-function Window({focusRef, item, onChangeCheckbox}: {focusRef:RefObject<HTMLDivElement>, item: Task, onChangeCheckbox: () => void}){
-    const [inp, setInp] = useState(item.description)
+function Window({focusRef}: {focusRef:RefObject<HTMLDivElement>}){
+    const {$title, $note, $done, titleChanged, noteChanged, checkToggle} = expandedTask
+    const [title, note, done] = useUnit([$title, $note, $done])
     return (
         <div ref={focusRef} className="w-full bg-[#1c283e] rounded-[5px] text-sm">
            <div className="flex px-2 py-2 gap-2">
                 <div className="relative flex">
-                    <input onChange={() => onChangeCheckbox()} checked={item.done} type="checkbox" id="checkbox" className="appearance-none w-5 h-5 border-[3px] border-grey rounded-[2px]"/>
+                    <input onChange={() => checkToggle(!done)} checked={done} type="checkbox" id="checkbox" className="appearance-none w-5 h-5 border-[3px] border-grey rounded-[2px]"/>
                     <span id="check" className="pointer-events-none absolute left-[3px] top-[2px] hidden"><DoneSvg/></span>
                 </div>
-                <div className="flex flex-col">
-                    <label htmlFor="default-checkbox" className="text-sm font-medium text-gray-900 dark:text-gray-300">{item.title}</label>
-                    <input className="bg-transparent text-grey outline-none" placeholder={item.description} value={inp} onChange={(e) => setInp(e.target.value)}/>
+                <div className="flex flex-col w-full">
+                    <input 
+                    onChange={(e) => titleChanged(e.target.value)} 
+                    value={title} placeholder={title ? '' : 'New Task'} 
+                    className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-gray-300"/>
+                    <input className="w-full bg-transparent text-grey outline-none" placeholder={note ? '' : 'Note'} value={note} onChange={(e) => noteChanged(e.target.value)}/>
                 </div>
             </div>
         </div>
