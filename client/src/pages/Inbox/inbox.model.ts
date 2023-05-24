@@ -1,5 +1,5 @@
 import { Store, createEvent, createStore, sample, Effect, combine, createEffect } from "effector";
-import { debug, spread } from "patronum";
+import { and, debug, or, spread } from "patronum";
 export type Task = {
     id: number,
     title: string,
@@ -10,59 +10,19 @@ export type Task = {
 
 export const getTasksFx = createEffect(async () => {
     return [
-        {id: 1, done: false, title: "make something", note: "description 1", date: false},
-        {id: 2, done: false, title: "make anything", note: "description 2", date: true},
-        {id: 3, done: true, title: "done task", note: "description 3", date: true},
-        {id: 4, done: false, title: "go to there", note: "description 4", date: true},
+        {id: 0, done: false, title: "make something", note: "description 1", date: true},
+        {id: 1, done: false, title: "make anything", note: "description 2", date: true},
+        {id: 2, done: true, title: "done task", note: "description 3", date: true},
+        {id: 3, done: false, title: "go to there", note: "description 4", date: true},
     ]
 })
 
-
-export const doneTasktoggled = createEvent<{id: number, done: boolean}>()
-export const saveChangedTriggered = createEvent()
-export const doneToggled = createEvent<{id:number, done:boolean}>()
-
-export const checkToggle = createEvent<boolean>()
-export const titleChanged = createEvent<string>()
-export const noteChanged = createEvent<string>()
-
-export const saveActiveTaskTriggered = createEvent()
-
-export const setActiveTriggered = createEvent<number>()
-export const resetActiveTriggered = createEvent()
-
-// export const $title = createStore('')
-// export const $note = createStore('')
-// export const $done = createStore(false)
-
-
-
-
-// export const $mainTask = combine($title, $note, $done, (title, note, done) => ({title, note, done}))
-
-// export const $activeTaskId = createStore<number | null>(null)
-// .reset(resetActiveTriggered)
-// .on(setActiveTriggered, (_, payload) => payload)
-
-const $tasksKv = createStore<Record<number, Task>>({})
-sample({
-    clock: getTasksFx.doneData,
-    fn: (data) => data.reduce((kv, task) => task.date && ({...kv, [task.id]: task}),{}),
-    target: $tasksKv
+const createTaskFx = createEffect(async ({done = false, title, note = '', date = true}:{done: boolean, title: string, note: string,date?: boolean}) => {
+    return {id: 4, done, title, note, date};
 })
 
-// sample({
-//     clock: titleChanged,
-//     target: $title
-// })
-// sample({
-//     clock: checkToggle,
-//     target: $done
-// })
-// sample({
-//     clock: noteChanged,
-//     target: $note
-// })
+// make this done-toggle feature, because it does not relate to the window and after click it should make a request
+export const doneTasktoggled = createEvent<{id: number, done: boolean}>()
 
 type ExcludeId = Pick<Task, Exclude<keyof Task, 'id'>>
 
@@ -81,61 +41,42 @@ type Params = {
     meta: ExcludeId,
     id: number
 }
-// sample({
-//     clock: saveActiveTaskTriggered,
-//     source: {kv: $tasksKv, meta: $mainTask, id: $activeTaskId},
-//     filter: (params: ParamsOptions): params is Params => Boolean(params.id),
-//     fn: ({kv, meta, id}) => ({...kv, [id]: {...kv[id], ...meta}}),
-//     target: $tasksKv
-// })
-
-//! sdfhere
-// sample({
-//     clock: setActiveTriggered,
-//     source: $tasksKv,
-//     fn: (kv, id) => ({...kv[id]}),
-//     target: spread({
-//         targets: {
-//             title: $title,
-//             note: $note,
-//             done: $done
-//         }
-//     })
-// })
-
-
-sample({
-    clock: doneTasktoggled,
-    source: $tasksKv,
-    filter: (kv, {id}) => id in kv,
-    fn: (kv, {id, done}) => ({...kv, [id]: {...kv[id], done}}),
-    target: $tasksKv
+//entity
+export const $tasksKv = createStore<Record<number, Task>>({})
+export const $tasks = combine($tasksKv, (kv) => {
+    return Object.keys(kv).map(id => kv[+id])
 })
 
-
-export const expandedTaskFactory = ({getTasksFx}:{getTasksFx: Effect<void,Task[]>}) => {
+sample({
+    clock: getTasksFx.doneData,
+    fn: (data) => data.reduce((kv, task) => task.date && ({...kv, [task.id]: task}),{}),
+    target: $tasksKv
+})
+//widget model
+export const expandedTaskFactory = ({tasks}:{tasks: Store<Record<number, Task>>}) => {
     
     const checkToggle = createEvent<boolean>()
     const titleChanged = createEvent<string>()
     const noteChanged = createEvent<string>()
-    const saveActiveTaskTriggered = createEvent()
-    const saveChangedTriggered = createEvent()
-    const setActiveTriggered = createEvent<number>()
-    const resetActiveTriggered = createEvent()
+
+    const createTask = createEvent()
+    const expandTaskTriggered = createEvent<number>()
     
-    const getTasks = createEvent()
+    const closeExpandedTask = createEvent()
 
     const $activeTaskId = createStore<number | null>(null)
-    .reset(resetActiveTriggered)
+    const $activeNewTask = createStore<boolean>(false)
     const $title = createStore('')
     const $note = createStore('')
     const $done = createStore(false)
-    const $tasksKv = createStore<Record<number, Task>>({})
-    const $tasks = combine($tasksKv, (kv) => {
-        return Object.keys(kv).map(id => kv[+id])
-    })
-    
+
     const $mainTask = combine($title, $note, $done, (title, note, done) => ({title, note, done}))
+    sample({
+        clock: createTask,
+        source: $activeNewTask,
+        fn: (isOpened) => !isOpened,
+        target: $activeNewTask
+    })
     sample({
         clock: titleChanged,
         target: $title
@@ -149,8 +90,8 @@ export const expandedTaskFactory = ({getTasksFx}:{getTasksFx: Effect<void,Task[]
         target: $note
     })
     sample({
-        clock: setActiveTriggered,
-        source: $tasksKv,
+        clock: expandTaskTriggered,
+        source: tasks,
         fn: (kv, id) => ({...kv[id]}),
         target: spread({
             targets: {
@@ -161,43 +102,60 @@ export const expandedTaskFactory = ({getTasksFx}:{getTasksFx: Effect<void,Task[]
         })
     })
     sample({
-        clock: saveActiveTaskTriggered,
-        source: {kv: $tasksKv, meta: $mainTask, id: $activeTaskId},
+        clock: closeExpandedTask,
+        source: {kv: tasks, meta: $mainTask, id: $activeTaskId},
         filter: (params: ParamsOptions): params is Params => Boolean(params.id),
         fn: ({kv, meta, id}) => ({...kv, [id]: {...kv[id], ...meta}}),
-        target: $tasksKv
+        target: tasks
     })
     sample({
-        clock: setActiveTriggered,
+        clock: closeExpandedTask,
+        source: $mainTask,
+        filter: and($activeNewTask),
+        // fn: (d) => console.log(d)
+        target: createTaskFx
+        // fn: ({kv}) => ({...kv, [postCreatedTask.id]: {...postCreatedTask}}),
+        // target: tasks
+    })
+    sample({
+        clock: createTaskFx.doneData,
+        source: tasks,
+        fn: (kv, task) => ({...kv, [task.id]: {...task}}),
+        target: tasks
+    })
+
+    sample({
+        clock: closeExpandedTask,
+        source: $activeTaskId,
+        filter: or($activeTaskId, $activeNewTask),
+        target: [$activeTaskId.reinit, $title.reinit, $note.reinit, $done.reinit, $activeNewTask.reinit, $activeNewTask.reinit]
+    })
+
+    sample({
+        clock: doneTasktoggled,
+        source: tasks,
+        filter: (kv, {id}) => id in kv,
+        fn: (kv, {id, done}) => ({...kv, [id]: {...kv[id], done}}),
+        target: tasks
+    })
+    sample({
+        clock: expandTaskTriggered,
         target: $activeTaskId
-    })
-    sample({
-        clock: getTasksFx.doneData,
-        fn: (data) => data.reduce((kv, task) => task.date && ({...kv, [task.id]: task}),{}),
-        target: $tasksKv
-    })
-    sample({
-        clock: getTasks,
-        target: getTasksFx
     })
     return {
         checkToggle,
         titleChanged,
+        createTask,
         noteChanged,
-        setActiveTriggered,
-        saveChangedTriggered,
-        saveActiveTaskTriggered,
-        resetActiveTriggered,
-        getTasks,
+        closeExpandedTask,
+        setActiveTriggered: expandTaskTriggered,
         $activeTaskId,
+        $activeNewTask,
         $title,
         $note,
-        $tasks,
         $done,
     }
 }
-export const expandedTask = expandedTaskFactory({getTasksFx})
 
-// export const $tasks = combine(expandedTask.$tasksKv, (kv) => {
-//     return Object.keys(kv).map(id => kv[+id])
-// })
+// page model
+export const expandedTask = expandedTaskFactory({tasks: $tasksKv})

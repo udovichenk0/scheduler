@@ -5,25 +5,26 @@ import { DoneSvg } from "./assets/done.svg"
 import { DownloadSvg } from "./assets/inbox.svg"
 import './inbox.css'
 import { 
+    $tasks,
     doneTasktoggled, 
     expandedTask,
+    getTasksFx,
 } from "./inbox.model"
 
-expandedTask.getTasks()
+getTasksFx()
 
-const onClickOutside = (e:MouseEvent, ref:RefObject<HTMLDivElement>, action: () => void) => {
-    if(!(ref.current && ref.current.contains(e.target as Node))){
-        expandedTask.saveActiveTaskTriggered()
-        action()
+const onClickOutside = (e:MouseEvent, ref:RefObject<HTMLDivElement>) => {
+    if(ref.current && !ref.current.contains(e.target as Node)){
+        expandedTask.closeExpandedTask()
     }
 }
 const Inbox = () => {
-    const {$activeTaskId, setActiveTriggered, resetActiveTriggered} = expandedTask
-    const activeTask = useUnit($activeTaskId)
-    const data = useUnit(expandedTask.$tasks) 
+    const {$activeTaskId, setActiveTriggered, createTask, $activeNewTask} = expandedTask
+    const [activeTask, activeNewTask] = useUnit([$activeTaskId, $activeNewTask])
+    const data = useUnit($tasks) 
     const ref = useRef<HTMLDivElement>(null)
     return (
-        <div onClick={(e) => onClickOutside(e, ref, () => resetActiveTriggered())} className="px-5">
+        <div onClick={(e) => onClickOutside(e, ref)} className="px-5">
             <div className="flex gap-4 items-center">
                 <DownloadSvg/>
                 <h1 className="text-2xl">Inbox</h1>
@@ -39,16 +40,16 @@ const Inbox = () => {
                     </Fragment>
                 )
             })}
-            {/* <Window focusRef={ref}/> */}
+            {activeNewTask && <Window focusRef={ref}/>}
             </div>
-                <CreateTask/>  
+                <CreateTask action={() => createTask()}/>  
         </div>  
     )
 }
 
-function CreateTask(){
+function CreateTask({action}:{action: () => void}){
     return (
-        <button className="text-azure text-sm flex items-center gap-2">
+        <button onClick={() => action()} className="text-azure text-sm flex items-center gap-2">
             <AddSvg/> <span>New Task</span>
         </button>
     )
