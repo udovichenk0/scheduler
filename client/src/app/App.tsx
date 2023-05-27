@@ -3,10 +3,11 @@ import { RouterProvider } from 'atomic-router-react';
 import { Suspense } from "react";
 
 import { RoutesView } from "@/pages";
-import { appStarted } from "@/shared/config/init";
+import { getTasksTriggered } from '@/entities/task';
 import { router } from "@/shared/config/router/router";
 
-appStarted()
+getTasksTriggered()
+
 function App() {
   return (
     <div className="text-white bg-main-blue">

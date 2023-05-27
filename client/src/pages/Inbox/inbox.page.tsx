@@ -8,11 +8,9 @@ import './inbox.css'
 import { 
     $tasks,
     createTaskModel,
-    getTasksFx,
     updateTaskModel,
 } from "./inbox.model"
 
-getTasksFx()
 
 const onClickOutside = (e:MouseEvent, ref:RefObject<HTMLDivElement>, activeTask: number | null) => {
     if(ref.current && !ref.current.contains(e.target as Node)){
