@@ -10,7 +10,7 @@ getTasksTriggered()
 
 function App() {
   return (
-    <div className="text-white bg-main-blue">
+    <div className="text-white bg-main-blue h-full">
       <Suspense fallback={false}>
         <RouterProvider router={router}>
           <RoutesView />

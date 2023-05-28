@@ -1,8 +1,8 @@
 import { useUnit } from "effector-react"
 import { Fragment, useRef, MouseEvent, RefObject } from "react"
 import { DetailTask } from "@/widgets/detail-task"
+import { MainLayout } from "@/widgets/layouts/main"
 import { Task } from "@/shared/ui/task"
-import { AddSvg } from "./assets/add.svg"
 import { DownloadSvg } from "./assets/inbox.svg"
 import './inbox.css'
 import { 
@@ -29,36 +29,24 @@ const Inbox = () => {
     const data = useUnit($tasks) 
     const ref = useRef<HTMLDivElement>(null)
     return (
-        <div onClick={(e) => onClickOutside(e, ref, activeTask)} className="px-5">
-            <div className="flex gap-4 items-center">
-                <DownloadSvg/>
-                <h1 className="text-2xl">Inbox</h1>
+        <MainLayout icon={<DownloadSvg/>} title={'Inbox'} action={createTaskTriggered}>
+            <div onClick={(e) => onClickOutside(e, ref, activeTask)} className="px-5">
+                <div>
+                {data.map((item, id) => {
+                    return (
+                        <Fragment key={id} >
+                            {item.id === activeTask ? 
+                            <DetailTask focusRef={ref}/>
+                            : <Task onDoubleClick={() => updateTaskTriggered(item.id)} title={item.title} done={item.done} 
+                            onChange={() => doneTaskToggled(item.id)}/>}
+                        </Fragment>
+                    )
+                })}
+                {activeNewTask && <DetailTask focusRef={ref}/>}
+                </div>
             </div>
-            <div>
-            {data.map((item, id) => {
-                return (
-                    <Fragment key={id} >
-                        {item.id === activeTask ? 
-                        <DetailTask focusRef={ref}/>
-                        : <Task onDoubleClick={() => updateTaskTriggered(item.id)} title={item.title} done={item.done} 
-                        onChange={() => doneTaskToggled(item.id)}/>}
-                    </Fragment>
-                )
-            })}
-            {activeNewTask && <DetailTask focusRef={ref}/>}
-            </div>
-                <CreateTask action={() => createTaskTriggered()}/>  
-        </div>  
+        </MainLayout>
     )
 }
-
-function CreateTask({action}:{action: () => void}){
-    return (
-        <button onClick={() => action()} className="text-azure py-2 px-3 rounded-[5px] hover:bg-[#0e162e] text-sm flex items-center gap-2">
-            <AddSvg/> <span>New Task</span>
-        </button>
-    )
-}
-
 
 export default Inbox

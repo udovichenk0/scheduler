@@ -1,5 +1,5 @@
 import { createStore, fork, allSettled } from 'effector'
-import { test, expect, describe } from 'vitest'
+import { test, expect } from 'vitest'
 import { Task } from '@/shared/api/task'
 import { $done, $note, $title } from '../abstract'
 import { updateTaskFactory } from '.'

@@ -32,7 +32,6 @@
     ],
     "@typescript-eslint/no-require-imports": "error",
     "@typescript-eslint/no-explicit-any": "warn",
-    "import/no-unresolved": "off",
-    "import/no-cycle": "error"
+    "import/no-unresolved": "off"
   }
 }

@@ -1,9 +1,10 @@
 import { Store, createEvent, createStore, sample } from "effector";
 import { spread } from "patronum";
+import { Task } from "@/shared/api/task";
 import { $fileds, $note, $title, $done } from "../abstract";
 import { Params, ParamsOptions } from "../abstract/type";
 
-export const updateTaskFactory = ({tasks}:{tasks: Store<Record<number, any>>}) => {
+export const updateTaskFactory = ({tasks}:{tasks: Store<Record<number, Task>>}) => {
     const updateTaskTriggered = createEvent<number>()
     const taskUpdated = createEvent()
     const doneTaskToggled = createEvent<number>()

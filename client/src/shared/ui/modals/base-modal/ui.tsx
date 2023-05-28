@@ -1,6 +1,7 @@
 import { Event, Store } from 'effector'
 import { useUnit } from "effector-react";
 import { ReactNode } from 'react'
+import { createPortal } from 'react-dom';
 interface ModalProps {
     children: ReactNode,
     modal: {
@@ -14,7 +15,7 @@ export const BaseModal = ({ children, modal }: ModalProps) => {
         return null
     }
     return (
-        <div className='absolute w-full h-screen left-0 top-0 flex items-center justify-center bg-black/40'>
+        createPortal(<div className='absolute w-full text-white h-screen left-0 top-0 flex items-center justify-center bg-black/40'>
             <div className='bg-main-blue drop-shadow-[0_35px_35px_rgba(0,0,0,.56)] border-[1px] w-[610px] border-white/20 rounded-[5px]'>
                 <div className={'flex justify-end m-2'}>
                     <button onClick={() => modal.toggleTriggered()} className={'relative hover:bg-[#182137] w-[22px] h-[22px] rounded-[4px]'}>
@@ -25,6 +26,7 @@ export const BaseModal = ({ children, modal }: ModalProps) => {
                     {children}
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body)
     )
 }

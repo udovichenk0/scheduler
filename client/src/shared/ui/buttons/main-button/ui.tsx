@@ -1,5 +1,4 @@
 import { cva, VariantProps } from "class-variance-authority";
-import clsx from "clsx";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
 const buttonCva = cva('text-white outline-none transition-colors duration-150', {
