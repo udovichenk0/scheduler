@@ -15,16 +15,16 @@ import {
 const onClickOutside = (e:MouseEvent, ref:RefObject<HTMLDivElement>, activeTask: number | null) => {
     if(ref.current && !ref.current.contains(e.target as Node)){
         if(activeTask){
-            updateTaskModel.closeExpandedTask()
+            updateTaskModel.taskUpdated()
         }
         else {
-            createTaskModel.closeTaskTriggered()
+            createTaskModel.taskCreated()
         }
     }
 }
 const Inbox = () => {
     const {$activeNewTask, createTaskTriggered} = createTaskModel
-    const {$activeTaskId, expandTaskTriggered, doneTaskToggled} = updateTaskModel
+    const {$activeTaskId, updateTaskTriggered, doneTaskToggled} = updateTaskModel
     const [activeTask, activeNewTask] = useUnit([$activeTaskId, $activeNewTask])
     const data = useUnit($tasks) 
     const ref = useRef<HTMLDivElement>(null)
@@ -40,7 +40,7 @@ const Inbox = () => {
                     <Fragment key={id} >
                         {item.id === activeTask ? 
                         <DetailTask focusRef={ref}/>
-                        : <Task onDoubleClick={() => expandTaskTriggered(item.id)} title={item.title} done={item.done} 
+                        : <Task onDoubleClick={() => updateTaskTriggered(item.id)} title={item.title} done={item.done} 
                         onChange={() => doneTaskToggled(item.id)}/>}
                     </Fragment>
                 )

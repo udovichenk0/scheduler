@@ -9,7 +9,7 @@ export const createTaskFx = createEffect(async ({done = false, title, note = '',
 
 export const createTaskFactory = ({tasks}:{tasks: Store<Record<number, Task>>}) => {
     const createTaskTriggered = createEvent()
-    const closeTaskTriggered = createEvent()
+    const taskCreated = createEvent()
 
     const $activeNewTask = createStore<boolean>(false)
 
@@ -19,7 +19,7 @@ export const createTaskFactory = ({tasks}:{tasks: Store<Record<number, Task>>}) 
         target: $activeNewTask
     })
     sample({
-        clock: closeTaskTriggered,
+        clock: taskCreated,
         source: $fileds,
         filter: ({title}) => Boolean(title.length),
         target: createTaskFx
@@ -31,12 +31,12 @@ export const createTaskFactory = ({tasks}:{tasks: Store<Record<number, Task>>}) 
         target: tasks
     })
     sample({
-        clock: closeTaskTriggered,
+        clock: taskCreated,
         target: [$activeNewTask.reinit, $title.reinit, $note.reinit, $done.reinit]
     })
     return {
         createTaskTriggered,
-        closeTaskTriggered,
+        taskCreated,
         $activeNewTask
     }
 }

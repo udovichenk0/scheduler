@@ -20,17 +20,17 @@ const updatedTasks = {
 }
 // restore objects after each test
 test('set updated task id', async () => {
-    const { $activeTaskId, expandTaskTriggered } = taskModel
+    const { $activeTaskId, updateTaskTriggered } = taskModel
     const scope = fork({
         values: [
             [$activeTaskId, null]
         ]
     }) 
-    await allSettled(expandTaskTriggered, {scope, params: 2})
+    await allSettled(updateTaskTriggered, {scope, params: 2})
     expect(scope.getState($activeTaskId)).toBe(2)
 })
 test('update task', async () => {
-    const { $activeTaskId, closeExpandedTask, doneTaskToggled } = taskModel
+    const { $activeTaskId, taskUpdated, doneTaskToggled } = taskModel
     const scope = fork({
         values: [
             [$title, 'my title'],
@@ -40,7 +40,7 @@ test('update task', async () => {
             [$kv, tasks]
         ]
     })
-    await allSettled(closeExpandedTask, {scope})
+    await allSettled(taskUpdated, {scope})
     await allSettled(doneTaskToggled, {scope, params: 3})
     expect(scope.getState($kv)).toStrictEqual(updatedTasks)
 })

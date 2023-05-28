@@ -35,7 +35,7 @@ const newKv = {
 
 test('request after closeTaskTriggered event', async () => {
     const mock = vi.fn(({title, note, done}) => ({id: 5, title, note, done, date: true}))
-    const { closeTaskTriggered } = taskModel
+    const { taskCreated } = taskModel
     const scope = fork({
         values: [
             [$title, 'my title'],
@@ -47,7 +47,7 @@ test('request after closeTaskTriggered event', async () => {
             [createTaskFx, mock]
         ]
     })
-    await allSettled(closeTaskTriggered, { scope })
+    await allSettled(taskCreated, { scope })
 
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toBeCalledWith({title: 'my title', note: 'my note' , done: true})
