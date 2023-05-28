@@ -41,7 +41,7 @@ const Inbox = () => {
                         {item.id === activeTask ? 
                         <DetailTask focusRef={ref}/>
                         : <Task onDoubleClick={() => expandTaskTriggered(item.id)} title={item.title} done={item.done} 
-                        onChange={() => doneTaskToggled({id:item.id, done: !item.done})}/>}
+                        onChange={() => doneTaskToggled(item.id)}/>}
                     </Fragment>
                 )
             })}

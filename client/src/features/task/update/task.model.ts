@@ -6,7 +6,7 @@ import { Params, ParamsOptions } from "../abstract/type";
 export const updateTaskFactory = ({tasks}:{tasks: Store<Record<number, any>>}) => {
     const expandTaskTriggered = createEvent<number>()
     const closeExpandedTask = createEvent()
-    const doneTaskToggled = createEvent<{id: number, done: boolean}>()
+    const doneTaskToggled = createEvent<number>()
 
     const $activeTaskId = createStore<number | null>(null)
 
@@ -40,8 +40,8 @@ export const updateTaskFactory = ({tasks}:{tasks: Store<Record<number, any>>}) =
     sample({
         clock: doneTaskToggled,
         source: tasks,
-        filter: (kv, {id}) => id in kv,
-        fn: (kv, {id, done}) => ({...kv, [id]: {...kv[id], done}}),
+        filter: (kv, id) => id in kv,
+        fn: (kv, id) => ({...kv, [id]: {...kv[id], done: !kv[id].done}}),
         target: tasks
     })
     return {

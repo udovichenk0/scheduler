@@ -1,12 +1,13 @@
 import { Store, createEffect, createEvent, createStore, sample } from "effector";
+import { Task } from "@/shared/api/task";
 import { $fileds, $note, $title, $done } from "../abstract";
 
 
-const createTaskFx = createEffect(async ({done = false, title, note = '', date = true}:{done: boolean, title: string, note: string,date?: boolean}) => {
-    return {id: 4, done, title, note, date};
+export const createTaskFx = createEffect(async ({done = false, title, note = '', date = true}:{done: boolean, title: string, note: string,date?: boolean}) => {
+    return {id: 5, done, title, note, date};
 })
 
-export const createTaskFactory = ({tasks}:{tasks: Store<Record<number, any>>}) => {
+export const createTaskFactory = ({tasks}:{tasks: Store<Record<number, Task>>}) => {
     const createTaskTriggered = createEvent()
     const closeTaskTriggered = createEvent()
 
