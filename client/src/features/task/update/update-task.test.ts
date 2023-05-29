@@ -1,6 +1,6 @@
-import { createStore, fork, allSettled } from 'effector'
+import { fork, allSettled, createEvent } from 'effector'
 import { test, expect } from 'vitest'
-import { Task } from '@/shared/api/task'
+import { $tasksKv } from '@/entities/task'
 import { $done, $note, $title } from '../abstract'
 import { updateTaskFactory } from '.'
 const tasks = {
@@ -9,8 +9,9 @@ const tasks = {
     3: {id: 3, done: true, title: "done task", note: "description 3", date: false},
     4: {id: 4, done: false, title: "go to there", note: "description 4", date: true},
 }
-const $kv = createStore<Record<number, Task>>(tasks)
-const taskModel = updateTaskFactory({tasks: $kv})
+
+const closeTaskTriggered = createEvent()
+const taskModel = updateTaskFactory({closeTaskTriggered})
 
 const updatedTasks = {
     1: {id: 1, done: false, title: "make something", note: "description 1", date: true},
@@ -29,18 +30,50 @@ test('set updated task id', async () => {
     await allSettled(updateTaskTriggered, {scope, params: 2})
     expect(scope.getState($activeTaskId)).toBe(2)
 })
-test('update task', async () => {
-    const { $activeTaskId, taskUpdated, doneTaskToggled } = taskModel
+test('should update task', async () => {
+    const { $activeTaskId, doneTaskToggled, updateTaskTriggered } = taskModel
     const scope = fork({
         values: [
             [$title, 'my title'],
             [$note, 'my note'],
-            [$done, true],       
+            [$done, true],   
             [$activeTaskId, 2],
-            [$kv, tasks]
+            [$tasksKv, tasks]
         ]
     })
-    await allSettled(taskUpdated, {scope})
+    await allSettled(closeTaskTriggered, {scope})
     await allSettled(doneTaskToggled, {scope, params: 3})
-    expect(scope.getState($kv)).toStrictEqual(updatedTasks)
+    await allSettled(updateTaskTriggered, {scope, params: 3})
+    expect(scope.getState($tasksKv)).toStrictEqual(updatedTasks)
+    expect(scope.getState($activeTaskId)).toBe(3)
+})
+
+test('should set fields after task is selected', async () => {
+    const { updateTaskTriggered } = taskModel
+    const scope = fork({
+        values: [
+            [$tasksKv, tasks],
+            [$title, ''],
+            [$note, ''],
+            [$done, false],  
+        ]
+    })
+    await allSettled(updateTaskTriggered, {scope, params: 4})
+
+    expect(scope.getState($title)).toBe("go to there")
+    expect(scope.getState($note)).toBe("description 4")
+    expect(scope.getState($done)).toBe(false)
+})
+
+test('should not update task', async () => {
+    const scope = fork({
+        values: [
+            [$title, 'my title'],
+            [$note, 'my note'],
+            [$done, true],   
+            [$tasksKv, tasks]
+        ]
+    })
+    await allSettled(closeTaskTriggered, {scope})
+    expect(scope.getState($tasksKv)).toStrictEqual(tasks)
 })

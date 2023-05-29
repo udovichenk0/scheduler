@@ -1,5 +1,6 @@
-import { Store, createEffect, createEvent, createStore, sample } from "effector";
-import { Task } from "@/shared/api/task";
+import { createEffect, createEvent, createStore, sample, Event } from "effector";
+import { and } from 'patronum';
+import { $tasksKv } from "@/entities/task";
 import { $fileds, $note, $title, $done } from "../abstract";
 
 
@@ -7,17 +8,25 @@ export const createTaskFx = createEffect(async ({done = false, title, note = '',
     return {id: 5, done, title, note, date};
 })
 
-export const createTaskFactory = ({tasks}:{tasks: Store<Record<number, Task>>}) => {
+export const createTaskFactory = ({
+    closeTaskTriggered, 
+}: {
+    closeTaskTriggered: Event<void>,
+}) => {
     const createTaskTriggered = createEvent()
     const taskCreated = createEvent()
-
     const $activeNewTask = createStore<boolean>(false)
-
+    sample({
+        clock: closeTaskTriggered,
+        filter: and($activeNewTask),
+        target: taskCreated
+    })
     sample({
         clock: createTaskTriggered,
         fn: () => true,
         target: $activeNewTask
     })
+
     sample({
         clock: taskCreated,
         source: $fileds,
@@ -26,9 +35,9 @@ export const createTaskFactory = ({tasks}:{tasks: Store<Record<number, Task>>}) 
     })
     sample({
         clock: createTaskFx.doneData,
-        source: tasks,
+        source: $tasksKv,
         fn: (kv, task) => ({...kv, [task.id]: {...task}}),
-        target: tasks
+        target: $tasksKv
     })
     sample({
         clock: taskCreated,
@@ -37,7 +46,7 @@ export const createTaskFactory = ({tasks}:{tasks: Store<Record<number, Task>>}) 
     return {
         createTaskTriggered,
         taskCreated,
-        $activeNewTask
+        $activeNewTask,
     }
 }
 

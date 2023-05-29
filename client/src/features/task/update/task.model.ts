@@ -1,23 +1,29 @@
-import { Store, createEvent, createStore, sample } from "effector";
-import { spread } from "patronum";
-import { Task } from "@/shared/api/task";
+import { createEvent, createStore, sample, Event } from "effector";
+import { and, spread } from "patronum";
+import { $tasksKv } from "@/entities/task";
 import { $fileds, $note, $title, $done } from "../abstract";
 import { Params, ParamsOptions } from "../abstract/type";
 
-export const updateTaskFactory = ({tasks}:{tasks: Store<Record<number, Task>>}) => {
+
+export const updateTaskFactory = ({closeTaskTriggered}:{closeTaskTriggered: Event<void>}) => {
     const updateTaskTriggered = createEvent<number>()
     const taskUpdated = createEvent()
     const doneTaskToggled = createEvent<number>()
-
     const $activeTaskId = createStore<number | null>(null)
 
+    sample({
+        clock: closeTaskTriggered,
+        filter: and($activeTaskId),
+        target: taskUpdated
+    })
     sample({
         clock: updateTaskTriggered,
         target: $activeTaskId
     })
+
     sample({
         clock: updateTaskTriggered,
-        source: tasks,
+        source: $tasksKv,
         fn: (kv, id) => ({...kv[id]}),
         target: spread({
             targets: {
@@ -29,10 +35,10 @@ export const updateTaskFactory = ({tasks}:{tasks: Store<Record<number, Task>>}) 
     })
     sample({
         clock: taskUpdated,
-        source: {kv: tasks, meta: $fileds, id: $activeTaskId},
+        source: {kv: $tasksKv, meta: $fileds, id: $activeTaskId},
         filter: (params: ParamsOptions): params is Params => Boolean(params.id),
         fn: ({kv, meta, id}) => ({...kv, [id]: {...kv[id], ...meta}}),
-        target: tasks
+        target: $tasksKv
     })
     sample({
         clock: taskUpdated,
@@ -40,10 +46,10 @@ export const updateTaskFactory = ({tasks}:{tasks: Store<Record<number, Task>>}) 
     }) 
     sample({
         clock: doneTaskToggled,
-        source: tasks,
+        source: $tasksKv,
         filter: (kv, id) => id in kv,
         fn: (kv, id) => ({...kv, [id]: {...kv[id], done: !kv[id].done}}),
-        target: tasks
+        target: $tasksKv
     })
     return {
         updateTaskTriggered,
