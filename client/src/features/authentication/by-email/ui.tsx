@@ -6,14 +6,24 @@ import { Arrow } from "@/shared/ui/icons/arrow.svg"
 import { Input } from "@/shared/ui/input"
 import { $email, $emailError, emailChanged, submitTriggered } from "./modal"
 
-const onSubmit = (e: FormEvent) => {
+const onSubmit = (e: FormEvent, submit: () => void) => {
     e.preventDefault()
-    submitTriggered()
+    submit()
 }
 
 export const ByEmailForm = ({showEmailForm}:{showEmailForm: () => void}) => {
-    const [email, error] = useUnit([$email, $emailError])
     const ref = useRef<HTMLInputElement>(null)
+    const [
+        email, 
+        error,
+        changeEmail,
+        submit
+    ] = useUnit([
+        $email, 
+        $emailError, 
+        emailChanged, 
+        submitTriggered
+    ])
     useEffect(() => {
         ref.current && ref.current.focus()
     })
@@ -24,9 +34,9 @@ export const ByEmailForm = ({showEmailForm}:{showEmailForm: () => void}) => {
             </span>
             <h2 className="text-lg mb-3 font-medium">Log in by email</h2>
             <p className="text-sm mb-7">Specify the address to log in to your account or register</p>
-            <form className="flex w-full flex-col" onSubmit={(e) => onSubmit(e)}>
+            <form className="flex w-full flex-col" onSubmit={(e) => onSubmit(e, submit)}>
                 <Input 
-                onChange={emailChanged} 
+                onChange={changeEmail} 
                 error={error}
                 focusRef={ref} 
                 value={email} 
@@ -36,7 +46,7 @@ export const ByEmailForm = ({showEmailForm}:{showEmailForm: () => void}) => {
                     {error && <EmailValidationError/>}
                 </div>
                 <span>
-                    <DisableButton action={onSubmit} disabled={!email}/>
+                    <DisableButton disabled={!email}/>
                 </span>
             </form>
         </div>

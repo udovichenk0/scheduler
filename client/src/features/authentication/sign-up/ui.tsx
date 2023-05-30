@@ -6,12 +6,24 @@ import { Arrow, HideEye, EyeSvg } from "@/shared/ui/icons"
 import { Input } from "@/shared/ui/input"
 import { $email } from "../by-email"
 import { $password, $passwordError, passwordChanged, submitTriggered } from "./signup.modal"
-const onSubmit = (e: FormEvent) => {
+const onSubmit = (e: FormEvent, submit: () => void) => {
     e.preventDefault()
-    submitTriggered()
+    submit()
 }
 export const Signup = ({showEmailForm}:{showEmailForm: () => void}) => {
-    const [password, error, email] = useUnit([$password, $passwordError, $email])
+    const [
+        password, 
+        error, 
+        email,
+        changePassword,
+        submit
+    ] = useUnit([
+        $password, 
+        $passwordError, 
+        $email,
+        passwordChanged, 
+        submitTriggered
+    ])
     const [isPasswordShown, togglePasswortView] = useState(false)
     const ref = useRef<HTMLInputElement>(null)
     useEffect(() => {
@@ -24,9 +36,9 @@ export const Signup = ({showEmailForm}:{showEmailForm: () => void}) => {
         </span>
         <h2 className="text-lg mb-3 font-medium">Registration</h2>
         <p className="text-sm mb-7">Creating an account using the address {email}</p>
-        <form className="flex w-full flex-col" onSubmit={(e) => onSubmit(e)}>
+        <form className="flex w-full flex-col" onSubmit={(e) => onSubmit(e, submit)}>
             <Input 
-            onChange={passwordChanged} 
+            onChange={changePassword} 
             error={error} 
             value={password} 
             label="Password" 
@@ -42,7 +54,7 @@ export const Signup = ({showEmailForm}:{showEmailForm: () => void}) => {
                 {error && <LoginValidationError/>}
             </div>
             <span>
-                <DisableButton action={onSubmit} disabled={!password}/>
+                <DisableButton disabled={!password}/>
             </span>
         </form>
     </div>

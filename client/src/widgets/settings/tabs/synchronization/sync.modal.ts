@@ -1,4 +1,5 @@
 import { createEvent, createStore, sample } from "effector";
+import { createGate } from "effector-react";
 import { resetEmailTriggered } from "@/features/authentication/by-email";
 import { logoutQuery, signinQuery, signupQuery } from "@/shared/api/auth";
 import { getUserQuery } from "@/shared/api/user";
@@ -16,6 +17,12 @@ export const resetFormTriggered = createEvent()
 
 export const $formToShow = createStore<Form>(Form.options)
 
+export const gate = createGate()
+
+sample({
+    clock: gate.close,
+    target: resetFormTriggered
+})
 
 sample({
     clock: setFormTriggered,

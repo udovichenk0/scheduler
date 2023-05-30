@@ -1,6 +1,6 @@
 import { combine, createEvent, createStore, sample } from "effector"
 
-export const checkToggle = createEvent<boolean>()
+export const checkboxToggled = createEvent()
 export const titleChanged = createEvent<string>()
 export const noteChanged = createEvent<string>()
 
@@ -15,7 +15,7 @@ sample({
     target: $title
 })
 sample({
-    clock: checkToggle,
+    clock: checkboxToggled,
     source: $done,
     fn: (value) => !value,
     target: $done

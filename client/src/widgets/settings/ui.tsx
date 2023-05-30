@@ -15,11 +15,11 @@ const tabs = [
 const tabClassName = 'flex aria-[pressed=true]:text-white aria-[pressed=true]:fill-white fill-[#76899b] text-[#76899b] aria-[pressed=false]:hover:fill-white/60 aria-[pressed=false]:hover:text-white/60  flex-col gap-3 items-center'
 
 export const Settings = () => {
-	const activeTab = useUnit($activeTab)
+	const [activeTab, selectTab] = useUnit([$activeTab, tabSelected])
 	return (
 		<div>
 			<div className="flex gap-5 border-b-[1px] border-white/10 px-6 pb-4">
-				<Tabs onChange={tabSelected}>
+				<Tabs onChange={selectTab}>
 					{tabs.map(({Icon, title, label}) => 
 						<Tab label={label} aria-pressed={activeTab == label} key={label} className={tabClassName}>
 							<Icon />

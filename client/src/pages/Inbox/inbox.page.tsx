@@ -14,30 +14,43 @@ import {
 
 
 
-const onClickOutside = (e:MouseEvent, ref:RefObject<HTMLDivElement>) => {
+const onClickOutside = (e:MouseEvent, ref:RefObject<HTMLDivElement>, closeTask: () => void) => {
     if(ref.current && !ref.current.contains(e.target as Node)){
-        closeTaskTriggered()
+        closeTask()
     }
 }
 const Inbox = () => {
-    const {$activeNewTask, createTaskTriggered} = createTaskModel
-    const {$activeTaskId, updateTaskTriggered, doneTaskToggled} = updateTaskModel
-    const [activeTask, activeNewTask] = useUnit([$activeTaskId, $activeNewTask])
-    const data = useUnit($tasks) 
+    const [
+        tasks,
+        activeTaskId, 
+        activeNewTask,
+        createTaskTriggered,
+        updateTaskTriggered,
+        doneTaskToggled,
+        closeTask
+    ] = useUnit([
+        $tasks,
+        updateTaskModel.$activeTaskId, 
+        createTaskModel.$activeNewTask,
+        createTaskModel.createTaskTriggered,
+        updateTaskModel.updateTaskTriggered,
+        updateTaskModel.doneTaskToggled,
+        closeTaskTriggered
+    ])
     const ref = useRef<HTMLDivElement>(null)
     return (
         <MainLayout icon={<DownloadSvg/>} 
         title={'Inbox'} 
         action={() => {
-            closeTaskTriggered()
+            closeTask()
             createTaskTriggered()
         }}>
-            <div onClick={(e) => onClickOutside(e, ref)} className="px-5">
+            <div onClick={(e) => onClickOutside(e, ref, closeTask)} className="px-5">
                 <div>
-                    {data.map((item, id) => {
+                    {tasks.map((item, id) => {
                         return (
                             <Fragment key={id} >
-                                {item.id === activeTask ? 
+                                {item.id === activeTaskId ? 
                                 <DetailTask focusRef={ref}/>
                                 : <Task onDoubleClick={() => updateTaskTriggered(item.id)} title={item.title} done={item.done} 
                                 onChange={() => doneTaskToggled(item.id)}/>}
