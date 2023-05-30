@@ -15,4 +15,30 @@ model user {
   email     String  @unique
   hash      String
   verified  Boolean @default(false)
+  task      task[]
 }
+
+model task {
+  id          Int       @default(autoincrement()) @id
+  title       String
+  description String?
+  status      Status    @default(INPROGRESS)
+  start_date  DateTime
+  user        user      @relation(fields: [user_id], references: [id])
+  user_id     Int       @unique
+}
+enum Status {
+  FINISHED
+  CANCELED
+  INPROGRESS
+}
+
+// CREATE TABLE (
+// id INT PRIMARY KEY AUTO_INCREMENT,
+// user_id INT,
+// title VARCHAR NOT NULL,
+// `description` VARCHAR DEFAULT NULL,
+// status enum('finished', 'canceled', 'inProgress'),
+// plannedStartDate DATETIME NULL DEFAULT NULL,
+// FOREIGN KEY (user_id) REFERENCES user (id)
+// )
