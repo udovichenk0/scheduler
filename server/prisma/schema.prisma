@@ -32,13 +32,3 @@ enum Status {
   CANCELED
   INPROGRESS
 }
-
-// CREATE TABLE (
-// id INT PRIMARY KEY AUTO_INCREMENT,
-// user_id INT,
-// title VARCHAR NOT NULL,
-// `description` VARCHAR DEFAULT NULL,
-// status enum('finished', 'canceled', 'inProgress'),
-// plannedStartDate DATETIME NULL DEFAULT NULL,
-// FOREIGN KEY (user_id) REFERENCES user (id)
-// )
