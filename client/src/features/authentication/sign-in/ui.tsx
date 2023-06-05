@@ -2,10 +2,11 @@ import { useUnit } from "effector-react"
 import { FormEvent, useEffect, useRef, useState } from "react"
 import { DisableButton } from "@/shared/ui/buttons/disable-button"
 import { HoverIconButton } from "@/shared/ui/buttons/hover-icon-button"
-import { Arrow, HideEye, EyeSvg } from "@/shared/ui/icons"
+import { Icon } from "@/shared/ui/icon/icon"
 import { Input } from "@/shared/ui/input"
 import { $email } from "../by-email"
 import { $password, $passwordError, passwordChanged, submitTriggered } from "./signin.modal"
+
 const onSubmit = (e: FormEvent, submit: () => void) => {
     e.preventDefault()
     submit()
@@ -32,7 +33,7 @@ export const Signin = ({showEmailForm}:{showEmailForm: () => void}) => {
     return (
         <div className="relative text-center">
         <span className="absolute left-[-20px]">
-            <HoverIconButton icon={<Arrow/>} action={() => showEmailForm()}/>
+            <HoverIconButton icon={<Icon name="common/arrow"/>} action={() => showEmailForm()}/>
         </span>
         <h2 className="text-lg mb-3 font-semibold">Authorization</h2>
         <p className="text-sm mb-7">Login in to your account using the address {email}</p>
@@ -47,7 +48,7 @@ export const Signin = ({showEmailForm}:{showEmailForm: () => void}) => {
             type={isPasswordShown ? 'text' : 'password'}
             icon={
             <div onClick={() => togglePasswortView(prev => !prev)} className="hover:stroke-white stroke-grey cursor-pointer">
-                {isPasswordShown ? <HideEye/> : <EyeSvg/>}
+                {isPasswordShown ? <Icon name="eye/close"/> : <Icon name="eye/open"/>}
             </div>
             }/>
             <div className="h-[40px] text-sm text-error mt-1">

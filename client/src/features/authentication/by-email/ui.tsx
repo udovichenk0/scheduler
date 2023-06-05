@@ -2,7 +2,7 @@ import { useUnit } from "effector-react"
 import { FormEvent, useEffect, useRef } from "react"
 import { DisableButton } from "@/shared/ui/buttons/disable-button"
 import { HoverIconButton } from "@/shared/ui/buttons/hover-icon-button"
-import { Arrow } from "@/shared/ui/icons/arrow.svg"
+import { Icon } from "@/shared/ui/icon/icon"
 import { Input } from "@/shared/ui/input"
 import { $email, $emailError, emailChanged, submitTriggered } from "./modal"
 
@@ -30,7 +30,7 @@ export const ByEmailForm = ({showEmailForm}:{showEmailForm: () => void}) => {
     return (
         <div className="relative text-center">
             <span className="absolute left-[-20px]">
-                <HoverIconButton icon={<Arrow/>} action={() => showEmailForm()}/>
+                <HoverIconButton icon={<Icon name="common/arrow"/>} action={() => showEmailForm()}/>
             </span>
             <h2 className="text-lg mb-3 font-medium">Log in by email</h2>
             <p className="text-sm mb-7">Specify the address to log in to your account or register</p>

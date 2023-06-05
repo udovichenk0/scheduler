@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
 /* eslint-disable boundaries/element-types */
 import { Sidebar } from "@/widgets/sidebar/ui"
-import { AddSvg } from "@/shared/ui/icons"
+import { Icon } from "@/shared/ui/icon/icon"
 import { Header } from "./ui/header"
 
 type PropsType = {
@@ -29,7 +29,8 @@ export const MainLayout = ({ children, icon, title, action }: PropsType) => {
 function CreateTask({action}:{action: () => void}){
     return (
         <button onClick={() => action()} className="text-azure py-2 px-3 rounded-[5px] hover:bg-[#0e162e] text-sm flex items-center gap-2">
-            <AddSvg/> <span>New Task</span>
+			<Icon name="common/plus"/>
+			<span>New Task</span>
         </button>
     )
 }

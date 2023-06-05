@@ -2,8 +2,8 @@ import { useUnit } from "effector-react"
 import { Fragment, useRef, MouseEvent, RefObject } from "react"
 import { DetailTask } from "@/widgets/detail-task"
 import { MainLayout } from "@/widgets/layouts/main"
+import { Icon } from "@/shared/ui/icon"
 import { Task } from "@/shared/ui/task"
-import { DownloadSvg } from "./assets/inbox.svg"
 import './inbox.css'
 import { 
     $tasks,
@@ -39,7 +39,7 @@ const Inbox = () => {
     ])
     const ref = useRef<HTMLDivElement>(null)
     return (
-        <MainLayout icon={<DownloadSvg/>} 
+        <MainLayout icon={<Icon name="common/inbox"/>} 
         title={'Inbox'} 
         action={() => {
             closeTask()
