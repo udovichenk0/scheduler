@@ -4,9 +4,16 @@ import { TokenModule } from './domain/token/token.module';
 import { AuthModule } from './domain/auth/auth.module';
 import { UserModule } from './domain/user/user.module';
 import { ConfigModule } from '@nestjs/config';
+import { TaskModule } from './domain/task/task.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), UserModule, AuthModule, TokenModule],
+  imports: [
+    ConfigModule.forRoot(),
+    UserModule,
+    AuthModule,
+    TokenModule,
+    TaskModule,
+  ],
   providers: [PrismaService],
 })
 export class AppModule {}
