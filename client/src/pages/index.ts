@@ -1,4 +1,3 @@
-//@ts-expect-error
 import { createRoutesView } from 'atomic-router-react';
 import { HomeRoute } from './Home'
 import { InboxRoute } from './Inbox';

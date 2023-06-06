@@ -4,7 +4,6 @@ import { DetailTask } from "@/widgets/detail-task"
 import { MainLayout } from "@/widgets/layouts/main"
 import { Icon } from "@/shared/ui/icon"
 import { Task } from "@/shared/ui/task"
-import './inbox.css'
 import { 
     $tasks,
     closeTaskTriggered,
@@ -19,7 +18,7 @@ const onClickOutside = (e:MouseEvent, ref:RefObject<HTMLDivElement>, closeTask: 
         closeTask()
     }
 }
-const Inbox = () => {
+export const Inbox = () => {
     const [
         tasks,
         activeTaskId, 
@@ -39,7 +38,7 @@ const Inbox = () => {
     ])
     const ref = useRef<HTMLDivElement>(null)
     return (
-        <MainLayout icon={<Icon name="common/inbox"/>} 
+        <MainLayout icon={<Icon name="common/inbox" className="fill-grey w-5 h-5"/>} 
         title={'Inbox'} 
         action={() => {
             closeTask()
@@ -63,5 +62,3 @@ const Inbox = () => {
         </MainLayout>
     )
 }
-
-export default Inbox

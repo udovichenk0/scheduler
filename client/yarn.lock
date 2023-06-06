@@ -887,10 +887,10 @@ assertion-error@^1.1.0:
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.1.0.tgz#e60b6b0e8f301bd97e5375215bda406c85118c0b"
   integrity sha512-jgsaNduz+ndvGyFt3uSuWqvy4lCnIJiovtouQN5JZHOKCS2QuhEdbcQHFhVksz2N2U9hXJo8odG7ETyWlEeuDw==
 
-atomic-router-react@^0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/atomic-router-react/-/atomic-router-react-0.8.1.tgz#c3482c277d5b13818e5db07bb6d9b4c24a4407c1"
-  integrity sha512-zD8MrolFnPhQLOvBmDl6scur3fDCPGavC04WMK2b532q4+5NDk9Eo9mPZvJFvq/Z21UDR7jWOo7Gjzl0AVKRFQ==
+atomic-router-react@^0.8.3:
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/atomic-router-react/-/atomic-router-react-0.8.3.tgz#006f646c76674475790d8e41d491e4f6439fdf4a"
+  integrity sha512-Y1SNqHVaPF770VLFEfwfeqnImdvhvs1w+Wm//IHc2yVveerwgLLY42QNOTSljMxP6UKU4MF3iWgCNNkH4RDD5w==
   dependencies:
     clsx "^1.1.1"
 

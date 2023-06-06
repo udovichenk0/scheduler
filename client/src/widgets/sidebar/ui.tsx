@@ -1,3 +1,4 @@
+import { routes } from "@/shared/config/router"
 import { HoverIconButton } from "@/shared/ui/buttons/hover-icon-button"
 import { Button } from "@/shared/ui/buttons/main-button/ui"
 import { Icon } from "@/shared/ui/icon/icon"
@@ -6,7 +7,9 @@ import { BaseModal } from "@/shared/ui/modals/base-modal/ui"
 import { Settings } from "../settings"
 import { modal } from './sidebar.modal'
 
-
+// const buttons = [
+// 	{title: }
+// ]
 
 export const Sidebar = () => {
 	return (
@@ -25,10 +28,10 @@ export const Sidebar = () => {
 						</div>
 					</div>
 					<div className="flex flex-col gap-2">
-						<Button title="Inbox" size={'small'} intent={'base-white'} icon={<Icon name="common/inbox" className="fill-azure h-[20px] w-[20px]"/>} />
+						<Button route={routes.inbox} title="Inbox" size={'small'} intent={'base-white'} icon={<Icon name="common/inbox" className="fill-azure h-[20px] w-[20px]"/>} />
 						<Button title="Today" size={'small'} intent={'base-white'} icon={<Icon name="common/star" className="fill-azure h-[20px] w-[20px]"/>} />
 						<Button title="Upcoming" size={'small'} intent={'base-white'} icon={<Icon name="common/upcoming" className="fill-azure h-[20px] w-[20px]"/>} />
-						<Button title="Calendar" size={'small'} intent={'base-white'} icon={<Icon name="common/calendar" className="fill-azure h-[20px] w-[20px]"/>} />
+						<Button title="Calendar" size={'small'} intent={'base-white'} icon={<Icon name="common/calendar" className="fill-azure h-[20px] w-[20px]"/>} />	
 					</div>
 				</div>
 				<div className="px-2 py-1 h-full">
@@ -37,7 +40,6 @@ export const Sidebar = () => {
 				<div className="px-2 py-1 border-t-[1px] border-white/10 flex">
 					<span>
 						<HoverIconButton icon={<Icon name="common/settings" className="fill-azure h-[20px] w-[20px]"/>} action={() => modal.toggleTriggered()}/>
-						{/* <Button onClick={() => modal.toggleTriggered()} intent={'base-white'} size={'base'} icon={<SettingSvg />} /> */}
 						<BaseModal modal={modal}>
 							<Settings />
 						</BaseModal>

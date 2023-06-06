@@ -1,3 +1,8 @@
+//@ts-ignore
+import { RouteInstance, RouteParams } from 'atomic-router';
+//@ts-ignore
+import { Link } from 'atomic-router-react'
+
 import { cva, VariantProps } from "class-variance-authority";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
@@ -41,13 +46,23 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonCva> {
     icon?: ReactNode,
     title?: string,
+    route?: any // fix
 }
-export const Button = ({ intent, size, icon, title, ...props }: ButtonProps) => {
+export const Button =({ intent, size, icon, title, route, ...props }: ButtonProps) => {
     return (
-        <button className={buttonCva({ size, intent })} {...props}>
-            <div className='flex gap-4 items-center jusfity-center'>
-                {!!icon && icon } {title}
-            </div>
-        </button>
+        <>
+            {route?
+            <Link to={route} className={buttonCva({ size, intent })}>
+                <div className='flex gap-4 items-center jusfity-center'>
+                    {!!icon && icon } {title}
+                </div>
+            </Link>
+            : <button className={buttonCva({ size, intent })} {...props}>
+                <div className='flex gap-4 items-center jusfity-center'>
+                    {!!icon && icon } {title}
+                </div>
+            </button>
+            }
+        </>
     )
 }

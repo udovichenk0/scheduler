@@ -1,7 +1,5 @@
-import { lazy } from 'react';
 import { routes } from '@/shared/config/router';
-
-const Inbox = lazy(() => import('./inbox.page'))
+import { Inbox } from './inbox.page';
 
 export const InboxRoute = {
     view: Inbox,
