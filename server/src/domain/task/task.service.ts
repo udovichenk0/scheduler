@@ -13,4 +13,10 @@ export class TaskService {
     });
     return tasks;
   }
+  createOne(data: Prisma.taskCreateInput) {
+    const task = this.prismaService.task.create({
+      data,
+    });
+    return task;
+  }
 }

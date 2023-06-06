@@ -15,7 +15,19 @@ export class TaskController {
     return tasks;
   }
   @Post('create-task')
-  async createTask(@Req() req: Request){
+  async createTask(@Req() req: Request) {
     const user = req.session['user'] as UserDto;
+    const task = await this.taskService.createOne({
+      title: 'sdf',
+      description: 'asdiofjsd',
+      status: 'FINISHED',
+      start_date: new Date(),
+      user: {
+        connect: {
+          id: user.id,
+        },
+      },
+    });
+    return task;
   }
 }
