@@ -1,6 +1,6 @@
 import { fork, allSettled } from 'effector'
 import { expect, test } from 'vitest'
-import { $done, $note, $title, checkboxToggled, noteChanged, titleChanged } from '.'
+import { $done, $note, $title, checkboxToggled, noteChanged, titleChanged } from './abstract.model'
 test('should change the $title', async () => {
     const scope = fork({
         values: [[$title, '']]})
@@ -23,9 +23,6 @@ test('should change the $note', async () => {
 test('should toggle the $done', async () => {
     const scope = fork({
         values: [[$done, false]]})
-    await allSettled(checkboxToggled, {
-        scope, 
-        params: true
-    })
+    await allSettled(checkboxToggled, {scope})
     expect(scope.getState($done)).toBe(true)
 })

@@ -1,7 +1,8 @@
 import { useUnit } from "effector-react"
 import { Fragment, useRef, MouseEvent, RefObject } from "react"
-import { DetailTask } from "@/widgets/detail-task"
 import { MainLayout } from "@/widgets/layouts/main"
+import { CreateTaskForm } from "@/features/task/create"
+import { UpdateTaskForm } from "@/features/task/update"
 import { Icon } from "@/shared/ui/icon"
 import { Task } from "@/shared/ui/task"
 import { 
@@ -50,13 +51,13 @@ export const Inbox = () => {
                         return (
                             <Fragment key={id} >
                                 {item.id === activeTaskId ? 
-                                <DetailTask focusRef={ref}/>
+                                    <UpdateTaskForm updateTaskModel={updateTaskModel} focusRef={ref}/>
                                 : <Task onDoubleClick={() => updateTaskTriggered(item.id)} title={item.title} done={item.done} 
                                 onChange={() => doneTaskToggled(item.id)}/>}
                             </Fragment>
                         )
                     })}
-                    {activeNewTask && <DetailTask focusRef={ref}/>}
+                    {activeNewTask && <CreateTaskForm createTaskModel={createTaskModel} focusRef={ref}/>}
                 </div>
             </div>
         </MainLayout>

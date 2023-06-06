@@ -1,7 +1,6 @@
 import { fork, allSettled, createEvent } from 'effector'
 import { test, expect } from 'vitest'
 import { $tasksKv } from '@/entities/task'
-import { $done, $note, $title } from '../abstract'
 import { updateTaskFactory } from '.'
 const tasks = {
     1: {id: 1, done: false, title: "make something", note: "description 1", date: true},
@@ -31,7 +30,7 @@ test('set updated task id', async () => {
     expect(scope.getState($activeTaskId)).toBe(2)
 })
 test('should update task', async () => {
-    const { $activeTaskId, doneTaskToggled, updateTaskTriggered } = taskModel
+    const { $activeTaskId, doneTaskToggled, updateTaskTriggered, $done, $note, $title } = taskModel
     const scope = fork({
         values: [
             [$title, 'my title'],
@@ -49,7 +48,7 @@ test('should update task', async () => {
 })
 
 test('should set fields after task is selected', async () => {
-    const { updateTaskTriggered } = taskModel
+    const { updateTaskTriggered, $done, $note, $title } = taskModel
     const scope = fork({
         values: [
             [$tasksKv, tasks],
@@ -66,6 +65,7 @@ test('should set fields after task is selected', async () => {
 })
 
 test('should not update task', async () => {
+    const { $done, $note, $title } = taskModel
     const scope = fork({
         values: [
             [$title, 'my title'],

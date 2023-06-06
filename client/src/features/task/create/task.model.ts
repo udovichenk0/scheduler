@@ -1,7 +1,7 @@
 import { createEffect, createEvent, createStore, sample, Event } from "effector";
 import { and } from 'patronum';
 import { $tasksKv } from "@/entities/task";
-import { $fileds, $note, $title, $done } from "../abstract";
+import { abstractTaskFactory } from "../abstract/abstract.model";
 
 
 export const createTaskFx = createEffect(async ({done = false, title, note = '', date = true}:{done: boolean, title: string, note: string,date?: boolean}) => {
@@ -16,6 +16,9 @@ export const createTaskFactory = ({
     const createTaskTriggered = createEvent()
     const taskCreated = createEvent()
     const $activeNewTask = createStore<boolean>(false)
+
+    const abstract = abstractTaskFactory()
+    const { $fileds, $title, $note, $done } = abstract
     sample({
         clock: closeTaskTriggered,
         filter: and($activeNewTask),
@@ -43,11 +46,13 @@ export const createTaskFactory = ({
         clock: taskCreated,
         target: [$activeNewTask.reinit, $title.reinit, $note.reinit, $done.reinit]
     })
+
     return {
         createTaskTriggered,
         taskCreated,
         $activeNewTask,
+        ...abstract
     }
 }
 
-
+export type CreateTaskType = ReturnType<typeof createTaskFactory>

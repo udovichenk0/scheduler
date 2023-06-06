@@ -1,7 +1,7 @@
 import { createEvent, createStore, sample, Event } from "effector";
 import { and, spread } from "patronum";
 import { $tasksKv } from "@/entities/task";
-import { $fileds, $note, $title, $done } from "../abstract";
+import { abstractTaskFactory } from "../abstract/abstract.model";
 import { Params, ParamsOptions } from "../abstract/type";
 
 
@@ -10,6 +10,9 @@ export const updateTaskFactory = ({closeTaskTriggered}:{closeTaskTriggered: Even
     const taskUpdated = createEvent()
     const doneTaskToggled = createEvent<number>()
     const $activeTaskId = createStore<number | null>(null)
+
+    const abstract = abstractTaskFactory()
+    const { $fileds, $title, $note, $done } = abstract
 
     sample({
         clock: closeTaskTriggered,
@@ -55,6 +58,9 @@ export const updateTaskFactory = ({closeTaskTriggered}:{closeTaskTriggered: Even
         updateTaskTriggered,
         taskUpdated,
         $activeTaskId,
-        doneTaskToggled
+        doneTaskToggled,
+        ...abstract
     }
 }
+
+export type UpdateTaskType = ReturnType<typeof updateTaskFactory>

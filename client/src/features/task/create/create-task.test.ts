@@ -1,6 +1,5 @@
 import { allSettled, createEvent, fork } from 'effector';
 import { test, expect, vi } from 'vitest';
-import { $title, $note, $done } from '@/features/task/abstract'
 import { $tasksKv } from '@/entities/task';
 import { createTaskFactory, createTaskFx } from '.';
 
@@ -35,7 +34,7 @@ const newKv = {
 
 test('request after closeTaskTriggered event', async () => {
     const mock = vi.fn(({title, note, done}) => ({id: 5, title, note, done, date: true}))
-    const { $activeNewTask } = taskModel
+    const { $title, $note, $done, $activeNewTask } = taskModel
     const scope = fork({
         values: [
             [$title, 'my title'],

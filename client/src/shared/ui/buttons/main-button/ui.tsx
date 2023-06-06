@@ -1,6 +1,4 @@
-//@ts-ignore
 import { RouteInstance, RouteParams } from 'atomic-router';
-//@ts-ignore
 import { Link } from 'atomic-router-react'
 
 import { cva, VariantProps } from "class-variance-authority";
@@ -46,9 +44,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonCva> {
     icon?: ReactNode,
     title?: string,
-    route?: any // fix
+    route?: RouteInstance<RouteParams>
 }
-export const Button =({ intent, size, icon, title, route, ...props }: ButtonProps) => {
+export const Button = ({ intent, size, icon, title, route, ...props }: ButtonProps) => {
     return (
         <>
             {route?
