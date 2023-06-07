@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { RefreshService } from './refreshToken/refresh.service';
-import { sign } from 'jsonwebtoken';
 import { UserDto } from '../user/dto/user.dto';
 import { JWTService } from './jwtToken/jwt.service';
 import {
@@ -45,7 +44,7 @@ export class TokenService {
     );
     return {
       access_token,
-      refreshToken,
+      refresh_token,
     };
   }
 }
