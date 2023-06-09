@@ -1,7 +1,7 @@
 import { createEvent, createStore, sample } from "effector"
 import { spread } from "patronum"
 import { z } from "zod"
-import { setAuthorized, setSessionUserTriggered } from "@/entities/session/session.model"
+import { setSessionUserTriggered } from "@/entities/session/session.model"
 import { signupQuery } from "@/shared/api/auth/signup"
 import { setTokenTriggered } from "@/shared/api/token"
 import { $email } from "../by-email"
@@ -31,13 +31,11 @@ sample({
     fn: ({result}) => ({
         user: result.user,
         token: result.access_token,
-        isAuthorized: true
     }),
     target: spread({
         targets: {
             user: setSessionUserTriggered,
             token: setTokenTriggered,
-            isAuthorized: setAuthorized
         }
     })
 })

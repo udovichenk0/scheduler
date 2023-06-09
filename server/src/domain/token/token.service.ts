@@ -45,6 +45,7 @@ export class TokenService {
     return {
       access_token,
       refresh_token,
+      userData,
     };
   }
 }

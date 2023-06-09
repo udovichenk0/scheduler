@@ -3,6 +3,7 @@ import { createGate } from "effector-react";
 import { resetEmailTriggered } from "@/features/authentication/by-email";
 import { logoutQuery, signinQuery, signupQuery } from "@/shared/api/auth";
 import { getUserQuery } from "@/shared/api/user";
+import { $accessToken, setTokenTriggered } from "@/shared/api/token";
 
 
 export enum Form {
@@ -54,7 +55,7 @@ sample({
 })
 // set logout form after being authorized
 sample({
-    clock: [signinQuery.finished.success, signupQuery.finished.success],
+    clock: [signinQuery.finished.success, signupQuery.finished.success, setTokenTriggered],
     fn: () => Form.logout,
     target: $formToShow
 })
