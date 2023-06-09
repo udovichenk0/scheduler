@@ -6,12 +6,15 @@ import { setTokenTriggered } from "./token.model";
 
 const refreshContract = zodContract(tokenSchema)
 
-const refreshFx = createEffect(async () => {
-    const data = await fetch('http://localhost:3000/auth/refresh')
+export const refreshFx = createEffect(async () => {
+    const data = await fetch('http://localhost:3000/auth/refresh', 
+    {
+      method: 'GET', 
+      credentials: 'include'
+    })
     const res = await data.json()
     return res
 })
-
 export const refreshQuery = createQuery({
     effect: refreshFx,
     contract: refreshContract
