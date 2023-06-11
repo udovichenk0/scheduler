@@ -2,12 +2,9 @@ import { RouterProvider } from 'atomic-router-react';
 import { sample } from 'effector';
 import { RoutesView } from "@/pages";
 import { getTasksTriggered } from '@/entities/task';
-import { getTaskQuery } from '@/shared/api/task';
 import { refreshQuery } from '@/shared/api/token';
 import { appStarted } from '@/shared/config/init';
 import { router } from "@/shared/config/router/router";
-
-getTasksTriggered()
 
 sample({
   clock: appStarted,
@@ -15,7 +12,7 @@ sample({
 })
 sample({
   clock: refreshQuery.finished.success,
-  target: getTaskQuery.start
+  target: getTasksTriggered
 })
 
 function App() {
