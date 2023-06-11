@@ -4,10 +4,10 @@ export const baseQuery = createEffect(async ({
     request, 
     token
 }:{
-    request: Request & {body: Record<string, unknown>}, 
+    request: Request & {body?: Record<string, unknown>}, 
     token: string | null}) => {
         const {method, url, headers, body} = request
-        const response = await fetch(`http://localhost/${url}`,{
+        const response = await fetch(`http://localhost:3000/${url}`,{
             credentials: 'include',
             method,
             headers: {

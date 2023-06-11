@@ -17,8 +17,8 @@ export class JWTService {
   async verifyToken(token: string) {
     try {
       return await verify(token, process.env.JWT_SECRET);
-    } catch (err) {
-      if (err.message == jwtExpiredError) {
+    } catch (err: any) {
+      if (err?.message == jwtExpiredError) {
         throw new UnauthorizedException(jwtExpiredMessage);
       }
       if (err.message == jwtInvalidError) {

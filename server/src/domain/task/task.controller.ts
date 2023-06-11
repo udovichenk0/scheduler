@@ -1,8 +1,18 @@
-import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import { TokenGuard } from '../token/guards/token-guard';
 import { TaskService } from './task.service';
 import { Request } from 'express';
 import { UserDto } from '../user/dto/user.dto';
+import { TaskCredentialDto, TaskDto } from './dto/task.dto';
+import { ZodValidationPipe } from 'nestjs-zod';
 
 @Controller('')
 @UseGuards(TokenGuard)
@@ -15,19 +25,20 @@ export class TaskController {
     return tasks;
   }
   @Post('create-task')
-  async createTask(@Req() req: Request) {
+  @UsePipes(new ZodValidationPipe(TaskCredentialDto))
+  async createTask(
+    @Req() req: Request,
+    @Body() taskCredentials: TaskCredentialDto,
+  ) {
     const user = req.session['user'] as UserDto;
     const task = await this.taskService.createOne({
-      title: 'sdf',
-      description: 'asdiofjsd',
-      status: 'FINISHED',
-      start_date: new Date(),
+      ...taskCredentials,
       user: {
         connect: {
           id: user.id,
         },
       },
     });
-    return task;
+    return TaskDto.create(task);
   }
 }

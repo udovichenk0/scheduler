@@ -27,7 +27,7 @@ export class RefreshService {
   async verifyRefresh(token: string) {
     try {
       return (await verify(token, process.env.JWT_SECRET)) as UserDto;
-    } catch (err) {
+    } catch (err: any) {
       if (err.message == refreshExpiredError) {
         throw new UnauthorizedException(refreshExpiredMessage);
       }

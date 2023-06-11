@@ -8,7 +8,7 @@ import { TaskModule } from './domain/task/task.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     UserModule,
     AuthModule,
     TokenModule,

@@ -10,6 +10,7 @@ import { TokenService } from '../token/token.service';
 import { UserDto } from '../user/dto/user.dto';
 import { passwordNotCorrect, userNotFound } from './constant/authErrorMessages';
 import { compareHash } from 'src/lib/hash-password/compareHash';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {
   constructor(
@@ -50,7 +51,7 @@ export class AuthService {
       },
     });
     if (!user) {
-      throw new NotFoundException(userNotFound(user.id));
+      throw new NotFoundException(userNotFound(credentials.email));
     }
     const compared = await compareHash(user.hash, credentials.password);
     if (!compared) {

@@ -1,25 +1,35 @@
-import { createHeadlessQuery } from "@farfetched/core"
-import { attach, createEffect } from "effector"
+import { Contract, DynamicallySourcedField, createHeadlessQuery } from "@farfetched/core"
+import { attach, createEffect, createEvent, sample } from "effector"
 import { $accessToken, refreshFx, setTokenTriggered } from "@/shared/api/token"
-import { baseQuery } from './base-query'
-import { Request, Response } from './type'
-export const authQuery = (request: Request, response: Response) => {
+import { baseQuery } from "./base-query"
+import { Request } from './type'
+interface Response <Resp>{
+    contract: Contract<unknown, any>,
+    mapData: DynamicallySourcedField<any, Resp, any>
+}
+export const authQuery = <Resp>({
+    request, 
+    response
+}: {
+    request: Request, 
+    response: Response<Resp>
+}) => {
     const queryFx = attach({
         source: $accessToken,
-        mapParams: ({body}, token) => {
+        mapParams: ({body}:{body?: Record<string, unknown>} = {}, token: string | null) => {
             return {
                 token,
                 body
             }
         },
-        effect: createEffect(async ({token, body}:{
+        effect: createEffect(async ({body, token}:{
+            body?: Record<string, unknown>,
             token: string | null,
-            body: Record<string, unknown>
         }) => {
+            console.log('start')
             try {
-              return await baseQuery({request: {...request, body}, token})
+                return await baseQuery({request: {...request, body}, token})
             } catch (error:any) {
-                console.log(error)
               if(error.status == 401){
                   const {access_token} = await refreshFx()
                   if(access_token){
@@ -37,6 +47,6 @@ export const authQuery = (request: Request, response: Response) => {
         contract: response.contract,
         mapData: response.mapData,
     })
-    headlessQuery.__.executeFx(queryFx)
+    headlessQuery.__.executeFx.use(queryFx)
     return headlessQuery
 }

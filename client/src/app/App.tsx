@@ -1,20 +1,23 @@
 import { RouterProvider } from 'atomic-router-react';
 import { sample } from 'effector';
 import { RoutesView } from "@/pages";
-import { setSessionUserTriggered } from '@/entities/session';
 import { getTasksTriggered } from '@/entities/task';
+import { getTaskQuery } from '@/shared/api/task';
 import { refreshQuery } from '@/shared/api/token';
+import { appStarted } from '@/shared/config/init';
 import { router } from "@/shared/config/router/router";
+
 getTasksTriggered()
-refreshQuery.start()
+
 sample({
-  clock: refreshQuery.finished.success,
-  fn: ({result}) => result.user,
-  target: setSessionUserTriggered
+  clock: appStarted,
+  target: [refreshQuery.start]
 })
 sample({
   clock: refreshQuery.finished.success,
+  target: getTaskQuery.start
 })
+
 function App() {
   return (
     <div className="text-white bg-main-blue h-screen">

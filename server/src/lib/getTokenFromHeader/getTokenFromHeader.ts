@@ -1,8 +1,8 @@
 import { Request } from 'express';
 
 export function getTokenFromHeader(req: Request) {
-  const [type, token] = req.headers['authorization'].split(' ');
-  if (type === 'Bearer' && token) {
-    return token;
+  const header = req.headers['authorization']?.split(' ');
+  if (header && header[0] === 'Bearer' && header[1]) {
+    return header[1];
   }
 }
