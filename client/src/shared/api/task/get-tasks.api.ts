@@ -1,16 +1,16 @@
 import { zodContract } from '@farfetched/zod';
 import { authQuery } from '@/shared/lib/auth-query';
-import { TaskDto, taskDtoSchema } from './task.dto';
+import { TaskDto, tasksDtoSchema } from './task.dto';
 
-const taskContract = zodContract(taskDtoSchema)
+const taskContract = zodContract(tasksDtoSchema)
 
-export const getTaskQuery = authQuery<TaskDto>({
+export const getTaskQuery = authQuery<TaskDto[]>({
     request: {
         url: 'get-tasks',
         method: 'GET'
     },
     response: {
         contract: taskContract,
-        mapData: (data: TaskDto) => data
+        mapData: (data) => data
     }
 })
