@@ -1,12 +1,21 @@
 import { Contract, DynamicallySourcedField, createHeadlessQuery } from "@farfetched/core"
-import { attach, createEffect, createEvent, sample } from "effector"
+import { attach, createEffect, sample } from "effector"
 import { $accessToken, refreshFx, setTokenTriggered } from "@/shared/api/token"
 import { baseQuery } from "./base-query"
 import { Request } from './type'
 interface Response <Resp>{
-    contract: Contract<unknown, any>,
-    mapData: DynamicallySourcedField<any, Resp, any>
+    contract: Contract<unknown, Resp>,
+    mapData: DynamicallySourcedField<
+    {
+        result: Resp, 
+        params: unknown
+    }, 
+    {
+        result: Resp, 
+        params: unknown
+    }, unknown>
 }
+
 export const authQuery = <Resp>({
     request, 
     response
@@ -26,7 +35,6 @@ export const authQuery = <Resp>({
             body?: Record<string, unknown>,
             token: string | null,
         }) => {
-            console.log('start')
             try {
                 return await baseQuery({request: {...request, body}, token})
             } catch (error:any) {
@@ -42,6 +50,10 @@ export const authQuery = <Resp>({
               }
             }
       })
+    })
+    sample({
+        clock: queryFx.doneData,
+        fn: (d) => console.log(d)
     })
     const headlessQuery = createHeadlessQuery({
         contract: response.contract,
