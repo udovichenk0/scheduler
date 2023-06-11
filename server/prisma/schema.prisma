@@ -25,7 +25,7 @@ model task {
   status      Status    @default(INPROGRESS)
   start_date  DateTime
   user        user      @relation(fields: [user_id], references: [id])
-  user_id     Int       @unique
+  user_id     Int
 }
 enum Status {
   FINISHED
