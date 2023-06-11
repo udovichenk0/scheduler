@@ -11,9 +11,9 @@ export class TaskCredentialDto extends createZodDto(taskSchemaDto) {}
 const taskDtoSchema = z.object({
   id: z.number(),
   title: z.string(),
-  description: z.string(),
+  description: z.string().nullable(),
   status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
-  start_date: z.string(),
+  start_date: z.date(),
   user_id: z.number(),
 });
 
