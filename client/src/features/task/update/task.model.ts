@@ -1,63 +1,55 @@
-import { createEvent, createStore, sample, Event } from "effector";
-import { and, spread } from "patronum";
+import { createEvent, sample, Event } from "effector";
+import { spread } from "patronum";
 import { $tasksKv } from "@/entities/task";
 import { abstractTaskFactory } from "../abstract/abstract.model";
-import { Params, ParamsOptions } from "../abstract/type";
 
-
-export const updateTaskFactory = ({closeTaskTriggered}:{closeTaskTriggered: Event<void>}) => {
+export const updateTaskFactory = (updateTaskOpened: Event<number>) => {
     const updateTaskTriggered = createEvent<number>()
     const taskUpdated = createEvent()
     const doneTaskToggled = createEvent<number>()
-    const $activeTaskId = createStore<number | null>(null)
 
     const abstract = abstractTaskFactory()
-    const { $fileds, $title, $note, $done } = abstract
-
+    const { $fileds, $isDirty, $title, $description, $status, resetFieldsTriggered } = abstract
     sample({
-        clock: closeTaskTriggered,
-        filter: and($activeTaskId),
-        target: taskUpdated
-    })
-    sample({
-        clock: updateTaskTriggered,
-        target: $activeTaskId
+        clock: taskUpdated,
+        filter: $isDirty,
+        fn: () => console.log('taskupdated triggered')
     })
 
     sample({
-        clock: updateTaskTriggered,
+        clock: updateTaskOpened,
         source: $tasksKv,
         fn: (kv, id) => ({...kv[id]}),
         target: spread({
             targets: {
                 title: $title,
-                note: $note,
-                done: $done
+                status: $status,
+                description: $description
             }
         })
     })
+
+    // sample({
+    //     clock: taskUpdated,
+    //     source: {kv: $tasksKv, meta: $fileds, id: $activeTaskId},
+    //     filter: (params: ParamsOptions): params is Params => Boolean(params.id),
+    //     fn: ({kv, meta, id}) => ({...kv, [id]: {...kv[id], ...meta}}),
+    //     target: $tasksKv
+    // })
     sample({
         clock: taskUpdated,
-        source: {kv: $tasksKv, meta: $fileds, id: $activeTaskId},
-        filter: (params: ParamsOptions): params is Params => Boolean(params.id),
-        fn: ({kv, meta, id}) => ({...kv, [id]: {...kv[id], ...meta}}),
-        target: $tasksKv
-    })
-    sample({
-        clock: taskUpdated,
-        target: [$activeTaskId.reinit, $title.reinit, $note.reinit, $done.reinit]
+        target: resetFieldsTriggered
     }) 
     sample({
         clock: doneTaskToggled,
         source: $tasksKv,
         filter: (kv, id) => id in kv,
-        fn: (kv, id) => ({...kv, [id]: {...kv[id], done: !kv[id].done}}),
+        fn: (kv, id) => ({...kv, [id]: {...kv[id], done: !kv[id].status}}),
         target: $tasksKv
     })
     return {
         updateTaskTriggered,
         taskUpdated,
-        $activeTaskId,
         doneTaskToggled,
         ...abstract
     }

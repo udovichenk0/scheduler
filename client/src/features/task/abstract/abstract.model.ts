@@ -1,62 +1,55 @@
 import { combine, createEvent, createStore, sample } from "effector"
 
-export const checkboxToggled = createEvent()
-export const titleChanged = createEvent<string>()
-export const noteChanged = createEvent<string>()
-
-export const $title = createStore('')
-export const $note = createStore('')
-export const $done = createStore(false)
-
-export const $fileds = combine($title, $note, $done, (title, note, done) => ({title, note, done}))
-
-sample({
-    clock: titleChanged,
-    target: $title
-})
-sample({
-    clock: checkboxToggled,
-    source: $done,
-    fn: (value) => !value,
-    target: $done
-})
-sample({
-    clock: noteChanged,
-    target: $note
-})
 export const abstractTaskFactory = () => {
 
-    const checkboxToggled = createEvent()
+    const statusChanged = createEvent()
     const titleChanged = createEvent<string>()
-    const noteChanged = createEvent<string>()
+    const descriptionChanged = createEvent<string>()
+    const resetFieldsTriggered = createEvent()
+    const dateChanged = createEvent()
 
     const $title = createStore('')
-    const $note = createStore('')
-    const $done = createStore(false)
+    const $description = createStore<string | null>('')
+    const $status = createStore<'FINISHED' | 'CANCELED' | 'INPROGRESS'>('INPROGRESS')
+    const $startDate = createStore<Date>(new Date())
+    const $isDirty = createStore(false)
 
-    const $fileds = combine($title, $note, $done, (title, note, done) => ({title, note, done}))
+    const $fileds = combine($title, $description, $status, $startDate,
+         (title, description, status, date) => ({title, description, status, start_date: date}))
+
+    sample({
+        clock: resetFieldsTriggered,
+        target: [$title.reinit, $description.reinit, $status.reinit, $isDirty.reinit]
+    })
 
     sample({
         clock: titleChanged,
         target: $title
     })
     sample({
-        clock: checkboxToggled,
-        source: $done,
-        fn: (value) => !value,
-        target: $done
+        clock: statusChanged,
+        source: $status,
+        fn: (value) => value == 'FINISHED' ? 'CANCELED' : 'FINISHED',
+        target: $status
     })
     sample({
-        clock: noteChanged,
-        target: $note
+        clock: descriptionChanged,
+        target: $description
+    })
+    sample({
+        clock: [titleChanged, descriptionChanged, statusChanged],
+        fn: () => true,
+        target: $isDirty
     })
     return {
-        checkboxToggled,
+        statusChanged,
         titleChanged,
-        noteChanged,
+        descriptionChanged,
+        resetFieldsTriggered,
         $title,
-        $note,
-        $done,
-        $fileds
+        $description,
+        $status,
+        $fileds,
+        $isDirty
     }
 }

@@ -16,6 +16,8 @@ interface Response <Resp>{
     }, unknown>
 }
 
+
+// change mapParams type into something like Params in generic
 export const authQuery = <Resp>({
     request, 
     response

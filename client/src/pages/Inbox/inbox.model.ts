@@ -1,23 +1,30 @@
-import { combine } from "effector";
-import { createEvent } from "effector/effector.umd";
+import { combine, sample } from "effector";
+import { taskModelFactory } from "@/widgets/expanded-task";
 import { createTaskFactory } from "@/features/task/create";
 import { updateTaskFactory } from "@/features/task/update";
 import { $tasksKv } from "@/entities/task";
-export type Task = {
-    id: number,
-    title: string,
-    done: boolean,
-    note: string,
-    date: boolean
-}
 
 export const $tasks = combine($tasksKv, (kv) => {
     return Object.values(kv)
-    .filter(({date}) => date)
+    .filter(({start_date}) => start_date)
 })
 
+export const taskModel = taskModelFactory()
+export const updateTaskModel = updateTaskFactory(taskModel.updateTaskOpened)
+export const createTaskModel = createTaskFactory()
 
-export const closeTaskTriggered = createEvent()
+sample({
+    clock: taskModel.taskCreated,
+    target: createTaskModel.createTaskTriggered
+})
 
-export const updateTaskModel = updateTaskFactory({closeTaskTriggered})
-export const createTaskModel = createTaskFactory({closeTaskTriggered})
+sample({
+    clock: taskModel.taskUpdated,
+    target: updateTaskModel.taskUpdated
+})
+
+sample({
+    clock: createTaskModel.taskCreated,
+    target: taskModel.reset
+})
+

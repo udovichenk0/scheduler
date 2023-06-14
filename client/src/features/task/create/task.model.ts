@@ -1,56 +1,36 @@
-import { createEffect, createEvent, createStore, sample, Event } from "effector";
-import { and } from 'patronum';
+import { createEvent, sample } from "effector";
 import { $tasksKv } from "@/entities/task";
+import { createTaskQuery } from "@/shared/api/task";
 import { abstractTaskFactory } from "../abstract/abstract.model";
 
-
-export const createTaskFx = createEffect(async ({done = false, title, note = '', date = true}:{done: boolean, title: string, note: string,date?: boolean}) => {
-    return {id: 5, done, title, note, date};
-})
-
-export const createTaskFactory = ({
-    closeTaskTriggered, 
-}: {
-    closeTaskTriggered: Event<void>,
-}) => {
+export const createTaskFactory = () => {
     const createTaskTriggered = createEvent()
     const taskCreated = createEvent()
-    const $activeNewTask = createStore<boolean>(false)
-
     const abstract = abstractTaskFactory()
-    const { $fileds, $title, $note, $done } = abstract
-    sample({
-        clock: closeTaskTriggered,
-        filter: and($activeNewTask),
-        target: taskCreated
-    })
+    const { $fileds, resetFieldsTriggered } = abstract
+    
     sample({
         clock: createTaskTriggered,
-        fn: () => true,
-        target: $activeNewTask
+        fn: () => console.log('taskcreated triggered')
     })
 
     sample({
-        clock: taskCreated,
+        clock: createTaskTriggered,
         source: $fileds,
         filter: ({title}) => Boolean(title.length),
-        target: createTaskFx
+        fn: (fields) => ({body: fields}),
+        target: createTaskQuery.start
     })
     sample({
-        clock: createTaskFx.doneData,
+        clock: createTaskQuery.finished.success,
         source: $tasksKv,
-        fn: (kv, task) => ({...kv, [task.id]: {...task}}),
-        target: $tasksKv
-    })
-    sample({
-        clock: taskCreated,
-        target: [$activeNewTask.reinit, $title.reinit, $note.reinit, $done.reinit]
+        fn: (kv, {result: {result}}) => ({...kv, [result.id]: result}),
+        target: [$tasksKv, resetFieldsTriggered, taskCreated]
     })
 
     return {
         createTaskTriggered,
         taskCreated,
-        $activeNewTask,
         ...abstract
     }
 }

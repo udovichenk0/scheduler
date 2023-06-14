@@ -11,6 +11,7 @@ export const baseQuery = createEffect(async ({
             credentials: 'include',
             method,
             headers: {
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
                 ...headers
             },
