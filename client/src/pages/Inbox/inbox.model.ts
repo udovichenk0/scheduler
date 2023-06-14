@@ -14,13 +14,13 @@ export const updateTaskModel = updateTaskFactory(taskModel.updateTaskOpened)
 export const createTaskModel = createTaskFactory()
 
 sample({
-    clock: taskModel.taskCreated,
+    clock: taskModel.createTaskClosed,
     target: createTaskModel.createTaskTriggered
 })
 
 sample({
-    clock: taskModel.taskUpdated,
-    target: updateTaskModel.taskUpdated
+    clock: taskModel.updateTaskClosed,
+    target: updateTaskModel.updateTaskTriggered
 })
 
 sample({

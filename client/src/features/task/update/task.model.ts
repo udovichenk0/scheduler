@@ -4,14 +4,13 @@ import { $tasksKv } from "@/entities/task";
 import { abstractTaskFactory } from "../abstract/abstract.model";
 
 export const updateTaskFactory = (updateTaskOpened: Event<number>) => {
-    const updateTaskTriggered = createEvent<number>()
-    const taskUpdated = createEvent()
+    const updateTaskTriggered = createEvent()
     const doneTaskToggled = createEvent<number>()
 
     const abstract = abstractTaskFactory()
     const { $fileds, $isDirty, $title, $description, $status, resetFieldsTriggered } = abstract
     sample({
-        clock: taskUpdated,
+        clock: updateTaskTriggered,
         filter: $isDirty,
         fn: () => console.log('taskupdated triggered')
     })
@@ -36,10 +35,10 @@ export const updateTaskFactory = (updateTaskOpened: Event<number>) => {
     //     fn: ({kv, meta, id}) => ({...kv, [id]: {...kv[id], ...meta}}),
     //     target: $tasksKv
     // })
-    sample({
-        clock: taskUpdated,
-        target: resetFieldsTriggered
-    }) 
+    // sample({
+    //     clock: updateTaskTriggered,
+    //     target: resetFieldsTriggered
+    // }) 
     sample({
         clock: doneTaskToggled,
         source: $tasksKv,
@@ -49,7 +48,6 @@ export const updateTaskFactory = (updateTaskOpened: Event<number>) => {
     })
     return {
         updateTaskTriggered,
-        taskUpdated,
         doneTaskToggled,
         ...abstract
     }

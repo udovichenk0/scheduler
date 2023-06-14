@@ -2,8 +2,8 @@ import { createEvent, createStore, sample } from "effector"
 
 export const taskModelFactory = () => {
     const closeTaskTriggered = createEvent()
-    const taskCreated = createEvent()
-    const taskUpdated = createEvent<number>()
+    const createTaskClosed = createEvent()
+    const updateTaskClosed = createEvent<number>()
 
     const reset = createEvent()
     const updateTaskOpened = createEvent<number>()
@@ -15,13 +15,13 @@ export const taskModelFactory = () => {
         clock: [createTaskOpened, closeTaskTriggered],
         source: $newTask,
         filter: Boolean, 
-        target: taskCreated
+        target: createTaskClosed
     })
     sample({
         clock: [updateTaskOpened,createTaskOpened, closeTaskTriggered],
         source: $taskId,
         filter: Boolean, 
-        target: taskUpdated
+        target: updateTaskClosed
     })
 
     sample({
@@ -46,8 +46,8 @@ export const taskModelFactory = () => {
     })
 
     return {
-        taskUpdated,
-        taskCreated,
+        updateTaskClosed,
+        createTaskClosed,
         $newTask,
         $taskId,
         createTaskOpened,
