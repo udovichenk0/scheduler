@@ -11,6 +11,7 @@ export const taskModelFactory = () => {
 
     const $newTask = createStore(false)
     const $taskId = createStore<number | null>(null)
+
     sample({
         clock: [createTaskOpened, closeTaskTriggered],
         source: $newTask,
@@ -18,7 +19,7 @@ export const taskModelFactory = () => {
         target: createTaskClosed
     })
     sample({
-        clock: [updateTaskOpened,createTaskOpened, closeTaskTriggered],
+        clock: [createTaskOpened, closeTaskTriggered],
         source: $taskId,
         filter: Boolean, 
         target: updateTaskClosed
@@ -37,12 +38,9 @@ export const taskModelFactory = () => {
         target: [$newTask, $taskId.reinit!]
     })
     sample({
-        clock: [reset, closeTaskTriggered],
-        target: $newTask.reinit!
-    })
-    sample({
-        clock: [reset, closeTaskTriggered],
-        target: $taskId.reinit!
+        clock: reset,
+        filter: $newTask,
+        target: [$newTask.reinit, $taskId.reinit!]
     })
 
     return {

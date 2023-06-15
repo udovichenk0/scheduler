@@ -1,4 +1,5 @@
 import { combine, sample } from "effector";
+import { not } from "patronum";
 import { taskModelFactory } from "@/widgets/expanded-task";
 import { createTaskFactory } from "@/features/task/create";
 import { updateTaskFactory } from "@/features/task/update";
@@ -25,6 +26,10 @@ sample({
 
 sample({
     clock: createTaskModel.taskCreated,
+    target: [taskModel.$newTask.reinit]
+})
+sample({
+    clock: [taskModel.closeTaskTriggered],
+    filter: not(createTaskModel.$isDirty),
     target: taskModel.reset
 })
-
