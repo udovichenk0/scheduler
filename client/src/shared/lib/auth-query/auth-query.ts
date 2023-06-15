@@ -1,44 +1,37 @@
-import { Contract, DynamicallySourcedField, createHeadlessQuery } from "@farfetched/core"
-import { attach, createEffect, sample } from "effector"
+import { createHeadlessQuery } from "@farfetched/core"
+import { attach, createEffect } from "effector"
 import { $accessToken, refreshFx, setTokenTriggered } from "@/shared/api/token"
 import { baseQuery } from "./base-query"
-import { Request } from './type'
-interface Response <Resp>{
-    contract: Contract<unknown, Resp>,
-    mapData: DynamicallySourcedField<
-    {
-        result: Resp, 
-        params: unknown
-    }, 
-    {
-        result: Resp, 
-        params: unknown
-    }, unknown>
-}
+import { HttpRequestType, Request, Response } from './type'
 
 
-// change mapParams type into something like Params in generic
-export const authQuery = <Resp>({
+//TODO validation of the response with zod
+
+export const authQuery = <Resp, Params extends HttpRequestType>({
     request, 
     response
 }: {
     request: Request, 
-    response: Response<Resp>
+    response: Response<Resp, Params>
 }) => {
     const queryFx = attach({
         source: $accessToken,
-        mapParams: ({body}:{body?: Record<string, unknown>} = {}, token: string | null) => {
+        mapParams: ({body,params, query}, token) => {
             return {
                 token,
-                body
+                body,
+                params,
+                query
             }
         },
-        effect: createEffect(async ({body, token}:{
+        effect: createEffect(async ({body,params, query, token}:{
             body?: Record<string, unknown>,
+            params?: Record<string, unknown>,
+            query?: Record<string, string>,
             token: string | null,
         }) => {
             try {
-                return await baseQuery({request: {...request, body}, token})
+                return await baseQuery({request: {...request, body, params, query}, token})
             } catch (error:any) {
               if(error.status == 401){
                   const {access_token} = await refreshFx()
@@ -47,15 +40,11 @@ export const authQuery = <Resp>({
                   }
                   else{
                       setTokenTriggered(access_token)
-                      return await baseQuery({request: {...request, body}, token})
+                      return await baseQuery({request: {...request, body, params, query}, token})
                   }
               }
             }
       })
-    })
-    sample({
-        clock: queryFx.doneData,
-        fn: (d) => console.log(d)
     })
     const headlessQuery = createHeadlessQuery({
         contract: response.contract,

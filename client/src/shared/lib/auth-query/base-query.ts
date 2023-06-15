@@ -1,13 +1,24 @@
 import { createEffect } from "effector"
-import { Request } from './type'
+import { HttpRequestType, Request } from './type'
 export const baseQuery = createEffect(async ({
     request, 
     token
 }:{
-    request: Request & {body?: Record<string, unknown>}, 
+    request: Request & HttpRequestType, 
     token: string | null}) => {
-        const {method, url, headers, body} = request
-        const response = await fetch(`http://localhost:3000/${url}`,{
+
+        const {method, url, headers, body, params, query} = request
+        let urlWithParams;
+        if(typeof url == 'function' && params){
+            urlWithParams = url(params)
+        }
+        const newUrl = new URL(`${import.meta.env.VITE_ORIGIN_URL}${urlWithParams || url}`)
+        if(query){
+            for(const [key, value] of Object.entries(query)){
+                newUrl.searchParams.set(key, value)
+            }
+        }
+        const response = await fetch(newUrl,{
             credentials: 'include',
             method,
             headers: {
