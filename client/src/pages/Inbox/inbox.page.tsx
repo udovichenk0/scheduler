@@ -31,7 +31,7 @@ export const Inbox = () => {
         taskId,
         closeTaskTriggered,
         updateTaskOpened,
-        createTaskOpened
+        createTaskOpened,
         
     ] = useUnit([
         $tasks,
@@ -40,12 +40,11 @@ export const Inbox = () => {
         taskModel.$taskId,
         taskModel.closeTaskTriggered,
         taskModel.updateTaskOpened,
-        taskModel.createTaskOpened
-        
+        taskModel.createTaskOpened,
     ])
     return (
         <MainLayout icon={<Icon name="common/inbox" className="fill-grey w-5 h-5"/>} 
-        title={'Inbox'} 
+        title={'Inbox'}
         action={() => {
             createTaskOpened()
         }}>

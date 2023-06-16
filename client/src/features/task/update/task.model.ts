@@ -8,13 +8,12 @@ export const updateTaskFactory = (updateTaskOpened: Event<number>) => {
     const doneTaskToggled = createEvent<number>()
 
     const abstract = abstractTaskFactory()
-    const { $fileds, $isDirty, $title, $description, $status, resetFieldsTriggered } = abstract
+    const { $fields, $isDirty, $title, $description, $status, resetFieldsTriggered } = abstract
     sample({
         clock: updateTaskTriggered,
         filter: $isDirty,
         fn: () => console.log('taskupdated triggered')
     })
-
     sample({
         clock: updateTaskOpened,
         source: $tasksKv,
@@ -28,6 +27,9 @@ export const updateTaskFactory = (updateTaskOpened: Event<number>) => {
         })
     })
 
+    /**
+     * reset $isDirty after successful update
+     */
     // sample({
     //     clock: taskUpdated,
     //     source: {kv: $tasksKv, meta: $fileds, id: $activeTaskId},

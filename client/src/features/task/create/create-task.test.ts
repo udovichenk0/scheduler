@@ -1,56 +1,47 @@
-import { allSettled, createEvent, fork } from 'effector';
+import { allSettled, fork } from 'effector';
 import { test, expect, vi } from 'vitest';
 import { $tasksKv } from '@/entities/task';
-import { createTaskFactory, createTaskFx } from '.';
+import { createTaskQuery } from '@/shared/api/task';
+import { createTaskFactory } from '.';
+const taskModel = createTaskFactory()
 
-const tasks = {
-    1: {id: 1, done: false, title: "make something", note: "description 1", date: true},
-    2: {id: 2, done: false, title: "make anything", note: "description 2", date: true},
-    3: {id: 3, done: true, title: "done task", note: "description 3", date: false},
-    4: {id: 4, done: false, title: "go to there", note: "description 4", date: true},
+
+const items = {
+    1: {id: 1, title: 'first', description: 'my note' , user_id: 1, status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"},
+    2: {id: 2, title: 'second', description: 'my note' , user_id: 1, status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"},
+    3: {id: 3, title: 'third', description: 'my note' , user_id: 1, status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"},
+    4: {id: 4, title: 'fourth', description: 'my note' , user_id: 1, status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"},
+    5: {id: 5, title: 'fifth', description: 'my note' , user_id: 1, status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"},
 }
-const closeTaskTriggered = createEvent()
-const taskModel = createTaskFactory({closeTaskTriggered})
 
-test('change activeNewTask to true', async () => {
-    const { $activeNewTask, createTaskTriggered} = taskModel
+const newItems = {
+	1: {id: 1, title: 'first', description: 'my note' , user_id: 1, status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"},
+    2: {id: 2, title: 'second', description: 'my note' , user_id: 1,  status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"},
+    3: {id: 3, title: 'third', description: 'my note' , user_id: 1, status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"},
+    4: {id: 4, title: 'fourth', description: 'my note' , user_id: 1, status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"},
+    5: {id: 5, title: 'fifth', description: 'my note' , user_id: 1, status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"},
+	6: {id: 6, title: 'sixth', description: 'my note' , user_id: 1, status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"},
+}
+
+const returnedValue = {id: 6, user_id: 1, title: 'sixth', description: 'my note' , status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"}
+test('request after closeTaskTriggered event', async () => {
+    const mock = vi.fn(() => (returnedValue))
+    const { $title, $description, $status,$startDate, createTaskTriggered } = taskModel
     const scope = fork({
         values: [
-            [$activeNewTask, false]
+            [$title, 'sixth'],
+            [$description, 'my note'],
+            [$status, 'FINISHED'],
+            [$startDate, "2023-06-16 06:48:43 788ms UTC"],
+            [$tasksKv, items],
+        ],
+        handlers: [
+            [createTaskQuery.__.executeFx, mock],
         ]
     })
     await allSettled(createTaskTriggered, {scope})
-    expect(scope.getState($activeNewTask)).toBe(true)
-})
-
-
-const newKv = {
-    1: {id: 1, done: false, title: "make something", note: "description 1", date: true},
-    2: {id: 2, done: false, title: "make anything", note: "description 2", date: true},
-    3: {id: 3, done: true, title: "done task", note: "description 3", date: false},
-    4: {id: 4, done: false, title: "go to there", note: "description 4", date: true},
-    5: {id: 5, title: 'my title', note: 'my note' , done: true, date: true}
-}
-
-test('request after closeTaskTriggered event', async () => {
-    const mock = vi.fn(({title, note, done}) => ({id: 5, title, note, done, date: true}))
-    const { $title, $note, $done, $activeNewTask } = taskModel
-    const scope = fork({
-        values: [
-            [$title, 'my title'],
-            [$note, 'my note'],
-            [$done, true],
-            [$tasksKv, tasks],
-            [$activeNewTask, true],
-        ],
-        handlers: [
-            [createTaskFx, mock]
-        ]
-    })
-    await allSettled(closeTaskTriggered, { scope })
-
     expect(mock).toHaveBeenCalledOnce()
-    expect(mock).toBeCalledWith({title: 'my title', note: 'my note' , done: true})
-    expect(mock).toReturnWith({id: 5, title: 'my title', note: 'my note' , done: true, date: true})
-    expect(scope.getState($tasksKv)).toStrictEqual(newKv)
+    expect(mock).toBeCalledWith({body: {title: 'sixth', description: 'my note' , status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"}})
+    expect(mock).toReturnWith(returnedValue)
+    expect(scope.getState($tasksKv)).toStrictEqual(newItems)
 })

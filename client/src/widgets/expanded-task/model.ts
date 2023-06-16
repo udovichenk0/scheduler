@@ -34,13 +34,12 @@ export const taskModelFactory = () => {
     sample({
         clock: createTaskOpened,
         source: $newTask,
-        fn: (task) => !task,
+        fn: (task) => true,
         target: [$newTask, $taskId.reinit!]
     })
     sample({
         clock: reset,
-        filter: $newTask,
-        target: [$newTask.reinit, $taskId.reinit!]
+        target: [$newTask.reinit, $taskId.reinit]
     })
 
     return {

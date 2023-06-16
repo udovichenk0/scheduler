@@ -1,4 +1,5 @@
 import { combine, createEvent, createStore, sample } from "effector"
+import { debug } from "patronum"
 
 export const abstractTaskFactory = () => {
 
@@ -13,10 +14,8 @@ export const abstractTaskFactory = () => {
     const $status = createStore<'FINISHED' | 'CANCELED' | 'INPROGRESS'>('INPROGRESS')
     const $startDate = createStore<Date>(new Date())
     const $isDirty = createStore(false)
-
-    const $fileds = combine($title, $description, $status, $startDate,
+    const $fields = combine($title, $description, $status, $startDate,
          (title, description, status, date) => ({title, description, status, start_date: date}))
-
     sample({
         clock: resetFieldsTriggered,
         target: [$title.reinit, $description.reinit, $status.reinit, $isDirty.reinit]
@@ -49,7 +48,8 @@ export const abstractTaskFactory = () => {
         $title,
         $description,
         $status,
-        $fileds,
-        $isDirty
+        $fields,
+        $startDate,
+        $isDirty,
     }
 }

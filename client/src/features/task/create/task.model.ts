@@ -7,8 +7,8 @@ export const createTaskFactory = () => {
     const createTaskTriggered = createEvent()
     const taskCreated = createEvent()
     const abstract = abstractTaskFactory()
-    const { $fileds, resetFieldsTriggered } = abstract
-    
+    const { $fields, resetFieldsTriggered } = abstract
+
     sample({
         clock: createTaskTriggered,
         fn: () => console.log('taskcreated triggered')
@@ -16,7 +16,7 @@ export const createTaskFactory = () => {
 
     sample({
         clock: createTaskTriggered,
-        source: $fileds,
+        source: $fields,
         filter: ({title}) => Boolean(title.length),
         fn: (fields) => ({body: fields}),
         target: createTaskQuery.start
@@ -27,7 +27,6 @@ export const createTaskFactory = () => {
         fn: (kv, {result: {result}}) => ({...kv, [result.id]: result}),
         target: [$tasksKv, resetFieldsTriggered, taskCreated]
     })
-
     return {
         createTaskTriggered,
         taskCreated,
