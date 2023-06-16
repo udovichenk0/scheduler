@@ -23,6 +23,7 @@
   "rules": {
     "import/default": "off",
     "react-refresh/only-export-components": "warn",
+    "indent": ["error", 2],
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "no-unused-vars": "off",
