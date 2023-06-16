@@ -4,6 +4,7 @@ import { TaskDto, taskDtoSchema } from './task.dto';
 
 const taskContract = zodContract(taskDtoSchema)
 type BodyType = {
+    id: number,
     title: string;
     description: string | null;
     status: "FINISHED" | "CANCELED" | "INPROGRESS";
@@ -11,9 +12,9 @@ type BodyType = {
 }
 
 
-export const createTaskQuery = authQuery<TaskDto, {body: BodyType}>({
+export const updateTaskQuery = authQuery<TaskDto, {body: BodyType}>({
   request: {
-    url: 'create-task',
+    url: 'update-task',
     method: 'POST'
   },
   response: {
@@ -21,5 +22,3 @@ export const createTaskQuery = authQuery<TaskDto, {body: BodyType}>({
     mapData: (data) => data
   }
 })
-
-//url: ({id}:{id: number}) => `create-task/${id}`

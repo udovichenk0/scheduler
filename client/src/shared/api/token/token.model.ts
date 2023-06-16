@@ -7,11 +7,11 @@ export const resetToken = createEvent()
 export const $accessToken = createStore<string | null>(null)
 debug($accessToken)
 sample({
-    clock: setTokenTriggered,
-    target: $accessToken
+  clock: setTokenTriggered,
+  target: $accessToken
 })
 
 sample({
-    clock: resetToken,
-    target: $accessToken.reinit!
+  clock: resetToken,
+  target: $accessToken.reinit!
 })

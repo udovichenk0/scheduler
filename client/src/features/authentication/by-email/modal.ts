@@ -12,41 +12,41 @@ export const $emailError = createStore<'too_small' | 'invalid_string' |  null>(n
 const emailSchema = z.string().email().min(4)
 
 sample({
-    clock: emailChanged,
-    target: $email
+  clock: emailChanged,
+  target: $email
 })
 
 
 // fetch after success email validation
 sample({
-    clock: submitTriggered,
-    source: $email,
-    filter: (email) => emailSchema.safeParse(email).success,
-    fn: (email) => ({email}),
-    target: getUserQuery.start
+  clock: submitTriggered,
+  source: $email,
+  filter: (email) => emailSchema.safeParse(email).success,
+  fn: (email) => ({email}),
+  target: getUserQuery.start
 })
 
 // store an error after failure validation
 sample({
-    clock: submitTriggered,
-    source: $email,
-    filter: (email) => !emailSchema.safeParse(email).success,    
-    fn: checkError,
-    target: $emailError
+  clock: submitTriggered,
+  source: $email,
+  filter: (email) => !emailSchema.safeParse(email).success,    
+  fn: checkError,
+  target: $emailError
 })
 
 // restore emailError
 sample({
-    clock: resetEmailTriggered,
-    target: [$emailError.reinit!, $email.reinit!]
+  clock: resetEmailTriggered,
+  target: [$emailError.reinit!, $email.reinit!]
 })
 
 function checkError(email:string){
-    if(email.length < 4){
-        return 'too_small'
-    }
-    else {
-        return 'invalid_string'
-    }
+  if(email.length < 4){
+    return 'too_small'
+  }
+  else {
+    return 'invalid_string'
+  }
 }
 

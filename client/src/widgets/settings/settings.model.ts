@@ -6,7 +6,7 @@ export const tabSelected = createEvent<TabsEnum>()
 export const $activeTab = createStore<TabsEnum>(TabsEnum.general)
 
 sample({
-    clock: tabSelected,
-    target: $activeTab
+  clock: tabSelected,
+  target: $activeTab
 })
 

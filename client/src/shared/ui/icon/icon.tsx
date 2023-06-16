@@ -12,15 +12,15 @@ name: IconName;
 }
 
 export function Icon({ name, className, viewBox, ...props }: IconProps) {
-const [spriteName, iconName] = name.split('/');
-    return (
-        <svg
-        className={clsx('icon', className)}
-        viewBox={viewBox}
-        focusable="false"
-        aria-hidden
-        {...props}>
-        <use xlinkHref={`/${spriteName}.svg#${iconName}`} />
-        </svg>
-    );
+  const [spriteName, iconName] = name.split('/');
+  return (
+    <svg
+      className={clsx('icon', className)}
+      viewBox={viewBox}
+      focusable="false"
+      aria-hidden
+      {...props}>
+      <use xlinkHref={`/${spriteName}.svg#${iconName}`} />
+    </svg>
+  );
 }

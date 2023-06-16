@@ -4,24 +4,24 @@ import {createBrowserHistory} from "history";
 
 import {appStarted} from "../init";
 export const routes = {
-    home: createRoute(),
-    inbox: createRoute()
+  home: createRoute(),
+  inbox: createRoute()
 }
 export const router = createHistoryRouter({
-    routes: [
-        {
-            route: [routes.home],
-            path: '/'
-        },
-        {
-            route: [routes.inbox],
-            path: '/inbox'
-        }
-    ]
+  routes: [
+    {
+      route: [routes.home],
+      path: '/'
+    },
+    {
+      route: [routes.inbox],
+      path: '/inbox'
+    }
+  ]
 })
 
 sample({
-    clock: appStarted,
-    fn: () => createBrowserHistory(),
-    target: router.setHistory
+  clock: appStarted,
+  fn: () => createBrowserHistory(),
+  target: router.setHistory
 })

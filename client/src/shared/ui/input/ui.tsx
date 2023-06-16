@@ -12,29 +12,29 @@ interface InputProps {
     type?: 'text' | 'password'
 }
 export const Input = ({
-    onChange,
-    name,
-    value,
-    label,
-    focusRef,
-    disabled,
-    error,
-    icon,
-    type = 'text',
+  onChange,
+  name,
+  value,
+  label,
+  focusRef,
+  disabled,
+  error,
+  icon,
+  type = 'text',
 }:InputProps) => {
-    return (
-        <label className="w-full flex flex-col" htmlFor={name}>
-            <span className="text-left text-grey text-[12px]">{label}</span>
-            <div className="relative w-full flex items-center text-sm">
-                <input 
-                ref={focusRef}
-                type={type} 
-                disabled={disabled} 
-                onChange={(e) => onChange(e.target.value)} 
-                value={value} 
-                className={`w-full hover:border-[#1c2c4c] focus:border-[#1c2c4c] outline-none ${error && 'text-error'} pr-8 bg-transparent pb-1 border-b-[1px] border-grey`} />
-                <span className="absolute right-0">{icon}</span>
-            </div>
-        </label>
-    )
+  return (
+    <label className="w-full flex flex-col" htmlFor={name}>
+      <span className="text-left text-grey text-[12px]">{label}</span>
+      <div className="relative w-full flex items-center text-sm">
+        <input 
+          ref={focusRef}
+          type={type} 
+          disabled={disabled} 
+          onChange={(e) => onChange(e.target.value)} 
+          value={value} 
+          className={`w-full hover:border-[#1c2c4c] focus:border-[#1c2c4c] outline-none ${error && 'text-error'} pr-8 bg-transparent pb-1 border-b-[1px] border-grey`} />
+        <span className="absolute right-0">{icon}</span>
+      </div>
+    </label>
+  )
 }

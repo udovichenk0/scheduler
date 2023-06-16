@@ -16,26 +16,26 @@ export const $passwordError = createStore<'too_small' | 'invalid_string' |  null
 const signupSchema = z.string().min(8)   
 
 sample({
-    clock: submitTriggered,
-    source: {email: $email,password: $password},
-    filter: ({password}) => signupSchema.safeParse(password).success,
-    target: signupQuery.start
+  clock: submitTriggered,
+  source: {email: $email,password: $password},
+  filter: ({password}) => signupSchema.safeParse(password).success,
+  target: signupQuery.start
 })
 
 sample({
-    clock: passwordChanged,
-    target: $password
+  clock: passwordChanged,
+  target: $password
 })
 sample({
-    clock: signupQuery.finished.success,
-    fn: ({result}) => ({
-        user: result.user,
-        token: result.access_token,
-    }),
-    target: spread({
-        targets: {
-            user: setSessionUserTriggered,
-            token: setTokenTriggered,
-        }
-    })
+  clock: signupQuery.finished.success,
+  fn: ({result}) => ({
+    user: result.user,
+    token: result.access_token,
+  }),
+  target: spread({
+    targets: {
+      user: setSessionUserTriggered,
+      token: setTokenTriggered,
+    }
+  })
 })

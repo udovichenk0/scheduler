@@ -7,7 +7,7 @@ interface TabProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export function Tab({children,label,...props}:TabProps){
-	return (
-		<button {...props} onClick={props.onClick} className={props.className}>{children}</button>
-	)
+  return (
+    <button {...props} onClick={props.onClick} className={props.className}>{children}</button>
+  )
 }

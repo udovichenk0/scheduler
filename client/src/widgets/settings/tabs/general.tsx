@@ -1,7 +1,7 @@
 export const GeneralTab = () => {
-    return (
-        <div>
+  return (
+    <div>
             generalTab
-        </div>
-    )
+    </div>
+  )
 }

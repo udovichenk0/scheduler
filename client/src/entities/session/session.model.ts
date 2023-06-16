@@ -8,17 +8,17 @@ export const resetSession = createEvent()
 export const $sessionUser = createStore<UserDto | null>(null)
 
 sample({
-    clock: resetSession,
-    target: [$sessionUser.reinit!]
+  clock: resetSession,
+  target: [$sessionUser.reinit!]
 })
 
 sample({
-    clock: setSessionUserTriggered,
-    target: $sessionUser
+  clock: setSessionUserTriggered,
+  target: $sessionUser
 })
 
 sample({
-    clock: refreshQuery.finished.success,
-    fn: ({result}) => result.user,
-    target: setSessionUserTriggered
-  })
+  clock: refreshQuery.finished.success,
+  fn: ({result}) => result.user,
+  target: setSessionUserTriggered
+})

@@ -18,9 +18,9 @@ sample({
 function App() {
   return (
     <div className="text-white bg-main-blue h-screen">
-        <RouterProvider router={router}>
-            <RoutesView />
-        </RouterProvider> 
+      <RouterProvider router={router}>
+        <RoutesView />
+      </RouterProvider> 
     </div>
   )
 }

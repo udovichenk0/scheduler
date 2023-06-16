@@ -7,11 +7,11 @@ import { resetToken } from "@/shared/api/token";
 export const submitTriggered = createEvent()
 
 sample({
-    clock: submitTriggered,
-    target: logoutQuery.start
+  clock: submitTriggered,
+  target: logoutQuery.start
 })
 
 sample({
-    clock: logoutQuery.finished.success,
-    target: [resetSession, resetToken]
+  clock: logoutQuery.finished.success,
+  target: [resetSession, resetToken]
 })
