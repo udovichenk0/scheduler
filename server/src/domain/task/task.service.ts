@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class TaskService {
   constructor(private prismaService: PrismaService) {}
-  findMany({ id }: Prisma.taskWhereInput) {
+  async findMany({ id }: Prisma.taskWhereInput) {
     const tasks = this.prismaService.task.findMany({
       where: {
         user_id: id,
@@ -15,6 +15,15 @@ export class TaskService {
   createOne(data: Prisma.taskCreateInput) {
     const task = this.prismaService.task.create({
       data,
+    });
+    return task;
+  }
+  updateOne({ id, data }: { id: number; data: Prisma.taskUpdateInput }) {
+    const task = this.prismaService.task.update({
+      data,
+      where: {
+        id,
+      },
     });
     return task;
   }

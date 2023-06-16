@@ -41,4 +41,15 @@ export class TaskController {
     });
     return TaskDto.create(task);
   }
+  @Post('update-task')
+  async updateTask(
+    @Req() req: Request,
+    @Body() taskCredentials: TaskCredentialDto & { id: number },
+  ) {
+    const task = await this.taskService.updateOne({
+      id: taskCredentials.id,
+      data: taskCredentials,
+    });
+    return TaskDto.create(task);
+  }
 }
