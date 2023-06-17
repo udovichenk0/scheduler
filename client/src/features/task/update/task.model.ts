@@ -1,10 +1,11 @@
-import { createEvent, sample, Event } from "effector";
-import { spread } from "patronum";
+import { createEvent, sample } from "effector";
+import { and, spread } from "patronum";
 import { $tasksKv } from "@/entities/task";
 import { updateTaskQuery } from "@/shared/api/task";
+import { ExpensionTaskType } from "@/shared/lib/block-expansion";
 import { abstractTaskFactory } from "../abstract/abstract.model";
 
-export const updateTaskFactory = (updateTaskOpened: Event<number>) => {
+export const updateTaskFactory = (taskModel: ExpensionTaskType) => {
   const updateTaskTriggered = createEvent<number>()
   const doneTaskToggled = createEvent<number>()
   const taskUpdated = createEvent()
@@ -19,7 +20,7 @@ export const updateTaskFactory = (updateTaskOpened: Event<number>) => {
   sample({
     clock: updateTaskTriggered,
     source: $fields,
-    filter: ({title}) => Boolean(title.length),
+    filter: and($title, $isDirty),
     fn: (fields, id) => ({body: {...fields, id}}),
     target: updateTaskQuery.start
   })
@@ -30,7 +31,7 @@ export const updateTaskFactory = (updateTaskOpened: Event<number>) => {
     target: [$tasksKv, taskUpdated, resetFieldsTriggered]
   })
   sample({
-    clock: updateTaskOpened,
+    clock: taskModel.updateTaskOpened,
     source: $tasksKv,
     fn: (kv, id) => ({...kv[id]}),
     target: spread({
@@ -47,6 +48,14 @@ export const updateTaskFactory = (updateTaskOpened: Event<number>) => {
     filter: (kv, id) => id in kv,
     fn: (kv, id) => ({...kv, [id]: {...kv[id], done: !kv[id].status}}),
     target: $tasksKv
+  })
+  sample({
+    clock: taskModel.updateTaskClosed,
+    target: updateTaskTriggered
+  })
+  sample({
+    clock: taskUpdated,
+    target: taskModel.$taskId.reinit!
   })
   return {
     updateTaskTriggered,

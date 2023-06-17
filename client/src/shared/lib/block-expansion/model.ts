@@ -1,6 +1,7 @@
 import { createEvent, createStore, sample } from "effector"
+import { not } from "patronum"
 
-export const taskModelFactory = () => {
+export const taskExpansionFactory = () => {
   const closeTaskTriggered = createEvent()
   const createTaskClosed = createEvent()
   const updateTaskClosed = createEvent<number>()
@@ -11,7 +12,10 @@ export const taskModelFactory = () => {
 
   const $newTask = createStore(false)
   const $taskId = createStore<number | null>(null)
-
+  sample({
+    clock: reset,
+    target: [$newTask.reinit, $taskId.reinit]
+  })
   sample({
     clock: [createTaskOpened, closeTaskTriggered],
     source: $newTask,
@@ -24,22 +28,19 @@ export const taskModelFactory = () => {
     filter: Boolean, 
     target: updateTaskClosed
   })
-
+  
   sample({
     clock: updateTaskOpened,
     filter: Boolean,
-    target: [$taskId, $newTask.reinit!]
+    target: $taskId
   })
 
   sample({
     clock: createTaskOpened,
     source: $newTask,
-    fn: (task) => true,
-    target: [$newTask, $taskId.reinit!]
-  })
-  sample({
-    clock: reset,
-    target: [$newTask.reinit, $taskId.reinit]
+    filter: not($newTask),
+    fn: () => true,
+    target: [$newTask]
   })
 
   return {
@@ -53,4 +54,4 @@ export const taskModelFactory = () => {
     reset
   }
 }
-export type ExpandedTaskModelType = ReturnType<typeof taskModelFactory>
+export type ExpensionTaskType = ReturnType<typeof taskExpansionFactory>

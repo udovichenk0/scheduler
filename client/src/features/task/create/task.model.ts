@@ -1,13 +1,14 @@
 import { createEvent, sample } from "effector";
 import { $tasksKv } from "@/entities/task";
 import { createTaskQuery } from "@/shared/api/task";
+import { ExpensionTaskType } from "@/shared/lib/block-expansion";
 import { abstractTaskFactory } from "../abstract/abstract.model";
 
-export const createTaskFactory = () => {
+export const createTaskFactory = (taskModel: ExpensionTaskType) => {
   const createTaskTriggered = createEvent()
   const taskCreated = createEvent()
   const abstract = abstractTaskFactory()
-  const { $fields, resetFieldsTriggered } = abstract
+  const { $fields,$isAllowToSubmit, resetFieldsTriggered } = abstract
 
   sample({
     clock: createTaskTriggered,
@@ -27,9 +28,21 @@ export const createTaskFactory = () => {
     fn: (kv, {result: {result}}) => ({...kv, [result.id]: result}),
     target: [$tasksKv, resetFieldsTriggered, taskCreated]
   })
+  sample({
+    clock: taskModel.createTaskClosed,
+    target: createTaskTriggered
+  })
+  sample({
+    clock: taskCreated,
+    target: taskModel.$newTask.reinit!
+  })
+  
+  sample({
+    clock: taskModel.createTaskOpened,
+    target: taskModel.$taskId.reinit!
+  })
   return {
     createTaskTriggered,
-    taskCreated,
     ...abstract
   }
 }

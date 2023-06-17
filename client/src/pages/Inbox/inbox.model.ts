@@ -1,38 +1,27 @@
 import { combine, sample } from "effector";
-import { taskModelFactory } from "@/widgets/expanded-task";
+import { and} from "patronum";
 import { createTaskFactory } from "@/features/task/create";
 import { updateTaskFactory } from "@/features/task/update";
 import { $tasksKv } from "@/entities/task";
+import { taskExpansionFactory } from "@/shared/lib/block-expansion";
 
 export const $tasks = combine($tasksKv, (kv) => {
   return Object.values(kv)
     .filter(({start_date}) => start_date)
 })
 
-export const taskModel = taskModelFactory()
-export const updateTaskModel = updateTaskFactory(taskModel.updateTaskOpened)
-export const createTaskModel = createTaskFactory()
+export const taskModel = taskExpansionFactory()
+export const updateTaskModel = updateTaskFactory(taskModel)
+export const createTaskModel = createTaskFactory(taskModel)
 
-sample({
-  clock: taskModel.createTaskClosed,
-  target: createTaskModel.createTaskTriggered
-})
-
-sample({
-  clock: taskModel.updateTaskClosed,
-  target: updateTaskModel.updateTaskTriggered
-})
-
-sample({
-  clock: [createTaskModel.taskCreated],
-  target: [taskModel.$newTask.reinit]
-})
-sample({
-  clock: [updateTaskModel.taskUpdated],
-  target: [taskModel.$taskId.reinit]
-})
 sample({
   clock: [taskModel.closeTaskTriggered],
-  // filter: not(createTaskModel.$isDirty),
-  target: [taskModel.reset, createTaskModel.resetFieldsTriggered]
+  filter: and(createTaskModel.$isAllowToSubmit, updateTaskModel.$isAllowToSubmit),
+  target: [taskModel.$newTask.reinit,createTaskModel.resetFieldsTriggered]
+})
+
+sample({
+  clock: [taskModel.closeTaskTriggered],
+  filter: and(createTaskModel.$isAllowToSubmit, updateTaskModel.$isAllowToSubmit, taskModel.$taskId),
+  target: [taskModel.$taskId.reinit,updateTaskModel.resetFieldsTriggered]
 })
