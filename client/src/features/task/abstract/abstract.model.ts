@@ -15,7 +15,6 @@ export const abstractTaskFactory = () => {
   const $startDate = createStore<Date>(new Date())
   const $isDirty = createStore(false)
   const $isAllowToSubmit = combine($isDirty, $title, (isDirty, title) => !isDirty || !title.length)
-  debug($isAllowToSubmit)
   const $fields = combine($title, $description, $status, $startDate,
     (title, description, status, date) => ({title, description, status, start_date: date}))
   sample({

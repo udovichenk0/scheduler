@@ -2,8 +2,10 @@ import { allSettled, fork } from 'effector';
 import { test, expect, vi } from 'vitest';
 import { $tasksKv } from '@/entities/task';
 import { createTaskQuery } from '@/shared/api/task';
+import { taskExpansionFactory } from '@/shared/lib/block-expansion';
 import { createTaskFactory } from '.';
-const taskModel = createTaskFactory()
+const taskModel = taskExpansionFactory()
+const createTaskModel = createTaskFactory(taskModel)
 
 
 const items = {
@@ -26,7 +28,7 @@ const newItems = {
 const returnedValue = {id: 6, user_id: 1, title: 'sixth', description: 'my note' , status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"}
 test('request after closeTaskTriggered event', async () => {
   const mock = vi.fn(() => (returnedValue))
-  const { $title, $description, $status,$startDate, createTaskTriggered } = taskModel
+  const { $title, $description, $status,$startDate, createTaskTriggered } = createTaskModel
   const scope = fork({
     values: [
       [$title, 'sixth'],
