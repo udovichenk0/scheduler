@@ -22,3 +22,18 @@ export const updateTaskQuery = authQuery<TaskDto, {body: BodyType}>({
     mapData: (data) => data
   }
 })
+
+type UpdateStatusBodyType = {
+  id: number,
+  status: "FINISHED" | "CANCELED" | "INPROGRESS"
+}
+export const updateTaskStatusQuery = authQuery<TaskDto, {body: UpdateStatusBodyType}>({
+  request: {
+    url: 'update-task',
+    method: 'POST'
+  },
+  response: {
+    contract: taskContract,
+    mapData: (data) => data
+  }
+})

@@ -26,7 +26,7 @@ export const Inbox = () => {
   const ref = useRef<HTMLDivElement>(null)
   const [
     tasks,
-    doneTaskToggled,
+    changeStatus,
     newTask,
     taskId,
     closeTaskTriggered,
@@ -35,7 +35,7 @@ export const Inbox = () => {
         
   ] = useUnit([
     $tasks,
-    updateTaskModel.doneTaskToggled,
+    updateTaskModel.changeStatusTriggered,
     taskModel.$newTask,
     taskModel.$taskId,
     taskModel.closeTaskTriggered,
@@ -58,7 +58,7 @@ export const Inbox = () => {
                     <UpdateTaskForm updateTaskModel={updateTaskModel}/>
                   </ExpandedTask>
                   : <Task onDoubleClick={() => updateTaskOpened(item.id)} title={item.title} status={item.status} 
-                    onChange={() => doneTaskToggled(item.id)}/>}
+                    onChange={() => changeStatus(item.id)}/>}
               </Fragment>
             )
           })}

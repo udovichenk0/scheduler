@@ -1,13 +1,12 @@
 import { createEvent, sample } from "effector";
 import { and, not, spread } from "patronum";
 import { $tasksKv } from "@/entities/task";
-import { updateTaskQuery } from "@/shared/api/task";
+import { updateTaskQuery, updateTaskStatusQuery } from "@/shared/api/task";
 import { ExpensionTaskType } from "@/shared/lib/block-expansion";
 import { abstractTaskFactory } from "../abstract/abstract.model";
 
 export const updateTaskFactory = (taskModel: ExpensionTaskType) => {
-  const doneTaskToggled = createEvent<number>()
-
+  const changeStatusTriggered = createEvent<number>()
   const abstract = abstractTaskFactory()
   const { $fields, $isDirty, $title, $description, $status, resetFieldsTriggered, $isNotAllowToSubmit } = abstract
 
@@ -39,7 +38,23 @@ export const updateTaskFactory = (taskModel: ExpensionTaskType) => {
       }
     })
   })
-  
+  // start fetch on status change 
+
+  sample({
+    clock: changeStatusTriggered,
+    source: $tasksKv,
+    // fix it
+    fn: (kv, id) => ({body: {status: kv[id].status == 'FINISHED' ? 'INPROGRESS' as const : 'FINISHED' as const, id}}),
+    target: updateTaskStatusQuery.start
+  })
+  // set the result after status updated
+  sample({
+    clock: updateTaskStatusQuery.finished.success,
+    source: $tasksKv,
+    fn: (kv, {result:{result}}) => ({...kv, [result.id]: result}),
+    target: $tasksKv
+  })
+
   // if we pressed createTaskOpened and its not allow to submit so that we set $createdToggled to true 
   sample({
     clock: taskModel.createTaskOpened,
@@ -68,8 +83,8 @@ export const updateTaskFactory = (taskModel: ExpensionTaskType) => {
     target: [taskModel.$taskId.reinit, resetFieldsTriggered]
   })
   return {
-    doneTaskToggled,
-    ...abstract
+    ...abstract,
+    changeStatusTriggered
   }
 }
 

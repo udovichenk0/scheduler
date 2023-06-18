@@ -3,7 +3,7 @@ import { debug } from "patronum"
 
 export const abstractTaskFactory = () => {
 
-  const statusChanged = createEvent()
+  const statusChanged = createEvent<number | void>()
   const titleChanged = createEvent<string>()
   const descriptionChanged = createEvent<string>()
   const resetFieldsTriggered = createEvent()
@@ -30,7 +30,7 @@ export const abstractTaskFactory = () => {
   sample({
     clock: statusChanged,
     source: $status,
-    fn: (value) => value == 'FINISHED' ? 'CANCELED' : 'FINISHED',
+    fn: (value) => value == 'FINISHED' ? 'INPROGRESS' : 'FINISHED',
     target: $status
   })
   sample({
