@@ -43,7 +43,7 @@ export const Inbox = () => {
     taskModel.createTaskOpened,
   ])
   return (
-    <MainLayout icon={<Icon name="common/inbox" className="fill-grey w-5 h-5"/>} 
+    <MainLayout icon={<Icon name="common/inbox" className="fill-grey w-5 h-5"/>} // change to icon={'common/index'}
       title={'Inbox'}
       action={() => {
         createTaskOpened()
@@ -54,7 +54,7 @@ export const Inbox = () => {
             return (
               <Fragment key={id}>
                 {item.id === taskId ? 
-                  <ExpandedTask focusRef={ref}>
+                  <ExpandedTask ref={ref}>
                     <UpdateTaskForm updateTaskModel={updateTaskModel}/>
                   </ExpandedTask>
                   : <Task onDoubleClick={() => updateTaskOpened(item.id)} title={item.title} status={item.status} 
@@ -63,7 +63,7 @@ export const Inbox = () => {
             )
           })}
           {newTask && 
-                    <ExpandedTask focusRef={ref}>
+                    <ExpandedTask ref={ref}>
                       <CreateTaskForm createTaskModel={createTaskModel}/>
                     </ExpandedTask>
           }

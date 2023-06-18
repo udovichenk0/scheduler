@@ -13,8 +13,9 @@ export const abstractTaskFactory = () => {
   const $description = createStore<string | null>('')
   const $status = createStore<'FINISHED' | 'CANCELED' | 'INPROGRESS'>('INPROGRESS')
   const $startDate = createStore<Date>(new Date())
+  debug($title, $description)
   const $isDirty = createStore(false)
-  const $isAllowToSubmit = combine($isDirty, $title, (isDirty, title) => !isDirty || !title.length)
+  const $isNotAllowToSubmit = combine($isDirty, $title, (isDirty, title) => !isDirty || !title.length)
   const $fields = combine($title, $description, $status, $startDate,
     (title, description, status, date) => ({title, description, status, start_date: date}))
   sample({
@@ -48,7 +49,7 @@ export const abstractTaskFactory = () => {
     resetFieldsTriggered,
     $title,
     $description,
-    $isAllowToSubmit,
+    $isNotAllowToSubmit,
     $status,
     $fields,
     $startDate,

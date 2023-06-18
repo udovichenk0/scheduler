@@ -1,48 +1,37 @@
-import { createEvent, sample } from "effector";
+import { sample } from "effector";
 import { $tasksKv } from "@/entities/task";
 import { createTaskQuery } from "@/shared/api/task";
 import { ExpensionTaskType } from "@/shared/lib/block-expansion";
 import { abstractTaskFactory } from "../abstract/abstract.model";
 
 export const createTaskFactory = (taskModel: ExpensionTaskType) => {
-  const createTaskTriggered = createEvent()
-  const taskCreated = createEvent()
   const abstract = abstractTaskFactory()
-  const { $fields,$isAllowToSubmit, resetFieldsTriggered } = abstract
+  const { $fields,$isNotAllowToSubmit, resetFieldsTriggered } = abstract
 
-  sample({
-    clock: createTaskTriggered,
-    fn: () => console.log('taskcreated triggered')
-  })
 
+  // fetch on createTaskClosed
   sample({
-    clock: createTaskTriggered,
+    clock: taskModel.createTaskClosed,
     source: $fields,
     filter: ({title}) => Boolean(title.length),
     fn: (fields) => ({body: fields}),
     target: createTaskQuery.start
   })
+  // reset fields and push result to the store on fetch success 
   sample({
     clock: createTaskQuery.finished.success,
     source: $tasksKv,
     fn: (kv, {result: {result}}) => ({...kv, [result.id]: result}),
-    target: [$tasksKv, resetFieldsTriggered, taskCreated]
+    target: [$tasksKv, resetFieldsTriggered]
   })
+
+  // close the task and reset fields on task closed
   sample({
-    clock: taskModel.createTaskClosed,
-    target: createTaskTriggered
-  })
-  sample({
-    clock: taskCreated,
-    target: taskModel.$newTask.reinit!
-  })
-  
-  sample({
-    clock: taskModel.createTaskOpened,
-    target: taskModel.$taskId.reinit!
+    clock: taskModel.closeTaskTriggered,
+    filter: $isNotAllowToSubmit,
+    target: [taskModel.$newTask.reinit!, resetFieldsTriggered]
   })
   return {
-    createTaskTriggered,
     ...abstract
   }
 }

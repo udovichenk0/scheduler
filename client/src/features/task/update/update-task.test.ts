@@ -28,7 +28,8 @@ const newItems = {
 const returnedValue = {id: 6, user_id: 1, title: 'title', description: 'my description' , status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"}
 test('should set fields after task is selected', async () => {
   const mock = vi.fn(() => returnedValue)  
-  const { updateTaskTriggered, $status, $description,$isDirty, $title } = updateTaskModel
+  const { $status, $description,$isDirty, $title } = updateTaskModel
+  const { updateTaskClosed } = taskModel
   const scope = fork({
     values: [
       [$tasksKv, items],
@@ -41,7 +42,7 @@ test('should set fields after task is selected', async () => {
       [updateTaskQuery.__.executeFx, mock]
     ]
   })
-  await allSettled(updateTaskTriggered, {scope, params: 6})
+  await allSettled(updateTaskClosed, {scope, params: 6})
 
   expect(mock).toHaveBeenCalledOnce()
   expect(mock).toReturnWith(returnedValue)

@@ -28,7 +28,8 @@ const newItems = {
 const returnedValue = {id: 6, user_id: 1, title: 'sixth', description: 'my note' , status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"}
 test('request after closeTaskTriggered event', async () => {
   const mock = vi.fn(() => (returnedValue))
-  const { $title, $description, $status,$startDate, createTaskTriggered } = createTaskModel
+  const { $title, $description, $status,$startDate } = createTaskModel
+  const { createTaskClosed } = taskModel
   const scope = fork({
     values: [
       [$title, 'sixth'],
@@ -41,7 +42,7 @@ test('request after closeTaskTriggered event', async () => {
       [createTaskQuery.__.executeFx, mock],
     ]
   })
-  await allSettled(createTaskTriggered, {scope})
+  await allSettled(createTaskClosed, {scope})
   expect(mock).toHaveBeenCalledOnce()
   expect(mock).toBeCalledWith({body: {title: 'sixth', description: 'my note' , status: 'FINISHED', start_date: "2023-06-16 06:48:43 788ms UTC"}})
   expect(mock).toReturnWith(returnedValue)

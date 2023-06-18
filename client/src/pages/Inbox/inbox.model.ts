@@ -1,5 +1,4 @@
-import { combine, sample } from "effector";
-import { and} from "patronum";
+import { combine } from "effector";
 import { createTaskFactory } from "@/features/task/create";
 import { updateTaskFactory } from "@/features/task/update";
 import { $tasksKv } from "@/entities/task";
@@ -13,15 +12,3 @@ export const $tasks = combine($tasksKv, (kv) => {
 export const taskModel = taskExpansionFactory()
 export const updateTaskModel = updateTaskFactory(taskModel)
 export const createTaskModel = createTaskFactory(taskModel)
-
-sample({
-  clock: [taskModel.closeTaskTriggered],
-  filter: and(createTaskModel.$isAllowToSubmit, updateTaskModel.$isAllowToSubmit),
-  target: [taskModel.$newTask.reinit,createTaskModel.resetFieldsTriggered]
-})
-
-sample({
-  clock: [taskModel.closeTaskTriggered],
-  filter: and(createTaskModel.$isAllowToSubmit, updateTaskModel.$isAllowToSubmit, taskModel.$taskId),
-  target: [taskModel.$taskId.reinit,updateTaskModel.resetFieldsTriggered]
-})
