@@ -1,5 +1,6 @@
 import { createEvent, createStore, sample } from "effector";
 import { createGate } from "effector-react";
+import { not } from "patronum";
 import { resetEmailTriggered } from "@/features/authentication/by-email";
 import { logoutQuery, signinQuery, signupQuery } from "@/shared/api/auth";
 import { $accessToken, setTokenTriggered } from "@/shared/api/token";
@@ -22,6 +23,7 @@ export const gate = createGate()
 
 sample({
   clock: gate.close,
+  filter: not($accessToken),
   target: resetFormTriggered
 })
 
@@ -29,7 +31,6 @@ sample({
   clock: setFormTriggered,
   target: $formToShow
 })
-
 // if user entered email that does not exist, show register form
 sample({
   clock: getUserQuery.finished.success,

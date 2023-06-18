@@ -1,12 +1,7 @@
-import { createEvent, createStore, sample } from "effector";
-import { TabsEnum } from "./config";
+import { tabModelFactory } from "@/shared/ui/tab";
+export enum TabsEnum {
+	general,
+	synchronization
+}
 
-export const tabSelected = createEvent<TabsEnum>()
-
-export const $activeTab = createStore<TabsEnum>(TabsEnum.general)
-
-sample({
-  clock: tabSelected,
-  target: $activeTab
-})
-
+export const tabModel = tabModelFactory<TabsEnum>({defaultValue: TabsEnum.general})

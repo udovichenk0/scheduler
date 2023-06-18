@@ -1,3 +1,2 @@
-export * from './tab-panel'
 export * from './tabs'
-export * from './tab'
+export * from './tab.model'

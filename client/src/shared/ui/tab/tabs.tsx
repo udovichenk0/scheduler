@@ -1,17 +1,21 @@
-import { ReactNode, isValidElement, cloneElement, ReactElement, Children } from 'react'
-export function Tabs({
-  children,
-  onChange,
-}:{
-	children: ReactNode,
-	onChange: (ind: number) => void,
-}){
-  const childrenWithProps = Children.map(children, child => {
-    if(isValidElement(child)){
-      return cloneElement(child as ReactElement, {onClick: () => onChange(child.props.label)})
-    }
-    return child
-  })
+import { ReactNode } from "react"
+import { Tab } from "./tab"
+import { TabList } from "./tab-list"
+import { TabPanel } from "./tab-panel"
 
-  return <>{childrenWithProps}</>
+type TabsProps = {
+  children: ReactNode,
+  className?: string
 }
+
+export const Tabs = ({children, className}: TabsProps) => {
+  return (
+    <div className={className}>
+      {children}      
+    </div>
+  )
+}
+
+Tabs.TabPanel = TabPanel
+Tabs.TabList = TabList
+Tabs.Tab = Tab
