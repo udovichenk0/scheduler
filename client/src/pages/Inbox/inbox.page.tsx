@@ -43,11 +43,9 @@ export const Inbox = () => {
     taskModel.createTaskOpened,
   ])
   return (
-    <MainLayout icon={<Icon name="common/inbox" className="fill-grey w-5 h-5"/>} // change to icon={'common/index'}
+    <MainLayout iconName={'common/inbox'}
       title={'Inbox'}
-      action={() => {
-        createTaskOpened()
-      }}>
+      action={createTaskOpened}>
       <div onClick={(e) => onClickOutside(e, ref, closeTaskTriggered)} className="px-5">
         <div>
           {tasks.map((item, id) => {
@@ -63,9 +61,9 @@ export const Inbox = () => {
             )
           })}
           {newTask && 
-                    <ExpandedTask ref={ref}>
-                      <CreateTaskForm createTaskModel={createTaskModel}/>
-                    </ExpandedTask>
+            <ExpandedTask ref={ref}>
+              <CreateTaskForm createTaskModel={createTaskModel}/>
+            </ExpandedTask>
           }
         </div>
       </div>
