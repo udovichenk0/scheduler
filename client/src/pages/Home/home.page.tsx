@@ -1,5 +1,5 @@
-import { createEvent, sample, createStore } from "effector"
 import { Fragment } from "react"
+import { MainLayout } from "@/widgets/layouts/main"
 import { Task } from "@/shared/ui/task"
 
 
@@ -13,21 +13,20 @@ const items = [
 
 export const Home = () => {
   return (
-    <div className="">
-      {items.map((item) => {
-        return (
-          <Fragment key={item.id}>
-            <Task title={item.title} status={item.status} onChange={() => console.log('toggle')} 
-              onDoubleClick={function (): void {
-                throw new Error("Function not implemented.")
-              } } />
-          </Fragment>
-        )
-      })}
-    </div>
+    <MainLayout action={() => console.log('')} iconName="common/inbox" title="Home">
+      <div className="">
+        {items.map((item) => {
+          return (
+            <Fragment key={item.id}>
+              <Task title={item.title} status={item.status} onChange={() => console.log('toggle')} 
+                onDoubleClick={function (): void {
+                  throw new Error("Function not implemented.")
+                } } />
+            </Fragment>
+          )
+        })}
+      </div>
+    </MainLayout>
   )
 }
-
-
-// probably in shared
 
