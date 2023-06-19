@@ -5,6 +5,7 @@ import { getTasksTriggered } from '@/entities/task';
 import { refreshQuery } from '@/shared/api/token';
 import { appStarted } from '@/shared/config/init';
 import { router } from "@/shared/config/router/router";
+import { ThemeProvider } from './providers';
 
 sample({
   clock: appStarted,
@@ -18,9 +19,11 @@ sample({
 function App() {
   return (
     <div className="text-white bg-main-blue h-screen">
-      <RouterProvider router={router}>
-        <RoutesView />
-      </RouterProvider> 
+      <ThemeProvider>
+        <RouterProvider router={router}>
+          <RoutesView />
+        </RouterProvider> 
+      </ThemeProvider>
     </div>
   )
 }
