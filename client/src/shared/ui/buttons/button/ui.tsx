@@ -1,0 +1,67 @@
+import { RouteInstance, RouteParams } from 'atomic-router';
+import { Link } from 'atomic-router-react'
+
+import { cva, VariantProps } from "class-variance-authority";
+import { ButtonHTMLAttributes, ReactNode } from "react";
+
+const buttonCva = cva('outline-none transition-colors duration-150', {
+  variants: {
+    intent: {
+      outline: [
+        "border-[1px]",
+        "border-cSecondBorder",
+        "hover:bg-cHover",
+        "rounded-[5px]",
+      ],
+      "base-white": [
+        "hover:bg-cHover",
+        "rounded-[5px]",
+        "w-full"
+      ],
+      "base-gray": [
+        "hover:bg-cHover",
+        "rounded-[5px]",
+        "text-cOpacitySecondFont",
+        "w-full"
+      ],
+      "blue-filled": [
+        "bg-[#2384b9]",
+        "rounded-[5px]",
+        "hover:bg-cHover"
+      ]
+    },
+    size: {
+      base: ["text-sm", "p-1"],
+      small: ["text-sm", "py-1", "px-2"],
+      medium: ["text-sm", "py-2", "px-4"],
+      large: ["text-sm", "py-3", "px-6"],
+    },
+  },
+  defaultVariants: {
+    intent: 'outline'
+  }
+})
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonCva> {
+    icon?: ReactNode,
+    title?: string,
+    route?: RouteInstance<RouteParams>
+}
+export const Button = ({ intent, size, icon, title, route, ...props }: ButtonProps) => {
+  return (
+    <>
+      {route?
+        <Link to={route} className={buttonCva({ size, intent })}>
+          <div className='flex gap-4 items-center jusfity-center'>
+            {!!icon && icon } {title}
+          </div>
+        </Link>
+        : <button className={buttonCva({ size, intent })} {...props}>
+          <div className='flex gap-4 items-center jusfity-center'>
+            {!!icon && icon } {title}
+          </div>
+        </button>
+      }
+    </>
+  )
+}

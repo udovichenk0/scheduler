@@ -29,8 +29,8 @@ export const UpdateTaskForm = ({
         <input 
           onChange={(e) => changeTitle(e.target.value)} 
           value={title} placeholder={title ? '' : 'New Task'} 
-          className="w-full bg-transparent outline-none text-sm font-medium text-white dark:text-gray-300"/>
-        <input className="w-full bg-transparent text-grey outline-none" 
+          className="w-full bg-transparent outline-none text-sm font-medium text-cFont dark:text-gray-300"/>
+        <input className="w-full bg-transparent text-grey outline-none text-sm" 
           placeholder={note ? '' : 'Note'} 
           value={note || ''} 
           onChange={(e) => changeDescription(e.target.value)}/>

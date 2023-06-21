@@ -32,7 +32,7 @@ export const Input = ({
           disabled={disabled} 
           onChange={(e) => onChange(e.target.value)} 
           value={value} 
-          className={`w-full hover:border-[#1c2c4c] focus:border-[#1c2c4c] outline-none ${error && 'text-error'} pr-8 bg-transparent pb-1 border-b-[1px] border-grey`} />
+          className={`w-full hover:border-cHover focus:border-cHover outline-none ${error && 'text-error'} pr-8 bg-transparent pb-1 border-b-[1px] border-cSecondBorder`} />
         <span className="absolute right-0">{icon}</span>
       </div>
     </label>

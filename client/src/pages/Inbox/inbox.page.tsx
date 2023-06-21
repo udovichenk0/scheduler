@@ -4,7 +4,6 @@ import { ExpandedTask } from "@/widgets/expanded-task"
 import { MainLayout } from "@/widgets/layouts/main"
 import { CreateTaskForm } from "@/features/task/create"
 import { UpdateTaskForm } from "@/features/task/update"
-import { Icon } from "@/shared/ui/icon"
 import { Task } from "@/shared/ui/task"
 import { 
   $tasks,
@@ -20,8 +19,6 @@ const onClickOutside = (e:MouseEvent, ref:RefObject<HTMLDivElement>, closeTask: 
     closeTask()
   }
 }
-
-
 export const Inbox = () => {
   const ref = useRef<HTMLDivElement>(null)
   const [

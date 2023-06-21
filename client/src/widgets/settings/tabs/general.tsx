@@ -1,7 +1,7 @@
 export const GeneralTab = () => {
   return (
-    <div>
-            generalTab
+    <div className="text-primary">
+        generalTab
     </div>
   )
 }

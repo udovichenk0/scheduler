@@ -1,7 +1,8 @@
 import { tabModelFactory } from "@/shared/ui/tab";
 export enum TabsEnum {
 	general,
-	synchronization
+	synchronization,
+	theme
 }
 
 export const tabModel = tabModelFactory<TabsEnum>({defaultValue: TabsEnum.general})

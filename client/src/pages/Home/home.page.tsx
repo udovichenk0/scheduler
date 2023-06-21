@@ -1,7 +1,7 @@
+
 import { Fragment } from "react"
 import { MainLayout } from "@/widgets/layouts/main"
 import { Task } from "@/shared/ui/task"
-
 
 const items = [
   {id: 1, status: 'FINISHED' as const, title: 'sometitme', description: 'desc'},
@@ -10,7 +10,6 @@ const items = [
   {id: 4, status: 'FINISHED' as const, title: 'asdfsdf', description: 'desc'},
   {id: 5, status: 'FINISHED' as const, title: 'sometasdfsdfasdfitme', description: 'desc'},
 ]
-
 export const Home = () => {
   return (
     <MainLayout action={() => console.log('')} iconName="common/inbox" title="Home">
