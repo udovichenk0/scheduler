@@ -2,10 +2,81 @@
 @tailwind components;
 @tailwind utilities;
 
-
+html {
+  --dark-blue: #0b0417;
+  --azure: #2ebcff;
+  --white: #ffffff;
+  --light-blue: #0e162e
+}
 @layer base {
     html {
         font-family: Helvetica Nova, sans-serif;
+    }
+    html[data-theme='space'] {
+      --main: #0b0417;
+      --accent: #2ebcff;
+      --primary: #ffffff;
+      --cFont: #fff;
+      --cHover: #182137;
+      --cOpacitySecondFont: #76899b;
+      --cFocus: #1d2b4d;
+      --brand: var(--main);
+      --cBorder: #393b4681;
+      --cSecondBorder: #76899b;
+      --cLeftBottomPanel: var(--accent);
+    }
+
+    html[data-theme='default'] {
+      --main: #2b2c37;
+      --accent: #2ebcff;
+      --primary: #fff;
+      --cFont: #fff;
+      --cHover: #323a4c;
+      --cOpacitySecondFont: #76899b;
+      --cFocus: #394a61;
+      --brand: #23242b;
+      --cBorder: #393b46;
+      --cSecondBorder: #76899b;
+      --cLeftBottomPanel: var(--accent);
+    }
+    html[data-theme='dark'] {
+      --main: #121212; 
+      --accent: #4683cb;
+      --primary: #fffc;
+      --cFont: #fffc;
+      --cHover: #28394e;
+      --cOpacitySecondFont: #ffffff4d;
+      --cFocus: #1c2837;
+      --brand: var(--main);
+      --cBorder: #393b4681;
+      --cSecondBorder: #ffffffcc;
+      --cLeftBottomPanel: #ffffffcc;
+    }
+    html[data-theme='light'] {
+      --main: #f9f9f9; 
+      --accent: #4683cb;
+      --primary: #596175;
+      --cFont: #2b2c37;
+      --cHover: #d3e3f6;
+      --cOpacitySecondFont: #76899b;
+      --cFocus: #c7d6eb;
+      --brand: #f5f7fb;
+      --cBorder: #d3e3f6;
+      --cSecondBorder: #76899b;
+      --cLeftBottomPanel: var(--accent);
+    }
+    html[data-theme='grey'] {
+      --main: #f4f4f4; 
+      --accent: #54759c;
+      --primary: #333333cc;
+      --cFont: #2b2c37;
+      --cHover: #dfe7f0;
+      --cOpacitySecondFont: #333333cc;
+      --cFocus: #dfe7f0;
+      --brand: var(--main);
+      --cBorder: #d3e3f6;
+      --cSecondBorder: #76899b;
+      --cLeftBottomPanel: var(--accent)
     }
 }
 @layer components {
@@ -13,3 +84,8 @@
       @apply select-none fill-current w-[1em] h-[1em] inline-block text-inherit box-content;
     }
   }
+
+
+/* default
+light
+grey */
