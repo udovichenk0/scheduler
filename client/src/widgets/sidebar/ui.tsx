@@ -1,12 +1,12 @@
 import { routes } from "@/shared/config/router"
-import { Button } from "@/shared/ui/buttons/button/ui"
-import { HoverIconButton } from "@/shared/ui/buttons/hover-icon-button"
-import { MainButton } from "@/shared/ui/buttons/main-button"
+import { IconButton } from "@/shared/ui/buttons/icon-button"
+import { Button } from "@/shared/ui/buttons/main-button/ui"
 import { Icon } from "@/shared/ui/icon/icon"
 import { BaseModal } from "@/shared/ui/modals/base-modal/ui"
 // eslint-disable-next-line boundaries/element-types
 import { Settings } from "../settings"
 import { modal } from './sidebar.modal'
+import { SideLink } from "./ui/side-link"
 
 export const Sidebar = () => {
   return (
@@ -25,22 +25,18 @@ export const Sidebar = () => {
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            {/* <Button route={routes.inbox} title="Inbox" size={'small'} intent={'base-white'} icon={<Icon name="common/inbox" className="fill-azure h-[20px] w-[20px]"/>} />
-            <Button title="Today" size={'small'} intent={'base-white'} icon={<Icon name="common/star" className="fill-azure h-[20px] w-[20px]"/>} />
-            <Button title="Upcoming" size={'small'} intent={'base-white'} icon={<Icon name="common/upcoming" className="fill-azure h-[20px] w-[20px]"/>} />
-            <Button title="Calendar" size={'small'} intent={'base-white'} icon={<Icon name="common/calendar" className="fill-azure h-[20px] w-[20px]"/>} />	 */}
-            <MainButton route={routes.inbox} title="Inbox" icon="common/inbox"/>
-            <MainButton route={routes.inbox} title="Today" icon="common/star"/>
-            <MainButton route={routes.inbox} title="Upcoming" icon="common/upcoming"/>
-            <MainButton route={routes.inbox} title="Calendar" icon="common/calendar"/>
+            <SideLink route={routes.inbox} title="Inbox" iconName="common/inbox"/>
+            <SideLink route={routes.inbox} title="Today" iconName="common/star"/>
+            <SideLink route={routes.inbox} title="Upcoming" iconName="common/upcoming"/>
+            <SideLink route={routes.inbox} title="Calendar" iconName="common/calendar"/>
           </div>
         </div>
         <div className="px-2 py-1 h-full">
-          <Button size={'small'} title="New Project" intent={'base-gray'} icon={<Icon name="common/plus" />} />
+          <Button size={'sm'} title="New Project" className="w-full" intent={'secondary'} icon={<Icon name="common/plus" />} />
         </div>
         <div className="px-2 py-1 border-t-[1px] border-cBorder flex">
           <span>
-            <HoverIconButton icon={<Icon name="common/settings" className="text-cLeftBottomPanel h-[20px] w-[20px]"/>} action={() => modal.toggleTriggered()}/>
+            <IconButton size={'base'} iconName="common/settings" intent={'leftBottonPanel'} onClick={() => modal.toggleTriggered()}/>
             <BaseModal modal={modal}>
               <Settings />
             </BaseModal>

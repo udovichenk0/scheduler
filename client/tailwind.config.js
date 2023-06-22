@@ -25,7 +25,10 @@ export default {
         'cFocus': 'var(--cFocus)',
         'cOpacitySecondFont': 'var(--cOpacitySecondFont)',
         'cSecondBorder': 'var(--cSecondBorder)',
-        'cLeftBottomPanel': 'var(--cLeftBottomPanel)'
+        'cLeftBottomPanel': 'var(--cLeftBottomPanel)',
+        'cButtonBg': 'var(--cButtonBg)',
+        'cButtunHover': 'var(--cButtunHover)',
+        'cButtonText': 'var(--cButtonText)'
       }
     },
   },

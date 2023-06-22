@@ -1,7 +1,7 @@
-import { useUnit } from 'effector-react'
+import { useUnit, useGate } from 'effector-react'
 import { Fragment } from 'react'
 import { ThemeBox } from './theme-box'
-import { $theme, themeChanged } from './theme.model'
+import { $theme, themeGate, themeChanged } from './theme.model'
 const newthemes = [
   {title: 'Space', theme: 'space' as const, mainBg: 'bg-main-blue', topBox: 'bg-azure', text: 'text-[#ffffff]', leftBox: 'bg-[#1c283e]', rightBox: 'bg-[#121227]'},
   {title: 'Default', theme: 'default' as const, mainBg: 'bg-[#23242b]', topBox: 'bg-azure', text: 'text-[#ffffff]', leftBox: 'bg-[#fff]', rightBox: 'bg-[#76899b]'},
@@ -11,6 +11,7 @@ const newthemes = [
 ]
 export const ThemeTab = () => {
   const [changeTheme, activeTheme] = useUnit([themeChanged, $theme])
+  useGate(themeGate)
   return (
     <div className='px-8'>
       <h2 className='text-center mb-[18px] text-cFont'>Select color theme</h2>

@@ -24,6 +24,8 @@ html {
       --cBorder: #393b4681;
       --cSecondBorder: #76899b;
       --cLeftBottomPanel: var(--accent);
+      --cButtonBg: #2384b9;
+      --cButtunHover: #217aaa;
     }
 
     html[data-theme='default'] {
@@ -38,6 +40,9 @@ html {
       --cBorder: #393b46;
       --cSecondBorder: #76899b;
       --cLeftBottomPanel: var(--accent);
+      --cButtonBg: #11879c;
+      --cButtunHover: #0f7a8d;
+      --cButtonText: var(--cFont)
     }
     html[data-theme='dark'] {
       --main: #121212; 
@@ -51,6 +56,9 @@ html {
       --cBorder: #393b4681;
       --cSecondBorder: #ffffffcc;
       --cLeftBottomPanel: #ffffffcc;
+      --cButtonBg: #366193;
+      --cButtunHover: #315885;
+      --cButtonText: var(--cFont)
     }
     html[data-theme='light'] {
       --main: #f9f9f9; 
@@ -64,6 +72,9 @@ html {
       --cBorder: #d3e3f6;
       --cSecondBorder: #76899b;
       --cLeftBottomPanel: var(--accent);
+      --cButtonBg: #7ba6d8;
+      --cButtunHover: #82b0e4;
+      --cButtonText: #f9f9f9
     }
     html[data-theme='grey'] {
       --main: #f4f4f4; 
@@ -76,7 +87,10 @@ html {
       --brand: var(--main);
       --cBorder: #d3e3f6;
       --cSecondBorder: #76899b;
-      --cLeftBottomPanel: var(--accent)
+      --cLeftBottomPanel: var(--accent);
+      --cButtonBg: #849bb6;
+      --cButtunHover: #8aa3c0;
+      --cButtonText: #fff
     }
 }
 @layer components {

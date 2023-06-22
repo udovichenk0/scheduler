@@ -1,24 +1,57 @@
-import { RouteInstance, RouteParams } from "atomic-router"
-import { Link } from "atomic-router-react"
-import { Icon, IconName } from "../../icon"
+import { cva, VariantProps } from "class-variance-authority";
+import clsx from 'clsx';
+import { ButtonHTMLAttributes, ReactNode } from "react";
 
-export const MainButton = ({title, route, icon}:{title: string, route?: RouteInstance<RouteParams>, icon: IconName}) => {
+export const buttonCva = cva('outline-none rounded-[5px] transition-colors duration-150', {
+  variants: {
+    intent: {
+      outline: [
+        "border-[1px]",
+        "border-cSecondBorder",
+        "hover:bg-cHover",
+      ],
+      primary: [
+        "hover:bg-cHover",
+        "text-primary",
+        "text-sm"
+      ],
+      secondary: [
+        "hover:bg-cHover",
+        "text-cOpacitySecondFont",
+        "text-[12px]"
+      ],
+      filled: [
+        "bg-cButtonBg",
+        "hover:bg-cButtunHover",
+        "text-cButtonText"
+      ],
+    },
+    size: {
+      xs: ["p-1"],
+      sm: ["py-1", "px-2"],
+      base: ["py-2", "px-4"],
+      m: ["py-2", "px-5"],
+      lg: ["py-3", "px-6"]
+    },
+  },
+  defaultVariants: {
+    intent: 'outline'
+  }
+})
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonCva> {
+    icon?: ReactNode,
+    title?: string,
+}
+export const Button = ({ intent, size, icon, title, ...props }: ButtonProps) => {
+  const { className, ...rest } = props
   return (
     <>
-      {route?
-        <Link to={route}>
-          <div className='flex gap-4 text-sm py-1 px-2 items-center jusfity-center text-primary outline-none transition-colors duration-150 hover:bg-cHover rounded-[5px]'>
-            <Icon name={icon} className="fill-accent h-[20px] w-[20px]"/> 
-            {title}
-          </div>
-        </Link>
-        : <button>
-          <div className={`flex gap-4 text-sm py-1 px-2 items-center jusfity-center text-primary outline-none transition-colors duration-150 hover:bg-cHover rounded-[5px]`}>
-            <Icon name={icon} className="fill-accent h-[20px] w-[20px]"/> 
-            <span>{title}</span>
-          </div>
-        </button>
-      }
+      <button className={clsx(buttonCva({ size, intent }), className)} {...rest}>
+        <div className='flex gap-4 items-center jusfity-center'>
+          {!!icon && icon } {title}
+        </div>
+      </button>
     </>
   )
 }

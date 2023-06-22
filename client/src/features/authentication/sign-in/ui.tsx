@@ -1,7 +1,7 @@
 import { useUnit } from "effector-react"
 import { FormEvent, useEffect, useRef, useState } from "react"
 import { DisableButton } from "@/shared/ui/buttons/disable-button"
-import { HoverIconButton } from "@/shared/ui/buttons/hover-icon-button"
+import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Icon } from "@/shared/ui/icon/icon"
 import { Input } from "@/shared/ui/input"
 import { $email } from "../by-email"
@@ -33,7 +33,7 @@ export const Signin = ({showEmailForm}:{showEmailForm: () => void}) => {
   return (
     <div className="relative text-center text-cFont">
       <span className="absolute left-[-20px]">
-        <HoverIconButton icon={<Icon name="common/arrow"/>} action={() => showEmailForm()}/>
+        <IconButton intent={'primary'} size={'m'} iconName="common/arrow" onClick={() => showEmailForm()}/>
       </span>
       <h2 className="text-lg mb-3 font-semibold">Authorization</h2>
       <p className="text-sm mb-7">Login in to your account using the address {email}</p>

@@ -1,4 +1,4 @@
-import { ReactNode, useContext } from "react"
+import { ReactNode } from "react"
 /* eslint-disable boundaries/element-types */
 import { Sidebar } from "@/widgets/sidebar/ui"
 import { Icon, IconName } from "@/shared/ui/icon/icon"

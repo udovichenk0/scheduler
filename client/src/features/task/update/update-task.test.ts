@@ -1,4 +1,4 @@
-import { fork, allSettled, createEvent } from 'effector'
+import { fork, allSettled } from 'effector'
 import { test, expect, vi } from 'vitest'
 import { $tasksKv } from '@/entities/task'
 import { updateTaskQuery } from '@/shared/api/task'
