@@ -23,7 +23,7 @@ model task {
   title       String
   description String?
   status      Status    @default(INPROGRESS)
-  start_date  DateTime
+  start_date  DateTime?
   user        user      @relation(fields: [user_id], references: [id])
   user_id     Int
 }
