@@ -1,5 +1,4 @@
 import { combine, createEvent, createStore, sample } from "effector"
-import { debug } from "patronum"
 
 export const abstractTaskFactory = () => {
 
@@ -13,7 +12,6 @@ export const abstractTaskFactory = () => {
   const $description = createStore<string | null>('')
   const $status = createStore<'FINISHED' | 'CANCELED' | 'INPROGRESS'>('INPROGRESS')
   const $startDate = createStore<Date>(new Date())
-  debug($title, $description)
   const $isDirty = createStore(false)
   const $isNotAllowToSubmit = combine($isDirty, $title, (isDirty, title) => !isDirty || !title.length)
   const $fields = combine($title, $description, $status, $startDate,

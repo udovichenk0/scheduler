@@ -5,7 +5,9 @@ import {createBrowserHistory} from "history";
 import {appStarted} from "../init";
 export const routes = {
   home: createRoute(),
-  inbox: createRoute()
+  inbox: createRoute(),
+  upcoming: createRoute(),
+  calendar: createRoute()
 }
 export const router = createHistoryRouter({
   routes: [
@@ -16,6 +18,14 @@ export const router = createHistoryRouter({
     {
       route: [routes.inbox],
       path: '/inbox'
+    },
+    {
+      route: [routes.upcoming],
+      path: '/upcoming'
+    },
+    {
+      route: [routes.calendar],
+      path: '/calendar'
     }
   ]
 })

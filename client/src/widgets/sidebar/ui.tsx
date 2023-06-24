@@ -1,3 +1,4 @@
+import { createRoute } from "atomic-router"
 import { routes } from "@/shared/config/router"
 import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Button } from "@/shared/ui/buttons/main-button/ui"
@@ -26,9 +27,9 @@ export const Sidebar = () => {
           </div>
           <div className="flex flex-col gap-2">
             <SideLink route={routes.inbox} title="Inbox" iconName="common/inbox"/>
-            <SideLink route={routes.inbox} title="Today" iconName="common/star"/>
-            <SideLink route={routes.inbox} title="Upcoming" iconName="common/upcoming"/>
-            <SideLink route={routes.inbox} title="Calendar" iconName="common/calendar"/>
+            <SideLink route={routes.home} title="Today" iconName="common/star"/>
+            <SideLink route={routes.upcoming} title="Upcoming" iconName="common/upcoming"/>
+            <SideLink route={routes.calendar} title="Calendar" iconName="common/calendar"/>
           </div>
         </div>
         <div className="px-2 py-1 h-full">
