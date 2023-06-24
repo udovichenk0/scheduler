@@ -1,9 +1,9 @@
 import { ReactNode } from "react"
 /* eslint-disable boundaries/element-types */
 import { Sidebar } from "@/widgets/sidebar/ui"
+import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon, IconName } from "@/shared/ui/icon/icon"
 import { Header } from "./ui/header"
-
 type PropsType = {
 	children: ReactNode,
 	iconName: IconName,
@@ -19,7 +19,13 @@ export const MainLayout = ({ children, iconName, title, action }: PropsType) => 
         <Header icon={iconName} title={title}/>
         {children}
         <div className="px-2 py-2">
-          <CreateTask action={action}/>
+          <Button 
+            onClick={() => action()} 
+            title="New Task" 
+            icon={<Icon name="common/plus"/>} 
+            intent={'primary'} 
+            size={'base'} 
+            className="!text-accent"/>
         </div>
       </div>
     </div>

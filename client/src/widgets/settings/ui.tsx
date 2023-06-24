@@ -1,8 +1,7 @@
-import { useUnit } from "effector-react";
+import { useUnit, useGate } from "effector-react";
 
-import { Icon } from "@/shared/ui/icon/icon";
 import { Tabs } from "@/shared/ui/tab";
-import { TabsEnum, tabModel } from "./settings.model";
+import { TabsEnum, gate, tabModel } from "./settings.model";
 import { SynchronizationTab, GeneralTab } from './tabs'
 import { ThemeTab } from "./tabs/theme";
 
@@ -12,18 +11,20 @@ const tabs = [
   { iconName: 'palette' as const, title: 'Theme', label: TabsEnum.theme}
 ]
 
-const tabClassName = 'flex aria-[pressed=true]:text-cFont text-[#76899b] aria-[pressed=false]:hover:text-primary flex-col gap-3 items-center'
 
 export const Settings = () => {
   const [activeTab, selectTab] = useUnit([tabModel.$activeTab, tabModel.tabSelected])
+  useGate(gate)
   return (
     <Tabs>
       <Tabs.TabList onChange={selectTab} className="flex gap-5 border-b-[1px] border-cBorder px-6 pb-4">
         {tabs.map(({iconName, title, label}) => 
-          <Tabs.Tab label={label} aria-pressed={activeTab == label} key={label} className={tabClassName}>
-            <Icon name={`common/${iconName}`} className="w-8 h-8"/>
-            <span className="text-inherit">{title}</span>
-          </Tabs.Tab>
+          <Tabs.Tab
+            label={label} 
+            title={title} 
+            iconName={`common/${iconName}`} 
+            key={label} 
+            className={`flex ${activeTab == label && 'text-cFont'} text-[#76899b] ${activeTab != label && 'hover:text-primary'} flex-col gap-3 items-center`}/>
         )}
       </Tabs.TabList>
       <Tabs.TabPanel activeValue={activeTab} label={TabsEnum.general}><GeneralTab/></Tabs.TabPanel>
