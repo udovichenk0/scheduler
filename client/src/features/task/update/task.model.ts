@@ -7,21 +7,27 @@ import { abstractTaskFactory } from "../abstract/abstract.model";
 
 export const updateTaskFactory = ({
   taskModel,
-  defaultType
+  defaultType,
+  defaultDate
 }: {
   taskModel: ExpensionTaskType,
-  defaultType: 'inbox' | 'unplaced'
+  defaultType: 'inbox' | 'unplaced',
+  defaultDate: Date | null
 }) => {
+
+  const dateChanged = createEvent()
+
   const $type = createStore<'inbox' | 'unplaced'>(defaultType)
+  const $date = createStore<Date | null>(defaultDate)
   const changeStatusTriggered = createEvent<number>()
   const abstract = abstractTaskFactory()
   const { $fields, $isDirty, $title, $description, $status, resetFieldsTriggered, $isNotAllowToSubmit } = abstract
 
   sample({
     clock: taskModel.updateTaskClosed,
-    source: {fields: $fields, type: $type},
+    source: {fields: $fields, type: $type, date: $date},
     filter: and($title, $isDirty),
-    fn: ({fields, type}, id) => ({body: {...fields, type, id}}),
+    fn: ({fields, type, date}, id) => ({body: {...fields, type,start_date: date, id}}),
     target: updateTaskQuery.start
   })
   sample({
@@ -76,6 +82,8 @@ export const updateTaskFactory = ({
   })
   return {
     ...abstract,
+    dateChanged,
+    $type,
     changeStatusTriggered
   }
 }

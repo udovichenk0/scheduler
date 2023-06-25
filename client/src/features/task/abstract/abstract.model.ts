@@ -6,7 +6,6 @@ export const abstractTaskFactory = () => {
   const titleChanged = createEvent<string>()
   const descriptionChanged = createEvent<string>()
   const resetFieldsTriggered = createEvent()
-  const dateChanged = createEvent()
 
   const $title = createStore('')
   const $description = createStore<string | null>('')
@@ -14,8 +13,8 @@ export const abstractTaskFactory = () => {
   const $startDate = createStore<Date>(new Date())
   const $isDirty = createStore(false)
   const $isNotAllowToSubmit = combine($isDirty, $title, (isDirty, title) => !isDirty || !title.length)
-  const $fields = combine($title, $description, $status, $startDate,
-    (title, description, status, date) => ({title, description, status, start_date: date}))
+  const $fields = combine($title, $description, $status,
+    (title, description, status) => ({title, description, status}))
   sample({
     clock: resetFieldsTriggered,
     target: [$title.reinit, $description.reinit, $status.reinit, $isDirty.reinit]

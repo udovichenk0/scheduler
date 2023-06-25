@@ -7,10 +7,10 @@ import { taskExpansionFactory } from "@/shared/lib/block-expansion";
 
 export const $tasks = combine($tasksKv, (kv) => {
   return Object.values(kv)
-    .filter(({start_date}) => start_date)
+    .filter(({type}) => type === 'inbox')
 })
 debug($tasks)
 export const taskModel = taskExpansionFactory()
-export const updateTaskModel = updateTaskFactory({taskModel, defaultType: 'inbox'})
-export const createTaskModel = createTaskFactory({taskModel, defaultType: 'inbox'})
+export const updateTaskModel = updateTaskFactory({taskModel, defaultType: 'inbox', defaultDate: null})
+export const createTaskModel = createTaskFactory({taskModel, defaultType: 'inbox', defaultDate: null})
 

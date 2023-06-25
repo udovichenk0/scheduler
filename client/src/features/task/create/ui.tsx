@@ -1,5 +1,8 @@
 import { useUnit } from "effector-react"
+import { capitalizeLetter } from "@/shared/lib/capitalize-letter"
 import { Checkbox } from "@/shared/ui/buttons/checkbox"
+import { Button } from "@/shared/ui/buttons/main-button"
+import { Icon } from "@/shared/ui/icon"
 import { CreateTaskType } from "./task.model"
 
 export const CreateTaskForm = ({
@@ -11,6 +14,7 @@ export const CreateTaskForm = ({
     title, 
     note, 
     status,
+    type,
     changeStatus,
     changeDescription,
     changeTitle
@@ -18,6 +22,7 @@ export const CreateTaskForm = ({
     createTaskModel.$title, 
     createTaskModel.$description, 
     createTaskModel.$status, 
+    createTaskModel.$type,
     createTaskModel.statusChanged, 
     createTaskModel.descriptionChanged, 
     createTaskModel.titleChanged
@@ -34,6 +39,9 @@ export const CreateTaskForm = ({
           placeholder={note ? '' : 'Note'} 
           value={note || ''} 
           onChange={(e) => changeDescription(e.target.value)}/>
+        <span>
+          <Button icon={<Icon name={'common/inbox'} className="text-accent w-[18px] h-[18px]"/>} title={capitalizeLetter(type)} size={'sm'} intent={'primary'}/>
+        </span>
       </div>
     </div>
   )

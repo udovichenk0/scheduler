@@ -5,7 +5,7 @@ export const taskDtoSchema = z.object({
   title: z.string(),
   description: z.string().nullable(),
   status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
-  start_date: z.coerce.date(),
+  start_date: z.coerce.date().nullable(),
   user_id: z.number(),
   type: z.enum(['inbox', 'unplaced'])
 })

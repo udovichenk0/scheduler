@@ -3,25 +3,27 @@ import { $tasksKv } from "@/entities/task";
 import { createTaskQuery } from "@/shared/api/task";
 import { ExpensionTaskType } from "@/shared/lib/block-expansion";
 import { abstractTaskFactory } from "../abstract/abstract.model";
-export const createTaskFactory = ({ taskModel, defaultType }: {
+export const createTaskFactory = ({ 
+  taskModel, 
+  defaultType,
+  defaultDate
+}: {
   taskModel: ExpensionTaskType,
-  defaultType: 'inbox' | 'unplaced'
+  defaultType: 'inbox' | 'unplaced',
+  defaultDate: Date | null
 }) => {
   const $type =  createStore<'inbox' | 'unplaced'>(defaultType) 
-
+  const $date = createStore<Date | null>(defaultDate)
   const abstract = abstractTaskFactory()
   const { $fields,$isNotAllowToSubmit, resetFieldsTriggered } = abstract
 
-
-  // fetch on createTaskClosed
   sample({
     clock: taskModel.createTaskClosed,
-    source: {fields: $fields, type: $type},
+    source: {fields: $fields, type: $type, date: $date},
     filter: ({fields}) => Boolean(fields.title.length),
-    fn: ({fields, type}) => ({body: {...fields, type}}),
+    fn: ({fields, type, date}) => ({body: {...fields,start_date: date, type}}),
     target: createTaskQuery.start
   })
-  // reset fields and push result to the store on fetch success 
   sample({
     clock: createTaskQuery.finished.success,
     source: $tasksKv,
@@ -29,13 +31,13 @@ export const createTaskFactory = ({ taskModel, defaultType }: {
     target: [$tasksKv, resetFieldsTriggered]
   })
 
-  // close the task and reset fields on task closed
   sample({
     clock: taskModel.closeTaskTriggered,
     filter: $isNotAllowToSubmit,
     target: [taskModel.$newTask.reinit!, resetFieldsTriggered]
   })
   return {
+    $type,
     ...abstract
   }
 }

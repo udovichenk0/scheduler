@@ -28,7 +28,8 @@ export default {
         'cLeftBottomPanel': 'var(--cLeftBottomPanel)',
         'cButtonBg': 'var(--cButtonBg)',
         'cButtunHover': 'var(--cButtunHover)',
-        'cButtonText': 'var(--cButtonText)'
+        'cButtonText': 'var(--cButtonText)',
+        'cTaskEdit': 'var(--cTaskEdit)'
       }
     },
   },
