@@ -1,31 +1,35 @@
-import { createEvent, sample } from "effector";
+import { createEvent, createStore, sample } from "effector";
 import { and, not, spread } from "patronum";
 import { $tasksKv } from "@/entities/task";
-import { updateTaskQuery, updateTaskStatusQuery } from "@/shared/api/task";
+import { updateStatusQuery, updateTaskQuery } from "@/shared/api/task";
 import { ExpensionTaskType } from "@/shared/lib/block-expansion";
 import { abstractTaskFactory } from "../abstract/abstract.model";
 
-export const updateTaskFactory = (taskModel: ExpensionTaskType) => {
+export const updateTaskFactory = ({
+  taskModel,
+  defaultType
+}: {
+  taskModel: ExpensionTaskType,
+  defaultType: 'inbox' | 'unplaced'
+}) => {
+  const $type = createStore<'inbox' | 'unplaced'>(defaultType)
   const changeStatusTriggered = createEvent<number>()
   const abstract = abstractTaskFactory()
   const { $fields, $isDirty, $title, $description, $status, resetFieldsTriggered, $isNotAllowToSubmit } = abstract
 
-  // start fetching if $title is not empty and $isDirty is true
   sample({
     clock: taskModel.updateTaskClosed,
-    source: $fields,
+    source: {fields: $fields, type: $type},
     filter: and($title, $isDirty),
-    fn: (fields, id) => ({body: {...fields, id}}),
+    fn: ({fields, type}, id) => ({body: {...fields, type, id}}),
     target: updateTaskQuery.start
   })
-  // after request succeed set the data to the store and reset stores
   sample({
-    clock: updateTaskQuery.finished.success,
+    clock: [updateTaskQuery.finished.success, updateStatusQuery.finished.success],
     source: $tasksKv,
     fn: (kv, {result:{result}}) => ({...kv, [result.id]: result}),
     target: [$tasksKv, taskModel.$taskId.reinit!, resetFieldsTriggered]
   })
-  // fill the input fields when updateTask opened 
   sample({
     clock: taskModel.updateTaskOpened,
     source: $tasksKv,
@@ -38,45 +42,33 @@ export const updateTaskFactory = (taskModel: ExpensionTaskType) => {
       }
     })
   })
-  // start fetch on status change 
 
   sample({
     clock: changeStatusTriggered,
     source: $tasksKv,
     // fix it
     fn: (kv, id) => ({body: {status: kv[id].status == 'FINISHED' ? 'INPROGRESS' as const : 'FINISHED' as const, id}}),
-    target: updateTaskStatusQuery.start
-  })
-  // set the result after status updated
-  sample({
-    clock: updateTaskStatusQuery.finished.success,
-    source: $tasksKv,
-    fn: (kv, {result:{result}}) => ({...kv, [result.id]: result}),
-    target: $tasksKv
+    target: updateStatusQuery.start
   })
 
-  // if we pressed createTaskOpened and its not allow to submit so that we set $createdToggled to true 
   sample({
     clock: taskModel.createTaskOpened,
     filter: not($isNotAllowToSubmit),
     fn: () => true,
     target: taskModel.$createdToggled
   })
-  // if we trigger createTaskOpened and we didn't updated task so then just close the newTask
   sample({
     clock: taskModel.createTaskOpened,
     filter: not(taskModel.$createdToggled),
     fn: () => true,
     target: taskModel.$newTask
   })
-  // otherwise if we updated task and createdToggled is true, then close task after task updated successfully
   sample({
     clock: updateTaskQuery.finished.success,
     filter: taskModel.$createdToggled,
     fn: () => true,
     target: [taskModel.$newTask, taskModel.$createdToggled.reinit]
   })
-  // if we close the task and its not allowded to submit so then resetFields and close updated task
   sample({
     clock: [taskModel.closeTaskTriggered, taskModel.createTaskOpened],
     filter: $isNotAllowToSubmit,

@@ -3,19 +3,15 @@ import { authQuery } from '@/shared/lib/auth-query';
 import { TaskDto, taskDtoSchema } from './task.dto';
 
 const taskContract = zodContract(taskDtoSchema)
-type BodyType = {
-    id: number,
-    title: string;
-    description: string | null;
-    status: "FINISHED" | "CANCELED" | "INPROGRESS";
-    type: 'inbox' | 'unplaced';
-    start_date: Date;
+
+type UpdateStatusBodyType = {
+  id: number,
+  status: "FINISHED" | "CANCELED" | "INPROGRESS"
 }
 
-
-export const updateTaskQuery = authQuery<TaskDto, {body: BodyType}>({
+export const updateStatusQuery = authQuery<TaskDto, { body: UpdateStatusBodyType }>({
   request: {
-    url: 'update-task',
+    url: 'update-status',
     method: 'POST'
   },
   response: {

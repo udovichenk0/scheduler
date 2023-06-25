@@ -11,7 +11,12 @@ import { TokenGuard } from '../token/guards/token-guard';
 import { TaskService } from './task.service';
 import { Request } from 'express';
 import { UserDto } from '../user/dto/user.dto';
-import { TaskCredentialDto, TaskDto } from './dto/task.dto';
+import {
+  CreateTaskCredentialDto,
+  TaskDto,
+  UpdateStatusCredentialDto,
+  UpdateTaskCredentialDto,
+} from './dto/task.dto';
 import { ZodValidationPipe } from 'nestjs-zod';
 
 @Controller('')
@@ -25,10 +30,10 @@ export class TaskController {
     return tasks;
   }
   @Post('create-task')
-  @UsePipes(new ZodValidationPipe(TaskCredentialDto))
+  @UsePipes(new ZodValidationPipe(CreateTaskCredentialDto))
   async createTask(
     @Req() req: Request,
-    @Body() taskCredentials: TaskCredentialDto,
+    @Body() taskCredentials: CreateTaskCredentialDto,
   ) {
     const user = req.session['user'] as UserDto;
     const task = await this.taskService.createOne({
@@ -42,14 +47,28 @@ export class TaskController {
     return TaskDto.create(task);
   }
   @Post('update-task')
-  async updateTask(
-    @Req() req: Request,
-    @Body() taskCredentials: TaskCredentialDto & { id: number },
-  ) {
+  async updateTask(@Body() taskCredentials: UpdateTaskCredentialDto) {
+    const { id, ...credentials } = taskCredentials;
     const task = await this.taskService.updateOne({
-      id: taskCredentials.id,
-      data: taskCredentials,
+      data: credentials,
+      where: {
+        id,
+      },
     });
     return TaskDto.create(task);
+  }
+  @Post('update-status')
+  @UsePipes(new ZodValidationPipe(UpdateStatusCredentialDto))
+  async updateStatus(@Body() taskCredentials: UpdateStatusCredentialDto) {
+    const { status, id } = taskCredentials;
+    const task = await this.taskService.updateStatus({
+      data: {
+        status,
+      },
+      where: {
+        id,
+      },
+    });
+    return task;
   }
 }

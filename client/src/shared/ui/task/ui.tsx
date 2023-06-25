@@ -1,16 +1,16 @@
+import { TaskDto } from "@/shared/api/task";
 import { Checkbox } from "../buttons/checkbox";
 
 export function Task({
-  title, 
-  status, 
+  data,
   onChange, 
   onDoubleClick
 }: {
-    title: string, 
-    status: 'FINISHED' | 'INPROGRESS' | 'CANCELED', 
+    data: TaskDto
     onChange: () => void, 
     onDoubleClick: () => void
 }){
+  const { title, status } = data
   return (
     <button onDoubleClick={onDoubleClick} className="select-none focus:bg-cFocus text-primary cursor-default flex items-center w-full hover:bg-cHover rounded-[5px] px-2 py-2">
       <Checkbox onChange={onChange} status={status}/>

@@ -52,8 +52,10 @@ export const Inbox = () => {
                   <ExpandedTask ref={ref}>
                     <UpdateTaskForm updateTaskModel={updateTaskModel}/>
                   </ExpandedTask>
-                  : <Task onDoubleClick={() => updateTaskOpened(item.id)} title={item.title} status={item.status} 
-                    onChange={() => changeStatus(item.id)}/>}
+                  : <Task 
+                    onDoubleClick={() => updateTaskOpened(item.id)} 
+                    onChange={() => changeStatus(item.id)}
+                    data={item}/>}
               </Fragment>
             )
           })}

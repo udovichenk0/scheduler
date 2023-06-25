@@ -7,6 +7,7 @@ type BodyType = {
     title: string;
     description: string | null;
     status: "FINISHED" | "CANCELED" | "INPROGRESS";
+    type: 'inbox' | 'unplaced';
     start_date: Date;
 }
 

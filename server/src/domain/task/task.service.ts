@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { Prisma } from '@prisma/client';
+import {
+  UpdateStatusCredentialDto,
+  UpdateTaskCredentialDto,
+} from './dto/task.dto';
+import { z } from 'zod';
 @Injectable()
 export class TaskService {
   constructor(private prismaService: PrismaService) {}
@@ -18,12 +23,17 @@ export class TaskService {
     });
     return task;
   }
-  updateOne({ id, data }: { id: number; data: Prisma.taskUpdateInput }) {
+  updateOne({ data, where }: Prisma.taskUpdateArgs) {
     const task = this.prismaService.task.update({
       data,
-      where: {
-        id,
-      },
+      where,
+    });
+    return task;
+  }
+  updateStatus({ data, where }: Prisma.taskUpdateArgs) {
+    const task = this.prismaService.task.update({
+      data,
+      where,
     });
     return task;
   }

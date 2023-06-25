@@ -1,10 +1,14 @@
-import { sample } from "effector";
+import { createStore, sample } from "effector";
 import { $tasksKv } from "@/entities/task";
 import { createTaskQuery } from "@/shared/api/task";
 import { ExpensionTaskType } from "@/shared/lib/block-expansion";
 import { abstractTaskFactory } from "../abstract/abstract.model";
+export const createTaskFactory = ({ taskModel, defaultType }: {
+  taskModel: ExpensionTaskType,
+  defaultType: 'inbox' | 'unplaced'
+}) => {
+  const $type =  createStore<'inbox' | 'unplaced'>(defaultType) 
 
-export const createTaskFactory = (taskModel: ExpensionTaskType) => {
   const abstract = abstractTaskFactory()
   const { $fields,$isNotAllowToSubmit, resetFieldsTriggered } = abstract
 
@@ -12,9 +16,9 @@ export const createTaskFactory = (taskModel: ExpensionTaskType) => {
   // fetch on createTaskClosed
   sample({
     clock: taskModel.createTaskClosed,
-    source: $fields,
-    filter: ({title}) => Boolean(title.length),
-    fn: (fields) => ({body: fields}),
+    source: {fields: $fields, type: $type},
+    filter: ({fields}) => Boolean(fields.title.length),
+    fn: ({fields, type}) => ({body: {...fields, type}}),
     target: createTaskQuery.start
   })
   // reset fields and push result to the store on fetch success 
