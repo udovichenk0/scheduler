@@ -1,17 +1,13 @@
-import { Icon, IconName } from "../icon";
+import { ButtonHTMLAttributes, ReactNode } from "react";
 
-interface TabProps {
+interface TabProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+	children: ReactNode,
 	label: number,
 	className?: string,
-  iconName: IconName,
-  title: string,
 }
 
-export function Tab({label, title, iconName,className, ...props }:TabProps){
+export function Tab({children,label,...props}:TabProps){
   return (
-    <button {...props} className={className}>
-      <Icon name={iconName} className="w-8 h-8"/>
-      <span className="text-inherit">{title}</span>
-    </button>
+    <button {...props} onClick={props.onClick} className={props.className}>{children}</button>
   )
 }
