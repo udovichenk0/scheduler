@@ -22,7 +22,6 @@ export const updateTaskFactory = ({
   const changeStatusTriggered = createEvent<number>()
   const abstract = abstractTaskFactory()
   const { $fields, $isDirty, $title, $description, $status, resetFieldsTriggered, $isNotAllowToSubmit } = abstract
-
   sample({
     clock: taskModel.updateTaskClosed,
     source: {fields: $fields, type: $type, date: $date},
@@ -39,7 +38,7 @@ export const updateTaskFactory = ({
   sample({
     clock: taskModel.updateTaskOpened,
     source: $tasksKv,
-    fn: (kv, id) => ({...kv[id]}),
+    fn: (kv, {task}) => ({...kv[task.id]}),
     target: spread({
       targets: {
         title: $title,
@@ -69,12 +68,14 @@ export const updateTaskFactory = ({
     fn: () => true,
     target: taskModel.$newTask
   })
+  
   sample({
     clock: updateTaskQuery.finished.success,
     filter: taskModel.$createdToggled,
     fn: () => true,
     target: [taskModel.$newTask, taskModel.$createdToggled.reinit]
   })
+
   sample({
     clock: [taskModel.closeTaskTriggered, taskModel.createTaskOpened],
     filter: $isNotAllowToSubmit,
@@ -84,6 +85,7 @@ export const updateTaskFactory = ({
     ...abstract,
     dateChanged,
     $type,
+    $date,
     changeStatusTriggered
   }
 }

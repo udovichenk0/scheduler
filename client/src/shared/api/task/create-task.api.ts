@@ -22,5 +22,3 @@ export const createTaskQuery = authQuery<TaskDto, {body: BodyType}>({
     mapData: (data) => data
   }
 })
-
-//url: ({id}:{id: number}) => `create-task/${id}`

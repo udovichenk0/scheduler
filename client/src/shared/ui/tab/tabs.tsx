@@ -19,4 +19,3 @@ export const Tabs = ({children, className}: TabsProps) => {
 Tabs.TabPanel = TabPanel
 Tabs.TabList = TabList
 Tabs.Tab = Tab
-// Tabs.Tab = Tab

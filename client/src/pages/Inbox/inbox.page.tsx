@@ -21,6 +21,7 @@ const onClickOutside = (e:MouseEvent, ref:RefObject<HTMLDivElement>, closeTask: 
 }
 export const Inbox = () => {
   const ref = useRef<HTMLDivElement>(null)
+  const newRef = useRef<HTMLDivElement>(null)
   const [
     tasks,
     changeStatus,
@@ -42,8 +43,8 @@ export const Inbox = () => {
   return (
     <MainLayout iconName={'common/inbox'}
       title={'Inbox'}
-      action={createTaskOpened}>
-      <div onClick={(e) => onClickOutside(e, ref, closeTaskTriggered)} className="px-5">
+      action={() => createTaskOpened({ref})}>
+      <div ref={newRef} onClick={(e) => onClickOutside(e, ref, closeTaskTriggered)} className="px-5">
         <div>
           {tasks.map((item, id) => {
             return (
@@ -53,7 +54,7 @@ export const Inbox = () => {
                     <UpdateTaskForm updateTaskModel={updateTaskModel}/>
                   </ExpandedTask>
                   : <Task 
-                    onDoubleClick={() => updateTaskOpened(item.id)} 
+                    onDoubleClick={() => updateTaskOpened({task: item,ref})} 
                     onChange={() => changeStatus(item.id)}
                     data={item}/>}
               </Fragment>

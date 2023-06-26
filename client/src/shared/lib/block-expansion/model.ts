@@ -1,12 +1,16 @@
 import { createEvent, createStore, sample } from "effector"
+import { spread } from "patronum";
+import { RefObject } from 'react';
+import { TaskDto } from "@/shared/api/task";
 
 export const taskExpansionFactory = () => {
   const closeTaskTriggered = createEvent()
   const createTaskClosed = createEvent()
   const updateTaskClosed = createEvent<number>()
-  const updateTaskOpened = createEvent<number>()
-  const createTaskOpened = createEvent()
-  
+  const updateTaskOpened = createEvent<{task: TaskDto, ref: RefObject<HTMLDivElement>}>()
+  const createTaskOpened = createEvent<{ref: RefObject<HTMLDivElement>}>()
+
+  const $ref = createStore<RefObject<HTMLDivElement> | null>(null)
   const $createdToggled = createStore(false)
   const $newTask = createStore(false)
   const $taskId = createStore<number | null>(null)
@@ -25,7 +29,13 @@ export const taskExpansionFactory = () => {
   sample({
     clock: updateTaskOpened,
     filter: Boolean,
-    target: $taskId
+    fn: ({task, ref}) => ({id: task.id, ref}), 
+    target: spread({
+      targets: {
+        id: $taskId,
+        ref: $ref
+      }
+    })
   })
   return {
     updateTaskClosed,

@@ -40,7 +40,10 @@ export const CreateTaskForm = ({
           value={note || ''} 
           onChange={(e) => changeDescription(e.target.value)}/>
         <span>
-          <Button icon={<Icon name={'common/inbox'} className="text-accent w-[18px] h-[18px]"/>} title={capitalizeLetter(type)} size={'sm'} intent={'primary'}/>
+          <Button 
+            icon={<Icon name={'common/inbox'} className="text-accent w-[18px] h-[18px]"/>} 
+            title={capitalizeLetter(type)} size={'sm'} 
+            intent={'primary'}/>
         </span>
       </div>
     </div>

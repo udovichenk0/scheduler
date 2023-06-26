@@ -32,7 +32,7 @@ export class TokenService {
   }
   async refresh(refreshToken: string) {
     if (!refreshToken) {
-      throw new NotFoundException(tokenNotFound);
+      return null;
     }
     const userData = await this.refreshService.verifyRefresh(refreshToken);
     if (!userData) {
