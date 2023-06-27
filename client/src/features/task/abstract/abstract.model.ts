@@ -2,22 +2,26 @@ import { combine, createEvent, createStore, sample } from "effector"
 
 export const abstractTaskFactory = () => {
 
-  const statusChanged = createEvent<number | void>()
+  const statusChanged = createEvent<'FINISHED' | 'INPROGRESS'>()
   const titleChanged = createEvent<string>()
+  const typeChanged = createEvent()
+  const dateChanged = createEvent()
   const descriptionChanged = createEvent<string>()
   const resetFieldsTriggered = createEvent()
 
   const $title = createStore('')
   const $description = createStore<string | null>('')
-  const $status = createStore<'FINISHED' | 'CANCELED' | 'INPROGRESS'>('INPROGRESS')
-  const $startDate = createStore<Date>(new Date())
+  const $status = createStore<'FINISHED' | 'INPROGRESS'>('INPROGRESS')
+  const $startDate = createStore<Date | null>(new Date())
+  const $type = createStore<'inbox' | 'unplaced'>('inbox')
+
   const $isDirty = createStore(false)
-  const $isNotAllowToSubmit = combine($isDirty, $title, (isDirty, title) => !isDirty || !title.length)
-  const $fields = combine($title, $description, $status,
-    (title, description, status) => ({title, description, status}))
+  const $isAllowToSubmit = combine($isDirty, $title , (isDirty, title) => isDirty && Boolean(title))
+  const $fields = combine($title, $description, $status,$type, $startDate,
+    (title, description, status, type, start_date) => ({title, description, status, type, start_date}))
   sample({
     clock: resetFieldsTriggered,
-    target: [$title.reinit, $description.reinit, $status.reinit, $isDirty.reinit]
+    target: [$title.reinit, $description.reinit, $status.reinit, $isDirty.reinit, $type.reinit, $startDate.reinit]
   })
 
   sample({
@@ -26,7 +30,6 @@ export const abstractTaskFactory = () => {
   })
   sample({
     clock: statusChanged,
-    source: $status,
     fn: (value) => value == 'FINISHED' ? 'INPROGRESS' : 'FINISHED',
     target: $status
   })
@@ -35,21 +38,24 @@ export const abstractTaskFactory = () => {
     target: $description
   })
   sample({
-    clock: [titleChanged, descriptionChanged, statusChanged],
+    clock: [titleChanged, descriptionChanged, statusChanged, typeChanged, dateChanged],
     fn: () => true,
     target: $isDirty
   })
   return {
     statusChanged,
     titleChanged,
+    typeChanged,
+    dateChanged,
     descriptionChanged,
     resetFieldsTriggered,
     $title,
     $description,
-    $isNotAllowToSubmit,
     $status,
-    $fields,
+    $type,
     $startDate,
+    $isAllowToSubmit,
+    $fields,
     $isDirty,
   }
 }

@@ -7,11 +7,10 @@ type BodyType = {
     id: number,
     title: string;
     description: string | null;
-    status: "FINISHED" | "CANCELED" | "INPROGRESS";
+    status: "FINISHED" | "INPROGRESS";
     type: 'inbox' | 'unplaced';
     start_date: Date | null;
 }
-
 
 export const updateTaskQuery = authQuery<TaskDto, {body: BodyType}>({
   request: {

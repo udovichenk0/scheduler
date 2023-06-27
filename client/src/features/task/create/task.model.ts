@@ -1,8 +1,9 @@
-import { createStore, sample } from "effector";
+import { sample } from "effector";
 import { $tasksKv } from "@/entities/task";
 import { createTaskQuery } from "@/shared/api/task";
 import { ExpensionTaskType } from "@/shared/lib/block-expansion";
 import { abstractTaskFactory } from "../abstract/abstract.model";
+
 export const createTaskFactory = ({ 
   taskModel, 
   defaultType,
@@ -12,18 +13,36 @@ export const createTaskFactory = ({
   defaultType: 'inbox' | 'unplaced',
   defaultDate: Date | null
 }) => {
-  const $type =  createStore<'inbox' | 'unplaced'>(defaultType) 
-  const $date = createStore<Date | null>(defaultDate)
   const abstract = abstractTaskFactory()
-  const { $fields,$isNotAllowToSubmit, resetFieldsTriggered } = abstract
+  const { 
+    $title,
+    $status,
+    $startDate,
+    $description,
+    $type,
+    titleChanged,
+    statusChanged,
+    dateChanged,
+    descriptionChanged,
+    typeChanged,
+    $fields,
+    $isAllowToSubmit, 
+    resetFieldsTriggered } = abstract
+
+  sample({
+    clock: $isAllowToSubmit,
+    fn: (val) => !val,
+    target: taskModel.$isAllowToOpenUpdate
+  })
 
   sample({
     clock: taskModel.createTaskClosed,
-    source: {fields: $fields, type: $type, date: $date},
-    filter: ({fields}) => Boolean(fields.title.length),
-    fn: ({fields, type, date}) => ({body: {...fields,start_date: date, type}}),
+    source: $fields,
+    filter: $isAllowToSubmit,
+    fn: (fields) => ({body: fields}),
     target: createTaskQuery.start
   })
+
   sample({
     clock: createTaskQuery.finished.success,
     source: $tasksKv,
@@ -31,14 +50,17 @@ export const createTaskFactory = ({
     target: [$tasksKv, resetFieldsTriggered]
   })
 
-  sample({
-    clock: taskModel.closeTaskTriggered,
-    filter: $isNotAllowToSubmit,
-    target: [taskModel.$newTask.reinit!, resetFieldsTriggered]
-  })
   return {
+    $title,
+    $status,
+    $startDate,
+    $description,
     $type,
-    ...abstract
+    titleChanged,
+    statusChanged,
+    dateChanged,
+    descriptionChanged,
+    typeChanged,
   }
 }
 

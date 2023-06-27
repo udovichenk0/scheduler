@@ -1,6 +1,6 @@
 import { DoneSvg } from "./done.svg";
 import './style.css'
-export function Checkbox({onChange, status}:{onChange: () => void, status: 'FINISHED' | 'CANCELED' | 'INPROGRESS'}){
+export function Checkbox({onChange, status}:{onChange: () => void, status: 'FINISHED' | 'INPROGRESS'}){
   return (
     <div className="relative flex"> 
       <input onChange={() => onChange()} checked={status == 'FINISHED' ? true : false} type="checkbox" id="checkbox" className="appearance-none w-5 h-5 border-[3px] border-grey rounded-[2px]"/>

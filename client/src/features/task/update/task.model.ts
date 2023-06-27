@@ -1,5 +1,4 @@
-import { createEvent, createStore, sample } from "effector";
-import { and, not, spread } from "patronum";
+import { createEvent, sample } from "effector";
 import { $tasksKv } from "@/entities/task";
 import { updateStatusQuery, updateTaskQuery } from "@/shared/api/task";
 import { ExpensionTaskType } from "@/shared/lib/block-expansion";
@@ -14,80 +13,65 @@ export const updateTaskFactory = ({
   defaultType: 'inbox' | 'unplaced',
   defaultDate: Date | null
 }) => {
+  const { 
+    statusChanged, 
+    titleChanged, 
+    dateChanged, 
+    typeChanged, 
+    descriptionChanged, 
+    resetFieldsTriggered,
+    $isAllowToSubmit,
+    $fields,
+    $title,
+    $description,
+    $startDate,
+    $status,
+    $type
+  } = abstractTaskFactory()
 
-  const dateChanged = createEvent()
-
-  const $type = createStore<'inbox' | 'unplaced'>(defaultType)
-  const $date = createStore<Date | null>(defaultDate)
   const changeStatusTriggered = createEvent<number>()
-  const abstract = abstractTaskFactory()
-  const { $fields, $isDirty, $title, $description, $status, resetFieldsTriggered, $isNotAllowToSubmit } = abstract
+
+  sample({
+    clock: $isAllowToSubmit,
+    fn: (val) => !val,
+    target: taskModel.$isAllowToOpenCreate
+  })
   sample({
     clock: taskModel.updateTaskClosed,
-    source: {fields: $fields, type: $type, date: $date},
-    filter: and($title, $isDirty),
-    fn: ({fields, type, date}, id) => ({body: {...fields, type,start_date: date, id}}),
+    source: $fields,
+    filter: $isAllowToSubmit,
+    fn: (fields, id) => ({body: {...fields, id}}),
     target: updateTaskQuery.start
   })
   sample({
     clock: [updateTaskQuery.finished.success, updateStatusQuery.finished.success],
     source: $tasksKv,
     fn: (kv, {result:{result}}) => ({...kv, [result.id]: result}),
-    target: [$tasksKv, taskModel.$taskId.reinit!, resetFieldsTriggered]
-  })
-  sample({
-    clock: taskModel.updateTaskOpened,
-    source: $tasksKv,
-    fn: (kv, {task}) => ({...kv[task.id]}),
-    target: spread({
-      targets: {
-        title: $title,
-        status: $status,
-        description: $description
-      }
-    })
+    target: [resetFieldsTriggered, $tasksKv, taskModel.$taskId.reinit]
   })
 
-  sample({
-    clock: changeStatusTriggered,
-    source: $tasksKv,
-    // fix it
-    fn: (kv, id) => ({body: {status: kv[id].status == 'FINISHED' ? 'INPROGRESS' as const : 'FINISHED' as const, id}}),
-    target: updateStatusQuery.start
-  })
-
-  sample({
-    clock: taskModel.createTaskOpened,
-    filter: not($isNotAllowToSubmit),
-    fn: () => true,
-    target: taskModel.$createdToggled
-  })
-  sample({
-    clock: taskModel.createTaskOpened,
-    filter: not(taskModel.$createdToggled),
-    fn: () => true,
-    target: taskModel.$newTask
-  })
-  
   sample({
     clock: updateTaskQuery.finished.success,
-    filter: taskModel.$createdToggled,
+    filter: taskModel.$createdTriggered,
     fn: () => true,
-    target: [taskModel.$newTask, taskModel.$createdToggled.reinit]
+    target: [taskModel.$newTask, taskModel.$createdTriggered.reinit]
   })
 
-  sample({
-    clock: [taskModel.closeTaskTriggered, taskModel.createTaskOpened],
-    filter: $isNotAllowToSubmit,
-    target: [taskModel.$taskId.reinit, resetFieldsTriggered]
-  })
   return {
-    ...abstract,
-    dateChanged,
+    statusChanged, 
+    titleChanged, 
+    dateChanged, 
+    typeChanged, 
+    descriptionChanged,
+    $title,
+    $description,
+    $startDate,
+    $status,
     $type,
-    $date,
     changeStatusTriggered
   }
 }
+
+
 
 export type UpdateTaskType = ReturnType<typeof updateTaskFactory>
