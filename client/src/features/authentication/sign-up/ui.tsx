@@ -63,5 +63,9 @@ export const Signup = ({showEmailForm}:{showEmailForm: () => void}) => {
 
 
 function LoginValidationError(){
-  return <span>Incorrect password</span>
+  const error = useUnit($passwordError)
+  if(error == 'too_small'){
+    return <span>Password should consist of 8 or more symbols</span>
+  }
+  return <span>Incorrect login or password</span>
 }

@@ -2,6 +2,8 @@ import { createEvent, createStore, sample } from "effector";
 import { createGate } from "effector-react";
 import { not } from "patronum";
 import { resetEmailTriggered } from "@/features/authentication/by-email";
+import { resetSigninPasswordTriggered } from "@/features/authentication/sign-in";
+import { resetSignupPasswordTriggered } from "@/features/authentication/sign-up";
 import { logoutQuery, signinQuery, signupQuery } from "@/shared/api/auth";
 import { $accessToken, setTokenTriggered } from "@/shared/api/token";
 import { getUserQuery } from "@/shared/api/user";
@@ -65,5 +67,5 @@ sample({
 // reset form to options
 sample({
   clock: resetFormTriggered,
-  target: [$formToShow.reinit!, resetEmailTriggered]
+  target: [$formToShow.reinit!, resetEmailTriggered, resetSigninPasswordTriggered, resetSignupPasswordTriggered]
 })

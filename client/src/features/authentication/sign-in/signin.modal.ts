@@ -8,12 +8,12 @@ import { $email } from "../by-email"
 
 export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()
-export const resetTriggered = createEvent()
+export const resetSigninPasswordTriggered = createEvent()
 
 export const $password = createStore('')
-export const $passwordError = createStore<'too_small' | 'invalid_string' |  null>(null)
+export const $passwordError = createStore<'invalid_password' |  null>(null)
 
-const signinSchema = z.string().min(8).trim()
+const signinSchema = z.string().trim()
 
 sample({
   clock: passwordChanged,
@@ -32,6 +32,11 @@ sample({
 })
 
 sample({
+  clock: resetSigninPasswordTriggered,
+  target: [$passwordError.reinit, $password.reinit]
+})
+
+sample({
   clock: signinQuery.finished.success,
   fn: ({result}) => ({
     user: result.user,
@@ -43,4 +48,11 @@ sample({
       token: setTokenTriggered,
     }
   })
+})
+
+
+sample({
+  clock: signinQuery.finished.failure,
+  fn: () => 'invalid_password' as const,
+  target: $passwordError
 })

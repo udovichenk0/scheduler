@@ -64,5 +64,5 @@ export const Signin = ({showEmailForm}:{showEmailForm: () => void}) => {
 
 
 function LoginValidationError(){
-  return <span>Incorrect password</span>
+  return <span>Incorrect login or password</span>
 }

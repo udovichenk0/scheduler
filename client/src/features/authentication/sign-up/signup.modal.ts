@@ -8,18 +8,26 @@ import { $email } from "../by-email"
 
 export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()
-export const resetTriggered = createEvent()
+export const resetSignupPasswordTriggered = createEvent()
 
 export const $password = createStore('')
 export const $passwordError = createStore<'too_small' | 'invalid_string' |  null>(null)
 
-const signupSchema = z.string().min(8)   
+const signupSchema = z.string().min(8).trim()
 
 sample({
   clock: submitTriggered,
   source: {email: $email,password: $password},
   filter: ({password}) => signupSchema.safeParse(password).success,
   target: signupQuery.start
+})
+
+sample({
+  clock: submitTriggered,
+  source: $password,
+  filter: (password) => !signupSchema.safeParse(password).success,
+  fn: checkError,
+  target: $passwordError
 })
 
 sample({
@@ -39,3 +47,15 @@ sample({
     }
   })
 })
+
+sample({
+  clock: resetSignupPasswordTriggered,
+  target: [$passwordError.reinit, $password.reinit]
+})
+
+function checkError(value: string) {
+  if(value.length < 8){
+    return 'too_small'
+  }
+  return 'invalid_string'
+}
