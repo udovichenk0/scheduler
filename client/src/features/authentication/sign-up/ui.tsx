@@ -5,6 +5,7 @@ import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Icon } from "@/shared/ui/icon/icon"
 import { Input } from "@/shared/ui/input"
 import { $email } from "../by-email"
+import { NOT_VALID_MESSAGE, TOO_LONG_MESSAGE, TOO_SHORT_MESSAGE } from "./constants"
 import { $password, $passwordError, passwordChanged, submitTriggered } from "./signup.modal"
 const onSubmit = (e: FormEvent, submit: () => void) => {
   e.preventDefault()
@@ -65,7 +66,10 @@ export const Signup = ({showEmailForm}:{showEmailForm: () => void}) => {
 function LoginValidationError(){
   const error = useUnit($passwordError)
   if(error == 'too_small'){
-    return <span>Password should consist of 8 or more symbols</span>
+    return <span>{TOO_SHORT_MESSAGE}</span>
   }
-  return <span>Incorrect login or password</span>
+  if(error == 'too_long'){
+    return <span>{TOO_LONG_MESSAGE}</span>
+  }
+  return <span>{NOT_VALID_MESSAGE}</span>
 }

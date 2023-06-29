@@ -1,15 +1,17 @@
 import { createEvent, createStore, sample } from "effector";
 import { z } from 'zod'
 import { getUserQuery } from "@/shared/api/user";
+import { MAX_LENGTH, MIN_LENGTH, NOT_VALID_ERROR, TOO_LONG_ERROR, TOO_SHORT_ERROR } from "./constants";
+
+type Errors = 'too_short' | 'too_long' | 'invalid_string'
 
 export const emailChanged = createEvent<string>()
 export const submitTriggered = createEvent()
 export const resetEmailTriggered = createEvent()
 
 export const $email = createStore('')
-export const $emailError = createStore<'too_small' | 'invalid_string' |  null>(null)
-
-const emailSchema = z.string().email().min(4)
+export const $emailError = createStore<Errors | null>(null)
+const emailSchema = z.string().email().min(MIN_LENGTH).max(MAX_LENGTH)
 
 sample({
   clock: emailChanged,
@@ -41,12 +43,15 @@ sample({
   target: [$emailError.reinit!, $email.reinit!]
 })
 
-function checkError(email:string){
-  if(email.length < 4){
-    return 'too_small'
+function checkError(value:string){
+  if(value.length < MIN_LENGTH){
+    return TOO_SHORT_ERROR
+  }
+  if(value.length > MAX_LENGTH){
+    return TOO_LONG_ERROR
   }
   else {
-    return 'invalid_string'
+    return NOT_VALID_ERROR
   }
 }
 

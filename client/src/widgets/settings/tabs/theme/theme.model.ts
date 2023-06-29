@@ -4,17 +4,27 @@ import Cookies from 'universal-cookie';
 type Theme = 'space' | 'default' | 'dark' | 'light' | 'grey'
 export const themeChanged = createEvent<Theme>()
 export const cookies = new Cookies()
+
 export const $theme = createStore<Theme | null>(null)
+
 const changeThemeFx = createEffect((theme: Theme) => {
-  document.documentElement.setAttribute('data-theme', theme)
   cookies.set('theme', theme)
+  document.documentElement.setAttribute('data-theme', theme)
 })
+const getThemeFx = createEffect(() => {
+  const theme = cookies.get('theme') as Theme || 'space'
+  return theme
+})
+
 export const themeGate = createGate() 
 
 sample({
   clock: themeGate.open,
-  fn: () => cookies.get('theme'),
-  target: changeThemeFx
+  target: getThemeFx
+})
+sample({
+  clock: getThemeFx.doneData,
+  target: $theme
 })
 
 sample({

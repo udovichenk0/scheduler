@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useRef } from "react"
 import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Input } from "@/shared/ui/input"
+import { NOT_VALID_MESSAGE, TOO_LONG_ERROR, TOO_LONG_MESSAGE, TOO_SHORT_ERROR, TOO_SHORT_MESSAGE } from "./constants"
 import { $email, $emailError, emailChanged, submitTriggered } from "./modal"
 
 const onSubmit = (e: FormEvent, submit: () => void) => {
@@ -54,13 +55,11 @@ export const ByEmailForm = ({showEmailForm}:{showEmailForm: () => void}) => {
 
 function EmailValidationError(){
   const error = useUnit($emailError)
-  if(error === 'too_small') {
-    return <span>Entered email is too short</span>
+  if(error === TOO_SHORT_ERROR) {
+    return <span>{TOO_SHORT_MESSAGE}</span>
   }
-  if(error === 'invalid_string'){
-    return <span>Entered email is not valid</span>
+  if(error === TOO_LONG_ERROR){
+    return <span>{TOO_LONG_MESSAGE}</span>
   }
-  else {
-    return <span>Entered email is not correct</span>
-  }
+  return <span>{NOT_VALID_MESSAGE}</span>
 }

@@ -5,6 +5,7 @@ import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Icon } from "@/shared/ui/icon/icon"
 import { Input } from "@/shared/ui/input"
 import { $email } from "../by-email"
+import { NOT_VALID_MESSAGE, TOO_LONG_MESSAGE } from "./constants"
 import { $password, $passwordError, passwordChanged, submitTriggered } from "./signin.modal"
 
 const onSubmit = (e: FormEvent, submit: () => void) => {
@@ -64,5 +65,9 @@ export const Signin = ({showEmailForm}:{showEmailForm: () => void}) => {
 
 
 function LoginValidationError(){
-  return <span>Incorrect login or password</span>
+  const error = useUnit($passwordError)
+  if(error === 'too_long'){
+    return <span>{TOO_LONG_MESSAGE}</span>
+  }
+  return <span>{NOT_VALID_MESSAGE}</span>
 }

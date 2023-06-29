@@ -5,15 +5,16 @@ import { setSessionUserTriggered } from "@/entities/session/session.model"
 import { signupQuery } from "@/shared/api/auth/signup"
 import { setTokenTriggered } from "@/shared/api/token"
 import { $email } from "../by-email"
+import { MAX_LENGTH, MIN_LENGTH } from "./constants"
 
 export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()
 export const resetSignupPasswordTriggered = createEvent()
 
 export const $password = createStore('')
-export const $passwordError = createStore<'too_small' | 'invalid_string' |  null>(null)
+export const $passwordError = createStore<'too_small' | 'too_long' | 'invalid_string' |  null>(null)
 
-const signupSchema = z.string().min(8).trim()
+const signupSchema = z.string().min(8).max(50).trim()
 
 sample({
   clock: submitTriggered,
@@ -54,8 +55,11 @@ sample({
 })
 
 function checkError(value: string) {
-  if(value.length < 8){
+  if(value.length < MIN_LENGTH){
     return 'too_small'
+  }
+  if(value.length > MAX_LENGTH){
+    return 'too_long'
   }
   return 'invalid_string'
 }
