@@ -1,5 +1,5 @@
 import { sample } from "effector";
-import { $tasksKv } from "@/entities/task";
+import { $taskKv } from "@/entities/task";
 import { createTaskQuery } from "@/shared/api/task";
 import { ExpensionTaskType } from "@/shared/lib/block-expansion";
 import { abstractTaskFactory } from "../abstract/abstract.model";
@@ -43,9 +43,9 @@ export const createTaskFactory = ({
 
   sample({
     clock: createTaskQuery.finished.success,
-    source: $tasksKv,
+    source: $taskKv,
     fn: (kv, {result: {result}}) => ({...kv, [result.id]: result}),
-    target: [$tasksKv, resetFieldsTriggered]
+    target: [$taskKv, resetFieldsTriggered]
   })
 
   return {

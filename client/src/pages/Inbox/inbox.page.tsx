@@ -4,9 +4,9 @@ import { ExpandedTask } from "@/widgets/expanded-task"
 import { MainLayout } from "@/widgets/layouts/main"
 import { CreateTaskForm } from "@/features/task/create"
 import { UpdateTaskForm } from "@/features/task/update"
+import { $inboxTasks } from "@/entities/task"
 import { Task } from "@/shared/ui/task"
 import { 
-  $tasks,
   createTaskModel,
   taskModel,
   updateTaskModel,
@@ -32,7 +32,7 @@ export const Inbox = () => {
     createTaskOpened,
         
   ] = useUnit([
-    $tasks,
+    $inboxTasks,
     updateTaskModel.changeStatusTriggered,
     taskModel.$newTask,
     taskModel.$taskId,

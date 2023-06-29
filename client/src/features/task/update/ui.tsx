@@ -38,7 +38,7 @@ export const UpdateTaskForm = ({
         <input className="w-full bg-transparent text-grey outline-none text-sm" 
           placeholder={description ? '' : 'Note'} 
           value={description || ''} 
-          onChange={(e) => changeDescription(e.target.value)}/>
+          onChange={(e)   => changeDescription(e.target.value)}/>
         <span>
           <Button icon={<Icon name={'common/inbox'} className="text-accent w-[18px] h-[18px]"/>} title={capitalizeLetter(type)} size={'sm'} intent={'primary'}/>
         </span>

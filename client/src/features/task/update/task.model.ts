@@ -1,6 +1,6 @@
 import { createEvent, sample } from "effector";
 import { debug, spread } from "patronum";
-import { $tasksKv } from "@/entities/task";
+import { $taskKv } from "@/entities/task";
 import { updateStatusQuery, updateTaskQuery } from "@/shared/api/task";
 import { ExpensionTaskType } from "@/shared/lib/block-expansion";
 import { abstractTaskFactory } from "../abstract/abstract.model";
@@ -56,9 +56,9 @@ export const updateTaskFactory = ({
   })
   sample({
     clock: [updateTaskQuery.finished.success, updateStatusQuery.finished.success],
-    source: $tasksKv,
+    source: $taskKv,
     fn: (kv, {result:{result}}) => ({...kv, [result.id]: result}),
-    target: [resetFieldsTriggered, $tasksKv, taskModel.$taskId.reinit]
+    target: [resetFieldsTriggered, $taskKv, taskModel.$taskId.reinit]
   })
 
   sample({

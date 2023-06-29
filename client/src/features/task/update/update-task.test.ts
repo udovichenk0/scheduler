@@ -1,6 +1,6 @@
 import { fork, allSettled } from 'effector'
 import { test, expect, vi } from 'vitest'
-import { $tasksKv } from '@/entities/task'
+import { $taskKv } from '@/entities/task'
 import { updateTaskQuery } from '@/shared/api/task'
 import { taskExpansionFactory } from '@/shared/lib/block-expansion'
 import { updateTaskFactory } from '.'
@@ -31,7 +31,7 @@ test('should set fields after task is selected', async () => {
   const { updateTaskClosed } = taskModel
   const scope = fork({
     values: [
-      [$tasksKv, items],
+      [$taskKv, items],
       [$title, 'title'],
       [$description, 'my description'],
       [$status, 'FINISHED'],
@@ -48,6 +48,6 @@ test('should set fields after task is selected', async () => {
   expect(mock).toHaveBeenCalledOnce()
   expect(mock).toReturnWith(returnedValue)
 
-  expect(scope.getState($tasksKv)).toStrictEqual(newItems)
+  expect(scope.getState($taskKv)).toStrictEqual(newItems)
   expect(scope.getState($isAllowToSubmit)).toBeFalsy()
 })

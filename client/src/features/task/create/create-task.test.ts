@@ -1,6 +1,6 @@
 import { allSettled, fork } from 'effector';
 import { test, expect, vi } from 'vitest';
-import { $tasksKv } from '@/entities/task';
+import { $taskKv } from '@/entities/task';
 import { createTaskQuery } from '@/shared/api/task';
 import { taskExpansionFactory } from '@/shared/lib/block-expansion';
 import { createTaskFactory } from '.';
@@ -36,7 +36,7 @@ test('request after closeTaskTriggered event', async () => {
       [$startDate, null],
       [$type, 'inbox'],
       [$isAllowToSubmit, true],
-      [$tasksKv, items],
+      [$taskKv, items],
     ],
     handlers: [
       [createTaskQuery.__.executeFx, mock],
@@ -46,5 +46,5 @@ test('request after closeTaskTriggered event', async () => {
   expect(mock).toHaveBeenCalledOnce()
   expect(mock).toBeCalledWith({body: {title: 'sixth', description: 'my note',type: 'inbox', status: 'FINISHED', start_date: null}})
   expect(mock).toReturnWith(returnedValue)
-  expect(scope.getState($tasksKv)).toStrictEqual(newItems)
+  expect(scope.getState($taskKv)).toStrictEqual(newItems)
 })

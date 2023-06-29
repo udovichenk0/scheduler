@@ -14,7 +14,7 @@ export function Task({
   return (
     <button onDoubleClick={onDoubleClick} className="select-none focus:bg-cFocus text-primary cursor-default flex items-center w-full hover:bg-cHover rounded-[5px] px-2 py-2">
       <Checkbox onChange={onChange} status={status}/>
-      <label htmlFor="default-checkbox" className={`ml-2 text-sm font-medium ${status == 'FINISHED' && 'line-through text-[#76899b]'}`}>{title}</label>
+      <label htmlFor="default-checkbox" className={`ml-2 text-sm font-medium ${status == 'FINISHED' && 'line-through text-grey'}`}>{title}</label>
     </button>
   )
 }
