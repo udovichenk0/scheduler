@@ -26,6 +26,7 @@ export const UpdateTaskForm = ({
     updateTaskModel.descriptionChanged, 
     updateTaskModel.titleChanged
   ])
+  console.log(title)
   return (
     <div className="flex gap-2 w-full rounded-[5px] text-sm">
       <Checkbox status={status} onChange={() => changeStatus(status)}/>

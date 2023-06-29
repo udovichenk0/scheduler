@@ -1,4 +1,5 @@
 import { createEvent, sample } from "effector";
+import { debug, spread } from "patronum";
 import { $tasksKv } from "@/entities/task";
 import { updateStatusQuery, updateTaskQuery } from "@/shared/api/task";
 import { ExpensionTaskType } from "@/shared/lib/block-expansion";
@@ -28,12 +29,24 @@ export const updateTaskFactory = ({
   } = abstractTaskFactory()
 
   const changeStatusTriggered = createEvent<number>()
-
+  sample({
+    clock: taskModel.updateTaskOpened,
+    fn: ({task}) => task,
+    target: spread({
+      targets: {
+        title: $title,
+        description: $description,
+        status: $status
+      }
+    })
+  })
+  debug($title)
   sample({
     clock: $isAllowToSubmit,
     fn: (val) => !val,
     target: taskModel.$isAllowToOpenCreate
   })
+
   sample({
     clock: taskModel.updateTaskClosed,
     source: $fields,
