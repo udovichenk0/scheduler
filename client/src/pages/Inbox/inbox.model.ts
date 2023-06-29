@@ -1,5 +1,5 @@
-import { combine, sample } from "effector";
-import { debug, not } from "patronum";
+import { combine } from "effector";
+import { debug } from "patronum";
 import { createTaskFactory } from "@/features/task/create";
 import { updateTaskFactory } from "@/features/task/update";
 import { $tasksKv } from "@/entities/task";

@@ -6,8 +6,6 @@ import { abstractTaskFactory } from "../abstract/abstract.model";
 
 export const updateTaskFactory = ({
   taskModel,
-  defaultType,
-  defaultDate
 }: {
   taskModel: ExpensionTaskType,
   defaultType: 'inbox' | 'unplaced',

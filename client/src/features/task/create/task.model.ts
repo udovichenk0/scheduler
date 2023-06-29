@@ -1,4 +1,4 @@
-import { createStore, sample } from "effector";
+import { sample } from "effector";
 import { $tasksKv } from "@/entities/task";
 import { createTaskQuery } from "@/shared/api/task";
 import { ExpensionTaskType } from "@/shared/lib/block-expansion";
@@ -6,8 +6,6 @@ import { abstractTaskFactory } from "../abstract/abstract.model";
 
 export const createTaskFactory = ({ 
   taskModel, 
-  defaultType,
-  defaultDate
 }: {
   taskModel: ExpensionTaskType,
   defaultType: 'inbox' | 'unplaced',

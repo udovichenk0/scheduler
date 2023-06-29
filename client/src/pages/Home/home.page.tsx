@@ -1,7 +1,5 @@
 
-import { Fragment } from "react"
 import { MainLayout } from "@/widgets/layouts/main"
-import { Task } from "@/shared/ui/task"
 
 export const Home = () => {
   return (

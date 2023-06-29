@@ -1,4 +1,3 @@
-import { createRoute } from "atomic-router"
 import { routes } from "@/shared/config/router"
 import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Button } from "@/shared/ui/buttons/main-button/ui"

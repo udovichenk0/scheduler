@@ -29,7 +29,7 @@ export const CreateTaskForm = ({
   ])
   return (
     <div className="flex gap-2 w-full rounded-[5px] text-sm">
-      <Checkbox status={status} onChange={changeStatus}/>
+      <Checkbox status={status} onChange={() => changeStatus(status)}/>
       <div className="flex flex-col w-full gap-3">
         <input 
           onChange={(e) => changeTitle(e.target.value)} 

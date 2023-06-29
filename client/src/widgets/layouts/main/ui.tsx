@@ -31,12 +31,3 @@ export const MainLayout = ({ children, iconName, title, action }: PropsType) => 
     </div>
   )
 }
-
-function CreateTask({action}:{action: () => void}){
-  return (
-    <button onClick={() => action()} className="text-accent py-2 px-3 rounded-[5px] hover:bg-cHover text-sm flex items-center gap-2">
-      <Icon name="common/plus"/>
-      <span>New Task</span>
-    </button>
-  )
-}

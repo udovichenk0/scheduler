@@ -7,6 +7,7 @@ interface TabProps {
   title: string,
 }
 
+//fix it
 export function Tab({label, title, iconName,className, ...props }:TabProps){
   return (
     <button {...props} className={className}>
