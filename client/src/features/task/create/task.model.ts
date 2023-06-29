@@ -1,4 +1,4 @@
-import { sample } from "effector";
+import { createStore, sample } from "effector";
 import { $tasksKv } from "@/entities/task";
 import { createTaskQuery } from "@/shared/api/task";
 import { ExpensionTaskType } from "@/shared/lib/block-expansion";
@@ -34,7 +34,7 @@ export const createTaskFactory = ({
     fn: (val) => !val,
     target: taskModel.$isAllowToOpenUpdate
   })
-
+  
   sample({
     clock: taskModel.createTaskClosed,
     source: $fields,
@@ -56,6 +56,7 @@ export const createTaskFactory = ({
     $startDate,
     $description,
     $type,
+    $isAllowToSubmit,
     titleChanged,
     statusChanged,
     dateChanged,

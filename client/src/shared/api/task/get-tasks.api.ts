@@ -4,7 +4,7 @@ import { TaskDto, tasksDtoSchema } from './task.dto';
 
 const taskContract = zodContract(tasksDtoSchema)
 
-export const getTaskQuery = authQuery<TaskDto[], never>({
+export const getTaskQuery = authQuery<TaskDto[], any>({
   request: {
     url: 'get-tasks',
     method: 'GET'

@@ -27,7 +27,7 @@ const newItems = {
 const returnedValue = {"id": 5,"title": "title","description": "my description","type": "inbox","status": "FINISHED","start_date": null,"user_id": 1}
 test('should set fields after task is selected', async () => {
   const mock = vi.fn(() => returnedValue)  
-  const { $status, $description,$isDirty, $title, $type, $date } = updateTaskModel
+  const { $status, $description,$isAllowToSubmit, $title, $type, $startDate } = updateTaskModel
   const { updateTaskClosed } = taskModel
   const scope = fork({
     values: [
@@ -36,8 +36,8 @@ test('should set fields after task is selected', async () => {
       [$description, 'my description'],
       [$status, 'FINISHED'],
       [$type, 'inbox'],
-      [$date, null],
-      [$isDirty, true],
+      [$startDate, null],
+      [$isAllowToSubmit, true],
     ],
     handlers: [
       [updateTaskQuery.__.executeFx, mock]
@@ -49,5 +49,5 @@ test('should set fields after task is selected', async () => {
   expect(mock).toReturnWith(returnedValue)
 
   expect(scope.getState($tasksKv)).toStrictEqual(newItems)
-  expect(scope.getState($isDirty)).toBeFalsy()
+  expect(scope.getState($isAllowToSubmit)).toBeFalsy()
 })

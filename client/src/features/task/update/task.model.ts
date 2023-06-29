@@ -64,6 +64,7 @@ export const updateTaskFactory = ({
     typeChanged, 
     descriptionChanged,
     $title,
+    $isAllowToSubmit,
     $description,
     $startDate,
     $status,
