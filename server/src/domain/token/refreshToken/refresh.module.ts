@@ -4,6 +4,6 @@ import { PrismaService } from 'src/database/prisma.service';
 
 @Module({
   providers: [RefreshService, PrismaService],
-  exports: [RefreshService, PrismaService]
+  exports: [RefreshService, PrismaService],
 })
 export class RefreshModule {}

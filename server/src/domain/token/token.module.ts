@@ -12,4 +12,3 @@ import { UserModule } from '../user/user.module';
   exports: [TokenService, RefreshModule, JWTModule],
 })
 export class TokenModule {}
-

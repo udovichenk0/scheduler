@@ -5,10 +5,12 @@ import { AuthModule } from './domain/auth/auth.module';
 import { UserModule } from './domain/user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { TaskModule } from './domain/task/task.module';
-
+const ENV = process.env.NODE_ENV;
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      envFilePath: [`.env.${ENV}`],
+    }),
     UserModule,
     AuthModule,
     TokenModule,
