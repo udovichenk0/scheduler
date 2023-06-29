@@ -28,7 +28,7 @@ export const Signup = ({showEmailForm}:{showEmailForm: () => void}) => {
   const ref = useRef<HTMLInputElement>(null)
   useEffect(() => {
     ref.current && ref.current.focus()
-  })
+  }, [])
   return (
     <div className="relative text-center text-cFont">
       <span className="absolute left-[-20px]">

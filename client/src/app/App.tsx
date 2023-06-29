@@ -1,6 +1,5 @@
 import { RouterProvider } from 'atomic-router-react';
-import { sample } from 'effector';
-import { useEffect } from 'react';
+import { createEffect, sample } from 'effector';
 import Cookies from 'universal-cookie'
 import { RoutesView } from "@/pages";
 import { getTasksTriggered } from '@/entities/task';
@@ -17,8 +16,9 @@ sample({
   target: getTasksTriggered
 })
 
-function App() {
-  useEffect(() => {
+sample({
+  clock: appStarted,
+  target: createEffect(() => {
     const theme = cookies.get('theme')
     if(theme){
       document.documentElement.setAttribute('data-theme', theme)
@@ -26,7 +26,9 @@ function App() {
     else {
       document.documentElement.setAttribute('data-theme', 'space')
     }
-  }, [])
+  })
+})
+function App() {
   return (
     <div className='h-screen text-primary'>
       <RouterProvider router={router}>
