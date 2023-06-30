@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 export interface SpritesMap {
   'common': "arrow"|"calendar"|"cloud"|"done"|"inbox"|"mail"|"palette"|"plus"|"settings"|"star"|"upcoming";
   'eye': "close"|"open";
