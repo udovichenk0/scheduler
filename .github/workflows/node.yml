@@ -3,10 +3,11 @@ run-name: ${{ github.actor }} is learning GitHub Actions
 on: [push]
 jobs: 
   check-bats-version:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Install modules
+      working-directory: ./client
       run: yarn
     - name: Run ESLint
       run: yarn lint
