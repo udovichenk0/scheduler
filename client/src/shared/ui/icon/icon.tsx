@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { SVGProps } from "react";
 import { SpritesMap } from "./sprite.h";
 

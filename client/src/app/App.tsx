@@ -1,5 +1,5 @@
 import { RouterProvider } from 'atomic-router-react';
-import { createEffect, createStore, sample } from 'effector';
+import { createEffect, sample } from 'effector';
 
 import Cookies from 'universal-cookie'
 import { RoutesView } from "@/pages";
@@ -17,8 +17,6 @@ sample({
   clock: refreshQuery.finished.success,
   target: getTasksTriggered
 })
-const $s = createStore(0)
-// configure($s, { log: 'enabled' });
 
 sample({
   clock: appStarted,
