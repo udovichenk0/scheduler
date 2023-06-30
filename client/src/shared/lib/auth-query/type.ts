@@ -12,12 +12,13 @@ export interface Request {
     url: string | UrlType,
     headers?: Record<string, string | string[]>
 }
-export interface Response <Resp, Params extends HttpRequestType>{
+//!TODO fix later Params extends HttpRequestType
+export interface Response <Resp>{
     contract: Contract<unknown, Resp>,
     mapData: DynamicallySourcedField<
     {
         result: Resp, 
-        params: Params
+        params: unknown
     }, 
     {
         result: Resp, 

@@ -2,17 +2,17 @@ import { createHeadlessQuery } from "@farfetched/core"
 import { attach, createEffect } from "effector"
 import { $accessToken, refreshFx, setTokenTriggered } from "@/shared/api/token"
 import { baseQuery } from "./base-query"
-import { HttpRequestType, Request, Response } from './type'
+import { Request, Response } from './type'
 
 
 //TODO validation of the response with zod
-
-export const authQuery = <Resp, Params extends HttpRequestType>({
+//Params extends HttpRequestType
+export const authQuery = <Resp>({
   request, 
   response
 }: {
     request: Request, 
-    response: Response<Resp, Params>
+    response: Response<Resp>
 }) => {
   const queryFx = attach({
     source: $accessToken,

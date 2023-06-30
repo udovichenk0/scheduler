@@ -8,7 +8,7 @@ interface TabProps {
 }
 
 //fix it
-export function Tab({label, title, iconName,className, ...props }:TabProps){
+export function Tab({title, iconName,className, ...props }:TabProps){
   return (
     <button {...props} className={className}>
       <Icon name={iconName} className="w-8 h-8"/>
