@@ -9,7 +9,6 @@ import { appStarted } from '@/shared/config/init';
 import { router } from "@/shared/config/router/router";
 
 const cookies = new Cookies()
-
 sample({
   clock: appStarted,
   target: [refreshQuery.start]
