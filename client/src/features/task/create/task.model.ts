@@ -1,5 +1,5 @@
 import { sample } from "effector";
-import { spread } from "patronum";
+import { spread, not } from "patronum";
 import { $taskKv } from "@/entities/task";
 import { createTaskQuery } from "@/shared/api/task";
 import { ExpensionTaskType } from "@/shared/lib/block-expansion";
@@ -49,7 +49,12 @@ export const createTaskFactory = ({
     fn: (val) => !val,
     target: taskModel.$isAllowToOpenUpdate
   })
-  
+  sample({
+    clock: taskModel.createTaskClosed,
+    filter: $isAllowToSubmit,
+    fn: () => true,
+    target: taskModel.$createdTriggered
+  })
   sample({
     clock: taskModel.createTaskClosed,
     source: $fields,
@@ -62,10 +67,11 @@ export const createTaskFactory = ({
     clock: createTaskQuery.finished.success,
     source: $taskKv,
     fn: (kv, {result: {result}}) => ({...kv, [result.id]: result}),
-    target: $taskKv
+    target: [$taskKv, resetFieldsTriggered]
   })
   sample({
     clock: taskModel.createTaskClosed,
+    filter: not(taskModel.$createdTriggered),
     target: resetFieldsTriggered
   })
   return {
