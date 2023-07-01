@@ -1,6 +1,6 @@
 import { createRoutesView } from 'atomic-router-react';
-import { HomeRoute } from './Home'
 import { InboxRoute } from './Inbox';
+import { HomeRoute } from './Today'
 
 const routes = [HomeRoute, InboxRoute]
 
