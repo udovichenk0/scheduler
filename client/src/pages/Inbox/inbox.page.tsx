@@ -21,7 +21,6 @@ const onClickOutside = (e:MouseEvent, ref:RefObject<HTMLDivElement>, closeTask: 
 }
 export const Inbox = () => {
   const ref = useRef<HTMLDivElement>(null)
-  const newRef = useRef<HTMLDivElement>(null)
   const [
     tasks,
     changeStatus,
