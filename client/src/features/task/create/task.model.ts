@@ -45,9 +45,12 @@ export const createTaskFactory = ({
     clock: createTaskQuery.finished.success,
     source: $taskKv,
     fn: (kv, {result: {result}}) => ({...kv, [result.id]: result}),
-    target: [$taskKv, resetFieldsTriggered]
+    target: $taskKv
   })
-
+  sample({
+    clock: taskModel.createTaskClosed,
+    target: resetFieldsTriggered
+  })
   return {
     $title,
     $status,

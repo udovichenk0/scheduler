@@ -58,9 +58,12 @@ export const updateTaskFactory = ({
     clock: [updateTaskQuery.finished.success, updateStatusQuery.finished.success],
     source: $taskKv,
     fn: (kv, {result:{result}}) => ({...kv, [result.id]: result}),
-    target: [resetFieldsTriggered, $taskKv, taskModel.$taskId.reinit]
+    target: [$taskKv, taskModel.$taskId.reinit]
   })
-
+  sample({
+    clock: taskModel.updateTaskClosed,
+    target: resetFieldsTriggered
+  })
   sample({
     clock: updateTaskQuery.finished.success,
     filter: taskModel.$createdTriggered,
