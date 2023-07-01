@@ -36,7 +36,9 @@ export const updateTaskFactory = ({
       targets: {
         title: $title,
         description: $description,
-        status: $status
+        status: $status,
+        start_date: $startDate,
+        type: $type
       }
     })
   })
@@ -54,12 +56,14 @@ export const updateTaskFactory = ({
     fn: (fields, id) => ({body: {...fields, id}}),
     target: updateTaskQuery.start
   })
+
   sample({
     clock: [updateTaskQuery.finished.success, updateStatusQuery.finished.success],
     source: $taskKv,
     fn: (kv, {result:{result}}) => ({...kv, [result.id]: result}),
     target: [$taskKv, taskModel.$taskId.reinit]
   })
+
   sample({
     clock: taskModel.updateTaskClosed,
     target: resetFieldsTriggered
