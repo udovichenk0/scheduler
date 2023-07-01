@@ -44,7 +44,7 @@ export const Inbox = () => {
     <MainLayout iconName={'common/inbox'}
       title={'Inbox'}
       action={() => createTaskOpened({ref})}>
-      <div ref={newRef} onClick={(e) => onClickOutside(e, ref, closeTaskTriggered)} className="px-5">
+      <div onClick={(e) => onClickOutside(e, ref, closeTaskTriggered)} className="px-5">
         <div>
           {tasks.map((item, id) => {
             return (
