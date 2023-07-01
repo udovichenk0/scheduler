@@ -17,7 +17,12 @@ export const $inboxTasks = combine($taskKv, (kv) => {
   return Object.values(kv)
     .filter(task => task.type == 'inbox')
 })
-
+export const $todayTasks = combine($taskKv, (kv) => {
+  console.log(Object.values(kv).map((task) => console.log(task.start_date))
+  )
+  return Object.values(kv)
+    .filter(task => task.start_date && new Date().getDate() == new Date(task.start_date).getDate())
+})
 sample({
   clock: getTasksTriggered,
   target: getTaskQuery.start
