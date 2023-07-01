@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { $inboxTasks } from "@/entities/task"
+import { $inboxTasks, $todayTasks } from "@/entities/task"
 import { routes } from "@/shared/config/router"
 import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Button } from "@/shared/ui/buttons/main-button/ui"
@@ -11,7 +11,13 @@ import { modal } from './sidebar.modal'
 import { SideLink } from "./ui/side-link"
 
 export const Sidebar = () => {
-  const [inboxTasks] = useUnit([$inboxTasks])
+  const [
+    inboxTasks,
+    todayTasks
+  ] = useUnit([
+    $inboxTasks,
+    $todayTasks
+  ])
   return (
     <div className={`border-r-[1px] border-cBorder bg-brand text-primary`}>
       <div className="w-[250px] flex flex-col h-full">
@@ -29,7 +35,7 @@ export const Sidebar = () => {
           </div>
           <div className="flex flex-col gap-2">
             <SideLink route={routes.inbox} title="Inbox" rightCount={inboxTasks.length} iconName="common/inbox"/>
-            <SideLink route={routes.home} title="Today" iconName="common/star"/>
+            <SideLink route={routes.home} title="Today" rightCount={todayTasks.length} iconName="common/star"/>
             <SideLink route={routes.upcoming} title="Upcoming" iconName="common/upcoming"/>
             <SideLink route={routes.calendar} title="Calendar" iconName="common/calendar"/>
           </div>

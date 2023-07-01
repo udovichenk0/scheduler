@@ -1,5 +1,5 @@
 import { createEvent, createStore, sample } from "effector"
-import { not, and, or } from "patronum";
+import { not, and, or, debug } from "patronum";
 import { RefObject } from 'react';
 import { TaskDto } from "@/shared/api/task";
 export const taskExpansionFactory = () => {
@@ -13,7 +13,7 @@ export const taskExpansionFactory = () => {
 
   const $createdTriggered = createStore(false)
   const $updatedTriggered = createStore(false)
-
+  debug($updatedTriggered)
   const $isAllowToOpenUpdate = createStore(true)
   const $isAllowToOpenCreate = createStore(true)
 
