@@ -2,9 +2,8 @@ import { useUnit } from "effector-react"
 import { Fragment, useRef, MouseEvent, RefObject } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { MainLayout } from "@/widgets/layouts/main"
-import { CreateTaskForm } from "@/features/task/create"
-import { UpdateTaskForm } from "@/features/task/update"
-import { $todayTasks } from "@/entities/task"
+import { ModifyTaskForm } from "@/entities/task/modify"
+import { $todayTasks } from "@/entities/task/tasks"
 import { Task } from "@/shared/ui/task"
 import { 
   createTaskModel,
@@ -48,7 +47,7 @@ export const Today = () => {
               <Fragment key={id}>
                 {item.id === taskId ? 
                   <ExpandedTask ref={ref}>
-                    <UpdateTaskForm updateTaskModel={updateTaskModel}/>
+                    <ModifyTaskForm modifyTaskModel={updateTaskModel}/>
                   </ExpandedTask>
                   : <Task 
                     onDoubleClick={() => updateTaskOpened({task: item,ref})} 
@@ -59,7 +58,7 @@ export const Today = () => {
           })}
           {newTask && 
             <ExpandedTask ref={ref}>
-              <CreateTaskForm createTaskModel={createTaskModel}/>
+              <ModifyTaskForm modifyTaskModel={createTaskModel}/>
             </ExpandedTask>
           }
         </div>

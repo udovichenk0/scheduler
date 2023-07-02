@@ -1,19 +1,27 @@
 import { combine, createEvent, createStore, sample } from "effector"
+import { spread } from "patronum"
 
-export const abstractTaskFactory = () => {
+export const modifyFormFactory = ({
+  defaultType,
+  defaultDate
+}:{
+  defaultType: 'inbox' | 'unplaced',
+  defaultDate: Date | null
+}) => {
 
   const statusChanged = createEvent<'FINISHED' | 'INPROGRESS'>()
   const titleChanged = createEvent<string>()
-  const typeChanged = createEvent()
+  const typeChanged = createEvent<{type: 'inbox' | 'unplaced', date: null | Date}>()
   const dateChanged = createEvent()
   const descriptionChanged = createEvent<string>()
   const resetFieldsTriggered = createEvent()
 
   const $title = createStore('')
-  const $description = createStore<string | null>('')
+  const $description = createStore<string>('')
   const $status = createStore<'FINISHED' | 'INPROGRESS'>('INPROGRESS')
-  const $startDate = createStore<Date | null>(new Date())
-  const $type = createStore<'inbox' | 'unplaced'>('inbox')
+  const $startDate = createStore<Date | null>(defaultDate)
+
+  const $type = createStore<'inbox' | 'unplaced'>(defaultType)
 
   const $isDirty = createStore(false)
   const $isAllowToSubmit = combine($isDirty, $title , (isDirty, title) => isDirty && Boolean(title))
@@ -38,7 +46,19 @@ export const abstractTaskFactory = () => {
     target: $description
   })
   sample({
-    clock: [titleChanged, descriptionChanged, statusChanged, typeChanged, dateChanged],
+    clock: typeChanged,
+    source: $type,
+    filter: (currentType, {type}) => currentType != type,
+    fn: (_, payload) => payload,
+    target: spread({
+      targets: {
+        date: $startDate,
+        type: $type
+      }
+    })
+  })
+  sample({
+    clock: [titleChanged, descriptionChanged, statusChanged, typeChanged],
     fn: () => true,
     target: $isDirty
   })

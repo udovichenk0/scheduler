@@ -42,7 +42,7 @@ export const taskExpansionFactory = () => {
 
   sample({
     clock: createTaskOpened,
-    filter: $isAllowToOpenCreate,
+    filter: and($isAllowToOpenCreate, not($createdTriggered)),
     fn: () => true,
     target: $newTask
   })

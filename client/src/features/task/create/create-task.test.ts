@@ -1,6 +1,6 @@
 import { allSettled, fork } from 'effector';
 import { test, expect, vi } from 'vitest';
-import { $taskKv } from '@/entities/task';
+import { $taskKv } from '@/entities/task/tasks';
 import { createTaskQuery } from '@/shared/api/task';
 import { taskExpansionFactory } from '@/shared/lib/block-expansion';
 import { createTaskFactory } from '.';

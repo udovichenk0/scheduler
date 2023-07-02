@@ -1,12 +1,14 @@
 import { createEvent, sample } from "effector";
-import { debug, spread, not } from "patronum";
-import { $taskKv } from "@/entities/task";
+import { spread } from "patronum";
+import { modifyFormFactory } from "@/entities/task/modify";
+import { $taskKv } from "@/entities/task/tasks";
 import { updateStatusQuery, updateTaskQuery } from "@/shared/api/task";
 import { ExpensionTaskType } from "@/shared/lib/block-expansion";
-import { abstractTaskFactory } from "../abstract/abstract.model";
 
 export const updateTaskFactory = ({
   taskModel,
+  defaultType,
+  defaultDate
 }: {
   taskModel: ExpensionTaskType,
   defaultType: 'inbox' | 'unplaced',
@@ -26,7 +28,10 @@ export const updateTaskFactory = ({
     $startDate,
     $status,
     $type
-  } = abstractTaskFactory()
+  } = modifyFormFactory({
+    defaultType,
+    defaultDate
+  })
 
   const changeStatusTriggered = createEvent<number>()
   sample({
@@ -42,7 +47,6 @@ export const updateTaskFactory = ({
       }
     })
   })
-  debug($title)
   sample({
     clock: $isAllowToSubmit,
     fn: (val) => !val,
@@ -68,12 +72,6 @@ export const updateTaskFactory = ({
     fn: (kv, {result:{result}}) => ({...kv, [result.id]: result}),
     target: [$taskKv, taskModel.$taskId.reinit, resetFieldsTriggered, taskModel.$updatedTriggered.reinit]
   })
-
-  sample({
-    clock: taskModel.updateTaskClosed,
-    filter: not(taskModel.$updatedTriggered),
-    target: resetFieldsTriggered
-  })
   sample({
     clock: updateTaskQuery.finished.success,
     filter: taskModel.$createdTriggered,
@@ -88,8 +86,8 @@ export const updateTaskFactory = ({
     typeChanged, 
     descriptionChanged,
     $title,
-    $isAllowToSubmit,
     $description,
+    $isAllowToSubmit,
     $startDate,
     $status,
     $type,

@@ -29,7 +29,8 @@ export default {
         'cButtonBg': 'var(--cButtonBg)',
         'cButtunHover': 'var(--cButtunHover)',
         'cButtonText': 'var(--cButtonText)',
-        'cTaskEdit': 'var(--cTaskEdit)'
+        'cTaskEdit': 'var(--cTaskEdit)',
+        'cFocusSecond': 'var(--cFocusSecond)'
       }
     },
   },

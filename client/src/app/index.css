@@ -26,7 +26,8 @@ html {
       --cLeftBottomPanel: var(--accent);
       --cButtonBg: #2384b9;
       --cButtunHover: #217aaa;
-      --cTaskEdit: #1c283e
+      --cTaskEdit: #1c283e;
+      --cFocusSecond: rgba(70,131,203,.5)
     }
 
     html[data-theme='default'] {
@@ -37,6 +38,7 @@ html {
       --cHover: #323a4c;
       --cOpacitySecondFont: #76899b;
       --cFocus: #394a61;
+      --newFocus: #394a61;
       --brand: #23242b;
       --cBorder: #393b46;
       --cSecondBorder: #76899b;
@@ -44,7 +46,8 @@ html {
       --cButtonBg: #11879c;
       --cButtunHover: #0f7a8d;
       --cButtonText: var(--cFont);
-      --cTaskEdit: #23242b
+      --cTaskEdit: #23242b;
+      --cFocusSecond: #415d81
     }
     html[data-theme='dark'] {
       --main: #121212; 
@@ -61,7 +64,8 @@ html {
       --cButtonBg: #366193;
       --cButtunHover: #315885;
       --cButtonText: var(--cFont);
-      --cTaskEdit: #26262680
+      --cTaskEdit: #26262680;
+      --cFocusSecond: rgba(70,131,203,.5)
     }
     html[data-theme='light'] {
       --main: #f9f9f9; 
@@ -78,7 +82,8 @@ html {
       --cButtonBg: #7ba6d8;
       --cButtunHover: #82b0e4;
       --cButtonText: #f9f9f9;
-      --cTaskEdit: #eef2f9
+      --cTaskEdit: #eef2f9;
+      --cFocusSecond: #b2bdca
     }
     html[data-theme='grey'] {
       --main: #f4f4f4; 
@@ -95,7 +100,8 @@ html {
       --cButtonBg: #849bb6;
       --cButtunHover: #8aa3c0;
       --cButtonText: #fff;
-      --cTaskEdit: #fff
+      --cTaskEdit: #fff;
+      --cFocusSecond: #54759c
     }
 }
 @layer components {

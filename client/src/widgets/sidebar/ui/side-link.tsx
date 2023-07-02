@@ -15,7 +15,7 @@ export const SideLink = ({
   rightCount?: number  
 }) => {
   return (
-    <Link to={route} activeClassName="bg-cFocus" className={buttonCva({intent: 'primary', size: 'sm'})}>
+    <Link to={route} activeClassName="bg-cFocus hover:!bg-cFocus" className={buttonCva({intent: 'primary', size: 'sm'})}>
       <div className='flex items-center justify-between'>
         <div className="flex gap-4 items-center jusfity-center">
           <Icon name={iconName} className="fill-accent h-[20px] w-[20px]"/>
