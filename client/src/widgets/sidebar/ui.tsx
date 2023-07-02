@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { $inboxTasks, $todayTasks } from "@/entities/task"
+import { $inboxTasks, $todayTasks } from "@/entities/task/tasks"
 import { routes } from "@/shared/config/router"
 import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Button } from "@/shared/ui/buttons/main-button/ui"

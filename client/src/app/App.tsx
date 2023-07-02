@@ -3,7 +3,7 @@ import { createEffect, sample } from 'effector';
 
 import Cookies from 'universal-cookie'
 import { RoutesView } from "@/pages";
-import { getTasksTriggered } from '@/entities/task';
+import { getTasksTriggered } from '@/entities/task/tasks';
 import { refreshQuery } from '@/shared/api/token';
 import { appStarted } from '@/shared/config/init';
 import { router } from "@/shared/config/router/router";

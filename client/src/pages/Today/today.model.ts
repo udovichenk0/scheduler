@@ -4,5 +4,5 @@ import { taskExpansionFactory } from "@/shared/lib/block-expansion";
 
 
 export const taskModel = taskExpansionFactory()
-export const updateTaskModel = updateTaskFactory({taskModel, defaultType: 'inbox', defaultDate: new Date()})
-export const createTaskModel = createTaskFactory({taskModel, defaultType: 'inbox', defaultDate: new Date()})
+export const updateTaskModel = updateTaskFactory({taskModel, defaultType: 'unplaced', defaultDate: new Date()})
+export const createTaskModel = createTaskFactory({taskModel, defaultType: 'unplaced', defaultDate: new Date()})
