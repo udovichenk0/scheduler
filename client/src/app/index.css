@@ -15,6 +15,12 @@ html {
     html[data-theme='space'] {
       --main: #0b0417;
       --accent: #2ebcff;
+      --accentYellow: rgb(253 216 53);
+      --accentRed: rgb(244 67 54);
+      --accentOrange: rgb(245, 124, 0);
+      --accentGreen: rgb(0, 200, 83);
+      --accentPurple: rgb(170, 0, 255);
+      --accentPink: rgb(224, 64, 251);
       --primary: #ffffff;
       --cFont: #fff;
       --cHover: #182137;
@@ -33,6 +39,12 @@ html {
     html[data-theme='default'] {
       --main: #2b2c37;
       --accent: #2ebcff;
+      --accentYellow: rgb(255, 202, 40);
+      --accentRed: rgb(255, 82, 82);
+      --accentOrange: rgb(245, 124, 0);
+      --accentGreen: rgb(0, 200, 83);
+      --accentPurple: rgb(124, 77, 255);
+      --accentPink: rgb(234, 128, 252);
       --primary: #fff;
       --cFont: #fff;
       --cHover: #323a4c;
@@ -52,6 +64,12 @@ html {
     html[data-theme='dark'] {
       --main: #121212; 
       --accent: #4683cb;
+      --accentYellow: rgb(255, 213, 79);
+      --accentRed: rgb(229, 115, 115);
+      --accentOrange: rgb(255, 183, 77);
+      --accentGreen: rgb(129, 199, 132);
+      --accentPurple: rgb(124, 77, 255);
+      --accentPink: rgb(234, 128, 252);
       --primary: #fffc;
       --cFont: #fffc;
       --cHover: #1c283794;
@@ -70,6 +88,12 @@ html {
     html[data-theme='light'] {
       --main: #f9f9f9; 
       --accent: #4683cb;
+      --accentYellow: rgb(251, 192, 45);
+      --accentRed: rgb(255, 82, 82);
+      --accentOrange: rgb(245, 124, 0);
+      --accentGreen: rgb(76, 175, 80);
+      --accentPurple: rgb(126, 87, 194);
+      --accentPink: rgb(240, 98, 146);
       --primary: #596175;
       --cFont: #2b2c37;
       --cHover: #d3e3f6;
@@ -88,6 +112,12 @@ html {
     html[data-theme='grey'] {
       --main: #f4f4f4; 
       --accent: #54759c;
+      --accentYellow: rgb(251, 192, 45);
+      --accentRed: rgb(229, 115, 115);
+      --accentOrange: rgb(255, 152, 0);
+      --accentGreen: rgb(102, 187, 106);
+      --accentPurple: rgb(126, 87, 194);
+      --accentPink: rgb(255, 128, 171);
       --primary: #333333cc;
       --cFont: #2b2c37;
       --cHover: #dfe7f0;
