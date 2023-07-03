@@ -22,11 +22,18 @@ sample({
   clock: appStarted,
   target: createEffect(() => {
     const theme = cookies.get('theme')
+    const accent = cookies.get('accent')
     if(theme){
       document.documentElement.setAttribute('data-theme', theme)
     }
-    else {
+    if(accent){
+      document.documentElement.style.setProperty('--accent', `var(--${accent})`)
+    }
+    if(!theme){
       document.documentElement.setAttribute('data-theme', 'space')
+    }
+    if(!accent){
+      document.documentElement.style.setProperty('--accent', 'var(--blue)')
     }
   })
 })
