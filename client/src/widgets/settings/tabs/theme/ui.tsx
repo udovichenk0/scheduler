@@ -1,7 +1,7 @@
-import { useUnit, useGate } from 'effector-react'
+import { useUnit } from 'effector-react'
 import { Fragment } from 'react'
 import { ThemeBox } from './theme-box'
-import { $theme, themeGate, themeChanged, accentChanged, $accent } from './theme.model'
+import { $theme, themeChanged, accentChanged, $accent } from './theme.model'
 const themeBoxes = [
   {title: 'Space', theme: 'space' as const, mainBg: 'bg-main-blue', topBox: 'bg-azure', text: 'text-[#ffffff]', leftBox: 'bg-[#1c283e]', rightBox: 'bg-[#121227]'},
   {title: 'Default', theme: 'default' as const, mainBg: 'bg-[#23242b]', topBox: 'bg-azure', text: 'text-[#ffffff]', leftBox: 'bg-[#fff]', rightBox: 'bg-[#76899b]'},
@@ -22,7 +22,6 @@ const accentColors = [
 
 export const ThemeTab = () => {
   const [changeTheme, activeTheme, activeAccent] = useUnit([themeChanged, $theme, $accent])
-  useGate(themeGate)
   return (
     <div className='px-8'>
       <h2 className='text-center mb-6 text-sm text-cFont'>Select color theme</h2>
