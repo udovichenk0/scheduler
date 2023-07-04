@@ -1,6 +1,6 @@
 import { zodContract } from "@farfetched/zod";
 import { createEvent, createStore, sample, createEffect } from "effector";
-import { persist } from 'effector-storage/session'
+import { persist } from 'effector-storage/local'
 import { z } from 'zod'
 const themeSchema = z.enum(['space', 'default', 'dark', 'light', 'grey'])
 const accentSchema = z.enum(['blue', 'yellow', 'green', 'red', 'orange', 'purple', 'pink'])
