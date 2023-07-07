@@ -2,7 +2,6 @@ import { createEvent, createStore, sample } from "effector"
 import { spread } from "patronum"
 import { z } from "zod"
 import { setSessionUserTriggered } from "@/entities/session"
-import { getTasksTriggered } from "@/entities/task/tasks"
 import { signupQuery } from "@/shared/api/auth/signup"
 import { setTokenTriggered } from "@/shared/api/token"
 import { $email } from "../by-email"
@@ -37,11 +36,6 @@ sample({
       token: setTokenTriggered,
     }
   })
-})
-
-sample({
-  clock: signupQuery.finished.success,
-  target: getTasksTriggered
 })
 
 sample({

@@ -7,6 +7,7 @@ import { Request, Response } from './type'
 
 //TODO validation of the response with zod
 //Params extends HttpRequestType
+// <Resp, (string & {}) | Request >
 export const authQuery = <Resp>({
   request, 
   response
