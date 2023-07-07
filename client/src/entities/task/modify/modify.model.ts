@@ -12,7 +12,7 @@ export const modifyFormFactory = ({
   const statusChanged = createEvent<'FINISHED' | 'INPROGRESS'>()
   const titleChanged = createEvent<string>()
   const typeChanged = createEvent<{type: 'inbox' | 'unplaced', date: null | Date}>()
-  const dateChanged = createEvent()
+  const dateChanged = createEvent<Date>()
   const descriptionChanged = createEvent<string>()
   const resetFieldsTriggered = createEvent()
 
@@ -46,6 +46,10 @@ export const modifyFormFactory = ({
     target: $description
   })
   sample({
+    clock: dateChanged,
+    target: $startDate
+  })
+  sample({
     clock: typeChanged,
     source: $type,
     filter: (currentType, {type}) => currentType != type,
@@ -58,7 +62,7 @@ export const modifyFormFactory = ({
     })
   })
   sample({
-    clock: [titleChanged, descriptionChanged, statusChanged, typeChanged],
+    clock: [titleChanged, descriptionChanged, statusChanged, typeChanged, dateChanged],
     fn: () => true,
     target: $isDirty
   })

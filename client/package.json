@@ -25,7 +25,6 @@
     "patronum": "^1.17.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "universal-cookie": "^4.0.4",
     "vite-plugin-eslint": "^1.8.1",
     "vite-tsconfig-paths": "^4.2.0",
     "zod": "^3.21.4"
