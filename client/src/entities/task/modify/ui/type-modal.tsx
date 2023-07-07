@@ -25,8 +25,8 @@ export const TypeModal = ({
 }) => {
   return (
     <>
-      <div ref={outRef} onClick={(e) => onClickOutside(e)} className="absolute w-full h-full bg-black/50 left-0 top-0 z-10"/>
-      <div className="w-[280px] bg-main absolute p-3 rounded-[5px] z-[11] flex flex-col gap-1">
+      <div ref={outRef} onClick={onClickOutside} className="absolute w-full h-full bg-black/50 left-0 top-0 z-10"/>
+      <div className="w-[280px] bg-main absolute -translate-y-[30px] p-3 rounded-[5px] z-[11] flex flex-col gap-1">
         {types.map(({type, date, iconName}, id) => {
           const active = type == currentType
           return (
