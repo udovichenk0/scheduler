@@ -49,7 +49,7 @@ export const Inbox = () => {
               <Fragment key={id}>
                 {item.id === taskId ? 
                   <ExpandedTask ref={ref}>
-                    <ModifyTaskForm modifyTaskModel={updateTaskModel}/>
+                    <ModifyTaskForm date={false} modifyTaskModel={updateTaskModel}/>
                   </ExpandedTask>
                   : <Task 
                     onDoubleClick={() => updateTaskOpened({task: item,ref})} 
@@ -60,7 +60,7 @@ export const Inbox = () => {
           })}
           {newTask && 
             <ExpandedTask ref={ref}>
-              <ModifyTaskForm modifyTaskModel={createTaskModel}/>
+              <ModifyTaskForm date={false} modifyTaskModel={createTaskModel}/> 
             </ExpandedTask>
           }
         </div>
@@ -68,3 +68,5 @@ export const Inbox = () => {
     </MainLayout>
   )
 }
+
+//TODO MOVE FORM TO WIDGET

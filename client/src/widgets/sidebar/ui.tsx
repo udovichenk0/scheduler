@@ -35,7 +35,7 @@ export const Sidebar = () => {
           </div>
           <div className="flex flex-col gap-2">
             <SideLink route={routes.inbox} title="Inbox" rightCount={inboxTasks.length} iconName="common/inbox"/>
-            <SideLink route={routes.home} title="Today" rightCount={todayTasks.length} iconName="common/star"/>
+            <SideLink route={routes.home} title="Today" rightCount={todayTasks.length} iconName="common/outlined-star"/>
             <SideLink route={routes.upcoming} title="Upcoming" iconName="common/upcoming"/>
             <SideLink route={routes.calendar} title="Calendar" iconName="common/calendar"/>
           </div>

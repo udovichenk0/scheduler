@@ -1,33 +1,29 @@
-import { RefObject, MouseEvent } from "react"
+import { RefObject } from "react"
+import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { Button } from "@/shared/ui/buttons/main-button"
-import { Icon, IconName } from "@/shared/ui/icon"
+import { Icon } from "@/shared/ui/icon"
 
-type T = {
-  type: 'inbox' | 'unplaced',
-  date: null | Date,
-  iconName: IconName
-}
-const types:T[] = [
-  {type: 'inbox' as const, date: null, iconName: 'common/inbox'},
-  {type: 'unplaced' as const, date: new Date(), iconName: 'common/inbox'}
+const types = [
+  {type: 'inbox' as const, iconName: 'common/inbox' as const},
+  {type: 'unplaced' as const, iconName: 'common/inbox' as const}
 ]
 
 export const TypeModal = ({
-  onClickOutside, 
+  closeTypeModal, 
   outRef,
   currentType,
   changeType
 }:{
-  onClickOutside: (e: MouseEvent) => void,
+  closeTypeModal: () => void,
   outRef: RefObject<HTMLDivElement>,
   currentType: 'inbox' | 'unplaced',
-  changeType: (payload: {type: 'inbox' | 'unplaced', date: null | Date}) => void
+  changeType: (payload: "inbox" | "unplaced") => void
 }) => {
   return (
     <>
-      <div ref={outRef} onClick={(e) => onClickOutside(e)} className="absolute w-full h-full bg-black/50 left-0 top-0 z-10"/>
-      <div className="w-[280px] bg-main absolute p-3 rounded-[5px] z-[11] flex flex-col gap-1">
-        {types.map(({type, date, iconName}, id) => {
+      <div ref={outRef} onClick={(e) => onClickOutside(outRef, e, closeTypeModal)} className="absolute w-full h-full bg-black/50 left-0 top-0 z-10"/>
+      <div className="w-[280px] bg-main absolute -translate-y-[30px] p-3 rounded-[5px] z-[11] flex flex-col gap-1">
+        {types.map(({type, iconName}, id) => {
           const active = type == currentType
           return (
             <Button 
@@ -35,7 +31,7 @@ export const TypeModal = ({
             key={id} 
             title={type} 
             size={'xs'} 
-            onClick={() => changeType({type, date})}
+            onClick={() => changeType(type)}
             className={`w-full ${active && 'bg-cFocus hover:!bg-cFocus'}`} intent={'primary'}/>
           )
         })}

@@ -1,5 +1,5 @@
 import { combine, createEvent, createStore, sample } from "effector"
-import { spread } from "patronum"
+import { debug, spread } from "patronum"
 
 export const modifyFormFactory = ({
   defaultType,
@@ -11,8 +11,8 @@ export const modifyFormFactory = ({
 
   const statusChanged = createEvent<'FINISHED' | 'INPROGRESS'>()
   const titleChanged = createEvent<string>()
-  const typeChanged = createEvent<{type: 'inbox' | 'unplaced', date: null | Date}>()
-  const dateChanged = createEvent()
+  const typeChanged = createEvent<'inbox' | 'unplaced'>()
+  const dateChanged = createEvent<Date>()
   const descriptionChanged = createEvent<string>()
   const resetFieldsTriggered = createEvent()
 
@@ -46,19 +46,58 @@ export const modifyFormFactory = ({
     target: $description
   })
   sample({
-    clock: typeChanged,
-    source: $type,
-    filter: (currentType, {type}) => currentType != type,
-    fn: (_, payload) => payload,
-    target: spread({
-      targets: {
-        date: $startDate,
-        type: $type
-      }
-    })
+    clock: dateChanged,
+    target: $startDate
   })
   sample({
-    clock: [titleChanged, descriptionChanged, statusChanged, typeChanged],
+    clock: dateChanged,
+    source: $type,
+    filter: (type, date) => type == 'inbox' && Boolean(date),
+    fn: () => 'unplaced' as const,
+    target: $type
+  })
+  sample({
+    clock: dateChanged,
+    source: $type,
+    filter: (type, date) => type == 'unplaced' && !date,
+    fn: () => 'inbox' as const,
+    target: $type
+  })
+
+  debug($startDate)
+  sample({
+    clock: typeChanged,
+    source: $type,
+    filter: (currentType, type) => currentType != type,
+    fn: (_, type) => type,
+    target: $type
+  })
+  sample({
+    clock: typeChanged,
+    filter: (type) => type == 'inbox',
+    fn: () => null,
+    target: $startDate
+  })
+  sample({
+    clock: typeChanged,
+    filter: (type) => type == 'unplaced',
+    fn: () => console.log(new Date()),
+    // target: $startDate
+  })
+  // sample({
+  //   clock: typeChanged,
+  //   source: $type,
+  //   filter: (currentType, {type}) => currentType != type,
+  //   fn: (_, payload) => payload,
+  //   target: spread({
+  //     targets: {
+  //       date: $startDate,
+  //       type: $type
+  //     }
+  //   })
+  // })
+  sample({
+    clock: [titleChanged, descriptionChanged, statusChanged, typeChanged, dateChanged],
     fn: () => true,
     target: $isDirty
   })
