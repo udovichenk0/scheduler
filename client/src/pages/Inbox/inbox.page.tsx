@@ -49,7 +49,7 @@ export const Inbox = () => {
               <Fragment key={id}>
                 {item.id === taskId ? 
                   <ExpandedTask ref={ref}>
-                    <ModifyTaskForm date={true} modifyTaskModel={updateTaskModel}/>
+                    <ModifyTaskForm date={false} modifyTaskModel={updateTaskModel}/>
                   </ExpandedTask>
                   : <Task 
                     onDoubleClick={() => updateTaskOpened({task: item,ref})} 

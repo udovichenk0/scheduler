@@ -91,6 +91,7 @@ export const ModifyTaskForm = ({
                 <Button 
                 onClick={() => setDatePickerOpen(prev => !prev)}
                 icon={<Icon name={'common/upcoming'} className="text-accent w-[18px] h-[18px]"/>} 
+                rightSlot={currentDate && <span className='text-accent'>{showDateTitle(currentDate)}</span>}
                 title={'Date'} 
                 size={'sm'} 
                 intent={'primary'}/>
