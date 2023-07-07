@@ -9,6 +9,9 @@ interface ModalProps {
         $isOpened: Store<boolean>
     }
 }
+
+//TODO make props like width modal etc. to make it reusable
+//TODO move layout to app.tsx
 export const BaseModal = ({ children, modal }: ModalProps) => {
   const isOpened = useUnit(modal.$isOpened)
   if (!isOpened) {
