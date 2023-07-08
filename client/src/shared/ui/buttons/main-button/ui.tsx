@@ -16,8 +16,8 @@ export const Button = ({ intent, size, icon, title,rightSlot, ...props }: Button
   return (
     <>
       <button className={clsx(buttonCva({ size, intent }), className)} {...rest}>
-        <div className='flex gap-4 items-center jusfity-center'>
-          {!!icon && icon } <div className='flex items-center gap-2'>{title} {rightSlot}</div>
+        <div className='flex items-center jusfity-center'>
+          {!!icon && icon } {!!title && <span className='ml-4 mr-2'>{title}</span>} {rightSlot}
         </div>
       </button>
     </>
