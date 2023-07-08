@@ -1,5 +1,4 @@
 import { combine, createEvent, createStore, sample } from "effector"
-import { debug } from "patronum"
 
 export const modifyFormFactory = ({
   defaultType,
@@ -64,7 +63,6 @@ export const modifyFormFactory = ({
     target: $type
   })
 
-  debug($startDate)
   sample({
     clock: typeChanged,
     source: $type,
@@ -81,21 +79,9 @@ export const modifyFormFactory = ({
   sample({
     clock: typeChanged,
     filter: (type) => type == 'unplaced',
-    fn: () => console.log(new Date()),
-    // target: $startDate
+    fn: () => new Date(),
+    target: $startDate
   })
-  // sample({
-  //   clock: typeChanged,
-  //   source: $type,
-  //   filter: (currentType, {type}) => currentType != type,
-  //   fn: (_, payload) => payload,
-  //   target: spread({
-  //     targets: {
-  //       date: $startDate,
-  //       type: $type
-  //     }
-  //   })
-  // })
   sample({
     clock: [titleChanged, descriptionChanged, statusChanged, typeChanged, dateChanged],
     fn: () => true,

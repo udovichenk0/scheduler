@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import { Event as EffectorEvent, Store } from 'effector'
 import { useUnit } from "effector-react"
 import { useState, useRef } from "react"
@@ -6,6 +5,7 @@ import { capitalizeLetter } from "@/shared/lib/capitalize-letter"
 import { Checkbox } from "@/shared/ui/buttons/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
+import { showDateTitle } from './lib/display-date-info'
 import { DatePicker } from './ui/date-picker'
 import { TypeModal } from "./ui/type-modal"
 
@@ -117,27 +117,4 @@ export const ModifyTaskForm = ({
       </div>
     </div>
   )
-}
-
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-
-function showDateTitle(date: Date) {
-  const curDate = dayjs().date()
-  const curMonth = dayjs().month()
-  const curYear = dayjs().year()
-
-  const dayjsDate = dayjs(date)
-  const curYearAndMonth = curYear && curMonth
-  if(dayjsDate.date() == curDate && curYearAndMonth){
-    return 'Today'
-  }
-  else if(dayjsDate.date() == curDate + 1 && curYearAndMonth){
-    return 'Tomorrow'
-  }
-  else if(dayjsDate.year() == curYear){
-    return `${months[dayjsDate.month()]} ${dayjsDate.date()}`
-  }
-  else {
-    return `${months[dayjsDate.month()]} ${dayjsDate.date()} ${dayjsDate.year()}`
-  }
 }

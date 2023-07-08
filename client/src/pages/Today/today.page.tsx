@@ -39,7 +39,7 @@ export const Today = () => {
   return (
     <MainLayout 
       action={() => createTaskOpened({ref})} 
-      iconName="common/inbox" title="Today">
+      iconName="common/outlined-star" title="Today">
        <div onClick={(e) => onClickOutside(e, ref, closeTaskTriggered)} className="px-5">
         <div>
           {tasks.map((item, id) => {
