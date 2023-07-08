@@ -34,7 +34,8 @@ html {
       --cButtonBg: #2384b9;
       --cButtunHover: #217aaa;
       --cTaskEdit: #1c283e;
-      --cFocusSecond: rgba(70,131,203,.5)
+      --cFocusSecond: rgba(70,131,203,.5);
+      --cTaskEditDefault: #76899b
     }
 
     html[data-theme='default'] {
@@ -61,7 +62,8 @@ html {
       --cButtunHover: #0f7a8d;
       --cButtonText: var(--cFont);
       --cTaskEdit: #23242b;
-      --cFocusSecond: #415d81
+      --cFocusSecond: #415d81;
+      --cTaskEditDefault: #76899b
     }
     html[data-theme='dark'] {
       --main: #121212; 
@@ -86,7 +88,8 @@ html {
       --cButtunHover: #315885;
       --cButtonText: var(--cFont);
       --cTaskEdit: #26262680;
-      --cFocusSecond: rgba(70,131,203,.5)
+      --cFocusSecond: rgba(70,131,203,.5);
+      --cTaskEditDefault: hsla(0,0%,100%,.8)
     }
     html[data-theme='light'] {
       --main: #f9f9f9; 
@@ -111,7 +114,8 @@ html {
       --cButtunHover: #82b0e4;
       --cButtonText: #f9f9f9;
       --cTaskEdit: #eef2f9;
-      --cFocusSecond: #b2bdca
+      --cFocusSecond: #b2bdca;
+      --cTaskEditDefault: #76899b
     }
     html[data-theme='grey'] {
       --main: #f4f4f4; 
@@ -136,7 +140,8 @@ html {
       --cButtunHover: #8aa3c0;
       --cButtonText: #fff;
       --cTaskEdit: #fff;
-      --cFocusSecond: #54759c
+      --cFocusSecond: #54759c;
+      --cTaskEditDefault: rgba(51,51,51,.6)
     }
 }
 @layer components {
