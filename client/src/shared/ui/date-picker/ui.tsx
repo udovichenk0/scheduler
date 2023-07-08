@@ -1,56 +1,51 @@
 import dayjs from "dayjs"
-import { RefObject, useState } from "react"
+import { useState } from "react"
 import { changeMonth } from "@/shared/lib/change-month"
-import { onClickOutside } from "@/shared/lib/on-click-outside"
-import { Button } from "@/shared/ui/buttons/main-button"
-import { Icon } from "@/shared/ui/icon"
+import { Button } from "../buttons/main-button"
+import { Icon } from "../icon"
 
-export const DatePicker = ({
-  outRef,
+const daysName = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+export function DatePicker({
   currentDate,
-  changeDate,
-  closeDatePicker
+  onDateChange
 }:{
-  outRef: RefObject<HTMLDivElement>,
   currentDate: Date,
-  changeDate: (date: Date) => void,
-  closeDatePicker: () => void
-}) => {
+  onDateChange: (date: Date) => void
+}){
   const [dates, setDate] = useState(changeMonth())
-  const [count, setCount] = useState(dayjs().month())
-  const currentSetMonth = dayjs(new Date(dayjs().year(), count, dayjs().date())).month() + 1
-
-  const isCurrentMonth = dayjs().month() === count
-  const handle = (month: number) => {
+  const [displayedMonth, setDisplayedMonth] = useState(dayjs().month())
+  const currentSetMonth = dayjs(new Date(dayjs().year(), displayedMonth, dayjs().date())).month()
+  const isCurrentMonth = dayjs().month() === displayedMonth
+  const switchMonth = (month: number) => {
     if(dayjs().month() <= month){
-      setCount(month)
+      setDisplayedMonth(month)
       setDate(changeMonth(month))
     }
   }
-  const daysName = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   return (
     <>
-    <div ref={outRef} onClick={(e) => onClickOutside(outRef, e, closeDatePicker)} className='absolute w-full h-full bg-black/50 left-0 top-0 z-10'/>
-      <div className='w-[270px] border-[1px] border-cBorder bg-main absolute top-2 p-3 translate-x-[-50px] rounded-[5px] z-[11] flex flex-col gap-1'>
         <div className='flex items-center gap-2 justify-end'>
-          <Button 
-          intent={'primary'}
+          <button 
           disabled={isCurrentMonth}
-          className={`p-2 ${isCurrentMonth && 'text-gray-500'}`} 
-          icon={<Icon name='common/arrow'  className='w-[8px] h-[8px]'/>} 
-          onClick={() => handle(count - 1)}/>
+          onClick={() => switchMonth(displayedMonth - 1)}
+          className={`${isCurrentMonth && 'opacity-50'} outline-none rounded-[5px] flex items-center justify-center w-6 h-6 p-2 transition-colors duration-150 hover:bg-cHover text-primary text-sm`}>
+            <Icon name='common/arrow'  className='w-[8px] h-[8px]'/>
+          </button>
+
           <button
-          onClick={() => handle(dayjs().month())}
-          disabled={isCurrentMonth}
-          className={`text-[11px] font-bold text-accent ${isCurrentMonth && 'opacity-80'}`}>
+            onClick={() => switchMonth(dayjs().month())}
+            disabled={isCurrentMonth}
+            className={`text-[11px] font-bold text-accent ${isCurrentMonth && 'opacity-80'}`}>
             Today
           </button>
-          <Button 
-          intent={'primary'} 
-          className='p-2'
-          icon={<Icon name='common/arrow' className='rotate-180 translate-x-[1px] w-[8px] h-[8px]'/>} 
-          onClick={() => handle(count + 1)}/>
+
+          <button 
+          onClick={() => switchMonth(displayedMonth + 1)}
+          className="outline-none rounded-[5px] flex items-center justify-center w-6 h-6 p-2 transition-colors duration-150 hover:bg-cHover text-primary text-sm">
+            <Icon name='common/arrow'  className='rotate-180 translate-x-[1px] w-[8px] h-[8px]'/>
+          </button>
         </div>
         <div className='w-full'>
           <div className='grid grid-cols-7 border-b-[1px] border-cBorder'>
@@ -64,7 +59,7 @@ export const DatePicker = ({
           </div>
           <div className='relative'>
             <span className="absolute top-[30%] left-[30%] -z-[10] text-main invert opacity-10 font-bold text-[90px]">
-              {currentSetMonth < 10 ? `0${currentSetMonth}` : currentSetMonth}
+              {currentSetMonth + 1 < 10 ? `0${currentSetMonth + 1}` : currentSetMonth + 1}
             </span>
             {dates.map((item, rowId) => {
               return (
@@ -83,7 +78,7 @@ export const DatePicker = ({
                         className={`w-full py-[2px] ${isTopDateBigger && 'border-b-[1px] border-cBorder'} ${isLeftDateBigger && 'border-r-[1px] border-b-[1px] border-cBorder'}`}
                         key={`${date}/${month}/${year}`}>
                           <button 
-                          onClick={() => changeDate(new Date(year, month, date))}
+                          onClick={() => onDateChange(new Date(year, month, date))}
                           disabled={isPast || isCurrent}
                           className={`w-[35px] h-[35px] text-[13px] ${!isCurrent && !isPast && 'hover:bg-cHover'} 
                           flex items-center justify-center rounded-[5px] 
@@ -109,7 +104,6 @@ export const DatePicker = ({
               )
             })}
           </div>
-      </div>
       </div>
     </>
   )

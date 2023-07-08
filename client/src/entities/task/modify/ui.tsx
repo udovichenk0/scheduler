@@ -6,7 +6,7 @@ import { Checkbox } from "@/shared/ui/buttons/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { showDateTitle } from './lib/display-date-info'
-import { DatePicker } from './ui/date-picker'
+import { DateModal } from './ui/date-modal'
 import { TypeModal } from "./ui/type-modal"
 
 type ModifyTaskFormType = {
@@ -105,7 +105,7 @@ export const ModifyTaskForm = ({
           changeType={onChangeType} 
           closeTypeModal={() => setTypeOpen(false)}/>}
           {isDatePickerOpened && 
-          <DatePicker
+          <DateModal
           currentDate={currentDate || new Date()}
           outRef={ref}
           changeDate={onChangeDate}
