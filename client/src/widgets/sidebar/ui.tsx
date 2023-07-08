@@ -19,7 +19,7 @@ export const Sidebar = () => {
     $todayTasks
   ])
   return (
-    <div className={`border-r-[1px] border-cBorder bg-brand text-primary`}>
+    <aside className={`border-r-[1px] border-cBorder bg-brand text-primary`}>
       <div className="w-[250px] flex flex-col h-full">
         <div className="border-b-[1px] border-cBorder px-2 py-2 mb-2">
           <div className="flex justify-between items-center px-2 mb-2">
@@ -27,7 +27,7 @@ export const Sidebar = () => {
               <div className="relative z-10 bg-gradient-to-tr from-accent to-[#aa00ff] flex items-center justify-center h-[22px] w-[22px] rounded-full after:w-[16px] after:h-[16px] after:absolute after:left-[3px] after:top-[3px] after:rounded-full after:bg-[#0d1828]">
                 <Icon name="common/done" className="relative w-[8px] h-[8px] z-20 fill-white"/>
               </div>
-              <h2>Scheduler App</h2>
+              <h2 className="text-sm font-semibold">Timequanta app</h2>
             </div>
             <div className="">
 							... {/* make a popup*/}
@@ -52,6 +52,6 @@ export const Sidebar = () => {
           </span>
         </div>
       </div>
-    </div>
+    </aside>
   )
 }
