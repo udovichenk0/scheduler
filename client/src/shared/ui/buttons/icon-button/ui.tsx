@@ -1,5 +1,4 @@
 import { VariantProps, cva } from "class-variance-authority"
-import clsx from "clsx"
 import { ButtonHTMLAttributes } from "react"
 import { Icon, IconName } from "../../icon"
 
@@ -28,13 +27,12 @@ VariantProps<typeof iconCva> {
 export const IconButton = ({
   iconName,
   intent,
-  className,
   size,
   ...props
 }:ButtonProps) => {
   return (
     <button className={iconCva({intent})} {...props}>
-      <Icon name={iconName} className={clsx(iconCva({size}), className)}/>
+      <Icon name={iconName} className={iconCva({size})}/>
     </button>
   )
 }
