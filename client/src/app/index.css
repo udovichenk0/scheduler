@@ -35,7 +35,9 @@ html {
       --cButtunHover: #217aaa;
       --cTaskEdit: #1c283e;
       --cFocusSecond: rgba(70,131,203,.5);
-      --cTaskEditDefault: #76899b
+      --cTaskEditDefault: #76899b;
+      --cTimeIntervalLow: #252538;
+      --cIconDefault: #76899b
     }
 
     html[data-theme='default'] {
@@ -63,7 +65,9 @@ html {
       --cButtonText: var(--cFont);
       --cTaskEdit: #23242b;
       --cFocusSecond: #415d81;
-      --cTaskEditDefault: #76899b
+      --cTaskEditDefault: #76899b;
+      --cTimeIntervalLow: #3d4350;
+      --cIconDefault: #76899b
     }
     html[data-theme='dark'] {
       --main: #121212; 
@@ -89,7 +93,9 @@ html {
       --cButtonText: var(--cFont);
       --cTaskEdit: #26262680;
       --cFocusSecond: rgba(70,131,203,.5);
-      --cTaskEditDefault: hsla(0,0%,100%,.8)
+      --cTaskEditDefault: hsla(0,0%,100%,.8);
+      --cTimeIntervalLow: #394049;
+      --cIconDefault: hsla(0,0%,100%,.8)
     }
     html[data-theme='light'] {
       --main: #f9f9f9; 
@@ -115,7 +121,9 @@ html {
       --cButtonText: #f9f9f9;
       --cTaskEdit: #eef2f9;
       --cFocusSecond: #b2bdca;
-      --cTaskEditDefault: #76899b
+      --cTaskEditDefault: #76899b;
+      --cTimeIntervalLow: #d1d7dc;
+      --cIconDefault: #76899b
     }
     html[data-theme='grey'] {
       --main: #f4f4f4; 
@@ -141,7 +149,9 @@ html {
       --cButtonText: #fff;
       --cTaskEdit: #fff;
       --cFocusSecond: #54759c;
-      --cTaskEditDefault: rgba(51,51,51,.6)
+      --cTaskEditDefault: rgba(51,51,51,.6);
+      --cTimeIntervalLow: #d8d8d8;
+      --cIconDefault: rgba(51,51,51,.6)
     }
 }
 @layer components {
