@@ -7,7 +7,7 @@ export const Header = ({icon, title}:{icon: IconName, title: string}) => {
 			Header
       </div>
       <div className="flex gap-4 items-center">
-        <Icon name={icon} className="fill-grey w-5 h-5"/>
+        <Icon name={icon} className="fill-cIconDefault w-5 h-5"/>
         <h1 className="text-[24px]">{title}</h1>
       </div>
     </div>
