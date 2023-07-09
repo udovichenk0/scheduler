@@ -38,9 +38,7 @@ export default {
         'cButtonText': 'var(--cButtonText)',
         'cTaskEdit': 'var(--cTaskEdit)',
         'cFocusSecond': 'var(--cFocusSecond)',
-        'cTaskEditDefault': 'var(--cTaskEditDefault)',
-        'cTimeIntervalLow': 'var(--cTimeIntervalLow)',
-        'cIconDefault': 'var(--cIconDefault)'
+        'cTaskEditDefault': 'var(--cTaskEditDefault)'
       }
     },
   },
