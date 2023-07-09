@@ -36,6 +36,7 @@ export const Today = () => {
     taskModel.updateTaskOpened,
     taskModel.createTaskOpened,
   ])
+  
   return (
     <MainLayout 
       action={() => createTaskOpened({ref})} 
