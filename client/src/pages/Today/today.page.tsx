@@ -46,6 +46,7 @@ export const Today = () => {
     toggleOverdueTasksOpened,
     $overdueTasks
   ])
+  
   return (
     <MainLayout 
       action={() => createTaskOpened({ref})} 
