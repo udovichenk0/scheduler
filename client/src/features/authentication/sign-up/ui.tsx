@@ -33,7 +33,7 @@ export const Signup = ({showEmailForm}:{showEmailForm: () => void}) => {
   return (
     <div className="relative text-center text-cFont">
       <span className="absolute left-[-20px]">
-        <IconButton intent={'primary'} size={'m'} iconName="common/arrow" onClick={() => showEmailForm()}/>
+        <IconButton className="rotate-180" intent={'primary'} size={'m'} iconName="common/arrow" onClick={() => showEmailForm()}/>
       </span>
       <h2 className="text-lg mb-3 font-medium">Registration</h2>
       <p className="text-sm mb-7">Creating an account using the address {email}</p>

@@ -1,7 +1,6 @@
 import dayjs from "dayjs"
 import { useState } from "react"
 import { changeMonth } from "@/shared/lib/change-month"
-import { Button } from "../buttons/main-button"
 import { Icon } from "../icon"
 
 const daysName = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
@@ -30,7 +29,7 @@ export function DatePicker({
           <button 
           disabled={isCurrentMonth}
           onClick={() => switchMonth(displayedMonth - 1)}
-          className={`${isCurrentMonth && 'opacity-50'} outline-none rounded-[5px] flex items-center justify-center w-6 h-6 p-2 transition-colors duration-150 hover:bg-cHover text-primary text-sm`}>
+          className={`${isCurrentMonth && 'opacity-50'} rotate-180 outline-none rounded-[5px] flex items-center justify-center w-6 h-6 p-2 transition-colors duration-150 hover:bg-cHover text-primary text-sm`}>
             <Icon name='common/arrow'  className='w-[8px] h-[8px]'/>
           </button>
 
@@ -44,7 +43,7 @@ export function DatePicker({
           <button 
           onClick={() => switchMonth(displayedMonth + 1)}
           className="outline-none rounded-[5px] flex items-center justify-center w-6 h-6 p-2 transition-colors duration-150 hover:bg-cHover text-primary text-sm">
-            <Icon name='common/arrow'  className='rotate-180 translate-x-[1px] w-[8px] h-[8px]'/>
+            <Icon name='common/arrow'  className='translate-x-[1px] w-[8px] h-[8px]'/>
           </button>
         </div>
         <div className='w-full'>
