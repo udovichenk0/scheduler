@@ -4,12 +4,12 @@ import { TaskDto, taskDtoSchema } from './task.dto';
 
 const taskContract = zodContract(taskDtoSchema)
 
-// type UpdateStatusBodyType = {
-//   id: number,
-//   status: "FINISHED" | "CANCELED" | "INPROGRESS"
-// }
+type BodyType = {
+  id: number,
+  status: "FINISHED" | "CANCELED" | "INPROGRESS"
+}
 
-export const updateStatusQuery = authQuery<TaskDto>({
+export const updateStatusQuery = authQuery<TaskDto, {body: BodyType}>({
   request: {
     url: 'update-status',
     method: 'POST'

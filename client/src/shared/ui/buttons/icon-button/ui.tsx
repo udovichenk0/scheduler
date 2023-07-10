@@ -1,5 +1,5 @@
 import { VariantProps, cva } from "class-variance-authority"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { ButtonHTMLAttributes } from "react"
 import { Icon, IconName } from "../../icon"
 

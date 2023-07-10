@@ -11,13 +11,14 @@ type PropsType = {
 	action: () => void
 }
 
+
 export const MainLayout = ({ children, iconName, title, action }: PropsType) => {
   return (
     <div className={`flex h-screen bg-main`}>
       <Sidebar />
       <div className="w-full h-full grid grid-rows-[auto_1fr_auto]">
         <Header icon={iconName} title={title}/>
-        {children}
+          {children}
         <div className="px-2 py-2">
           <Button 
             onClick={() => action()} 
