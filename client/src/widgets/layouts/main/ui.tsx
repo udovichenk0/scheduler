@@ -18,7 +18,9 @@ export const MainLayout = ({ children, iconName, title, action }: PropsType) => 
       <Sidebar />
       <div className="w-full h-full grid grid-rows-[auto_1fr_auto]">
         <Header icon={iconName} title={title}/>
+        <div className="overflow-hidden overflow-y-scroll scroll-pr-2.5">
           {children}
+        </div>
         <div className="px-2 py-2">
           <Button 
             onClick={() => action()} 

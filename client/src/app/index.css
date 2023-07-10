@@ -159,3 +159,19 @@ html {
       @apply select-none fill-current w-[1em] h-[1em] inline-block text-inherit box-content;
     }
   }
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--cHover);
+  border-radius: 15px;
+}
