@@ -1,9 +1,10 @@
 import { useUnit } from "effector-react"
-import { Fragment, useRef, MouseEvent, RefObject } from "react"
+import { Fragment, useRef } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { MainLayout } from "@/widgets/layouts/main"
 import { ModifyTaskForm } from "@/entities/task/modify"
 import { $inboxTasks } from "@/entities/task/tasks"
+import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { Task } from "@/shared/ui/task"
 import { 
   createTaskModel,
@@ -11,13 +12,6 @@ import {
   updateTaskModel,
 } from "./inbox.model"
 
-
-
-const onClickOutside = (e:MouseEvent, ref:RefObject<HTMLDivElement>, closeTask: () => void) => {
-  if(ref.current && !ref.current.contains(e.target as Node)){
-    closeTask()
-  }
-}
 export const Inbox = () => {
   const ref = useRef<HTMLDivElement>(null)
   const [
@@ -42,19 +36,19 @@ export const Inbox = () => {
     <MainLayout iconName={'common/inbox'}
       title={'Inbox'}
       action={() => createTaskOpened({ref})}>
-      <div onClick={(e) => onClickOutside(e, ref, closeTaskTriggered)} className="px-5">
+      <div onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)} className="px-5">
         <div>
-          {tasks.map((item, id) => {
+          {tasks.map((task, id) => {
             return (
               <Fragment key={id}>
-                {item.id === taskId ? 
+                {task.id === taskId ? 
                   <ExpandedTask ref={ref}>
                     <ModifyTaskForm date={false} modifyTaskModel={updateTaskModel}/>
                   </ExpandedTask>
                   : <Task 
-                    onDoubleClick={() => updateTaskOpened({task: item,ref})} 
-                    onChange={() => changeStatus(item.id)}
-                    data={item}/>}
+                    onDoubleClick={() => updateTaskOpened({task: task,ref})} 
+                    onChange={() => changeStatus(task.id)}
+                    data={task}/>}
               </Fragment>
             )
           })}
@@ -68,5 +62,3 @@ export const Inbox = () => {
     </MainLayout>
   )
 }
-
-//TODO MOVE FORM TO WIDGET
