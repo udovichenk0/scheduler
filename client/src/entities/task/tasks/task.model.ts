@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 import { combine, createEvent, createStore, sample } from "effector"
 import { getTaskQuery, TaskDto } from "@/shared/api/task"
 
@@ -19,7 +20,30 @@ export const $inboxTasks = combine($taskKv, (kv) => {
 
 export const $todayTasks = combine($taskKv, (kv) => {
   return Object.values(kv)
-    .filter(task => task.start_date && new Date().getDate() == new Date(task.start_date).getDate())
+    .filter(({start_date}) => {
+      const isCurrentYear = dayjs().year() == dayjs(start_date).year()
+      const isCurrentMonth = dayjs().month() == dayjs(start_date).month()
+      const isCurrentDay = dayjs().date() == dayjs(start_date).date()
+      return isCurrentYear && isCurrentMonth && isCurrentDay
+    }) 
+})
+
+//May be do something like: 
+export const $todayTasksLength = combine($taskKv, (kv) => {
+  return Object.values(kv)
+    .filter(({start_date}) => {
+      const isCurrentYear = dayjs().year() == dayjs(start_date).year()
+      const isCurrentMonth = dayjs().month() == dayjs(start_date).month()
+      const isCurrentDay = dayjs().date() == dayjs(start_date).date()
+      return isCurrentYear && isCurrentMonth && isCurrentDay
+    }).length 
+})
+
+export const $upcomingTasks = combine($taskKv, (kv) => {
+  return Object.values(kv)
+  .filter(({start_date}) => {
+    return start_date && new Date() < new Date(start_date)
+  }) 
 })
 
 sample({
