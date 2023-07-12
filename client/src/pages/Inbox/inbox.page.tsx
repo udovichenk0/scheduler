@@ -3,10 +3,10 @@ import { Fragment, useRef } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { MainLayout } from "@/widgets/layouts/main"
 import { ModifyTaskForm } from "@/entities/task/modify"
-import { $inboxTasks } from "@/entities/task/tasks"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { Task } from "@/shared/ui/task"
 import { 
+  $inboxTasks,
   createTaskModel,
   taskModel,
   updateTaskModel,

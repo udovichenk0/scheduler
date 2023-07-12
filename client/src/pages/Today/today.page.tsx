@@ -3,13 +3,13 @@ import { Fragment, useRef } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { MainLayout } from "@/widgets/layouts/main"
 import { ModifyTaskForm } from "@/entities/task/modify"
-import { $todayTasks } from "@/entities/task/tasks"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { Icon } from "@/shared/ui/icon"
 import { Task } from "@/shared/ui/task"
 import { 
   $isOverdueTasksOpened,
   $overdueTasks,
+  $todayTasks,
   createTaskModel,
   taskModel,
   toggleOverdueTasksOpened,
