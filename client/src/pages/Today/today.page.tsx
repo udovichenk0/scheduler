@@ -46,7 +46,7 @@ export const Today = () => {
     <MainLayout 
       action={() => createTaskOpened({ref})} 
       iconName="common/outlined-star" title="Today">
-       <div onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)} className="">
+       <div onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)} className="h-full">
         <section className={`${overdueTasks.length > 0 ? "block" : "hidden"}`}>
           <div className="border-b-2 py-2 border-t-2 border-cBorder flex items-center gap-1 px-5">
             <Icon name="common/outlined-star" className="w-5 h-5 text-cIconDefault"/>
@@ -81,7 +81,7 @@ export const Today = () => {
           </div>}
         </section>
         <section className="w-full">
-          {!!overdueTasks.length || !!tasks && <div className="px-5 mb-2 border-b-2 py-2 border-cBorder flex items-center gap-1">
+          {!!overdueTasks.length && !!tasks.length && <div className="px-5 mb-2 border-b-2 py-2 border-cBorder flex items-center gap-1">
             <Icon name="common/outlined-star" className="w-5 h-5 text-accent"/>
             <div className="flex justify-between items-center hover:bg-cHover py-1 px-3 rounded-[5px] w-full">
               <h2 className="text-lg">
