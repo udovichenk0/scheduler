@@ -27,9 +27,10 @@ persist({
   source: $theme,
   key: 'theme',
   contract: zodContract(themeSchema),
-  target: createEffect((theme:Theme) => {
+  target: createEffect((theme: Theme) => {
     document.documentElement.setAttribute('data-theme', theme)
-  })
+    themeChanged(theme)
+  }),
 })
 
 persist({
@@ -38,5 +39,6 @@ persist({
   contract: zodContract(accentSchema),
   target: createEffect((accent: Accent) => {
     document.documentElement.style.setProperty('--accent', `var(--${accent})`)
+    accentChanged(accent)
   })
 })
