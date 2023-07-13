@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { Tabs } from "@/shared/ui/tab";
+import { Icon } from "@/shared/ui/icon";
+import { Root } from "@/shared/ui/tab";
 import { SynchronizationTab, GeneralTab } from './tabs'
 import { ThemeTab } from "./tabs/theme";
 
 enum TabsEnum {
-  general,
-  synchronization,
-  theme
+  general = 'general',
+  synchronization = 'synchronization',
+  theme = 'theme'
 }
 const tabs = [
   { iconName: 'settings' as const, title: 'General', label: TabsEnum.general },
@@ -16,22 +16,23 @@ const tabs = [
 
 
 export const Settings = () => {
-  const [activeTab, selectTab] = useState<TabsEnum>(TabsEnum.general)
   return (
-    <Tabs>
-      <Tabs.TabList onChange={selectTab} className="flex gap-5 border-b-[1px] border-cBorder px-6 pb-4">
+    <Root defaultValue={TabsEnum.general}>
+      <Root.List className="flex gap-5 border-b-[1px] border-cBorder px-6 pb-4">
         {tabs.map(({iconName, title, label}) => 
-          <Tabs.Tab
-            label={label} 
-            title={title} 
-            iconName={`common/${iconName}`} 
+          <Root.Trigger
+            value={label} 
             key={label} 
-            className={`flex ${activeTab == label && 'text-cFont'} text-[#76899b] ${activeTab != label && 'hover:text-primary'} flex-col gap-3 items-center`}/>
+            activeClass={'text-cFont'}
+            className={`flex text-[#76899b] hover:text-primary flex-col gap-3 items-center`}>
+              <Icon name={`common/${iconName}`} className="w-8 h-8"/>
+              <span className="text-inherit">{title}</span>
+            </Root.Trigger>
         )}
-      </Tabs.TabList>
-      <Tabs.TabPanel activeValue={activeTab} label={TabsEnum.general}><GeneralTab/></Tabs.TabPanel>
-      <Tabs.TabPanel activeValue={activeTab} label={TabsEnum.synchronization}><SynchronizationTab/></Tabs.TabPanel>
-      <Tabs.TabPanel activeValue={activeTab} label={TabsEnum.theme}><ThemeTab/></Tabs.TabPanel>
-    </Tabs>
+      </Root.List>
+      <Root.Content label={TabsEnum.general}><GeneralTab/></Root.Content>
+      <Root.Content label={TabsEnum.synchronization}><SynchronizationTab/></Root.Content>
+      <Root.Content label={TabsEnum.theme}><ThemeTab/></Root.Content>
+    </Root>
   )
 }
