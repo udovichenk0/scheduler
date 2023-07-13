@@ -25,7 +25,7 @@ export function DatePicker({
   }
   return (
     <>
-        <div className='flex items-center gap-2 justify-end'>
+        <div className='flex items-center gap-2 justify-end text-primary'>
           <button 
           disabled={isCurrentMonth}
           onClick={() => switchMonth(displayedMonth - 1)}

@@ -52,7 +52,7 @@ export const Today = () => {
             <Icon name="common/outlined-star" className="w-5 h-5 text-cIconDefault"/>
             <button 
             onClick={toggleOverdueTasks}
-            className="flex justify-between items-center hover:bg-cHover py-1 px-3 rounded-[5px] w-full">
+            className="flex justify-between text-primary items-center hover:bg-cHover px-3 rounded-[5px] w-full">
               <h2 className="text-lg">
               Overdue tasks
               </h2>
@@ -81,9 +81,9 @@ export const Today = () => {
           </div>}
         </section>
         <section className="w-full">
-          {!!overdueTasks.length && !!tasks.length && <div className="px-5 mb-2 border-b-2 py-2 border-cBorder flex items-center gap-1">
+          {!!overdueTasks.length && !!tasks.length && <div className="px-5 text-primary mb-2 border-b-2 py-2 border-cBorder flex items-center gap-1">
             <Icon name="common/outlined-star" className="w-5 h-5 text-accent"/>
-            <div className="flex justify-between items-center hover:bg-cHover py-1 px-3 rounded-[5px] w-full">
+            <div className="flex justify-between items-center hover:bg-cHover px-3 rounded-[5px] w-full">
               <h2 className="text-lg">
               Today
               </h2>

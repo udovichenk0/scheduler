@@ -1,10 +1,13 @@
-import { useUnit, useGate } from "effector-react";
-
+import { useState } from "react";
 import { Tabs } from "@/shared/ui/tab";
-import { TabsEnum, gate, tabModel } from "./settings.model";
 import { SynchronizationTab, GeneralTab } from './tabs'
 import { ThemeTab } from "./tabs/theme";
 
+enum TabsEnum {
+  general,
+  synchronization,
+  theme
+}
 const tabs = [
   { iconName: 'settings' as const, title: 'General', label: TabsEnum.general },
   { iconName: 'cloud' as const, title: 'Synchronization', label: TabsEnum.synchronization},
@@ -13,8 +16,7 @@ const tabs = [
 
 
 export const Settings = () => {
-  const [activeTab, selectTab] = useUnit([tabModel.$activeTab, tabModel.tabSelected])
-  useGate(gate)
+  const [activeTab, selectTab] = useState<TabsEnum>(TabsEnum.general)
   return (
     <Tabs>
       <Tabs.TabList onChange={selectTab} className="flex gap-5 border-b-[1px] border-cBorder px-6 pb-4">

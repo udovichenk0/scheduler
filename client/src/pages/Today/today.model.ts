@@ -12,17 +12,11 @@ export const createTaskModel = createTaskFactory({taskModel, defaultType: 'unpla
 
 export const $overdueTasks = combine($taskKv, (kv) => {
   return Object.values(kv)
-    .filter(task => task.start_date && new Date().getDate() > new Date(task.start_date).getDate())
+    .filter(({start_date}) => start_date && dayjs(start_date).isBefore(dayjs(), 'date'))
 })
 
-export const $todayTasks = combine($taskKv, (kv) => {
-  return Object.values(kv)
-    .filter(({start_date}) => {
-      const isCurrentYear = dayjs().year() == dayjs(start_date).year()
-      const isCurrentMonth = dayjs().month() == dayjs(start_date).month()
-      const isCurrentDay = dayjs().date() == dayjs(start_date).date()
-      return isCurrentYear && isCurrentMonth && isCurrentDay
-    })
+export const $todayTasks = $taskKv.map(kv => {
+  return Object.values(kv).filter(({start_date}) => dayjs(start_date).isSame(dayjs(), 'date'))
 })
 
 export const $isOverdueTasksOpened = createStore(false)
