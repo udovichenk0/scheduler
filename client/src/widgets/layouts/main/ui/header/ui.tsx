@@ -2,7 +2,7 @@ import { Icon, IconName } from "@/shared/ui/icon"
 
 export const Header = ({icon, title}:{icon: IconName, title: string}) => {
   return (
-    <div className="mb-5 px-4">
+    <div className="mb-5 px-4 text-primary">
       <div className="py-2">
 			Header
       </div>

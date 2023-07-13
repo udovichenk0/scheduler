@@ -1,14 +1,14 @@
 import { createEvent, createStore, sample } from "effector"
 
-export const tabModelFactory = <List>({
+export const tabModelFactory = <Tab>({
   defaultValue
 }:{
-  defaultValue: List
+  defaultValue: Tab
 }) => {
-  const tabSelected = createEvent<List>()
+  const tabSelected = createEvent<Tab>()
   const reset = createEvent()
 
-  const $activeTab = createStore<List>(defaultValue)
+  const $activeTab = createStore<Tab>(defaultValue)
 
   sample({
     clock: tabSelected,

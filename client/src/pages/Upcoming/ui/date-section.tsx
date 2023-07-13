@@ -25,25 +25,27 @@ export function DateSection({
     taskModel.updateTaskOpened,
   ])
   return (
-    <div className="px-5 border-b-2 py-3 border-cBorder select-none">
-      <div className="flex gap-2 text-lg items-center hover:bg-cHover px-3 rounded-[5px] w-full">
+    <div className="border-b-2 border-cBorder select-none text-primary">
+      <div className="flex gap-2 text-lg items-center hover:bg-cHover mx-2 px-3 my-2 rounded-[5px] w-full">
         {title}
       </div>
-      {!!tasks.length && tasks.map((task, id) => {
-        return (
-          <Fragment key={id}>
-          {task.id === taskId ? 
-            <ExpandedTask ref={outRef}>
-              <ModifyTaskForm modifyTaskModel={updateTaskModel}/>
-            </ExpandedTask>
-            : <Task 
-              date
-              onDoubleClick={() => updateTaskOpened({task,ref: outRef})} 
-              onChange={() => changeStatus(task.id)}
-              data={task}/>}
-        </Fragment>
-        )
-      })}
+      <div className=" [&>*:first-child]:border-t-2 [&>*:first-child]:border-cBorder [&>*:last-child]:pb-2 [&>*:first-child]:pt-2">
+        {!!tasks.length && tasks.map((task, id) => {
+          return (
+            <div className="px-5" key={id}>
+            {task.id === taskId ? 
+              <ExpandedTask ref={outRef}>
+                <ModifyTaskForm modifyTaskModel={updateTaskModel}/>
+              </ExpandedTask>
+              : <Task 
+                date
+                onDoubleClick={() => updateTaskOpened({task,ref: outRef})} 
+                onChange={() => changeStatus(task.id)}
+                data={task}/>}
+          </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
