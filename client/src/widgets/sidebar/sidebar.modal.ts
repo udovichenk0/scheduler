@@ -3,7 +3,7 @@ import { combine } from "effector";
 import { $taskKv } from "@/entities/task/tasks";
 import { modalFactory } from "@/shared/lib/modal";
 
-export const modal = modalFactory()
+export const modal = modalFactory({closeOnClickOutside: true});
 
 export const $inboxTasksCount = combine($taskKv, (kv) => {
   return Object.values(kv)
