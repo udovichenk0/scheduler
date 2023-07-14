@@ -1,24 +1,31 @@
-import { Event, Store } from 'effector'
 import { useUnit } from "effector-react";
-import { ReactNode } from 'react'
+import { MouseEvent, ReactNode, useRef } from 'react'
 import { createPortal } from 'react-dom';
+import { ModalType } from '@/shared/lib/modal';
 interface ModalProps {
     children: ReactNode,
-    modal: {
-        toggleTriggered: Event<void>,
-        $isOpened: Store<boolean>
-    }
+    modal: ModalType
 }
 
-//TODO make props like width modal etc. to make it reusable
-//TODO move layout to app.tsx
 export const BaseModal = ({ children, modal }: ModalProps) => {
+  const ref = useRef<HTMLDivElement>(null)
   const isOpened = useUnit(modal.$isOpened)
   if (!isOpened) {
     return null
   }
+
+  const handleOnClickOutside = (e: MouseEvent) => {
+    if(e.target === ref.current) {
+      modal.clickOutsideTriggered()
+    }
+  }
+
   return (
-    createPortal(<div className='absolute w-full text-white h-screen left-0 top-0 flex items-center justify-center bg-black/40'>
+    createPortal(
+    <div
+    ref={ref}
+    onClick={handleOnClickOutside}
+    className='absolute w-full text-white h-screen left-0 top-0 flex items-center justify-center bg-black/40'>
       <div className='bg-main drop-shadow-[0_35px_35px_rgba(0,0,0,.56)] border-[1px] w-[610px] border-cBorder rounded-[5px]'>
         <div className={'flex justify-end m-2'}>
           <button onClick={() => modal.toggleTriggered()} className={'relative hover:bg-cHover w-[22px] h-[22px] rounded-[4px]'}>
