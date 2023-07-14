@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { RefObject, ReactNode, Fragment } from "react"
+import { RefObject, ReactNode } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { ModifyTaskForm } from "@/entities/task/modify"
 import { TaskDto } from "@/shared/api/task"
