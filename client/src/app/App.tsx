@@ -4,6 +4,7 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import { sample } from 'effector';
 import { RoutesView } from "@/pages";
+import { Sidebar } from '@/widgets/sidebar';
 import { getTasksTriggered } from '@/entities/task/tasks';
 import { refreshQuery } from '@/shared/api/token';
 import { appStarted } from '@/shared/config/init';
@@ -24,9 +25,23 @@ sample({
 function App() {
   return (
     <RouterProvider router={router}>
-      <RoutesView />
+      <div className='flex w-full bg-main'>
+        <Sidebar />
+        <RoutesView />
+      </div>
     </RouterProvider> 
   )
 }
+
+if(typeof window != 'undefined') {
+  const theme = localStorage.getItem('data-theme')
+  if(!theme){
+    document.documentElement.setAttribute('data-theme', 'default')
+  }
+  else {
+    document.documentElement.setAttribute('data-theme', JSON.parse(theme))
+  }
+}
+
 export default App
 

@@ -17,7 +17,7 @@ const tabs = [
 
 export const Settings = () => {
   return (
-    <Root defaultValue={TabsEnum.general}>
+    <Root defaultValue={TabsEnum.general} className="">
       <Root.List className="flex gap-5 border-b-[1px] border-cBorder px-6 pb-4">
         {tabs.map(({iconName, title, label}) => 
           <Root.Trigger

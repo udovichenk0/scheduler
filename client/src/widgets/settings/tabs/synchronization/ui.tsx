@@ -5,9 +5,7 @@ import { Signin } from "@/features/authentication/sign-in"
 import { Signup } from "@/features/authentication/sign-up"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
-import { $formToShow, Form, gate, setFormTriggered } from "./sync.modal"
-
-
+import { $formToShow, FormEnum, gate, setFormTriggered } from "./sync.modal"
 
 export const SynchronizationTab = () => {
   const [
@@ -21,11 +19,11 @@ export const SynchronizationTab = () => {
   return (
     <div className="flex flex-col items-center">
       <div className="w-[391px] text-">
-        {formToShow === Form.options && <LoginOptions onClick={() => setForm(Form.email)}/>}
-        {formToShow === Form.email && <ByEmailForm showEmailForm={() => setForm(Form.options)}/>}
-        {formToShow === Form.login && <Signin showEmailForm={() => setForm(Form.email)}/>}
-        {formToShow === Form.register && <Signup showEmailForm={() => setForm(Form.email)}/>}
-        {formToShow === Form.logout && <Logout/>}
+        {formToShow === FormEnum.options && <LoginOptions onClick={() => setForm(FormEnum.email)}/>}
+        {formToShow === FormEnum.email && <ByEmailForm goBack={() => setForm(FormEnum.options)}/>}
+        {formToShow === FormEnum.login && <Signin goBack={() => setForm(FormEnum.email)}/>}
+        {formToShow === FormEnum.register && <Signup goBack={() => setForm(FormEnum.email)}/>}
+        {formToShow === FormEnum.logout && <Logout/>}
       </div>
     </div>
   )

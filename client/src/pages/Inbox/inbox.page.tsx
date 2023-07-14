@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { Fragment, useEffect, useRef } from "react"
+import { Fragment, useRef } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { MainLayout } from "@/widgets/layouts/main"
 import { ModifyTaskForm } from "@/entities/task/modify"

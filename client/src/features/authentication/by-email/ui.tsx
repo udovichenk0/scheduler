@@ -11,7 +11,7 @@ const onSubmit = (e: FormEvent, submit: () => void) => {
   submit()
 }
 
-export const ByEmailForm = ({showEmailForm}:{showEmailForm: () => void}) => {
+export const ByEmailForm = ({goBack}:{goBack: () => void}) => {
   const ref = useRef<HTMLInputElement>(null)
   const [
     email, 
@@ -30,7 +30,7 @@ export const ByEmailForm = ({showEmailForm}:{showEmailForm: () => void}) => {
   return (
     <div className="relative text-center text-cFont">
       <span className="absolute left-[-20px]">
-      <IconButton className="rotate-180" size={'m'} iconName="common/arrow" intent={'primary'} onClick={() => showEmailForm()}/>
+      <IconButton className="rotate-180" size={'m'} iconName="common/arrow" intent={'primary'} onClick={() => goBack()}/>
       </span>
       <h2 className="text-lg mb-3 font-medium">Log in by email</h2>
       <p className="text-sm mb-7">Specify the address to log in to your account or register</p>
