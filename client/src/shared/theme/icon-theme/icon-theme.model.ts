@@ -17,10 +17,8 @@ sample({
 })
 
 const changeDateAccentFx = createEffect((accent: Accent) => {
-  document.documentElement.setAttribute('data-accent', accent)
+  document.documentElement.style.setProperty('--accent', `var(--${accent})`)
 })
-
-debug($accent)
 
 persist({
   store: $accent,
