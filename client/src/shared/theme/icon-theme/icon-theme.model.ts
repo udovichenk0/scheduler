@@ -1,7 +1,6 @@
 import { zodContract } from "@farfetched/zod";
 import { createEvent, createStore, sample, createEffect } from "effector";
 import { persist } from 'effector-storage/local'
-import { debug } from "patronum";
 import { z } from 'zod'
 const AccentSchema = z.enum(['blue', 'yellow', 'green', 'red', 'orange', 'purple', 'pink'])
 
