@@ -58,7 +58,6 @@ export const taskExpansionFactory = () => {
     target: [$newTask.reinit, $isAllowToOpenUpdate.reinit]
   })
 
-  // update methods
   sample({
     clock: updateTaskOpened,
     filter: and($isAllowToOpenUpdate, $isAllowToOpenCreate),

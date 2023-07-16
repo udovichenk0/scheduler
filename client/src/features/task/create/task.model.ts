@@ -69,14 +69,7 @@ export const createTaskFactory = ({
     source: $taskKv,
     filter: not(taskModel.$createdTriggered),
     fn: (kv, {result: {result}}) => ({...kv, [result.id]: result}),
-    target: $taskKv
-  })
-  sample({
-    clock: createTaskQuery.finished.success,
-    source: $taskKv,
-    filter: not(taskModel.$createdTriggered),
-    fn: (kv, {result: {result}}) => ({...kv, [result.id]: result}),
-    target: [taskModel.$newTask.reinit, resetFieldsTriggered]
+    target: [$taskKv, taskModel.$newTask.reinit, resetFieldsTriggered]
   })
   sample({
     clock: createTaskQuery.finished.success,

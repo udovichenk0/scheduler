@@ -1,11 +1,26 @@
-import { allSettled, fork } from 'effector';
+import { allSettled, createEvent, createStore, fork } from 'effector';
 import { test, expect, vi } from 'vitest';
 import { $taskKv } from '@/entities/task/tasks';
 import { createTaskQuery } from '@/shared/api/task';
 import { taskExpansionFactory } from '@/shared/lib/block-expansion';
 import { createTaskFactory } from '.';
+
 const taskModel = taskExpansionFactory()
 const createTaskModel = createTaskFactory({taskModel, defaultType: 'inbox', defaultDate: null})
+vi.mock('@/shared/lib/block-expansion', () => {
+  return {
+    taskExpansionFactory: vi.fn(() => {
+      return {
+        updateTaskClosed: createEvent(),
+        createTaskClosed: createEvent(),
+        $newTask: createStore(false),
+        $createdTriggered: createStore(false),
+        $isAllowToOpenUpdate: createStore(true),
+        createTaskOpened: createEvent(),
+      }
+    })
+  }
+})
 
 
 const items = {
@@ -24,7 +39,8 @@ const newItems = {
   6: {id: 6,title: "sixth",description: "my note",type: "inbox",status: "FINISHED", start_date: null,user_id: 1},
 }
 const returnedValue = {id: 6,title: "sixth",description: "my note",type: "inbox",status: "FINISHED", start_date: null,user_id: 1}
-test('request after closeTaskTriggered event', async () => {
+  
+test('Make a request after task being closed, set new task to the kv store and reset fields', async () => {
   const mock = vi.fn(() => (returnedValue))
   const { $title, $description, $status, $startDate, $isAllowToSubmit, $type } = createTaskModel
   const { createTaskClosed } = taskModel
@@ -44,7 +60,11 @@ test('request after closeTaskTriggered event', async () => {
   })
   await allSettled(createTaskClosed, {scope})
   expect(mock).toHaveBeenCalledOnce()
-  expect(mock).toBeCalledWith({body: {title: 'sixth', description: 'my note',type: 'inbox', status: 'FINISHED', start_date: null}})
-  expect(mock).toReturnWith(returnedValue)
+  expect(mock).toBeCalledWith({body: {title: 'sixth', description: 'my note',type: 'inbox', status: 'FINISHED', start_date: null}}) 
+  expect(mock).toReturnWith(returnedValue) 
   expect(scope.getState($taskKv)).toStrictEqual(newItems)
+  expect(scope.getState($title)).toBe('')
+  expect(scope.getState($description)).toBe('')
+  expect(scope.getState($status)).toBe('INPROGRESS')
+  expect(scope.getState($isAllowToSubmit)).toBeFalsy()
 })
