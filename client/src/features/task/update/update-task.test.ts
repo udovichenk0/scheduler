@@ -1,4 +1,4 @@
-import { fork, allSettled } from 'effector'
+import { fork, allSettled, createEvent, createStore } from 'effector'
 import { test, expect, vi } from 'vitest'
 import { $taskKv } from '@/entities/task/tasks'
 import { updateTaskQuery } from '@/shared/api/task'
@@ -7,8 +7,23 @@ import { updateTaskFactory } from '.'
 
 const taskModel = taskExpansionFactory()
 const updateTaskModel = updateTaskFactory({taskModel, defaultType: 'inbox', defaultDate: null})
+vi.mock('@/shared/lib/block-expansion', () => {
+  return {
+    taskExpansionFactory: vi.fn(() => {
+      return {
+        updateTaskOpened: createEvent(),
+        $isAllowToOpenCreate: createStore(true),
+        updateTaskClosed: createEvent(), 
+        $updatedTriggered: createStore(false),
+        $taskId: createStore<number | null>(null),
+        $newTask: createStore(false),
+        $createdTriggered: createStore(false),
+      }
+    })
+  }
+})
 
-const items = {
+const tasks = {
   1: {"id": 1,"title": "without date","description": "","type": "inbox","status": "INPROGRESS","start_date": null,"user_id": 1},
   2: {"id": 2,"title": "without date","description": "","type": "inbox","status": "INPROGRESS","start_date": null,"user_id": 1},
   3: {"id": 3,"title": "without date","description": "","type": "inbox","status": "INPROGRESS","start_date": null,"user_id": 1},
@@ -16,7 +31,7 @@ const items = {
   5: {"id": 5,"title": "without date","description": "","type": "inbox","status": "INPROGRESS","start_date": null,"user_id": 1},
 }
 
-const newItems = {
+const updatedTasks = {
   1: {"id": 1,"title": "without date","description": "","type": "inbox","status": "INPROGRESS","start_date": null,"user_id": 1},
   2: {"id": 2,"title": "without date","description": "","type": "inbox","status": "INPROGRESS","start_date": null,"user_id": 1},
   3: {"id": 3,"title": "without date","description": "","type": "inbox","status": "INPROGRESS","start_date": null,"user_id": 1},
@@ -25,13 +40,13 @@ const newItems = {
 }
 
 const returnedValue = {"id": 5,"title": "title","description": "my description","type": "inbox","status": "FINISHED","start_date": null,"user_id": 1}
-test('should set fields after task is selected', async () => {
+test('Make a request after task being closed, update the value in kv store and reset fields', async () => {
   const mock = vi.fn(() => returnedValue)  
   const { $status, $description,$isAllowToSubmit, $title, $type, $startDate } = updateTaskModel
   const { updateTaskClosed } = taskModel
   const scope = fork({
     values: [
-      [$taskKv, items],
+      [$taskKv, tasks],
       [$title, 'title'],
       [$description, 'my description'],
       [$status, 'FINISHED'],
@@ -47,7 +62,10 @@ test('should set fields after task is selected', async () => {
 
   expect(mock).toHaveBeenCalledOnce()
   expect(mock).toReturnWith(returnedValue)
-
-  expect(scope.getState($taskKv)).toStrictEqual(newItems)
+  expect(scope.getState($taskKv)).toStrictEqual(updatedTasks)
+  expect(scope.getState($isAllowToSubmit)).toBeFalsy()
+  expect(scope.getState($title)).toBe('')
+  expect(scope.getState($description)).toBe('')
+  expect(scope.getState($status)).toBe('INPROGRESS')
   expect(scope.getState($isAllowToSubmit)).toBeFalsy()
 })
