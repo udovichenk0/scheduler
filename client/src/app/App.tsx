@@ -25,10 +25,10 @@ sample({
 function App() {
   return (
     <RouterProvider router={router}>
-      <div className='flex w-full bg-main'>
-        <Sidebar />
-        <RoutesView />
-      </div>
+        <div className='flex w-full bg-main'>
+          <Sidebar />
+          <RoutesView />
+        </div>
     </RouterProvider> 
   )
 }
