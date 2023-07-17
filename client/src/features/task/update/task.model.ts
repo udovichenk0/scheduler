@@ -8,11 +8,11 @@ import { ExpensionTaskType } from "@/shared/lib/block-expansion";
 export const updateTaskFactory = ({
   taskModel,
   defaultType,
-  defaultDate
+  defaultDate, //!remove defaultDate??
 }: {
   taskModel: ExpensionTaskType,
   defaultType: 'inbox' | 'unplaced',
-  defaultDate: Date | null
+  defaultDate: Date | null,
 }) => {
   const { 
     statusChanged, 
@@ -30,7 +30,7 @@ export const updateTaskFactory = ({
     $type
   } = modifyFormFactory({
     defaultType,
-    defaultDate
+    defaultDate,
   })
 
   const changeStatusTriggered = createEvent<number>()

@@ -2,10 +2,10 @@ import { combine, createEvent, createStore, sample } from "effector"
 
 export const modifyFormFactory = ({
   defaultType,
-  defaultDate
+  defaultDate,
 }:{
   defaultType: 'inbox' | 'unplaced',
-  defaultDate: Date | null
+  defaultDate: Date | null,
 }) => {
 
   const statusChanged = createEvent<'FINISHED' | 'INPROGRESS'>()
@@ -19,7 +19,6 @@ export const modifyFormFactory = ({
   const $description = createStore<string>('')
   const $status = createStore<'FINISHED' | 'INPROGRESS'>('INPROGRESS')
   const $startDate = createStore<Date | null>(defaultDate)
-
   const $type = createStore<'inbox' | 'unplaced'>(defaultType)
 
   const $isDirty = createStore(false)

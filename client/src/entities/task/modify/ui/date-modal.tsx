@@ -24,7 +24,7 @@ export const DateModal = ({
         onDateChange={changeDate}/>
       </div>
 
-      <div className="flex w-full gap-3">
+      <div className="flex w-full gap-3 text-primary">
         <Button onClick={closeDatePicker} title="Cancel" className="flex w-full text-[12px] p-[1px] justify-center" />
         <Button onClick={() => {throw new Error('Not implemented')}} intent={'filled'} title="OK" className="flex p-[1px] w-full text-[12px] justify-center" />
       </div>
