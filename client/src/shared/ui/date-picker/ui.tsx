@@ -47,7 +47,7 @@ export function DatePicker({
           </button>
         </div>
         <div className='w-full'>
-          <div className='grid grid-cols-7 border-b-[1px] border-cBorder'>
+          <div className='grid grid-cols-7 border-b-[1px] border-cBorder text-primary'>
             {daysName.map((name) => {
               return (
                 <div className="text-[12px] py-2 justify-self-center" key={name}>
@@ -56,7 +56,7 @@ export function DatePicker({
               )
             })}
           </div>
-          <div className='relative'>
+          <div className='relative text-primary'>
             <span className="absolute top-[30%] left-[30%] -z-[10] text-main invert opacity-10 font-bold text-[90px]">
               {currentSetMonth + 1 < 10 ? `0${currentSetMonth + 1}` : currentSetMonth + 1}
             </span>

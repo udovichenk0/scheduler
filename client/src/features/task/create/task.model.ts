@@ -1,5 +1,5 @@
 import { sample } from "effector";
-import { spread, not, and } from "patronum";
+import { not, and } from "patronum";
 import { modifyFormFactory } from "@/entities/task/modify";
 import { $taskKv } from "@/entities/task/tasks";
 import { createTaskQuery } from "@/shared/api/task";
@@ -12,7 +12,7 @@ export const createTaskFactory = ({
 }: {
   taskModel: ExpensionTaskType,
   defaultType: 'inbox' | 'unplaced',
-  defaultDate: Date | null
+  defaultDate: Date | null,
 }) => {
   const { 
     $title,
@@ -33,24 +33,11 @@ export const createTaskFactory = ({
     })
     
   sample({
-    clock: taskModel.createTaskOpened,
-    filter: not($isAllowToSubmit),
-    fn: () => ({
-      start_date: defaultDate,
-      type: defaultType
-    }),
-    target: spread({
-      targets: {
-        start_date: $startDate,
-        type: $type
-      }
-    })
-  })
-  sample({
     clock: $isAllowToSubmit,
     fn: (val) => !val,
     target: taskModel.$isAllowToOpenUpdate
   })
+
   sample({
     clock: taskModel.createTaskOpened,
     filter: and($isAllowToSubmit, taskModel.$newTask),
@@ -61,8 +48,8 @@ export const createTaskFactory = ({
     clock: taskModel.createTaskClosed,
     source: $fields,
     filter: $isAllowToSubmit,
-    fn: (fields) => ({body: fields}),
-    target: createTaskQuery.start
+    fn: (fields) => console.log({body: fields}),
+    // target: createTaskQuery.start
   })
   sample({
     clock: createTaskQuery.finished.success,

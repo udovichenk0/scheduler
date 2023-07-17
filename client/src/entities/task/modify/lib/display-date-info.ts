@@ -1,24 +1,21 @@
-import dayjs from "dayjs"
-
+import dayjs, { extend } from "dayjs"
+import isToday from 'dayjs/plugin/isToday'
+import isTommorow from 'dayjs/plugin/isTomorrow'
+extend(isToday)
+extend(isTommorow)
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 export function showDateTitle(date: Date) {
-  const curDate = dayjs().date()
-  const curMonth = dayjs().month()
-  const curYear = dayjs().year()
-
-  const dayjsDate = dayjs(date)
-  const curYearAndMonth = curYear && curMonth
-  if(dayjsDate.date() == curDate && curYearAndMonth){
+  if(dayjs(date).isSame(dayjs(), 'day')){
     return 'Today'
   }
-  else if(dayjsDate.date() == curDate + 1 && curYearAndMonth){
+  else if(dayjs(date).isTomorrow()){
     return 'Tomorrow'
   }
-  else if(dayjsDate.year() == curYear){
-    return `${months[dayjsDate.month()]} ${dayjsDate.date()}`
+  else if(dayjs(date).isSame(dayjs(), 'year')){
+    return `${months[dayjs(date).month()]} ${dayjs(date).date()}`
   }
   else {
-    return `${months[dayjsDate.month()]} ${dayjsDate.date()} ${dayjsDate.year()}`
+    return `${months[dayjs(date).month()]} ${dayjs(date).date()} ${dayjs(date).year()}`
   }
 }
