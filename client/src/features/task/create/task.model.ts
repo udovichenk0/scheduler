@@ -48,8 +48,8 @@ export const createTaskFactory = ({
     clock: taskModel.createTaskClosed,
     source: $fields,
     filter: $isAllowToSubmit,
-    fn: (fields) => console.log({body: fields}),
-    // target: createTaskQuery.start
+    fn: (fields) => ({body: fields}),
+    target: createTaskQuery.start
   })
   sample({
     clock: createTaskQuery.finished.success,
