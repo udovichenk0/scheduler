@@ -6,7 +6,7 @@ import { setTokenTriggered } from "./token.model";
 
 const refreshContract = zodContract(tokenSchema)
 
-export const refreshFx = createEffect(async () => {
+export const refreshFx = createEffect<void, RefreshType>(async () => {
   const data = await fetch('http://localhost:3000/refresh', 
     {
       method: 'GET', 
