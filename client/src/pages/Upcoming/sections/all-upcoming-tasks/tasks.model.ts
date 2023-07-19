@@ -9,38 +9,36 @@ export const $upcomingTasks = $taskKv.map(kv => {
   return groupTasksByYear(mappedTasks)
 })
 export const $upcomingYears = $upcomingTasks.map(tasks => {
-  const curYear = dayjs().format('YYYY')
-  return Object.fromEntries(Object.entries(tasks).filter(([year]) => curYear != year))
+  const currentYear = dayjs().add(MIN_DATES_LENGTH, 'day').add(MIN_MONTHS_LENGTH, 'month').format('YYYY')
+  return Object.fromEntries(Object.entries(tasks).filter(([year]) => currentYear != year))
 })
 
-export const $restDates = $upcomingTasks.map(tasks => {
+export const $restDays = $upcomingTasks.map(tasks => {
   const year = dayjs().format('YYYY')
   const firstDayOfRemainingDays = dayjs().add(MIN_DATES_LENGTH, 'day').startOf('date')
   const lastDayOfRemainingDays = dayjs(firstDayOfRemainingDays).endOf('month')
-  const DAYS_IN_MONTH = dayjs().daysInMonth()
-  const remainingDays = DAYS_IN_MONTH - dayjs().date()
 
   const restTasks = tasks[year]?.filter(({start_date}) => {
-    const isSameOrBetween = start_date && dayjs(start_date).isSameOrAfter(firstDayOfRemainingDays, 'date') && dayjs(start_date).isSameOrBefore(lastDayOfRemainingDays, 'date')
+    const isSameOrBetween = start_date 
+    && dayjs(start_date).isSameOrAfter(firstDayOfRemainingDays, 'date') 
+    && dayjs(start_date).isSameOrBefore(lastDayOfRemainingDays, 'date')
     return start_date && isSameOrBetween
   })
 
-  const rest = remainingDays < MIN_DATES_LENGTH ? [] : restTasks
-  
+  const rest = firstDayOfRemainingDays.date() == lastDayOfRemainingDays.date() ? [] : restTasks
+
   return {
     restTasks: rest,
     firstDay: firstDayOfRemainingDays.date(),
     lastDay: lastDayOfRemainingDays.date(),
-    date: dayjs().date(firstDayOfRemainingDays.date()).startOf('date')
+    date: dayjs(firstDayOfRemainingDays)
   } 
 })
 
 export const $restMonths = $upcomingTasks.map(tasks => {
   const year = dayjs().format('YYYY')
-  const firstDateOfRemainingMonths = dayjs().add(MIN_MONTHS_LENGTH, 'month')
+  const firstDateOfRemainingMonths = dayjs().add(MIN_DATES_LENGTH, 'day').add(MIN_MONTHS_LENGTH + 1, 'month')
   const lastDateOfRemainingMonths = dayjs().endOf('year')
-  const MONTHS_IN_YEAR = 11
-  const remainingMonths = MONTHS_IN_YEAR - dayjs().month()
   const restTasks = tasks[year]?.filter(({start_date}) => {
 
     const isSameOrBetween = dayjs(start_date).isAfter(firstDateOfRemainingMonths, 'month') 
@@ -48,12 +46,10 @@ export const $restMonths = $upcomingTasks.map(tasks => {
     
     return start_date && isSameOrBetween
   })
-
-  const rest = remainingMonths < MIN_MONTHS_LENGTH ? [] : restTasks
-
+  const rest = firstDateOfRemainingMonths.month() == lastDateOfRemainingMonths.month() ? [] : restTasks
   return {
     restTasks: rest,
-    startDate: firstDateOfRemainingMonths.month() + 1,
+    startDate: firstDateOfRemainingMonths.month() ,
     endDate: lastDateOfRemainingMonths.month(),
     date: dayjs().month(firstDateOfRemainingMonths.add(1, 'month').month()).startOf('month')
   }
