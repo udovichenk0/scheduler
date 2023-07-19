@@ -3,7 +3,7 @@ import { useUnit } from "effector-react"
 import { RefObject } from "react"
 import { remainingDaysOfMonth, weekDays, months, remainingMonthsOfYear } from "../../config"
 import { DateSection } from "../../ui/date-section"
-import { $upcomingTasks, $upcomingYears, $restDates, $restMonths } from "./tasks.model"
+import { $upcomingTasks, $upcomingYears, $restDays, $restMonths } from "./tasks.model"
 
 export const AllUpcomingTasks = ({
   outRef,
@@ -17,12 +17,12 @@ export const AllUpcomingTasks = ({
   const [
     upcomingTasks,
     upcomingYears,
-    restTasks,
+    restDays,
     restMonths,
   ] = useUnit([
     $upcomingTasks,
     $upcomingYears,
-    $restDates,
+    $restDays,
     $restMonths,
   ])
   return (
@@ -32,14 +32,16 @@ export const AllUpcomingTasks = ({
           const tasks = upcomingTasks[year].filter(({start_date}) => {
             return dayjs(start_date).isSame(date, 'date') && dayjs(start_date).isSame(date, 'month')
           })
+          const isCurrentMonth = dayjs(date).month() == dayjs().month()
           return (
             <div key={date.date()}>
               <DateSection 
               outRef={outRef} 
               action={() => changeDate(new Date(date.toISOString()))}
               isSelected={date.isSame(selectedDate, 'day') }
-              title={<div className="flex gap-2">
+              title={<div className="flex gap-1">
                 <span>{date.date()}</span>
+                <span>{!isCurrentMonth && months[dayjs(date).month()]}</span>
                 <span>{date.isToday() ? "Today" : date.isTomorrow() ? "Tomorrow" : ""}</span>
                 <span>{weekDays[date.day()]}</span>
               </div>}
@@ -48,17 +50,25 @@ export const AllUpcomingTasks = ({
           )
         })}
 
-          {!!restTasks.restTasks?.length && 
+          { !!Object.keys(upcomingTasks).length && 
           <DateSection 
-            action={() => changeDate(new Date(restTasks.date.toISOString()))}
-            isSelected={restTasks.date.isSame(selectedDate, 'day') }
+            action={() => changeDate(new Date(restDays.date.toISOString()))}
+            isSelected={restDays.date.isSame(selectedDate, 'day') }
             title={
             <div>
-              <span className="mr-1">{months[restTasks.date.month()]}</span>
-              <span>{restTasks.firstDay}{"\u2013"}{restTasks.lastDay}</span>
+              {!restDays.restTasks.length ? 
+              <div className="flex gap-1">
+                <span>{restDays.date.date()}</span>
+                <span>{weekDays[restDays.date.day()]}</span>
+              </div>
+              : <>
+                <span className="mr-1">{months[restDays.date.month()]}</span>
+                <span>{restDays.firstDay}{"\u2013"}{restDays.lastDay}</span>
+              </>
+              }
             </div>}
             outRef={outRef} 
-            tasks={restTasks.restTasks}/>}
+            tasks={restDays.restTasks}/>}
 
         {!!Object.keys(upcomingTasks).length && remainingMonthsOfYear().map((date) => {
           const year = dayjs(date).format('YYYY')
@@ -76,13 +86,22 @@ export const AllUpcomingTasks = ({
             </div>
           )
         })}
-        {!!restMonths.restTasks?.length && 
+        {!!Object.keys(upcomingTasks).length && 
           <DateSection 
-            title={<div>{`${months[restMonths.startDate]}\u2013${months[restMonths.endDate]}`}</div>}
+            title={
+              restMonths.restTasks.length ?
+            <div>
+              {`${months[restMonths.startDate]}\u2013${months[restMonths.endDate]}`}
+            </div>
+            : <div>
+              {months[restMonths.startDate]} 
+            </div>  
+          }
             action={() => changeDate(new Date(restMonths.date.toISOString()))}
             outRef={outRef} 
             isSelected={restMonths.date.isSame(selectedDate, 'day') }
             tasks={restMonths.restTasks}/>}
+            
         {!!Object.values(upcomingYears).length &&
         Object.entries(upcomingYears).map(([year, tasks]) => {
           return (
