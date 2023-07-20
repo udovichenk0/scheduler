@@ -1,4 +1,4 @@
-import { combine, createEvent, createStore, sample, Store } from "effector"
+import { combine, createEvent, createStore, sample } from "effector"
 import { debug } from "patronum"
 
 export const modifyFormFactory = ({

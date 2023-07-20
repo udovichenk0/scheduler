@@ -6,7 +6,7 @@ import { taskExpansionFactory } from '@/shared/lib/block-expansion';
 import { createTaskFactory } from '.';
 
 const taskModel = taskExpansionFactory()
-const createTaskModel = createTaskFactory({taskModel, defaultType: 'inbox', defaultDate: null})
+const createTaskModel = createTaskFactory({taskModel, defaultType: 'inbox'})
 vi.mock('@/shared/lib/block-expansion', () => {
   return {
     taskExpansionFactory: vi.fn(() => {
@@ -16,7 +16,7 @@ vi.mock('@/shared/lib/block-expansion', () => {
         $newTask: createStore(false),
         $createdTriggered: createStore(false),
         $isAllowToOpenUpdate: createStore(true),
-        createTaskOpened: createEvent(),
+        createTaskToggled: createEvent(),
       }
     })
   }
