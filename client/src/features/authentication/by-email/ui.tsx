@@ -46,7 +46,9 @@ export const ByEmailForm = ({goBack}:{goBack: () => void}) => {
           {error && <EmailValidationError/>}
         </div>
         <span>
-          <Button intent={'filled'} size={'m'} onSubmit={() => console.log('something')} title="Resume" disabled={!email}/>
+          <Button intent={'filled'} size={'m'} disabled={!email}>
+            Continue
+          </Button>
         </span>
       </form>
     </div>

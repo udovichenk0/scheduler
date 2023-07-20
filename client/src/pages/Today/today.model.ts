@@ -8,7 +8,7 @@ import { taskExpansionFactory } from "@/shared/lib/block-expansion";
 
 export const taskModel = taskExpansionFactory()
 export const updateTaskModel = updateTaskFactory({taskModel, defaultType: 'unplaced', defaultDate: new Date()})
-export const createTaskModel = createTaskFactory({taskModel, defaultType: 'unplaced', defaultDate: new Date()})
+export const createTaskModel = createTaskFactory({taskModel, defaultType: 'unplaced'})
 
 export const $overdueTasks = combine($taskKv, (kv) => {
   return Object.values(kv)
@@ -16,9 +16,9 @@ export const $overdueTasks = combine($taskKv, (kv) => {
 })
 
 export const $todayTasks = $taskKv.map(kv => {
-  return Object.values(kv).filter(({start_date}) => dayjs(start_date).isSame(dayjs(), 'date'))
+  return Object.values(kv).filter(({start_date}) => dayjs(start_date).isSame(dayjs(), 'day'))
 })
-
+export const $test = createStore(new Date())
 export const $isOverdueTasksOpened = createStore(false)
 export const toggleOverdueTasksOpened = createEvent()
 

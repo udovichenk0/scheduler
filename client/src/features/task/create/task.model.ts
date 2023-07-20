@@ -1,5 +1,5 @@
 import { sample } from "effector";
-import { not, and } from "patronum";
+import { not, and, condition } from "patronum";
 import { modifyFormFactory } from "@/entities/task/modify";
 import { $taskKv } from "@/entities/task/tasks";
 import { createTaskQuery } from "@/shared/api/task";
@@ -8,11 +8,9 @@ import { ExpensionTaskType } from "@/shared/lib/block-expansion";
 export const createTaskFactory = ({ 
   taskModel, 
   defaultType,
-  defaultDate,
 }: {
   taskModel: ExpensionTaskType,
   defaultType: 'inbox' | 'unplaced',
-  defaultDate: Date | null,
 }) => {
   const { 
     $title,
@@ -29,17 +27,20 @@ export const createTaskFactory = ({
     $isAllowToSubmit, 
     resetFieldsTriggered } = modifyFormFactory({
       defaultType,
-      defaultDate,
     })
-    
+  sample({
+    clock:  taskModel.createTaskToggled,
+    fn: ({date}) => date,
+    target: $startDate
+  })
+
   sample({
     clock: $isAllowToSubmit,
     fn: (val) => !val,
     target: taskModel.$isAllowToOpenUpdate
   })
-
   sample({
-    clock: taskModel.createTaskOpened,
+    clock: taskModel.createTaskToggled,
     filter: and($isAllowToSubmit, taskModel.$newTask),
     fn: () => true,
     target: taskModel.$createdTriggered
@@ -54,17 +55,16 @@ export const createTaskFactory = ({
   sample({
     clock: createTaskQuery.finished.success,
     source: $taskKv,
-    filter: not(taskModel.$createdTriggered),
     fn: (kv, {result: {result}}) => ({...kv, [result.id]: result}),
-    target: [$taskKv, taskModel.$newTask.reinit, resetFieldsTriggered]
+    target: [$taskKv, resetFieldsTriggered]
   })
-  sample({
-    clock: createTaskQuery.finished.success,
-    source: $taskKv,
-    filter: taskModel.$createdTriggered,
-    fn: (kv, {result: {result}}) => ({...kv, [result.id]: result}),
-    target: [$taskKv, resetFieldsTriggered, taskModel.$createdTriggered.reinit]
+  condition({
+    source: createTaskQuery.finished.success,
+    if: taskModel.$createdTriggered,
+    then: taskModel.$createdTriggered.reinit!,
+    else: taskModel.$newTask.reinit!,
   })
+
   sample({
     clock: taskModel.createTaskClosed,
     filter: not($isAllowToSubmit),
@@ -82,6 +82,7 @@ export const createTaskFactory = ({
     dateChanged,
     descriptionChanged,
     typeChanged,
+    query: createTaskQuery
   }
 }
 

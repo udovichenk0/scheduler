@@ -1,5 +1,5 @@
 import { createEvent, createStore, sample } from "effector"
-import { not, and, or, debug } from "patronum";
+import { not, and, or } from "patronum";
 import { RefObject } from 'react';
 import { TaskDto } from "@/shared/api/task";
 export const taskExpansionFactory = () => {
@@ -9,11 +9,10 @@ export const taskExpansionFactory = () => {
   const createTaskClosed = createEvent()
   const updateTaskClosed = createEvent<number>()
   const updateTaskOpened = createEvent<{task: TaskDto, ref: RefObject<HTMLDivElement>}>()
-  const createTaskOpened = createEvent<{ref: RefObject<HTMLDivElement>}>()
+  const createTaskToggled = createEvent<{date: Date | null}>()
 
   const $createdTriggered = createStore(false)
   const $updatedTriggered = createStore(false)
-  debug($updatedTriggered)
   const $isAllowToOpenUpdate = createStore(true)
   const $isAllowToOpenCreate = createStore(true)
 
@@ -28,26 +27,26 @@ export const taskExpansionFactory = () => {
   })
 
   sample({
-    clock: closeTaskTriggered, // try this
+    clock: closeTaskTriggered,
     source: $taskId,
     filter: Boolean, 
     target: updateTaskClosed
   })
 
   sample({
-    clock: createTaskOpened,
+    clock: createTaskToggled,
     filter: or($taskId, $newTask),
     target: closeTaskTriggered
   })
 
   sample({
-    clock: createTaskOpened,
+    clock: createTaskToggled,
     filter: and($isAllowToOpenCreate, not($createdTriggered)),
     fn: () => true,
     target: $newTask
   })
   sample({
-    clock: createTaskOpened,
+    clock: createTaskToggled,
     filter: not($isAllowToOpenCreate),
     fn: () => true,
     target: $createdTriggered,
@@ -80,7 +79,7 @@ export const taskExpansionFactory = () => {
     $updatedTriggered,
     $isAllowToOpenUpdate,
     $isAllowToOpenCreate,
-    createTaskOpened,
+    createTaskToggled,
     updateTaskOpened,
     closeTaskTriggered,
   }

@@ -31,15 +31,18 @@ export const Sidebar = () => {
 							... {/* make a popup*/}
             </div>
           </div>
-          <nav className="flex flex-col gap-2">
+          <div className="space-y-2 gap-2">
             <SideLink route={routes.inbox} title="Inbox" rightCount={inboxTasksCount} iconName="common/inbox"/>
             <SideLink route={routes.home} title="Today" rightCount={todayTasksCount} iconName="common/outlined-star"/>
             <SideLink route={routes.upcoming} title="Upcoming" iconName="common/upcoming"/>
             <SideLink route={routes.calendar} title="Calendar" iconName="common/calendar"/>
-          </nav>
+          </div>
         </div>
         <div className="px-2 py-1 h-full">
-          <Button size={'sm'} title="New Project" className="w-full" intent={'secondary'} icon={<Icon name="common/plus" />} />
+          <Button size={'sm'} className="w-full text-start" intent={'secondary'}>
+            <Icon name="common/plus" className="mr-4"/>
+            New Project
+          </Button>
         </div>
         <div className="px-2 py-1 border-t-[1px] border-cBorder flex">
           <div>

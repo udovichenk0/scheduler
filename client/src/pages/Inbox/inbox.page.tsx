@@ -30,12 +30,12 @@ export const Inbox = () => {
     taskModel.$taskId,
     taskModel.closeTaskTriggered,
     taskModel.updateTaskOpened,
-    taskModel.createTaskOpened,
+    taskModel.createTaskToggled,
   ])
   return (
     <MainLayout iconName={'common/inbox'}
       title={'Inbox'}
-      action={() => createTaskOpened({ref})}>
+      action={() => createTaskOpened({date: null})}>
       <div onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)} className="px-5 h-full">
         <div>
           {tasks.map((task, id) => {

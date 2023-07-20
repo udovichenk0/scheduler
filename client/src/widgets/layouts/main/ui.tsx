@@ -20,11 +20,12 @@ export const MainLayout = ({ children, iconName, title, action }: PropsType) => 
       <div className="px-2 py-2">
         <Button 
           onClick={() => action()} 
-          title="New Task" 
-          icon={<Icon name="common/plus"/>} 
           intent={'primary'} 
           size={'base'} 
-          className="!text-accent"/>
+          className="!text-accent">
+            <Icon name="common/plus" className="mr-4"/>
+            New Task
+          </Button>
       </div>
     </div>
   )

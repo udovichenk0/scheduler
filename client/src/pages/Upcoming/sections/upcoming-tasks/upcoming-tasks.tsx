@@ -3,33 +3,33 @@ import { useUnit } from "effector-react"
 import { RefObject } from "react"
 import { remainingDaysOfMonth, weekDays, months, remainingMonthsOfYear } from "../../config"
 import { DateSection } from "../../ui/date-section"
-import { $upcomingTasks, $upcomingYears, $restDays, $restMonths } from "./tasks.model"
+import { $upcomingTasks, $upcomingYears, $remainingDays, $remainingMonths } from "./tasks.model"
 
 export const AllUpcomingTasks = ({
-  outRef,
   selectedDate,
-  changeDate
+  changeDate,
+  outRef 
 }:{
-  outRef: RefObject<HTMLDivElement>,
   selectedDate: Date | null,
-  changeDate: (date: Date) => void
+  changeDate: (date: Date) => void,
+  outRef: RefObject<HTMLDivElement>
 }) => {
   const [
     upcomingTasks,
     upcomingYears,
-    restDays,
-    restMonths,
+    remainingDays,
+    remainingMonths,
   ] = useUnit([
     $upcomingTasks,
     $upcomingYears,
-    $restDays,
-    $restMonths,
+    $remainingDays,
+    $remainingMonths, 
   ])
   return (
     <div>
-      {!!Object.keys(upcomingTasks).length && remainingDaysOfMonth().map((date) => {
+      {remainingDaysOfMonth().map((date) => {
           const year = dayjs(date).format('YYYY')
-          const tasks = upcomingTasks[year].filter(({start_date}) => {
+          const tasks = upcomingTasks[year]?.filter(({start_date}) => {
             return dayjs(start_date).isSame(date, 'date') && dayjs(start_date).isSame(date, 'month')
           })
           const isCurrentMonth = dayjs(date).month() == dayjs().month()
@@ -49,30 +49,28 @@ export const AllUpcomingTasks = ({
             </div>
           )
         })}
-
-          { !!Object.keys(upcomingTasks).length && 
           <DateSection 
-            action={() => changeDate(new Date(restDays.date.toISOString()))}
-            isSelected={restDays.date.isSame(selectedDate, 'day') }
+            action={() => changeDate(new Date(remainingDays.date.toISOString()))}
+            isSelected={remainingDays.date.isSame(selectedDate, 'day') }
             title={
             <div>
-              {!restDays.restTasks.length ? 
+              {remainingDays.isLastDate ? 
               <div className="flex gap-1">
-                <span>{restDays.date.date()}</span>
-                <span>{weekDays[restDays.date.day()]}</span>
+                <span>{remainingDays.date.date()}</span>
+                <span>{weekDays[remainingDays.date.day()]}</span>
               </div>
               : <>
-                <span className="mr-1">{months[restDays.date.month()]}</span>
-                <span>{restDays.firstDay}{"\u2013"}{restDays.lastDay}</span>
+                <span className="mr-1">{months[remainingDays.date.month()]}</span>
+                <span>{remainingDays.firstDay}{"\u2013"}{remainingDays.lastDay}</span>
               </>
               }
             </div>}
             outRef={outRef} 
-            tasks={restDays.restTasks}/>}
+            tasks={remainingDays.restTasks}/>
 
-        {!!Object.keys(upcomingTasks).length && remainingMonthsOfYear().map((date) => {
+        {remainingMonthsOfYear().map((date) => {
           const year = dayjs(date).format('YYYY')
-          const tasks = upcomingTasks[year].filter(({start_date}) => {
+          const tasks = upcomingTasks[year]?.filter(({start_date}) => {
             return dayjs(start_date).isSame(date, 'month') && dayjs(start_date).isSame(date, 'year')
           })
           return (
@@ -86,21 +84,20 @@ export const AllUpcomingTasks = ({
             </div>
           )
         })}
-        {!!Object.keys(upcomingTasks).length && 
           <DateSection 
-            title={
-              restMonths.restTasks.length ?
-            <div>
-              {`${months[restMonths.startDate]}\u2013${months[restMonths.endDate]}`}
-            </div>
-            : <div>
-              {months[restMonths.startDate]} 
-            </div>  
-          }
-            action={() => changeDate(new Date(restMonths.date.toISOString()))}
+              title={
+                remainingMonths.isLastMonth?
+                <div>
+                  {months[remainingMonths.startDate]} 
+                </div>  
+              : <div>
+                {`${months[remainingMonths.startDate]}\u2013${months[remainingMonths.endDate]}`}
+              </div>
+            }
+            action={() => changeDate(new Date(remainingMonths.date.toISOString()))}
             outRef={outRef} 
-            isSelected={restMonths.date.isSame(selectedDate, 'day') }
-            tasks={restMonths.restTasks}/>}
+            isSelected={remainingMonths.date.isSame(selectedDate, 'day') }
+            tasks={remainingMonths.restTasks}/>
             
         {!!Object.values(upcomingYears).length &&
         Object.entries(upcomingYears).map(([year, tasks]) => {

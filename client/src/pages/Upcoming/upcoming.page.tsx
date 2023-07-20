@@ -2,8 +2,8 @@ import { useUnit } from "effector-react"
 import { useRef } from "react"
 import { MainLayout } from "@/widgets/layouts/main"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
-import { AllUpcomingTasks } from "./sections/all-upcoming-tasks"
-import { createTaskModel, taskModel } from "./upcoming.model"
+import { AllUpcomingTasks } from "./sections/upcoming-tasks"
+import { $selectedDate, currentDateSelected, taskModel } from "./upcoming.model"
 export const Upcoming = () => {
   const ref = useRef<HTMLDivElement>(null)
   const [
@@ -13,13 +13,13 @@ export const Upcoming = () => {
     changeDate
   ] = useUnit([
     taskModel.closeTaskTriggered,
-    taskModel.createTaskOpened,
-    createTaskModel.$startDate,
-    createTaskModel.dateChanged
+    taskModel.createTaskToggled,
+    $selectedDate,
+    currentDateSelected
   ])
   return (
     <MainLayout 
-      action={() => createTaskOpened({ref})} 
+      action={() => createTaskOpened({date: startDate})} 
       iconName="common/upcoming" title="Upcoming">
        <div className="h-full" onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)}>
         <AllUpcomingTasks changeDate={changeDate} selectedDate={startDate} outRef={ref}/>

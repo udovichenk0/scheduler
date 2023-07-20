@@ -52,6 +52,8 @@ export const ModifyTaskForm = ({
     modifyTaskModel.typeChanged,
     modifyTaskModel.dateChanged,
   ])
+
+  console.log(currentDate)
   const [isTypeOpened, setTypeOpen] = useState(false)
   const [isDatePickerOpened, setDatePickerOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -81,20 +83,28 @@ export const ModifyTaskForm = ({
             <span>
               <Button 
               onClick={() => setTypeOpen(prev => !prev)}
-              icon={<Icon name={'common/inbox'} className="text-accent w-[18px] h-[18px]"/>} 
-              title={capitalizeLetter(currentType)} 
               size={'sm'} 
-              intent={'primary'}/>
+              intent={'primary'}>
+                <div className='flex gap-4'>
+                  <Icon name={'common/inbox'} className="text-accent w-[18px] h-[18px]"/>
+                  {capitalizeLetter(currentType)}
+                </div>
+              </Button>
             </span>
             <div className='flex'>
               {date && 
                 <Button 
                 onClick={() => setDatePickerOpen(prev => !prev)}
-                icon={<Icon name={'common/upcoming'} className="text-cTaskEditDefault w-[18px] h-[18px]"/>} 
-                rightSlot={currentDate && <span className='text-accent'>{showDateTitle(currentDate)}</span>}
-                title={'Date'} 
                 size={'sm'} 
-                intent={'primary'}/>
+                intent={'primary'}>
+                  <div className='flex'>
+                    <Icon name={'common/upcoming'} className="text-cTaskEditDefault w-[18px] mr-4 h-[18px]"/>
+                    <span>Date</span>
+                    <span className='text-accent ml-2'>
+                      {currentDate && showDateTitle(currentDate)}
+                    </span>
+                  </div>
+                </Button>
               }
             </div>
           </div>
