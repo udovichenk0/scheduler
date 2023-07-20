@@ -27,12 +27,13 @@ export const TypeModal = ({
           const active = type == currentType
           return (
             <Button 
-            icon={<Icon name={iconName} className={`text-accent w-5 h-5 ${active && 'text-cFocusSecond'}`}/>}
             key={id} 
-            title={type} 
             size={'xs'} 
             onClick={() => changeType(type)}
-            className={`w-full ${active && 'bg-cFocus hover:!bg-cFocus'}`} intent={'primary'}/>
+            className={`w-full ${active && 'bg-cFocus hover:!bg-cFocus'}`} intent={'primary'}>
+              <Icon name={iconName} className={`text-accent w-5 h-5 mr-4 ${active && 'text-cFocusSecond'}`}/>
+              {type}
+            </Button>
           )
         })}
       </div>

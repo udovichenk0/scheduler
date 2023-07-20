@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 import { useUnit } from "effector-react"
 import { Fragment, useRef } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
@@ -9,6 +10,7 @@ import { Task } from "@/shared/ui/task"
 import { 
   $isOverdueTasksOpened,
   $overdueTasks,
+  $test,
   $todayTasks,
   createTaskModel,
   taskModel,
@@ -29,7 +31,8 @@ export const Today = () => {
     createTaskOpened,
     isOverdueTasksOpened,
     toggleOverdueTasks,
-    overdueTasks
+    overdueTasks,
+    test
   ] = useUnit([
     $todayTasks,
     updateTaskModel.changeStatusTriggered,
@@ -37,14 +40,17 @@ export const Today = () => {
     taskModel.$taskId,
     taskModel.closeTaskTriggered,
     taskModel.updateTaskOpened,
-    taskModel.createTaskOpened,
+    taskModel.createTaskToggled,
     $isOverdueTasksOpened,
     toggleOverdueTasksOpened,
-    $overdueTasks
+    $overdueTasks,
+    $test
   ])
+  // console.log(dayjs(new Date()))
+  console.log(test)
   return (
     <MainLayout 
-      action={() => createTaskOpened({ref})} 
+      action={() => createTaskOpened({date: test})} 
       iconName="common/outlined-star" title="Today">
        <div onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)} className="h-full">
         <section className={`${overdueTasks.length > 0 ? "block" : "hidden"}`}>
@@ -81,13 +87,14 @@ export const Today = () => {
           </div>}
         </section>
         <section className="w-full">
-          {!!overdueTasks.length && !!tasks.length && <div className="px-5 text-primary mb-2 border-b-2 py-2 border-cBorder flex items-center gap-1">
+          {!!overdueTasks.length && !!tasks.length && 
+          <div className={`px-5 text-primary mb-2 border-b-2 py-2 border-cBorder flex items-center gap-1`}>
             <Icon name="common/outlined-star" className="w-5 h-5 text-accent"/>
-            <div className="flex justify-between items-center hover:bg-cHover px-3 rounded-[5px] w-full">
+            <button className="flex justify-between focus:bg-cFocus items-center hover:bg-cHover px-3 rounded-[5px] w-full">
               <h2 className="text-lg">
               Today
               </h2>
-            </div>
+            </button>
           </div>}
           <div className="px-5 ">
             {tasks.map((item, id) => {

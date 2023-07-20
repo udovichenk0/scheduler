@@ -3,7 +3,6 @@ import dayjs from "dayjs";
 export const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 export const weekDays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 export const MIN_DATES_LENGTH = 14
-export const MAX_DATES_LENGTH = 28
 export const MIN_MONTHS_LENGTH = 3
 export function remainingDaysOfMonth() {
   let dayCounter = dayjs().date()

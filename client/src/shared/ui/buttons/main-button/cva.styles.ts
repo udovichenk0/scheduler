@@ -13,11 +13,7 @@ export const buttonCva = cva('outline-none rounded-[5px] transition-colors durat
         "text-primary",
         "text-sm"
       ],      
-      primaryC: [
-        "hover:bg-cHover",
-        "text-primary",
-        "text-sm"
-      ],
+
       secondary: [
         "hover:bg-cHover",
         "text-cOpacitySecondFont",

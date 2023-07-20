@@ -33,13 +33,13 @@ export function DateSection({
   return (
     <div className="border-b-2 border-cBorder select-none text-primary">
       <div className={'px-2'}>
-        <span onClick={() => action()} 
-        className={`${isSelected ? "bg-cFocus" : ""} flex gap-2 text-lg items-center hover:bg-cHover px-3 my-2 rounded-[5px] w-full`}>
+        <button disabled={isSelected} onClick={action} 
+        className={`${isSelected && 'bg-cFocus cursor-pointer'} flex gap-2 text-lg items-center enabled:hover:bg-cHover px-3 my-2 rounded-[5px] w-full`}>
           {title}
-        </span>
+        </button>
       </div>
       <div>
-        {!!tasks.length && tasks.map((task, id) => {
+        {!!tasks?.length && tasks.map((task, id) => {
           return (
             <div className="px-4 first:border-t-2 first:border-cBorder first:pt-2 last:pb-2" key={id}>
             {task.id === taskId ? 
