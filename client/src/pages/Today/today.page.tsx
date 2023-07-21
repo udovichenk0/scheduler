@@ -45,8 +45,6 @@ export const Today = () => {
     $overdueTasks,
     $test
   ])
-  // console.log(dayjs(new Date()))
-  console.log(test)
   return (
     <MainLayout 
       action={() => createTaskOpened({date: test})} 

@@ -3,10 +3,10 @@ import { debug } from "patronum"
 
 export const modifyFormFactory = ({
   defaultType,
-  // defaultDate,
+  defaultDate,
 }:{
   defaultType: 'inbox' | 'unplaced',
-  // defaultDate: Date | null,
+  defaultDate: Date | null,
 }) => {
 
   const statusChanged = createEvent<'FINISHED' | 'INPROGRESS'>()
@@ -19,7 +19,7 @@ export const modifyFormFactory = ({
   const $title = createStore('')
   const $description = createStore<string>('')
   const $status = createStore<'FINISHED' | 'INPROGRESS'>('INPROGRESS')
-  const $startDate = createStore<Date | null>(null)
+  const $startDate = createStore<Date | null>(defaultDate)
   const $type = createStore<'inbox' | 'unplaced'>(defaultType)
   debug($startDate)
   const $isDirty = createStore(false)
