@@ -8,9 +8,11 @@ import { ExpensionTaskType } from "@/shared/lib/block-expansion";
 export const createTaskFactory = ({ 
   taskModel, 
   defaultType,
+  defaultDate
 }: {
   taskModel: ExpensionTaskType,
   defaultType: 'inbox' | 'unplaced',
+  defaultDate: Date | null
 }) => {
   const { 
     $title,
@@ -27,9 +29,11 @@ export const createTaskFactory = ({
     $isAllowToSubmit, 
     resetFieldsTriggered } = modifyFormFactory({
       defaultType,
+      defaultDate
     })
   sample({
     clock:  taskModel.createTaskToggled,
+    filter: taskModel.$createdTriggered,
     fn: ({date}) => date,
     target: $startDate
   })

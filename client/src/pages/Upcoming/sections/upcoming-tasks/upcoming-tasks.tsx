@@ -39,7 +39,7 @@ export const AllUpcomingTasks = ({
               outRef={outRef} 
               action={() => changeDate(new Date(date.toISOString()))}
               isSelected={date.isSame(selectedDate, 'day') }
-              title={<div className="flex gap-1">
+              title={<div className="space-x-1">
                 <span>{date.date()}</span>
                 <span>{!isCurrentMonth && months[dayjs(date).month()]}</span>
                 <span>{date.isToday() ? "Today" : date.isTomorrow() ? "Tomorrow" : ""}</span>

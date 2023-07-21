@@ -8,7 +8,7 @@ import { taskExpansionFactory } from "@/shared/lib/block-expansion";
 
 export const taskModel = taskExpansionFactory()
 export const updateTaskModel = updateTaskFactory({taskModel, defaultType: 'unplaced', defaultDate: new Date()})
-export const createTaskModel = createTaskFactory({taskModel, defaultType: 'unplaced'})
+export const createTaskModel = createTaskFactory({taskModel, defaultType: 'unplaced', defaultDate: new Date()})
 
 export const $overdueTasks = combine($taskKv, (kv) => {
   return Object.values(kv)

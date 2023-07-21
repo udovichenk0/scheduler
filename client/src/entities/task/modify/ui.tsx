@@ -53,7 +53,6 @@ export const ModifyTaskForm = ({
     modifyTaskModel.dateChanged,
   ])
 
-  console.log(currentDate)
   const [isTypeOpened, setTypeOpen] = useState(false)
   const [isDatePickerOpened, setDatePickerOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
