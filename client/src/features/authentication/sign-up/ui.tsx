@@ -2,9 +2,9 @@ import { useUnit } from "effector-react"
 import { FormEvent, useEffect, useRef, useState } from "react"
 import { DisableButton } from "@/shared/ui/buttons/disable-button"
 import { IconButton } from "@/shared/ui/buttons/icon-button"
-import { Icon } from "@/shared/ui/icon/icon"
 import { Input } from "@/shared/ui/input"
 import { $email } from "../by-email"
+import { TogglePasswordButton } from "../shared/ui/toggle-password-button"
 import { NOT_VALID_MESSAGE, TOO_LONG_MESSAGE, TOO_SHORT_MESSAGE } from "./constants"
 import { $password, $passwordError, passwordChanged, submitTriggered } from "./signup.modal"
 const onSubmit = (e: FormEvent, submit: () => void) => {
@@ -39,18 +39,13 @@ export const Signup = ({goBack}:{goBack: () => void}) => {
       <p className="text-sm mb-7">Creating an account using the address {email}</p>
       <form className="flex w-full flex-col" onSubmit={(e) => onSubmit(e, submit)}>
         <Input 
-          onChange={changePassword} 
+          onChange={(e) => changePassword(e.target.value)} 
           error={error} 
           value={password} 
           label="Password" 
-          focusRef={ref}
-          name="login"
+          ref={ref}
           type={isPasswordShown ? 'text' : 'password'}
-          icon={
-            <div onClick={() => togglePasswortView(prev => !prev)} className="hover:stroke-white stroke-grey cursor-pointer">
-              {isPasswordShown ? <Icon name="eye/close"/> : <Icon name="eye/open"/>}
-            </div>
-          }/>
+          icon={<TogglePasswordButton isPasswordVisible={isPasswordShown} togglePasswordVisibility={togglePasswortView}/>}/>
         <div className="h-[40px] text-sm text-error mt-1">
           {error && <LoginValidationError/>}
         </div>
@@ -61,7 +56,6 @@ export const Signup = ({goBack}:{goBack: () => void}) => {
     </div>
   )
 }
-
 
 function LoginValidationError(){
   const error = useUnit($passwordError)

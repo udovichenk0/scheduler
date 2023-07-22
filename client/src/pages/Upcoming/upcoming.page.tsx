@@ -22,7 +22,7 @@ export const Upcoming = () => {
       action={() => createTaskOpened({date: startDate})} 
       iconName="common/upcoming" title="Upcoming">
        <div className="h-full" onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)}>
-        <AllUpcomingTasks changeDate={changeDate} selectedDate={startDate} outRef={ref}/>
+          <AllUpcomingTasks changeDate={changeDate} selectedDate={startDate} outRef={ref}/>
         </div>
     </MainLayout>
   )

@@ -6,7 +6,7 @@ import { taskExpansionFactory } from '@/shared/lib/block-expansion';
 import { createTaskFactory } from '.';
 
 const taskModel = taskExpansionFactory()
-const createTaskModel = createTaskFactory({taskModel, defaultType: 'inbox'})
+const createTaskModel = createTaskFactory({taskModel, defaultType: 'inbox', defaultDate: null})
 vi.mock('@/shared/lib/block-expansion', () => {
   return {
     taskExpansionFactory: vi.fn(() => {

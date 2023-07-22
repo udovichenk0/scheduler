@@ -10,7 +10,7 @@ const themeBoxes = [
   {title: 'Grey', theme: 'grey' as const, mainBg: 'bg-[#fff]', topBox: 'bg-azure', text: 'text-[#fffc]', leftBox: 'bg-[#595959]', rightBox: 'bg-[#dfe7f0]'},
 ]
 
-export const MainThemeChangers = () => {
+export const MainThemeChanger = () => {
   const activeTheme = useUnit($theme)
   return (
     <>

@@ -18,7 +18,6 @@ export const $overdueTasks = combine($taskKv, (kv) => {
 export const $todayTasks = $taskKv.map(kv => {
   return Object.values(kv).filter(({start_date}) => dayjs(start_date).isSame(dayjs(), 'day'))
 })
-export const $test = createStore(new Date())
 export const $isOverdueTasksOpened = createStore(false)
 export const toggleOverdueTasksOpened = createEvent()
 

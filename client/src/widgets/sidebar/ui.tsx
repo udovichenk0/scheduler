@@ -14,9 +14,11 @@ export const Sidebar = () => {
   const [
     inboxTasksCount,
     todayTasksCount,
+    toggleTriggered
   ] = useUnit([
     $inboxTasksCount,
     $todayTasksCount,
+    modal.toggleTriggered
   ])
   return (
     <aside className={`border-r-[1px] border-cBorder bg-brand text-primary`}>
@@ -46,7 +48,7 @@ export const Sidebar = () => {
         </div>
         <div className="px-2 py-1 border-t-[1px] border-cBorder flex">
           <div>
-            <IconButton size={'base'} iconName="common/settings" intent={'leftBottonPanel'} onClick={() => modal.toggleTriggered()}/>
+            <IconButton size={'base'} iconName="common/settings" intent={'leftBottonPanel'} onClick={toggleTriggered}/>
             <BaseModal modal={modal}>
                 <Settings />
             </BaseModal>

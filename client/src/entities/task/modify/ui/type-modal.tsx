@@ -22,7 +22,7 @@ export const TypeModal = ({
   return (
     <>
       <div onClick={(e) => onClickOutside(outRef, e, closeTypeModal)} className="absolute w-full h-full bg-black/50 left-0 top-0 z-10"/>
-      <div ref={outRef} className="w-[280px] bg-main absolute -translate-y-[30px] p-3 rounded-[5px] z-[11] flex flex-col gap-1">
+      <div ref={outRef} className="cursor-pointer w-[280px] bg-main absolute -translate-y-[30px] p-3 rounded-[5px] z-[11] inline-flex flex-col gap-1">
         {types.map(({type, iconName}, id) => {
           const active = type == currentType
           return (
@@ -30,7 +30,7 @@ export const TypeModal = ({
             key={id} 
             size={'xs'} 
             onClick={() => changeType(type)}
-            className={`w-full ${active && 'bg-cFocus hover:!bg-cFocus'}`} intent={'primary'}>
+            className={`text-left ${active && 'bg-cFocus pointer-events-none'}`} intent={'primary'}>
               <Icon name={iconName} className={`text-accent w-5 h-5 mr-4 ${active && 'text-cFocusSecond'}`}/>
               {type}
             </Button>

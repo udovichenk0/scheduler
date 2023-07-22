@@ -16,10 +16,10 @@ export enum FormEnum {
     options = 'options',
     logout = 'logout'
 }
-export const setFormTriggered = createEvent<FormEnum>()
+export const formSelected = createEvent<FormEnum>()
 export const resetFormTriggered = createEvent()
 
-export const $formToShow = createStore<FormEnum>(FormEnum.options)
+export const $form = createStore<FormEnum>(FormEnum.options)
 
 export const gate = createGate()
 
@@ -30,38 +30,38 @@ sample({
 })
 
 sample({
-  clock: setFormTriggered,
-  target: $formToShow
+  clock: formSelected,
+  target: $form
 })
 
 sample({
   clock: getUserQuery.finished.success,
   filter: ({result}) => !result.id,
   fn: () => FormEnum.register,
-  target: $formToShow
+  target: $form
 })
 
 sample({
   clock: getUserQuery.finished.success,
   filter: ({result}) => Boolean(result.id),
   fn: () => FormEnum.login,
-  target: $formToShow
+  target: $form
 })
 
 sample({
   clock: logoutQuery.finished.success,
   fiilter: Boolean,
   fn: () => FormEnum.email,
-  target: $formToShow
+  target: $form
 })
 
 sample({
   clock: [signinQuery.finished.success, signupQuery.finished.success, setTokenTriggered],
   fn: () => FormEnum.logout,
-  target: $formToShow
+  target: $form
 })
 
 sample({
   clock: resetFormTriggered,
-  target: [$formToShow.reinit!, resetEmailTriggered, resetSigninPasswordTriggered, resetSignupPasswordTriggered]
+  target: [$form.reinit!, resetEmailTriggered, resetSigninPasswordTriggered, resetSignupPasswordTriggered]
 })
