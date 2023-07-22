@@ -9,7 +9,6 @@ import { Task } from "@/shared/ui/task"
 import { 
   $isOverdueTasksOpened,
   $overdueTasks,
-  $test,
   $todayTasks,
   createTaskModel,
   taskModel,
@@ -31,7 +30,6 @@ export const Today = () => {
     isOverdueTasksOpened,
     toggleOverdueTasks,
     overdueTasks,
-    test
   ] = useUnit([
     $todayTasks,
     updateTaskModel.changeStatusTriggered,
@@ -43,11 +41,10 @@ export const Today = () => {
     $isOverdueTasksOpened,
     toggleOverdueTasksOpened,
     $overdueTasks,
-    $test
   ])
   return (
     <MainLayout 
-      action={() => createTaskOpened({date: test})} 
+      action={() => createTaskOpened({date: new Date()})} 
       iconName="common/outlined-star" title="Today">
        <div onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)} className="h-full">
         <section className={`${overdueTasks.length > 0 ? "block" : "hidden"}`}>
@@ -70,7 +67,7 @@ export const Today = () => {
               return (
                 <Fragment key={id}>
                   {task.id === taskId ? 
-                    <ExpandedTask ref={ref}>
+                    <ExpandedTask taskRef={ref}>
                       <ModifyTaskForm modifyTaskModel={updateTaskModel}/>
                     </ExpandedTask>
                     : <Task
@@ -98,7 +95,7 @@ export const Today = () => {
               return (
                 <Fragment key={id}>
                   {item.id === taskId ? 
-                    <ExpandedTask ref={ref}>
+                    <ExpandedTask taskRef={ref}>
                       <ModifyTaskForm modifyTaskModel={updateTaskModel}/>
                     </ExpandedTask>
                     : <Task 
@@ -109,7 +106,7 @@ export const Today = () => {
               )
             })}
             {newTask && 
-              <ExpandedTask ref={ref}>
+              <ExpandedTask taskRef={ref}>
                 <ModifyTaskForm modifyTaskModel={createTaskModel}/>
               </ExpandedTask>
             }

@@ -43,7 +43,7 @@ export function DateSection({
           return (
             <div className="px-4 first:border-t-2 first:border-cBorder first:pt-2 last:pb-2" key={id}>
             {task.id === taskId ? 
-              <ExpandedTask ref={outRef}>
+              <ExpandedTask taskRef={outRef}>
                 <ModifyTaskForm modifyTaskModel={updateTaskModel}/>
               </ExpandedTask>
               : <Task 
@@ -57,7 +57,7 @@ export function DateSection({
       </div>
       <div className="px-4">
         {newTask && isSelected && 
-          <ExpandedTask className="mb-2" ref={outRef}>
+          <ExpandedTask className="mb-2" taskRef={outRef}>
             <ModifyTaskForm date modifyTaskModel={createTaskModel}/> 
           </ExpandedTask>
         }

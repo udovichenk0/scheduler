@@ -40,7 +40,8 @@ export default {
         'cFocusSecond': 'var(--cFocusSecond)',
         'cTaskEditDefault': 'var(--cTaskEditDefault)',
         'cTimeIntervalLow': 'var(--cTimeIntervalLow)',
-        'cIconDefault': 'var(--cIconDefault)'
+        'cIconDefault': 'var(--cIconDefault)',
+        'cTimeInterval': 'var(--cTimeInterval)'
       }
     },
   },

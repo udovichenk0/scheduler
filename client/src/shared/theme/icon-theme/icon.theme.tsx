@@ -13,7 +13,7 @@ const accentColors = [
 ]
 
 
-export const AccentThemeChangers = () => {
+export const AccentThemeChanger = () => {
   const [
     changeAccent,
     activeAccent

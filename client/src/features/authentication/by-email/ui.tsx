@@ -36,12 +36,12 @@ export const ByEmailForm = ({goBack}:{goBack: () => void}) => {
       <p className="text-sm mb-7">Specify the address to log in to your account or register</p>
       <form className="flex w-full flex-col" onSubmit={(e) => onSubmit(e, submit)}>
         <Input 
-          onChange={changeEmail} 
+          onChange={(e) => changeEmail(e.target.value)} 
           error={error}
-          focusRef={ref} 
+          ref={ref} 
           value={email} 
           label="Email" 
-          name="email"/>
+         />
         <div className="h-[40px] text-sm text-error mt-1">
           {error && <EmailValidationError/>}
         </div>

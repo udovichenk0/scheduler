@@ -42,7 +42,7 @@ export const Inbox = () => {
             return (
               <Fragment key={id}>
                 {task.id === taskId ? 
-                  <ExpandedTask ref={ref}>
+                  <ExpandedTask taskRef={ref}>
                     <ModifyTaskForm date={false} modifyTaskModel={updateTaskModel}/>
                   </ExpandedTask>
                   : <Task 
@@ -53,7 +53,7 @@ export const Inbox = () => {
             )
           })}
           {newTask && 
-            <ExpandedTask ref={ref}>
+            <ExpandedTask taskRef={ref}>
               <ModifyTaskForm date={false} modifyTaskModel={createTaskModel}/> 
             </ExpandedTask>
           }
