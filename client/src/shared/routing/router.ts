@@ -2,7 +2,7 @@ import {createHistoryRouter, createRoute} from "atomic-router";
 import {sample} from "effector";
 import {createBrowserHistory} from "history";
 
-import {appStarted} from "../init";
+import {appStarted} from "../config/init";
 export const routes = {
   home: createRoute(),
   inbox: createRoute(),

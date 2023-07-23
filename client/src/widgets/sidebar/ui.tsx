@@ -1,7 +1,7 @@
 import { useUnit } from "effector-react"
 // eslint-disable-next-line boundaries/element-types
 import { Settings } from "@/widgets/settings"
-import { routes } from "@/shared/config/router"
+import { routes } from "@/shared/routing"
 import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Button } from "@/shared/ui/buttons/main-button/ui"
 import { Icon } from "@/shared/ui/icon/icon"

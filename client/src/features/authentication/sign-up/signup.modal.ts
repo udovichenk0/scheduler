@@ -2,17 +2,17 @@ import { createEvent, createStore, sample } from "effector"
 import { spread } from "patronum"
 import { z } from "zod"
 import { setSessionUserTriggered } from "@/entities/session"
-import { signupQuery } from "@/shared/api/auth/signup"
+import { signupQuery } from "@/shared/api/auth"
 import { setTokenTriggered } from "@/shared/api/token"
 import { $email } from "../by-email"
-import { MAX_LENGTH, MIN_LENGTH } from "./constants"
+import { MAX_LENGTH, MIN_LENGTH, NOT_VALID_MESSAGE, TOO_LONG_MESSAGE, TOO_SHORT_MESSAGE } from "./constants"
 
 export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()
 export const resetSignupPasswordTriggered = createEvent()
 
 export const $password = createStore('')
-export const $passwordError = createStore<'too_small' | 'too_long' | 'invalid_string' |  null>(null)
+export const $passwordError = createStore<string | null>(null)
 
 const signupSchema = z.string().min(8).max(50).trim()
 
@@ -71,10 +71,10 @@ sample({
 
 function checkError(value: string) {
   if(value.length < MIN_LENGTH){
-    return 'too_small'
+    return TOO_SHORT_MESSAGE
   }
   if(value.length > MAX_LENGTH){
-    return 'too_long'
+    return TOO_LONG_MESSAGE
   }
-  return 'invalid_string'
+  return NOT_VALID_MESSAGE
 }

@@ -1,11 +1,11 @@
 import { createEvent, sample,createStore } from "effector";
 import { refreshQuery } from "@/shared/api/token";
-import { UserDto } from "@/shared/api/user";
+import { User } from "./type";
 
-export const setSessionUserTriggered = createEvent<UserDto>()
+export const setSessionUserTriggered = createEvent<User>()
 export const resetSession = createEvent()
 
-export const $sessionUser = createStore<UserDto | null>(null)
+export const $sessionUser = createStore<User | null>(null)
 
 sample({
   clock: resetSession,

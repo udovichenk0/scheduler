@@ -20,8 +20,8 @@ export const DateModal = ({
     <div ref={outRef} className='w-[270px] border-[1px] border-cBorder bg-main absolute top-2 p-3 translate-x-[-50px] rounded-[5px] z-[11] flex flex-col gap-1'>
       <div className="mb-4">
         <DatePicker 
-        currentDate={currentDate} 
-        onDateChange={changeDate}/>
+          currentDate={currentDate} 
+          onDateChange={changeDate}/>
       </div>
 
       <div className="flex w-full gap-3 text-primary">

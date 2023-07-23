@@ -29,7 +29,7 @@ export const AccentThemeChanger = () => {
           <button
           onClick={() => changeAccent(accent)}
           key={color}
-          className={`inline-block w-[23px] rounded-[5px] text-center h-[23px] ${color} ${isActive && 'border-[1px] border-cFont'}`}>
+          className={`text-primary inline-block w-[23px] rounded-[5px] text-center h-[23px] ${color} ${isActive && 'border-[1px] border-cFont'}`}>
             {isActive && <Icon name="common/done" className="w-[10px] -translate-y-[2px]"/>}
           </button>
         )

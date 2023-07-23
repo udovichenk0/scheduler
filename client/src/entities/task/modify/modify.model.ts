@@ -1,12 +1,11 @@
 import { combine, createEvent, createStore, sample } from "effector"
-import { debug } from "patronum"
 
 export const modifyFormFactory = ({
-  defaultType,
-  defaultDate,
+  defaultType = 'inbox',
+  defaultDate = null,
 }:{
-  defaultType: 'inbox' | 'unplaced',
-  defaultDate: Date | null,
+  defaultType?: 'inbox' | 'unplaced',
+  defaultDate?: Date | null,
 }) => {
 
   const statusChanged = createEvent<'FINISHED' | 'INPROGRESS'>()
@@ -21,7 +20,6 @@ export const modifyFormFactory = ({
   const $status = createStore<'FINISHED' | 'INPROGRESS'>('INPROGRESS')
   const $startDate = createStore<Date | null>(defaultDate)
   const $type = createStore<'inbox' | 'unplaced'>(defaultType)
-  debug($startDate)
   const $isDirty = createStore(false)
   const $isAllowToSubmit = combine($isDirty, $title , (isDirty, title) => isDirty && Boolean(title))
   const $fields = combine($title, $description, $status,$type, $startDate,

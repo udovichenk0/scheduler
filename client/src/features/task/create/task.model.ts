@@ -3,7 +3,7 @@ import { not, and, condition } from "patronum";
 import { modifyFormFactory } from "@/entities/task/modify";
 import { $taskKv } from "@/entities/task/tasks";
 import { createTaskQuery } from "@/shared/api/task";
-import { ExpensionTaskType } from "@/shared/lib/block-expansion";
+import { ExpensionTaskType } from "@/shared/lib/task-accordion-factory";
 
 export const createTaskFactory = ({ 
   taskModel, 

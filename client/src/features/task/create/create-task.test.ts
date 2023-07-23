@@ -2,10 +2,10 @@ import { allSettled, createEvent, createStore, fork } from 'effector';
 import { test, expect, vi } from 'vitest';
 import { $taskKv } from '@/entities/task/tasks';
 import { createTaskQuery } from '@/shared/api/task';
-import { taskExpansionFactory } from '@/shared/lib/block-expansion';
+import { createTaskAccordionFactory } from '@/shared/lib/task-accordion-factory';
 import { createTaskFactory } from '.';
 
-const taskModel = taskExpansionFactory()
+const taskModel = createTaskAccordionFactory()
 const createTaskModel = createTaskFactory({taskModel, defaultType: 'inbox', defaultDate: null})
 vi.mock('@/shared/lib/block-expansion', () => {
   return {

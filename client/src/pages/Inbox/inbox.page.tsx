@@ -3,12 +3,12 @@ import { Fragment, useRef } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { MainLayout } from "@/widgets/layouts/main"
 import { ModifyTaskForm } from "@/entities/task/modify"
+import { TaskItem } from "@/entities/task/tasks"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
-import { Task } from "@/shared/ui/task"
 import { 
   $inboxTasks,
   createTaskModel,
-  taskModel,
+  taskAccordion,
   updateTaskModel,
 } from "./inbox.model"
 
@@ -26,11 +26,11 @@ export const Inbox = () => {
   ] = useUnit([
     $inboxTasks,
     updateTaskModel.changeStatusTriggered,
-    taskModel.$newTask,
-    taskModel.$taskId,
-    taskModel.closeTaskTriggered,
-    taskModel.updateTaskOpened,
-    taskModel.createTaskToggled,
+    taskAccordion.$newTask,
+    taskAccordion.$taskId,
+    taskAccordion.closeTaskTriggered,
+    taskAccordion.updateTaskOpened,
+    taskAccordion.createTaskToggled,
   ])
   return (
     <MainLayout iconName={'common/inbox'}
@@ -45,8 +45,8 @@ export const Inbox = () => {
                   <ExpandedTask taskRef={ref}>
                     <ModifyTaskForm date={false} modifyTaskModel={updateTaskModel}/>
                   </ExpandedTask>
-                  : <Task 
-                    onDoubleClick={() => updateTaskOpened({task: task,ref})} 
+                  : <TaskItem 
+                    onDoubleClick={() => updateTaskOpened(task)} 
                     onChange={() => changeStatus(task.id)}
                     data={task}/>}
               </Fragment>

@@ -1,5 +1,5 @@
 import { useUnit, useGate } from "effector-react"
-import { ByEmailForm } from "@/features/authentication/by-email"
+import { CheckEmailForm } from "@/features/authentication/by-email"
 import { Logout } from "@/features/authentication/logout"
 import { Signin } from "@/features/authentication/sign-in"
 import { Signup } from "@/features/authentication/sign-up"
@@ -28,7 +28,7 @@ function Content(){
   ])
 
   if(form === FormEnum.email){
-    return <ByEmailForm goBack={() => selectForm(FormEnum.options)}/>
+    return <CheckEmailForm goBack={() => selectForm(FormEnum.options)}/>
   }
   if(form === FormEnum.login){
     return <Signin goBack={() => selectForm(FormEnum.email)}/>

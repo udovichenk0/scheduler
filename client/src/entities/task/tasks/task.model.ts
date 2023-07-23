@@ -1,7 +1,8 @@
 import { createEvent, createStore, sample } from "effector"
-import { tasksQuery, TaskDto } from "@/shared/api/task"
+import { tasksQuery } from "@/shared/api/task"
+import { Task } from "./type"
 
-export const $taskKv = createStore<Record<number, TaskDto>>({})
+export const $taskKv = createStore<Record<number, Task>>({})
 
 export const getTasksTriggered = createEvent()
 

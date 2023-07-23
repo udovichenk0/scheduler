@@ -3,7 +3,7 @@ import { useRef } from "react"
 import { MainLayout } from "@/widgets/layouts/main"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { AllUpcomingTasks } from "./sections/upcoming-tasks"
-import { $selectedDate, currentDateSelected, taskModel } from "./upcoming.model"
+import { $selectedDate, currentDateSelected, taskAccordion } from "./upcoming.model"
 export const Upcoming = () => {
   const ref = useRef<HTMLDivElement>(null)
   const [
@@ -12,8 +12,8 @@ export const Upcoming = () => {
     startDate,
     changeDate
   ] = useUnit([
-    taskModel.closeTaskTriggered,
-    taskModel.createTaskToggled,
+    taskAccordion.closeTaskTriggered,
+    taskAccordion.createTaskToggled,
     $selectedDate,
     currentDateSelected
   ])

@@ -2,11 +2,11 @@ import { createEvent, createStore, sample } from 'effector';
 import { not } from 'patronum';
 import { createTaskFactory } from "@/features/task/create"
 import { updateTaskFactory } from "@/features/task/update"
-import { taskExpansionFactory } from "@/shared/lib/block-expansion"
+import { createTaskAccordionFactory } from "@/shared/lib/task-accordion-factory"
 
-export const taskModel = taskExpansionFactory()
-export const updateTaskModel = updateTaskFactory({taskModel, defaultType: 'unplaced', defaultDate: new Date()})
-export const createTaskModel = createTaskFactory({taskModel, defaultType: 'unplaced', defaultDate: new Date()})
+export const taskAccordion = createTaskAccordionFactory()
+export const updateTaskModel = updateTaskFactory({taskModel: taskAccordion})
+export const createTaskModel = createTaskFactory({taskModel: taskAccordion, defaultType: 'unplaced', defaultDate: new Date()})
 
 export const $selectedDate = createStore<Date>(new Date())
 export const currentDateSelected = createEvent<Date>()

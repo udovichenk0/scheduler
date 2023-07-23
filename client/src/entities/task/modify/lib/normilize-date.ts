@@ -5,7 +5,7 @@ extend(isToday)
 extend(isTommorow)
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
-export function showDateTitle(date: Date) {
+export function normilizeDate(date: Date) {
   if(dayjs(date).isSame(dayjs(), 'day')){
     return 'Today'
   }

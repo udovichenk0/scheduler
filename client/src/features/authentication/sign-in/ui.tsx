@@ -5,7 +5,6 @@ import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Input } from "@/shared/ui/input"
 import { $email } from "../by-email"
 import { TogglePasswordButton } from "../shared/ui/toggle-password-button"
-import { NOT_VALID_MESSAGE, TOO_LONG_MESSAGE } from "./constants"
 import { $password, $passwordError, passwordChanged, submitTriggered } from "./signin.modal"
 
 const onSubmit = (e: FormEvent, submit: () => void) => {
@@ -43,26 +42,15 @@ export const Signin = ({goBack}:{goBack: () => void}) => {
           onChange={(e) => changePassword(e.target.value)} 
           error={error} 
           ref={ref}
+          className="mb-10"
           value={password} 
           label="Password" 
           type={isPasswordShown ? 'text' : 'password'}
           icon={<TogglePasswordButton isPasswordVisible={isPasswordShown} togglePasswordVisibility={togglePasswortView}/>}/>
-        <div className="h-[40px] text-sm text-error mt-1">
-          {error && <LoginValidationError/>}
-        </div>
         <span>
           <DisableButton disabled={!password}/>
         </span>
       </form>
     </div>
   )
-}
-
-
-function LoginValidationError(){
-  const error = useUnit($passwordError)
-  if(error === 'too_long'){
-    return <span>{TOO_LONG_MESSAGE}</span>
-  }
-  return <span>{NOT_VALID_MESSAGE}</span>
 }

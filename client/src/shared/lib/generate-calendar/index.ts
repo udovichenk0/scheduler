@@ -1,6 +1,6 @@
 import dayjs from "dayjs"
 
-export const changeMonth = (currentMonth = dayjs().month()) => {
+export const generateCalendar = (currentMonth = dayjs().month()) => {
   const year = dayjs().year()
   const firstDayOfMonth = dayjs(new Date(year, currentMonth, 1)).day()
   let current = 0 - firstDayOfMonth
