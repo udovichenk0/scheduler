@@ -33,10 +33,10 @@ export const BaseModal = ({ children, modal }: ModalProps) => {
     <div
     ref={ref}
     onClick={handleOnClickOutside}
-    className='absolute w-full text-white h-screen left-0 top-0 flex items-center justify-center bg-black/40'>
+    className='absolute w-full h-screen left-0 top-0 flex items-center justify-center bg-black/40'>
       <div className='bg-main drop-shadow-[0_35px_35px_rgba(0,0,0,.56)] border-[1px] w-[610px] border-cBorder rounded-[5px]'>
         <div className={'flex justify-end m-2'}>
-          <button onClick={toggleTriggered} className={'relative hover:bg-cHover w-[22px] h-[22px] rounded-[4px]'}>
+          <button onClick={toggleTriggered} className={'relative hover:bg-cHover  w-[22px] h-[22px] rounded-[4px]'}>
             <span className={'after:absolute after:content-[""] after:rotate-[45deg] after:top-[10px] after:left-[5px] after:bg-cFont after:w-[12px] after:h-[1px] before:absolute before:content-[""] before:rotate-[-45deg] before:top-[10px] before:left-[5px] before:bg-cFont before:w-[12px] before:h-[1px]'}></span>
           </button>
         </div>

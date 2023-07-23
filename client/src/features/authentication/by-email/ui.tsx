@@ -3,7 +3,6 @@ import { FormEvent, useEffect, useRef } from "react"
 import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Input } from "@/shared/ui/input"
-import { NOT_VALID_MESSAGE, TOO_LONG_ERROR, TOO_LONG_MESSAGE, TOO_SHORT_ERROR, TOO_SHORT_MESSAGE } from "./constants"
 import { $email, $emailError, emailChanged, submitTriggered } from "./modal"
 
 const onSubmit = (e: FormEvent, submit: () => void) => {
@@ -11,7 +10,7 @@ const onSubmit = (e: FormEvent, submit: () => void) => {
   submit()
 }
 
-export const ByEmailForm = ({goBack}:{goBack: () => void}) => {
+export const CheckEmailForm = ({goBack}:{goBack: () => void}) => {
   const ref = useRef<HTMLInputElement>(null)
   const [
     email, 
@@ -38,13 +37,11 @@ export const ByEmailForm = ({goBack}:{goBack: () => void}) => {
         <Input 
           onChange={(e) => changeEmail(e.target.value)} 
           error={error}
+          className="mb-10"
           ref={ref} 
-          value={email} 
+          value={email}
           label="Email" 
          />
-        <div className="h-[40px] text-sm text-error mt-1">
-          {error && <EmailValidationError/>}
-        </div>
         <span>
           <Button intent={'filled'} size={'m'} disabled={!email}>
             Continue
@@ -53,15 +50,4 @@ export const ByEmailForm = ({goBack}:{goBack: () => void}) => {
       </form>
     </div>
   )
-}
-
-function EmailValidationError(){
-  const error = useUnit($emailError)
-  if(error === TOO_SHORT_ERROR) {
-    return <span>{TOO_SHORT_MESSAGE}</span>
-  }
-  if(error === TOO_LONG_ERROR){
-    return <span>{TOO_LONG_MESSAGE}</span>
-  }
-  return <span>{NOT_VALID_MESSAGE}</span>
 }

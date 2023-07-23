@@ -1,14 +1,13 @@
 import { createEvent, createStore, sample } from "effector"
 import { not, and, or } from "patronum";
-import { RefObject } from 'react';
 import { TaskDto } from "@/shared/api/task";
-export const taskExpansionFactory = () => {
+export const createTaskAccordionFactory = () => {
 
   const closeTaskTriggered = createEvent()
 
   const createTaskClosed = createEvent()
   const updateTaskClosed = createEvent<number>()
-  const updateTaskOpened = createEvent<{task: TaskDto, ref: RefObject<HTMLDivElement>}>()
+  const updateTaskOpened = createEvent<TaskDto>()
   const createTaskToggled = createEvent<{date: Date | null}>()
 
   const $createdTriggered = createStore(false)
@@ -60,7 +59,7 @@ export const taskExpansionFactory = () => {
   sample({
     clock: updateTaskOpened,
     filter: and($isAllowToOpenUpdate, $isAllowToOpenCreate),
-    fn: ({task}) => task.id,
+    fn: (task) => task.id,
     target: $taskId
   })
 
@@ -84,4 +83,4 @@ export const taskExpansionFactory = () => {
     closeTaskTriggered,
   }
 }
-export type ExpensionTaskType = ReturnType<typeof taskExpansionFactory>
+export type ExpensionTaskType = ReturnType<typeof createTaskAccordionFactory>

@@ -1,11 +1,11 @@
 import { Event as EffectorEvent, Store } from 'effector'
 import { useUnit } from "effector-react"
 import { useState, useRef } from "react"
-import { capitalizeLetter } from "@/shared/lib/capitalize-letter"
 import { Checkbox } from "@/shared/ui/buttons/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
-import { showDateTitle } from './lib/display-date-info'
+import { capitalizeLetter } from './lib/capitalize-first-letter'
+import { normilizeDate } from './lib/normilize-date'
 import { DateModal } from './ui/date-modal'
 import { TypeModal } from "./ui/type-modal"
 
@@ -100,7 +100,7 @@ export const ModifyTaskForm = ({
                     <Icon name={'common/upcoming'} className="text-cTaskEditDefault w-[18px] mr-4 h-[18px]"/>
                     <span>Date</span>
                     <span className='text-accent ml-2'>
-                      {currentDate && showDateTitle(currentDate)}
+                      {currentDate && normilizeDate(currentDate)}
                     </span>
                   </div>
                 </Button>

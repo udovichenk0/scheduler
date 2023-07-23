@@ -3,17 +3,9 @@ import { spread } from "patronum";
 import { modifyFormFactory } from "@/entities/task/modify";
 import { $taskKv } from "@/entities/task/tasks";
 import { updateStatusQuery, updateTaskQuery } from "@/shared/api/task";
-import { ExpensionTaskType } from "@/shared/lib/block-expansion";
+import { ExpensionTaskType } from "@/shared/lib/task-accordion-factory";
 
-export const updateTaskFactory = ({
-  taskModel,
-  defaultType,
-  defaultDate, //!remove defaultDate??
-}: {
-  taskModel: ExpensionTaskType,
-  defaultType: 'inbox' | 'unplaced',
-  defaultDate: Date | null,
-}) => {
+export const updateTaskFactory = ({taskModel}: {taskModel: ExpensionTaskType}) => {
   const { 
     statusChanged, 
     titleChanged, 
@@ -28,15 +20,11 @@ export const updateTaskFactory = ({
     $startDate,
     $status,
     $type
-  } = modifyFormFactory({
-    defaultType,
-    defaultDate,
-  })
+  } = modifyFormFactory({})
 
   const changeStatusTriggered = createEvent<number>()
   sample({
     clock: taskModel.updateTaskOpened,
-    fn: ({task}) => task,
     target: spread({
       targets: {
         title: $title,

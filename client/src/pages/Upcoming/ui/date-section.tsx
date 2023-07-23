@@ -2,9 +2,8 @@ import { useUnit } from "effector-react"
 import { RefObject, ReactNode } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { ModifyTaskForm } from "@/entities/task/modify"
-import { TaskDto } from "@/shared/api/task"
-import { Task } from "@/shared/ui/task"
-import { updateTaskModel, taskModel, createTaskModel } from "../upcoming.model"
+import { Task, TaskItem } from "@/entities/task/tasks"
+import { updateTaskModel, taskAccordion, createTaskModel } from "../upcoming.model"
 
 export function DateSection({
   outRef, 
@@ -14,7 +13,7 @@ export function DateSection({
   action
 }:{
   outRef: RefObject<HTMLDivElement>,
-  tasks: TaskDto[], 
+  tasks: Task[], 
   title: ReactNode,
   isSelected: boolean,
   action: () => void
@@ -26,9 +25,9 @@ export function DateSection({
     newTask
   ] = useUnit([
     updateTaskModel.changeStatusTriggered,
-    taskModel.$taskId,
-    taskModel.updateTaskOpened,
-    taskModel.$newTask
+    taskAccordion.$taskId,
+    taskAccordion.updateTaskOpened,
+    taskAccordion.$newTask
   ])
   return (
     <div className="border-b-2 border-cBorder select-none text-primary">
@@ -46,9 +45,9 @@ export function DateSection({
               <ExpandedTask taskRef={outRef}>
                 <ModifyTaskForm modifyTaskModel={updateTaskModel}/>
               </ExpandedTask>
-              : <Task 
+              : <TaskItem 
                 date
-                onDoubleClick={() => updateTaskOpened({task,ref: outRef})} 
+                onDoubleClick={() => updateTaskOpened(task)} 
                 onChange={() => changeStatus(task.id)}
                 data={task}/>}
           </div>

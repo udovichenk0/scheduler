@@ -3,15 +3,15 @@ import { Fragment, useRef } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { MainLayout } from "@/widgets/layouts/main"
 import { ModifyTaskForm } from "@/entities/task/modify"
+import { TaskItem } from "@/entities/task/tasks"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { Icon } from "@/shared/ui/icon"
-import { Task } from "@/shared/ui/task"
 import { 
   $isOverdueTasksOpened,
   $overdueTasks,
   $todayTasks,
   createTaskModel,
-  taskModel,
+  taskAccordion,
   toggleOverdueTasksOpened,
   updateTaskModel,
 } from "./today.model"
@@ -33,11 +33,11 @@ export const Today = () => {
   ] = useUnit([
     $todayTasks,
     updateTaskModel.changeStatusTriggered,
-    taskModel.$newTask,
-    taskModel.$taskId,
-    taskModel.closeTaskTriggered,
-    taskModel.updateTaskOpened,
-    taskModel.createTaskToggled,
+    taskAccordion.$newTask,
+    taskAccordion.$taskId,
+    taskAccordion.closeTaskTriggered,
+    taskAccordion.updateTaskOpened,
+    taskAccordion.createTaskToggled,
     $isOverdueTasksOpened,
     toggleOverdueTasksOpened,
     $overdueTasks,
@@ -70,9 +70,9 @@ export const Today = () => {
                     <ExpandedTask taskRef={ref}>
                       <ModifyTaskForm modifyTaskModel={updateTaskModel}/>
                     </ExpandedTask>
-                    : <Task
+                    : <TaskItem
                       date 
-                      onDoubleClick={() => updateTaskOpened({task: task,ref})} 
+                      onDoubleClick={() => updateTaskOpened(task)} 
                       onChange={() => changeStatus(task.id)}
                       data={task}/>}
                 </Fragment>
@@ -91,17 +91,17 @@ export const Today = () => {
             </button>
           </div>}
           <div className="px-5 ">
-            {tasks.map((item, id) => {
+            {tasks.map((task, id) => {
               return (
                 <Fragment key={id}>
-                  {item.id === taskId ? 
+                  {task.id === taskId ? 
                     <ExpandedTask taskRef={ref}>
                       <ModifyTaskForm modifyTaskModel={updateTaskModel}/>
                     </ExpandedTask>
-                    : <Task 
-                      onDoubleClick={() => updateTaskOpened({task: item,ref})} 
-                      onChange={() => changeStatus(item.id)}
-                      data={item}/>}
+                    : <TaskItem 
+                      onDoubleClick={() => updateTaskOpened(task)} 
+                      onChange={() => changeStatus(task.id)}
+                      data={task}/>}
                 </Fragment>
               )
             })}

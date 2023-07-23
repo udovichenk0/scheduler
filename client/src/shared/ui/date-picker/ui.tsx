@@ -1,6 +1,6 @@
 import dayjs from "dayjs"
 import { useState } from "react"
-import { changeMonth } from "@/shared/lib/change-month"
+import { generateCalendar } from "@/shared/lib/generate-calendar"
 import { Icon } from "../icon"
 
 const daysName = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
@@ -13,14 +13,14 @@ export function DatePicker({
   currentDate: Date,
   onDateChange: (date: Date) => void
 }){
-  const [dates, setDate] = useState(changeMonth())
+  const [dates, setDate] = useState(generateCalendar())
   const [displayedMonth, setDisplayedMonth] = useState(dayjs().month())
   const currentSetMonth = dayjs(new Date(dayjs().year(), displayedMonth, dayjs().date())).month()
   const isCurrentMonth = dayjs().month() === displayedMonth
-  const switchMonth = (month: number) => {
+  const changeMonth = (month: number) => {
     if(dayjs().month() <= month){
       setDisplayedMonth(month)
-      setDate(changeMonth(month))
+      setDate(generateCalendar(month))
     }
   }
   return (
@@ -28,20 +28,20 @@ export function DatePicker({
         <div className='flex items-center gap-2 justify-end text-primary'>
           <button 
           disabled={isCurrentMonth}
-          onClick={() => switchMonth(displayedMonth - 1)}
+          onClick={() => changeMonth(displayedMonth - 1)}
           className={`${isCurrentMonth && 'opacity-50'} rotate-180 outline-none rounded-[5px] flex items-center justify-center w-6 h-6 p-2 transition-colors duration-150 hover:bg-cHover text-primary text-sm`}>
             <Icon name='common/arrow'  className='w-[8px] h-[8px]'/>
           </button>
 
           <button
-            onClick={() => switchMonth(dayjs().month())}
+            onClick={() => changeMonth(dayjs().month())}
             disabled={isCurrentMonth}
             className={`text-[11px] font-bold text-accent ${isCurrentMonth && 'opacity-80'}`}>
             Today
           </button>
 
           <button 
-          onClick={() => switchMonth(displayedMonth + 1)}
+          onClick={() => changeMonth(displayedMonth + 1)}
           className="outline-none rounded-[5px] flex items-center justify-center w-6 h-6 p-2 transition-colors duration-150 hover:bg-cHover text-primary text-sm">
             <Icon name='common/arrow'  className='translate-x-[1px] w-[8px] h-[8px]'/>
           </button>

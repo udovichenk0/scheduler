@@ -3,17 +3,17 @@ import { spread } from "patronum"
 import { z } from "zod"
 import { setSessionUserTriggered } from "@/entities/session"
 import { getTasksTriggered } from "@/entities/task/tasks"
-import { signinQuery } from "@/shared/api/auth/signin"
+import { signinQuery } from "@/shared/api/auth"
 import { setTokenTriggered } from "@/shared/api/token"
 import { $email } from "../by-email"
-import { MAX_LENGTH, NOT_VALID_ERROR, TOO_LONG_ERROR } from "./constants"
+import { MAX_LENGTH, NOT_VALID_MESSAGE, TOO_LONG_MESSAGE } from "./constants"
 
 export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()
 export const resetSigninPasswordTriggered = createEvent()
 
 export const $password = createStore('')
-export const $passwordError = createStore<'invalid_string' | 'too_long' |  null>(null)
+export const $passwordError = createStore<string |  null>(null)
 
 const signinSchema = z.string().trim().max(50)
 
@@ -66,15 +66,15 @@ sample({
 
 sample({
   clock: signinQuery.finished.failure,
-  fn: () => NOT_VALID_ERROR,
+  fn: () => NOT_VALID_MESSAGE,
   target: $passwordError
 })
 
 function checkError(value:string){
   if(value.length > MAX_LENGTH){
-    return TOO_LONG_ERROR
+    return TOO_LONG_MESSAGE 
   }
   else {
-    return NOT_VALID_ERROR
+    return NOT_VALID_MESSAGE
   }
 }

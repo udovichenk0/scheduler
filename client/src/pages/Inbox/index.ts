@@ -1,4 +1,4 @@
-import { routes } from '@/shared/config/router';
+import { routes } from '@/shared/routing';
 import { Inbox } from './inbox.page';
 
 export const InboxRoute = {

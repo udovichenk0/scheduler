@@ -25,12 +25,11 @@ sample({
   clock: refreshQuery.finished.success,
   target: getTasksTriggered
 })
-appStarted()
 await allSettled(appStarted, { scope });
 
 createRoot(document.getElementById('root') as HTMLElement).
 render(
-  // <Provider value={scope}>
+  <Provider value={scope}>
     <App />
-  // </Provider>
+  </Provider>
 )

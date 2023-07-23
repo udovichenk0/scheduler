@@ -1,7 +1,7 @@
 import { RouterProvider } from 'atomic-router-react';
 import { RoutesView } from "@/pages";
 import { Sidebar } from '@/widgets/sidebar';
-import { router } from "@/shared/config/router/router";
+import { router } from "@/shared/routing/router";
 
 
 function App() {
