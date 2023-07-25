@@ -1,5 +1,4 @@
 import { useUnit } from "effector-react"
-// eslint-disable-next-line boundaries/element-types
 import { Settings } from "@/widgets/settings"
 import { routes } from "@/shared/routing"
 import { IconButton } from "@/shared/ui/buttons/icon-button"
@@ -49,8 +48,8 @@ export const Sidebar = () => {
         <div className="px-2 py-1 border-t-[1px] border-cBorder flex">
           <div>
             <IconButton size={'base'} iconName="common/settings" intent={'leftBottonPanel'} onClick={toggleTriggered}/>
-            <BaseModal modal={modal}>
-                <Settings />
+            <BaseModal className="w-[610px]" title="Settings" modal={modal}>
+                <Settings defaultTab="general"/>
             </BaseModal>
           </div>
         </div>

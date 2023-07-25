@@ -26,7 +26,6 @@ sample({
   target: getTasksTriggered
 })
 await allSettled(appStarted, { scope });
-
 createRoot(document.getElementById('root') as HTMLElement).
 render(
   <Provider value={scope}>

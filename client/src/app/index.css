@@ -38,7 +38,9 @@ html {
       --cTaskEditDefault: #76899b;
       --cTimeIntervalLow: #252538;
       --cIconDefault: #76899b;
-      --cTimeInterval: #174468
+      --cTimeInterval: #174468;
+      --cPomodoroRed: #ff5f58;
+      --cPomodoroGreen: #62c554
     }
 
     html[data-theme='default'] {
@@ -69,7 +71,9 @@ html {
       --cTaskEditDefault: #76899b;
       --cTimeIntervalLow: #3d4350;
       --cIconDefault: #76899b;
-      --cTimeInterval: #244250
+      --cTimeInterval: #244250;
+      --cPomodoroRed: #ff5f58;
+      --cPomodoroGreen: #62c554
     }
     html[data-theme='dark'] {
       --main: #121212; 
@@ -98,7 +102,9 @@ html {
       --cTaskEditDefault: hsla(0,0%,100%,.8);
       --cTimeIntervalLow: #394049;
       --cIconDefault: hsla(0,0%,100%,.8);
-      --cTimeInterval: #243952
+      --cTimeInterval: #243952;
+      --cPomodoroRed: #ff5f58;
+      --cPomodoroGreen: #62c554
     }
     html[data-theme='light'] {
       --main: #f9f9f9; 
@@ -127,7 +133,9 @@ html {
       --cTaskEditDefault: #76899b;
       --cTimeIntervalLow: #d1d7dc;
       --cIconDefault: #76899b;
-      --cTimeInterval: #d3e0ef
+      --cTimeInterval: #d3e0ef;
+      --cPomodoroRed: #ff5f58;
+      --cPomodoroGreen: #62c554
     }
     html[data-theme='grey'] {
       --main: #f4f4f4; 
@@ -156,7 +164,9 @@ html {
       --cTaskEditDefault: rgba(51,51,51,.6);
       --cTimeIntervalLow: #d8d8d8;
       --cIconDefault: rgba(51,51,51,.6);
-      --cTimeInterval: #ccd4de
+      --cTimeInterval: #ccd4de;
+      --cPomodoroRed: #ff5f58;
+      --cPomodoroGreen: #62c554
     }
 }
 @layer components {

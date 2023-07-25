@@ -1,13 +1,12 @@
 {
   "env": { "browser": true, "es2020": true },
   "extends": [
-    "plugin:import/errors",
-    "plugin:@typescript-eslint/recommended",
-    "eslint:recommended",
-    "plugin:import/warnings",
     "plugin:import/typescript",
-    "@feature-sliced/eslint-config/rules/import-order",
-    "@feature-sliced/eslint-config/rules/layers-slices"
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/warnings",
+    "plugin:import/errors",
+    "@feature-sliced/eslint-config/rules/import-order"
   ],
   "settings": {
     "import/resolver": { 
@@ -26,6 +25,7 @@
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/member-ordering": [
       "error",
       { "default": ["signature", "method", "constructor", "field"] }

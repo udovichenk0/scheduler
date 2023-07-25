@@ -16,6 +16,7 @@ const iconCva = cva('outline-none transition-colors duration-150 rounded-[5px]',
     },
     size: {
       base: ['h-[20px] w-[20px] px-1 py-2'],
+      xs: ['px-1', 'py-1'],
       m: ['px-3 py-2']
     },
   },
