@@ -3,21 +3,24 @@ import { Root } from "@/shared/ui/tab";
 import { SynchronizationTab, GeneralTab } from './tabs'
 import { ThemeTab } from "./tabs/theme";
 
-enum TabsEnum {
-  general = 'general',
-  synchronization = 'synchronization',
-  theme = 'theme'
+const tabsName = {
+  general: 'general' as const,
+  synchronization: 'synchronization' as const,
+  theme: 'theme' as const
 }
 const tabs = [
-  { iconName: 'settings' as const, title: 'General', label: TabsEnum.general },
-  { iconName: 'cloud' as const, title: 'Synchronization', label: TabsEnum.synchronization},
-  { iconName: 'palette' as const, title: 'Theme', label: TabsEnum.theme}
+  { iconName: 'settings' as const, title: 'General', label: tabsName.general },
+  { iconName: 'cloud' as const, title: 'Synchronization', label: tabsName.synchronization},
+  { iconName: 'palette' as const, title: 'Theme', label: tabsName.theme}
 ]
 
-
-export const Settings = () => {
+export const Settings = ({
+  defaultTab = tabsName.general
+}: {
+  defaultTab: Keys<typeof tabsName>
+}) => {
   return (
-    <Root defaultValue={TabsEnum.general} className="">
+    <Root defaultValue={defaultTab} className="text-sm">
       <Root.List className="flex gap-5 border-b-[1px] border-cBorder px-6 pb-4">
         {tabs.map(({iconName, title, label}) => 
           <Root.Trigger
@@ -30,9 +33,9 @@ export const Settings = () => {
             </Root.Trigger>
         )}
       </Root.List>
-      <Root.Content label={TabsEnum.general}><GeneralTab/></Root.Content>
-      <Root.Content label={TabsEnum.synchronization}><SynchronizationTab/></Root.Content>
-      <Root.Content label={TabsEnum.theme}><ThemeTab/></Root.Content>
+      <Root.Content label={tabsName.general}><GeneralTab/></Root.Content>
+      <Root.Content label={tabsName.synchronization}><SynchronizationTab/></Root.Content>
+      <Root.Content label={tabsName.theme}><ThemeTab/></Root.Content>
     </Root>
   )
 }

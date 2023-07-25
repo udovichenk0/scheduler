@@ -1,9 +1,9 @@
 import dayjs from "dayjs";
 import { combine } from "effector";
 import { $taskKv } from "@/entities/task/tasks";
-import { modalFactory } from "@/shared/lib/modal";
+import { createModal } from "@/shared/lib/modal";
 
-export const modal = modalFactory({closeOnClickOutside: true});
+export const modal = createModal({closeOnClickOutside: true});
 
 export const $inboxTasksCount = combine($taskKv, (kv) => {
   return Object.values(kv)

@@ -18,14 +18,13 @@ function App() {
 if(typeof window != 'undefined') {
   const theme = localStorage.getItem('data-theme')
   const accent = localStorage.getItem('data-accent')
-
   if(theme){
     document.documentElement.setAttribute('data-theme', JSON.parse(theme))
   }
-  else if(accent){
+  if(accent){
     document.documentElement.style.setProperty('--accent', `var(--${JSON.parse(accent)})`)
   }
-  else if(!theme) {
+  if(!theme) {
     document.documentElement.setAttribute('data-theme', 'default')
   }
 }

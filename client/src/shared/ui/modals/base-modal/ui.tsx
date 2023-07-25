@@ -1,13 +1,21 @@
+import { clsx } from "clsx";
 import { useUnit } from "effector-react";
 import { MouseEvent, ReactNode, useRef } from 'react'
 import { createPortal } from 'react-dom';
 import { ModalType } from '@/shared/lib/modal';
 interface ModalProps {
     children: ReactNode,
-    modal: ModalType
+    modal: ModalType,
+    title?: string,
+    className?: string
 }
 
-export const BaseModal = ({ children, modal }: ModalProps) => {
+export const BaseModal = ({ 
+  children, 
+  modal, 
+  title,
+  className
+}: ModalProps) => {
   const [
     clickOutsideTriggered,
     toggleTriggered,
@@ -17,6 +25,7 @@ export const BaseModal = ({ children, modal }: ModalProps) => {
     modal.toggleTriggered,
     modal.$isOpened
   ])
+  console.log(1)
   const ref = useRef<HTMLDivElement>(null)
   if (!isOpened) {
     return null
@@ -33,9 +42,12 @@ export const BaseModal = ({ children, modal }: ModalProps) => {
     <div
     ref={ref}
     onClick={handleOnClickOutside}
-    className='absolute w-full h-screen left-0 top-0 flex items-center justify-center bg-black/40'>
-      <div className='bg-main drop-shadow-[0_35px_35px_rgba(0,0,0,.56)] border-[1px] w-[610px] border-cBorder rounded-[5px]'>
+    className='absolute text-primary w-full h-screen left-0 top-0 flex items-center justify-center bg-black/40'>
+      <div className={clsx('bg-main drop-shadow-[0_35px_35px_rgba(0,0,0,.56)] border-[1px] border-cBorder rounded-[5px]', className)}>
         <div className={'flex justify-end m-2'}>
+          <span className="text-[12px] w-full text-center pl-6">
+            {title}
+          </span>
           <button onClick={toggleTriggered} className={'relative hover:bg-cHover  w-[22px] h-[22px] rounded-[4px]'}>
             <span className={'after:absolute after:content-[""] after:rotate-[45deg] after:top-[10px] after:left-[5px] after:bg-cFont after:w-[12px] after:h-[1px] before:absolute before:content-[""] before:rotate-[-45deg] before:top-[10px] before:left-[5px] before:bg-cFont before:w-[12px] before:h-[1px]'}></span>
           </button>

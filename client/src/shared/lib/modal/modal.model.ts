@@ -1,6 +1,6 @@
 import {createEvent, createStore, sample} from "effector";
 
-export const modalFactory = ({closeOnClickOutside = true}:{closeOnClickOutside?: boolean}) => {
+export const createModal = ({closeOnClickOutside = true}:{closeOnClickOutside?: boolean}) => {
   const toggleTriggered = createEvent()
   const clickOutsideTriggered = createEvent()
   const $isOpened = createStore(false)
@@ -20,4 +20,4 @@ export const modalFactory = ({closeOnClickOutside = true}:{closeOnClickOutside?:
   }
 }
 
-export type ModalType = ReturnType<typeof modalFactory>
+export type ModalType = ReturnType<typeof createModal>

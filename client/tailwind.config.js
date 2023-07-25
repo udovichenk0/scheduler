@@ -41,7 +41,9 @@ export default {
         'cTaskEditDefault': 'var(--cTaskEditDefault)',
         'cTimeIntervalLow': 'var(--cTimeIntervalLow)',
         'cIconDefault': 'var(--cIconDefault)',
-        'cTimeInterval': 'var(--cTimeInterval)'
+        'cTimeInterval': 'var(--cTimeInterval)',
+        'cPomodoroRed': 'var(--cPomodoroRed)',
+        'cPomodoroGreen': 'var(--cPomodoroGreen)'
       }
     },
   },
