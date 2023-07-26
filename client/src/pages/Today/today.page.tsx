@@ -6,7 +6,7 @@ import { ModifyTaskForm } from "@/entities/task/modify"
 import { TaskItem } from "@/entities/task/tasks"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { Icon } from "@/shared/ui/icon"
-import { 
+import {
   $isOverdueTasksOpened,
   $overdueTasks,
   $todayTasks,
@@ -15,7 +15,6 @@ import {
   toggleOverdueTasksOpened,
   updateTaskModel,
 } from "./today.model"
-
 
 export const Today = () => {
   const ref = useRef<HTMLDivElement>(null)
@@ -43,77 +42,102 @@ export const Today = () => {
     $overdueTasks,
   ])
   return (
-    <MainLayout 
-      action={() => createTaskOpened({date: new Date()})} 
-      iconName="common/outlined-star" title="Today">
-       <div onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)} className="h-full">
+    <MainLayout
+      action={() => createTaskOpened({ date: new Date() })}
+      iconName="common/outlined-star"
+      title="Today"
+    >
+      <div
+        onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)}
+        className="h-full"
+      >
         <section className={`${overdueTasks.length > 0 ? "block" : "hidden"}`}>
-          <div className="border-b-2 py-2 border-t-2 border-cBorder flex items-center gap-1 px-5">
-            <Icon name="common/outlined-star" className="w-5 h-5 text-cIconDefault"/>
-            <button 
-            onClick={toggleOverdueTasks}
-            className="flex justify-between text-primary items-center hover:bg-cHover px-3 rounded-[5px] w-full">
-              <h2 className="text-lg">
-              Overdue tasks
-              </h2>
+          <div className="flex items-center gap-1 border-b-2 border-t-2 border-cBorder px-5 py-2">
+            <Icon
+              name="common/outlined-star"
+              className="h-5 w-5 text-cIconDefault"
+            />
+            <button
+              onClick={toggleOverdueTasks}
+              className="flex w-full items-center justify-between rounded-[5px] px-3 text-primary hover:bg-cHover"
+            >
+              <span className="text-lg">Overdue tasks</span>
               <div className="flex items-center gap-3">
-                <span className="text-[12px]">{!isOverdueTasksOpened && overdueTasks.length}</span>
-                <Icon name="common/arrow" className={`w-[6px] ${isOverdueTasksOpened ? "rotate-90" : ""}`}/>
+                <span className="text-[12px]">
+                  {!isOverdueTasksOpened && overdueTasks.length}
+                </span>
+                <Icon
+                  name="common/arrow"
+                  className={`w-[6px] ${
+                    isOverdueTasksOpened ? "rotate-90" : ""
+                  }`}
+                />
               </div>
             </button>
           </div>
-         {!!isOverdueTasksOpened && <div className="px-5 py-2 border-b-2 border-cBorder">
-            {overdueTasks.map((task, id) => {
-              return (
-                <Fragment key={id}>
-                  {task.id === taskId ? 
-                    <ExpandedTask taskRef={ref}>
-                      <ModifyTaskForm modifyTaskModel={updateTaskModel}/>
-                    </ExpandedTask>
-                    : <TaskItem
-                      date 
-                      onDoubleClick={() => updateTaskOpened(task)} 
-                      onChange={() => changeStatus(task.id)}
-                      data={task}/>}
-                </Fragment>
-              )
-            })}
-          </div>}
+          {!!isOverdueTasksOpened && (
+            <div className="border-b-2 border-cBorder px-5 py-2">
+              {overdueTasks.map((task, id) => {
+                return (
+                  <Fragment key={id}>
+                    {task.id === taskId ? (
+                      <ExpandedTask taskTitle={task.title} taskRef={ref}>
+                        <ModifyTaskForm modifyTaskModel={updateTaskModel} />
+                      </ExpandedTask>
+                    ) : (
+                      <TaskItem
+                        date
+                        onDoubleClick={() => updateTaskOpened(task)}
+                        onChange={() => changeStatus(task.id)}
+                        data={task}
+                      />
+                    )}
+                  </Fragment>
+                )
+              })}
+            </div>
+          )}
         </section>
-        <section className="w-full">
-          {!!overdueTasks.length && !!tasks.length && 
-          <div className={`px-5 text-primary mb-2 border-b-2 py-2 border-cBorder flex items-center gap-1`}>
-            <Icon name="common/outlined-star" className="w-5 h-5 text-accent"/>
-            <button className="flex justify-between focus:bg-cFocus items-center hover:bg-cHover px-3 rounded-[5px] w-full">
-              <h2 className="text-lg">
-              Today
-              </h2>
-            </button>
-          </div>}
+        <section>
+          {!!overdueTasks.length && !!tasks.length && (
+            <div
+              className={`mb-2 flex items-center gap-1 border-b-2 border-cBorder px-5 py-2 text-primary `}
+            >
+              <Icon
+                name="common/outlined-star"
+                className="h-5 w-5 text-accent"
+              />
+              <button className="flex w-full items-center justify-between rounded-[5px] px-3 text-lg hover:bg-cHover focus:bg-cFocus">
+                Today
+              </button>
+            </div>
+          )}
           <div className="px-5 ">
             {tasks.map((task, id) => {
               return (
                 <Fragment key={id}>
-                  {task.id === taskId ? 
-                    <ExpandedTask taskRef={ref}>
-                      <ModifyTaskForm modifyTaskModel={updateTaskModel}/>
+                  {task.id === taskId ? (
+                    <ExpandedTask taskTitle={task.title} taskRef={ref}>
+                      <ModifyTaskForm modifyTaskModel={updateTaskModel} />
                     </ExpandedTask>
-                    : <TaskItem 
-                      onDoubleClick={() => updateTaskOpened(task)} 
+                  ) : (
+                    <TaskItem
+                      onDoubleClick={() => updateTaskOpened(task)}
                       onChange={() => changeStatus(task.id)}
-                      data={task}/>}
+                      data={task}
+                    />
+                  )}
                 </Fragment>
               )
             })}
-            {newTask && 
+            {newTask && (
               <ExpandedTask taskRef={ref}>
-                <ModifyTaskForm modifyTaskModel={createTaskModel}/>
+                <ModifyTaskForm modifyTaskModel={createTaskModel} />
               </ExpandedTask>
-            }
+            )}
           </div>
         </section>
       </div>
     </MainLayout>
   )
 }
-

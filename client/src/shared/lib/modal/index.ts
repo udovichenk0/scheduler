@@ -1,1 +1,1 @@
-export * from './modal.model'
+export * from "./modal.model"

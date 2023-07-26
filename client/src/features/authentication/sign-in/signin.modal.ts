@@ -12,25 +12,25 @@ export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()
 export const resetSigninPasswordTriggered = createEvent()
 
-export const $password = createStore('')
-export const $passwordError = createStore<string |  null>(null)
+export const $password = createStore("")
+export const $passwordError = createStore<string | null>(null)
 
 const signinSchema = z.string().trim().max(50)
 
 sample({
   clock: passwordChanged,
-  target: $password
+  target: $password,
 })
 
 sample({
   clock: passwordChanged,
-  target: $password
+  target: $password,
 })
 sample({
   clock: submitTriggered,
-  source: {email: $email,password: $password},
-  filter: ({password}) => signinSchema.safeParse(password).success,
-  target: signinQuery.start
+  source: { email: $email, password: $password },
+  filter: ({ password }) => signinSchema.safeParse(password).success,
+  target: signinQuery.start,
 })
 
 sample({
@@ -38,17 +38,17 @@ sample({
   source: $password,
   filter: (password) => !signinSchema.safeParse(password).success,
   fn: checkError,
-  target: $passwordError
+  target: $passwordError,
 })
 
 sample({
   clock: resetSigninPasswordTriggered,
-  target: [$passwordError.reinit, $password.reinit]
+  target: [$passwordError.reinit, $password.reinit],
 })
 
 sample({
   clock: signinQuery.finished.success,
-  fn: ({result}) => ({
+  fn: ({ result }) => ({
     user: result.user,
     token: result.access_token,
   }),
@@ -56,25 +56,24 @@ sample({
     targets: {
       user: setSessionUserTriggered,
       token: setTokenTriggered,
-    }
-  })
+    },
+  }),
 })
 sample({
   clock: signinQuery.finished.success,
-  target: getTasksTriggered
+  target: getTasksTriggered,
 })
 
 sample({
   clock: signinQuery.finished.failure,
   fn: () => NOT_VALID_MESSAGE,
-  target: $passwordError
+  target: $passwordError,
 })
 
-function checkError(value:string){
-  if(value.length > MAX_LENGTH){
-    return TOO_LONG_MESSAGE 
-  }
-  else {
+function checkError(value: string) {
+  if (value.length > MAX_LENGTH) {
+    return TOO_LONG_MESSAGE
+  } else {
     return NOT_VALID_MESSAGE
   }
 }

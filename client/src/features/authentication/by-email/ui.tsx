@@ -10,18 +10,13 @@ const onSubmit = (e: FormEvent, submit: () => void) => {
   submit()
 }
 
-export const CheckEmailForm = ({goBack}:{goBack: () => void}) => {
+export const CheckEmailForm = ({ goBack }: { goBack: () => void }) => {
   const ref = useRef<HTMLInputElement>(null)
-  const [
-    email, 
-    error,
-    changeEmail,
-    submit
-  ] = useUnit([
-    $email, 
-    $emailError, 
-    emailChanged, 
-    submitTriggered
+  const [email, error, changeEmail, submit] = useUnit([
+    $email,
+    $emailError,
+    emailChanged,
+    submitTriggered,
   ])
   useEffect(() => {
     ref.current && ref.current.focus()
@@ -29,21 +24,32 @@ export const CheckEmailForm = ({goBack}:{goBack: () => void}) => {
   return (
     <div className="relative text-center text-cFont">
       <span className="absolute left-[-20px]">
-      <IconButton className="rotate-180" size={'m'} iconName="common/arrow" intent={'primary'} onClick={() => goBack()}/>
+        <IconButton
+          className="rotate-180"
+          size={"m"}
+          iconName="common/arrow"
+          intent={"primary"}
+          onClick={() => goBack()}
+        />
       </span>
-      <h2 className="text-lg mb-3 font-medium">Log in by email</h2>
-      <p className="text-sm mb-7">Specify the address to log in to your account or register</p>
-      <form className="flex w-full flex-col" onSubmit={(e) => onSubmit(e, submit)}>
-        <Input 
-          onChange={(e) => changeEmail(e.target.value)} 
+      <h2 className="mb-3 text-lg font-medium">Log in by email</h2>
+      <p className="mb-7 text-sm">
+        Specify the address to log in to your account or register
+      </p>
+      <form
+        className="flex w-full flex-col"
+        onSubmit={(e) => onSubmit(e, submit)}
+      >
+        <Input
+          onChange={(e) => changeEmail(e.target.value)}
           error={error}
           className="mb-10"
-          ref={ref} 
+          ref={ref}
           value={email}
-          label="Email" 
-         />
+          label="Email"
+        />
         <span>
-          <Button intent={'filled'} size={'m'} disabled={!email}>
+          <Button intent={"filled"} size={"m"} disabled={!email}>
             Continue
           </Button>
         </span>

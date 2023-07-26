@@ -1,20 +1,20 @@
-import { sample } from "effector";
-import { not, and, condition } from "patronum";
-import { modifyFormFactory } from "@/entities/task/modify";
-import { $taskKv } from "@/entities/task/tasks";
-import { createTaskQuery } from "@/shared/api/task";
-import { ExpensionTaskType } from "@/shared/lib/task-accordion-factory";
+import { sample } from "effector"
+import { not, and, condition } from "patronum"
+import { modifyFormFactory } from "@/entities/task/modify"
+import { $taskKv } from "@/entities/task/tasks"
+import { createTaskQuery } from "@/shared/api/task"
+import { ExpensionTaskType } from "@/shared/lib/task-accordion-factory"
 
-export const createTaskFactory = ({ 
-  taskModel, 
+export const createTaskFactory = ({
+  taskModel,
   defaultType,
-  defaultDate
+  defaultDate,
 }: {
-  taskModel: ExpensionTaskType,
-  defaultType: 'inbox' | 'unplaced',
+  taskModel: ExpensionTaskType
+  defaultType: "inbox" | "unplaced"
   defaultDate: Date | null
 }) => {
-  const { 
+  const {
     $title,
     $status,
     $startDate,
@@ -26,41 +26,42 @@ export const createTaskFactory = ({
     descriptionChanged,
     typeChanged,
     $fields,
-    $isAllowToSubmit, 
-    resetFieldsTriggered } = modifyFormFactory({
-      defaultType,
-      defaultDate
-    })
+    $isAllowToSubmit,
+    resetFieldsTriggered,
+  } = modifyFormFactory({
+    defaultType,
+    defaultDate,
+  })
   sample({
-    clock:  taskModel.createTaskToggled,
+    clock: taskModel.createTaskToggled,
     filter: taskModel.$createdTriggered,
-    fn: ({date}) => date,
-    target: $startDate
+    fn: ({ date }) => date,
+    target: $startDate,
   })
 
   sample({
     clock: $isAllowToSubmit,
     fn: (val) => !val,
-    target: taskModel.$isAllowToOpenUpdate
+    target: taskModel.$isAllowToOpenUpdate,
   })
   sample({
     clock: taskModel.createTaskToggled,
     filter: and($isAllowToSubmit, taskModel.$newTask),
     fn: () => true,
-    target: taskModel.$createdTriggered
+    target: taskModel.$createdTriggered,
   })
   sample({
     clock: taskModel.createTaskClosed,
     source: $fields,
     filter: $isAllowToSubmit,
-    fn: (fields) => ({body: fields}),
-    target: createTaskQuery.start
+    fn: (fields) => ({ body: fields }),
+    target: createTaskQuery.start,
   })
   sample({
     clock: createTaskQuery.finished.success,
     source: $taskKv,
-    fn: (kv, {result: {result}}) => ({...kv, [result.id]: result}),
-    target: [$taskKv, resetFieldsTriggered]
+    fn: (kv, { result: { result } }) => ({ ...kv, [result.id]: result }),
+    target: [$taskKv, resetFieldsTriggered],
   })
   condition({
     source: createTaskQuery.finished.success,
@@ -72,7 +73,7 @@ export const createTaskFactory = ({
   sample({
     clock: taskModel.createTaskClosed,
     filter: not($isAllowToSubmit),
-    target: resetFieldsTriggered
+    target: resetFieldsTriggered,
   })
   return {
     $title,
@@ -86,7 +87,7 @@ export const createTaskFactory = ({
     dateChanged,
     descriptionChanged,
     typeChanged,
-    query: createTaskQuery
+    query: createTaskQuery,
   }
 }
 

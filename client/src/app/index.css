@@ -6,174 +6,176 @@ html {
   --dark-blue: #0b0417;
   --azure: #2ebcff;
   --white: #ffffff;
-  --light-blue: #0e162e
+  --light-blue: #0e162e;
 }
 @layer base {
-    html {
-        font-family: Helvetica Nova, sans-serif;
-    }
-    html[data-theme='space'] {
-      --main: #0b0417;
-      --accent: #2ebcff;
-      --blue: #2ebcff;
-      --yellow: rgb(253 216 53);
-      --red: rgb(244 67 54);
-      --orange: rgb(245, 124, 0);
-      --green: rgb(0, 200, 83);
-      --purple: rgb(170, 0, 255);
-      --pink: rgb(224, 64, 251);
-      --primary: #ffffff;
-      --cFont: #fff;
-      --cHover: #182137;
-      --cOpacitySecondFont: #76899b;
-      --cFocus: #1d2b4d;
-      --brand: var(--main);
-      --cBorder: #393b4681;
-      --cSecondBorder: #76899b;
-      --cLeftBottomPanel: var(--accent);
-      --cButtonBg: #2384b9;
-      --cButtunHover: #217aaa;
-      --cTaskEdit: #1c283e;
-      --cFocusSecond: rgba(70,131,203,.5);
-      --cTaskEditDefault: #76899b;
-      --cTimeIntervalLow: #252538;
-      --cIconDefault: #76899b;
-      --cTimeInterval: #174468;
-      --cPomodoroRed: #ff5f58;
-      --cPomodoroGreen: #62c554
-    }
+  html {
+    font-family:
+      Helvetica Nova,
+      sans-serif;
+  }
+  html[data-theme="space"] {
+    --main: #0b0417;
+    --accent: #2ebcff;
+    --blue: #2ebcff;
+    --yellow: rgb(253 216 53);
+    --red: rgb(244 67 54);
+    --orange: rgb(245, 124, 0);
+    --green: rgb(0, 200, 83);
+    --purple: rgb(170, 0, 255);
+    --pink: rgb(224, 64, 251);
+    --primary: #ffffff;
+    --cFont: #fff;
+    --cHover: #182137;
+    --cOpacitySecondFont: #76899b;
+    --cFocus: #1d2b4d;
+    --brand: var(--main);
+    --cBorder: #393b4681;
+    --cSecondBorder: #76899b;
+    --cLeftBottomPanel: var(--accent);
+    --cButtonBg: #2384b9;
+    --cButtunHover: #217aaa;
+    --cTaskEdit: #1c283e;
+    --cFocusSecond: rgba(70, 131, 203, 0.5);
+    --cTaskEditDefault: #76899b;
+    --cTimeIntervalLow: #252538;
+    --cIconDefault: #76899b;
+    --cTimeInterval: #174468;
+    --cPomodoroRed: #ff5f58;
+    --cPomodoroGreen: #62c554;
+  }
 
-    html[data-theme='default'] {
-      --main: #2b2c37;
-      --accent: #2ebcff;
-      --blue: #2ebcff;
-      --yellow: rgb(255, 202, 40);
-      --red: rgb(255, 82, 82);
-      --orange: rgb(245, 124, 0);
-      --green: rgb(0, 200, 83);
-      --purple: rgb(124, 77, 255);
-      --pink: rgb(234, 128, 252);
-      --primary: #fff;
-      --cFont: #fff;
-      --cHover: #323a4c;
-      --cOpacitySecondFont: #76899b;
-      --cFocus: #394a61;
-      --newFocus: #394a61;
-      --brand: #23242b;
-      --cBorder: #393b46;
-      --cSecondBorder: #76899b;
-      --cLeftBottomPanel: var(--accent);
-      --cButtonBg: #11879c;
-      --cButtunHover: #0f7a8d;
-      --cButtonText: var(--cFont);
-      --cTaskEdit: #23242b;
-      --cFocusSecond: #415d81;
-      --cTaskEditDefault: #76899b;
-      --cTimeIntervalLow: #3d4350;
-      --cIconDefault: #76899b;
-      --cTimeInterval: #244250;
-      --cPomodoroRed: #ff5f58;
-      --cPomodoroGreen: #62c554
-    }
-    html[data-theme='dark'] {
-      --main: #121212; 
-      --accent: #4683cb;
-      --blue: #4683cb;
-      --yellow: rgb(255, 213, 79);
-      --red: rgb(229, 115, 115);
-      --orange: rgb(255, 183, 77);
-      --green: rgb(129, 199, 132);
-      --purple: rgb(124, 77, 255);
-      --pink: rgb(234, 128, 252);
-      --primary: #fffc;
-      --cFont: #fffc;
-      --cHover: #1c283794;
-      --cOpacitySecondFont: #ffffff4d;
-      --cFocus: #1c2837;
-      --brand: var(--main);
-      --cBorder: #393b4681;
-      --cSecondBorder: #ffffffcc;
-      --cLeftBottomPanel: #ffffffcc;
-      --cButtonBg: #366193;
-      --cButtunHover: #315885;
-      --cButtonText: var(--cFont);
-      --cTaskEdit: #26262680;
-      --cFocusSecond: rgba(70,131,203,.5);
-      --cTaskEditDefault: hsla(0,0%,100%,.8);
-      --cTimeIntervalLow: #394049;
-      --cIconDefault: hsla(0,0%,100%,.8);
-      --cTimeInterval: #243952;
-      --cPomodoroRed: #ff5f58;
-      --cPomodoroGreen: #62c554
-    }
-    html[data-theme='light'] {
-      --main: #f9f9f9; 
-      --accent: #4683cb;
-      --blue: #4683cb;
-      --yellow: rgb(251, 192, 45);
-      --red: rgb(255, 82, 82);
-      --orange: rgb(245, 124, 0);
-      --green: rgb(76, 175, 80);
-      --purple: rgb(126, 87, 194);
-      --pink: rgb(240, 98, 146);
-      --primary: #596175;
-      --cFont: #2b2c37;
-      --cHover: #d3e3f6;
-      --cOpacitySecondFont: #76899b;
-      --cFocus: #c7d6eb;
-      --brand: #f5f7fb;
-      --cBorder: #d3e3f6;
-      --cSecondBorder: #76899b;
-      --cLeftBottomPanel: var(--accent);
-      --cButtonBg: #7ba6d8;
-      --cButtunHover: #82b0e4;
-      --cButtonText: #f9f9f9;
-      --cTaskEdit: #eef2f9;
-      --cFocusSecond: #b2bdca;
-      --cTaskEditDefault: #76899b;
-      --cTimeIntervalLow: #d1d7dc;
-      --cIconDefault: #76899b;
-      --cTimeInterval: #d3e0ef;
-      --cPomodoroRed: #ff5f58;
-      --cPomodoroGreen: #62c554
-    }
-    html[data-theme='grey'] {
-      --main: #f4f4f4; 
-      --accent: #54759c;
-      --blue: #54759c;
-      --yellow: rgb(251, 192, 45);
-      --red: rgb(229, 115, 115);
-      --orange: rgb(255, 152, 0);
-      --green: rgb(102, 187, 106);
-      --purple: rgb(126, 87, 194);
-      --pink: rgb(255, 128, 171);
-      --primary: #333333cc;
-      --cFont: #2b2c37;
-      --cHover: #dfe7f0;
-      --cOpacitySecondFont: #333333cc;
-      --cFocus: #dfe7f0;
-      --brand: var(--main);
-      --cBorder: #d3e3f6;
-      --cSecondBorder: #76899b;
-      --cLeftBottomPanel: var(--accent);
-      --cButtonBg: #849bb6;
-      --cButtunHover: #8aa3c0;
-      --cButtonText: #fff;
-      --cTaskEdit: #fff;
-      --cFocusSecond: #54759c;
-      --cTaskEditDefault: rgba(51,51,51,.6);
-      --cTimeIntervalLow: #d8d8d8;
-      --cIconDefault: rgba(51,51,51,.6);
-      --cTimeInterval: #ccd4de;
-      --cPomodoroRed: #ff5f58;
-      --cPomodoroGreen: #62c554
-    }
+  html[data-theme="default"] {
+    --main: #2b2c37;
+    --accent: #2ebcff;
+    --blue: #2ebcff;
+    --yellow: rgb(255, 202, 40);
+    --red: rgb(255, 82, 82);
+    --orange: rgb(245, 124, 0);
+    --green: rgb(0, 200, 83);
+    --purple: rgb(124, 77, 255);
+    --pink: rgb(234, 128, 252);
+    --primary: #fff;
+    --cFont: #fff;
+    --cHover: #323a4c;
+    --cOpacitySecondFont: #76899b;
+    --cFocus: #394a61;
+    --newFocus: #394a61;
+    --brand: #23242b;
+    --cBorder: #393b46;
+    --cSecondBorder: #76899b;
+    --cLeftBottomPanel: var(--accent);
+    --cButtonBg: #11879c;
+    --cButtunHover: #0f7a8d;
+    --cButtonText: var(--cFont);
+    --cTaskEdit: #23242b;
+    --cFocusSecond: #415d81;
+    --cTaskEditDefault: #76899b;
+    --cTimeIntervalLow: #3d4350;
+    --cIconDefault: #76899b;
+    --cTimeInterval: #244250;
+    --cPomodoroRed: #ff5f58;
+    --cPomodoroGreen: #62c554;
+  }
+  html[data-theme="dark"] {
+    --main: #121212;
+    --accent: #4683cb;
+    --blue: #4683cb;
+    --yellow: rgb(255, 213, 79);
+    --red: rgb(229, 115, 115);
+    --orange: rgb(255, 183, 77);
+    --green: rgb(129, 199, 132);
+    --purple: rgb(124, 77, 255);
+    --pink: rgb(234, 128, 252);
+    --primary: #fffc;
+    --cFont: #fffc;
+    --cHover: #1c283794;
+    --cOpacitySecondFont: #ffffff4d;
+    --cFocus: #1c2837;
+    --brand: var(--main);
+    --cBorder: #393b4681;
+    --cSecondBorder: #ffffffcc;
+    --cLeftBottomPanel: #ffffffcc;
+    --cButtonBg: #366193;
+    --cButtunHover: #315885;
+    --cButtonText: var(--cFont);
+    --cTaskEdit: #26262680;
+    --cFocusSecond: rgba(70, 131, 203, 0.5);
+    --cTaskEditDefault: hsla(0, 0%, 100%, 0.8);
+    --cTimeIntervalLow: #394049;
+    --cIconDefault: hsla(0, 0%, 100%, 0.8);
+    --cTimeInterval: #243952;
+    --cPomodoroRed: #ff5f58;
+    --cPomodoroGreen: #62c554;
+  }
+  html[data-theme="light"] {
+    --main: #f9f9f9;
+    --accent: #4683cb;
+    --blue: #4683cb;
+    --yellow: rgb(251, 192, 45);
+    --red: rgb(255, 82, 82);
+    --orange: rgb(245, 124, 0);
+    --green: rgb(76, 175, 80);
+    --purple: rgb(126, 87, 194);
+    --pink: rgb(240, 98, 146);
+    --primary: #596175;
+    --cFont: #2b2c37;
+    --cHover: #d3e3f6;
+    --cOpacitySecondFont: #76899b;
+    --cFocus: #c7d6eb;
+    --brand: #f5f7fb;
+    --cBorder: #d3e3f6;
+    --cSecondBorder: #76899b;
+    --cLeftBottomPanel: var(--accent);
+    --cButtonBg: #7ba6d8;
+    --cButtunHover: #82b0e4;
+    --cButtonText: #f9f9f9;
+    --cTaskEdit: #eef2f9;
+    --cFocusSecond: #b2bdca;
+    --cTaskEditDefault: #76899b;
+    --cTimeIntervalLow: #d1d7dc;
+    --cIconDefault: #76899b;
+    --cTimeInterval: #d3e0ef;
+    --cPomodoroRed: #ff5f58;
+    --cPomodoroGreen: #62c554;
+  }
+  html[data-theme="grey"] {
+    --main: #f4f4f4;
+    --accent: #54759c;
+    --blue: #54759c;
+    --yellow: rgb(251, 192, 45);
+    --red: rgb(229, 115, 115);
+    --orange: rgb(255, 152, 0);
+    --green: rgb(102, 187, 106);
+    --purple: rgb(126, 87, 194);
+    --pink: rgb(255, 128, 171);
+    --primary: #333333cc;
+    --cFont: #2b2c37;
+    --cHover: #dfe7f0;
+    --cOpacitySecondFont: #333333cc;
+    --cFocus: #dfe7f0;
+    --brand: var(--main);
+    --cBorder: #d3e3f6;
+    --cSecondBorder: #76899b;
+    --cLeftBottomPanel: var(--accent);
+    --cButtonBg: #849bb6;
+    --cButtunHover: #8aa3c0;
+    --cButtonText: #fff;
+    --cTaskEdit: #fff;
+    --cFocusSecond: #54759c;
+    --cTaskEditDefault: rgba(51, 51, 51, 0.6);
+    --cTimeIntervalLow: #d8d8d8;
+    --cIconDefault: rgba(51, 51, 51, 0.6);
+    --cTimeInterval: #ccd4de;
+    --cPomodoroRed: #ff5f58;
+    --cPomodoroGreen: #62c554;
+  }
 }
 @layer components {
-    .icon {
-      @apply select-none fill-current w-[1em] h-[1em] inline-block text-inherit box-content;
-    }
+  .icon {
+    @apply box-content inline-block h-[1em] w-[1em] select-none fill-current text-inherit;
   }
+}
 
 /* width */
 ::-webkit-scrollbar {

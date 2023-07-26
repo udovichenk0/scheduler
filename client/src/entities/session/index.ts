@@ -1,2 +1,2 @@
-export * from './session.model'
-export * from './type'
+export * from "./session.model"
+export * from "./type"

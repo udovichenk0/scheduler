@@ -1,37 +1,37 @@
-import {createHistoryRouter, createRoute} from "atomic-router";
-import {sample} from "effector";
-import {createBrowserHistory} from "history";
+import { createHistoryRouter, createRoute } from "atomic-router"
+import { sample } from "effector"
+import { createBrowserHistory } from "history"
 
-import {appStarted} from "../config/init";
+import { appStarted } from "../config/init"
 export const routes = {
   home: createRoute(),
   inbox: createRoute(),
   upcoming: createRoute(),
-  calendar: createRoute()
+  calendar: createRoute(),
 }
 export const router = createHistoryRouter({
   routes: [
     {
       route: [routes.home],
-      path: '/'
+      path: "/",
     },
     {
       route: [routes.inbox],
-      path: '/inbox'
+      path: "/inbox",
     },
     {
       route: [routes.upcoming],
-      path: '/upcoming'
+      path: "/upcoming",
     },
     {
       route: [routes.calendar],
-      path: '/calendar'
-    }
-  ]
+      path: "/calendar",
+    },
+  ],
 })
 
 sample({
   clock: appStarted,
   fn: () => createBrowserHistory(),
-  target: router.setHistory
+  target: router.setHistory,
 })

@@ -5,7 +5,7 @@ import { MainLayout } from "@/widgets/layouts/main"
 import { ModifyTaskForm } from "@/entities/task/modify"
 import { TaskItem } from "@/entities/task/tasks"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
-import { 
+import {
   $inboxTasks,
   createTaskModel,
   taskAccordion,
@@ -22,7 +22,6 @@ export const Inbox = () => {
     closeTaskTriggered,
     updateTaskOpened,
     createTaskOpened,
-        
   ] = useUnit([
     $inboxTasks,
     updateTaskModel.changeStatusTriggered,
@@ -33,30 +32,41 @@ export const Inbox = () => {
     taskAccordion.createTaskToggled,
   ])
   return (
-    <MainLayout iconName={'common/inbox'}
-      title={'Inbox'}
-      action={() => createTaskOpened({date: null})}>
-      <div onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)} className="px-5 h-full">
+    <MainLayout
+      iconName={"common/inbox"}
+      title={"Inbox"}
+      action={() => createTaskOpened({ date: null })}
+    >
+      <div
+        onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)}
+        className="h-full px-5"
+      >
         <div>
           {tasks.map((task, id) => {
             return (
               <Fragment key={id}>
-                {task.id === taskId ? 
-                  <ExpandedTask taskRef={ref}>
-                    <ModifyTaskForm date={false} modifyTaskModel={updateTaskModel}/>
+                {task.id === taskId ? (
+                  <ExpandedTask taskTitle={task.title} taskRef={ref}>
+                    <ModifyTaskForm
+                      date={false}
+                      modifyTaskModel={updateTaskModel}
+                    />
                   </ExpandedTask>
-                  : <TaskItem 
-                    onDoubleClick={() => updateTaskOpened(task)} 
+                ) : (
+                  <TaskItem
+                    onDoubleClick={() => updateTaskOpened(task)}
                     onChange={() => changeStatus(task.id)}
-                    data={task}/>}
+                    data={task}
+                  />
+                )}
               </Fragment>
             )
           })}
-          {newTask && 
+          {newTask && (
             <ExpandedTask taskRef={ref}>
-              <ModifyTaskForm date={false} modifyTaskModel={createTaskModel}/> 
+              <ModifyTaskForm date={false} modifyTaskModel={createTaskModel} />
             </ExpandedTask>
-          }
+          )}
         </div>
       </div>
     </MainLayout>

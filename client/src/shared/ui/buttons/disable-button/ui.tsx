@@ -1,11 +1,17 @@
-export const DisableButton = ({ // rename
+export const DisableButton = ({
+  // rename
   disabled,
-}:{
-    disabled: boolean,
+}: {
+  disabled: boolean
 }) => {
   return (
-    <button disabled={disabled} className={`text-white outline-none transition-colors duration-150 bg-[#2384b9] rounded-[5px] ${disabled ? 'bg-[#27658f]' : 'hover:bg-[#1e6795]'} text-sm py-2 px-6`}>
-            Resume
+    <button
+      disabled={disabled}
+      className={`rounded-[5px] bg-[#2384b9] text-white outline-none transition-colors duration-150 ${
+        disabled ? "bg-[#27658f]" : "hover:bg-[#1e6795]"
+      } px-6 py-2 text-sm`}
+    >
+      Resume
     </button>
   )
 }

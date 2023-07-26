@@ -1,1 +1,1 @@
-export * from './mail.svg'
+export * from "./mail.svg"

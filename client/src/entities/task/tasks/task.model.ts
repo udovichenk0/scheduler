@@ -8,11 +8,12 @@ export const getTasksTriggered = createEvent()
 
 sample({
   clock: tasksQuery.finished.success,
-  fn: ({result:{result}}) => result.reduce((kv, task) => ({...kv, [task.id]: task}),{}),
-  target: $taskKv
+  fn: ({ result: { result } }) =>
+    result.reduce((kv, task) => ({ ...kv, [task.id]: task }), {}),
+  target: $taskKv,
 })
 
 sample({
   clock: getTasksTriggered,
-  target: tasksQuery.start
+  target: tasksQuery.start,
 })

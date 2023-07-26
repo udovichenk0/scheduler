@@ -1,14 +1,13 @@
 import { createEvent, createStore, sample } from "effector"
-import { not, and, or } from "patronum";
-import { TaskDto } from "@/shared/api/task";
+import { not, and, or } from "patronum"
+import { TaskDto } from "@/shared/api/task"
 export const createTaskAccordionFactory = () => {
-
   const closeTaskTriggered = createEvent()
 
   const createTaskClosed = createEvent()
   const updateTaskClosed = createEvent<number>()
   const updateTaskOpened = createEvent<TaskDto>()
-  const createTaskToggled = createEvent<{date: Date | null}>()
+  const createTaskToggled = createEvent<{ date: Date | null }>()
 
   const $createdTriggered = createStore(false)
   const $updatedTriggered = createStore(false)
@@ -21,28 +20,28 @@ export const createTaskAccordionFactory = () => {
   sample({
     clock: closeTaskTriggered,
     source: $newTask,
-    filter: Boolean, 
-    target: createTaskClosed
+    filter: Boolean,
+    target: createTaskClosed,
   })
 
   sample({
     clock: closeTaskTriggered,
     source: $taskId,
-    filter: Boolean, 
-    target: updateTaskClosed
+    filter: Boolean,
+    target: updateTaskClosed,
   })
 
   sample({
     clock: createTaskToggled,
     filter: or($taskId, $newTask),
-    target: closeTaskTriggered
+    target: closeTaskTriggered,
   })
 
   sample({
     clock: createTaskToggled,
     filter: and($isAllowToOpenCreate, not($createdTriggered)),
     fn: () => true,
-    target: $newTask
+    target: $newTask,
   })
   sample({
     clock: createTaskToggled,
@@ -53,20 +52,20 @@ export const createTaskAccordionFactory = () => {
   sample({
     clock: createTaskClosed,
     filter: $isAllowToOpenUpdate,
-    target: [$newTask.reinit, $isAllowToOpenUpdate.reinit]
+    target: [$newTask.reinit, $isAllowToOpenUpdate.reinit],
   })
 
   sample({
     clock: updateTaskOpened,
     filter: and($isAllowToOpenUpdate, $isAllowToOpenCreate),
     fn: (task) => task.id,
-    target: $taskId
+    target: $taskId,
   })
 
   sample({
     clock: updateTaskClosed,
     filter: $isAllowToOpenCreate,
-    target: [$taskId.reinit, $isAllowToOpenCreate.reinit]
+    target: [$taskId.reinit, $isAllowToOpenCreate.reinit],
   })
 
   return {
