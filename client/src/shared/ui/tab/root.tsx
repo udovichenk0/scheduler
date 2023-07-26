@@ -5,17 +5,17 @@ import { Trigger } from "./tab-trigger"
 import { TabContext } from "./tab.model"
 
 type TabsProps = {
-  children: ReactNode,
-  className?: string,
+  children: ReactNode
+  className?: string
   defaultValue: string
 }
 
-export const Root = ({children, className, defaultValue}: TabsProps) => {
-  const [value, setValue] = useState(defaultValue);
+export const Root = ({ children, className, defaultValue }: TabsProps) => {
+  const [value, setValue] = useState(defaultValue)
   return (
     <div className={className}>
-      <TabContext.Provider value={{value, setValue}}>
-        {children}      
+      <TabContext.Provider value={{ value, setValue }}>
+        {children}
       </TabContext.Provider>
     </div>
   )

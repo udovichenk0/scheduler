@@ -1,2 +1,2 @@
-export * from './synchronization/ui'
-export * from './general'
+export * from "./synchronization/ui"
+export * from "./general"

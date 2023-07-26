@@ -1,15 +1,18 @@
-import {createEvent, createStore, sample} from "effector";
+import { createEvent, createStore, sample } from "effector"
 
-export const createModal = ({closeOnClickOutside = true}:{closeOnClickOutside?: boolean}) => {
+export const createModal = ({
+  closeOnClickOutside = true,
+}: {
+  closeOnClickOutside?: boolean
+}) => {
   const toggleTriggered = createEvent()
   const clickOutsideTriggered = createEvent()
-  const $isOpened = createStore(false)
-    .on(toggleTriggered, (state) => !state)
+  const $isOpened = createStore(false).on(toggleTriggered, (state) => !state)
   if (closeOnClickOutside) {
     sample({
       clock: clickOutsideTriggered,
       fn: () => false,
-      target: $isOpened
+      target: $isOpened,
     })
   }
 

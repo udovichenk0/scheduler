@@ -1,34 +1,33 @@
-import { extend } from 'dayjs'
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
-import { fork, sample, allSettled } from 'effector'
+import { extend } from "dayjs"
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter"
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore"
+import { fork, sample, allSettled } from "effector"
 
-import { Provider } from 'effector-react'
-import {createRoot} from 'react-dom/client'
+import { Provider } from "effector-react"
+import { createRoot } from "react-dom/client"
 
-import App from './app/App'
-import './app/index.css'
-import { getTasksTriggered } from './entities/task/tasks'
-import { refreshQuery } from './shared/api/token'
-import { appStarted } from './shared/config/init'
+import App from "./app/App"
+import "./app/index.css"
+import { getTasksTriggered } from "./entities/task/tasks"
+import { refreshQuery } from "./shared/api/token"
+import { appStarted } from "./shared/config/init"
 
 extend(isSameOrAfter)
 extend(isSameOrBefore)
 
-const scope = fork();
+const scope = fork()
 
 sample({
   clock: appStarted,
-  target: [refreshQuery.start]
+  target: [refreshQuery.start],
 })
 sample({
   clock: refreshQuery.finished.success,
-  target: getTasksTriggered
+  target: getTasksTriggered,
 })
-await allSettled(appStarted, { scope });
-createRoot(document.getElementById('root') as HTMLElement).
-render(
+await allSettled(appStarted, { scope })
+createRoot(document.getElementById("root") as HTMLElement).render(
   <Provider value={scope}>
     <App />
-  </Provider>
+  </Provider>,
 )

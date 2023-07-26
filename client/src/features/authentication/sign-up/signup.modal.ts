@@ -5,28 +5,33 @@ import { setSessionUserTriggered } from "@/entities/session"
 import { signupQuery } from "@/shared/api/auth"
 import { setTokenTriggered } from "@/shared/api/token"
 import { $email } from "../by-email"
-import { MAX_LENGTH, MIN_LENGTH, NOT_VALID_MESSAGE, TOO_LONG_MESSAGE, TOO_SHORT_MESSAGE } from "./constants"
+import {
+  MAX_LENGTH,
+  MIN_LENGTH,
+  NOT_VALID_MESSAGE,
+  TOO_LONG_MESSAGE,
+  TOO_SHORT_MESSAGE,
+} from "./constants"
 
 export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()
 export const resetSignupPasswordTriggered = createEvent()
 
-export const $password = createStore('')
+export const $password = createStore("")
 export const $passwordError = createStore<string | null>(null)
 
 const signupSchema = z.string().min(8).max(50).trim()
 
 sample({
   clock: submitTriggered,
-  source: {email: $email,password: $password},
-  filter: ({password}) => signupSchema.safeParse(password).success,
-  target: signupQuery.start
+  source: { email: $email, password: $password },
+  filter: ({ password }) => signupSchema.safeParse(password).success,
+  target: signupQuery.start,
 })
-
 
 sample({
   clock: signupQuery.finished.success,
-  fn: ({result}) => ({
+  fn: ({ result }) => ({
     user: result.user,
     token: result.access_token,
   }),
@@ -34,8 +39,8 @@ sample({
     targets: {
       user: setSessionUserTriggered,
       token: setTokenTriggered,
-    }
-  })
+    },
+  }),
 })
 
 sample({
@@ -43,16 +48,16 @@ sample({
   source: $password,
   filter: (password) => !signupSchema.safeParse(password).success,
   fn: checkError,
-  target: $passwordError
+  target: $passwordError,
 })
 
 sample({
   clock: passwordChanged,
-  target: $password
+  target: $password,
 })
 sample({
   clock: signupQuery.finished.success,
-  fn: ({result}) => ({
+  fn: ({ result }) => ({
     user: result.user,
     token: result.access_token,
   }),
@@ -60,20 +65,20 @@ sample({
     targets: {
       user: setSessionUserTriggered,
       token: setTokenTriggered,
-    }
-  })
+    },
+  }),
 })
 
 sample({
   clock: resetSignupPasswordTriggered,
-  target: [$passwordError.reinit, $password.reinit]
+  target: [$passwordError.reinit, $password.reinit],
 })
 
 function checkError(value: string) {
-  if(value.length < MIN_LENGTH){
+  if (value.length < MIN_LENGTH) {
     return TOO_SHORT_MESSAGE
   }
-  if(value.length > MAX_LENGTH){
+  if (value.length > MAX_LENGTH) {
     return TOO_LONG_MESSAGE
   }
   return NOT_VALID_MESSAGE

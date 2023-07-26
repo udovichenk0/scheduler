@@ -1,2 +1,2 @@
-export * from './root'
-export * from './tab.model'
+export * from "./root"
+export * from "./tab.model"

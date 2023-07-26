@@ -1,63 +1,84 @@
 import { combine, createEvent, createStore, sample } from "effector"
 
 export const modifyFormFactory = ({
-  defaultType = 'inbox',
+  defaultType = "inbox",
   defaultDate = null,
-}:{
-  defaultType?: 'inbox' | 'unplaced',
-  defaultDate?: Date | null,
+}: {
+  defaultType?: "inbox" | "unplaced"
+  defaultDate?: Date | null
 }) => {
-
-  const statusChanged = createEvent<'FINISHED' | 'INPROGRESS'>()
+  const statusChanged = createEvent<"FINISHED" | "INPROGRESS">()
   const titleChanged = createEvent<string>()
-  const typeChanged = createEvent<'inbox' | 'unplaced'>()
+  const typeChanged = createEvent<"inbox" | "unplaced">()
   const dateChanged = createEvent<Date>()
   const descriptionChanged = createEvent<string>()
   const resetFieldsTriggered = createEvent()
 
-  const $title = createStore('')
-  const $description = createStore<string>('')
-  const $status = createStore<'FINISHED' | 'INPROGRESS'>('INPROGRESS')
+  const $title = createStore("")
+  const $description = createStore<string>("")
+  const $status = createStore<"FINISHED" | "INPROGRESS">("INPROGRESS")
   const $startDate = createStore<Date | null>(defaultDate)
-  const $type = createStore<'inbox' | 'unplaced'>(defaultType)
+  const $type = createStore<"inbox" | "unplaced">(defaultType)
   const $isDirty = createStore(false)
-  const $isAllowToSubmit = combine($isDirty, $title , (isDirty, title) => isDirty && Boolean(title))
-  const $fields = combine($title, $description, $status,$type, $startDate,
-    (title, description, status, type, start_date) => ({title, description, status, type, start_date}))
+  const $isAllowToSubmit = combine(
+    $isDirty,
+    $title,
+    (isDirty, title) => isDirty && Boolean(title),
+  )
+  const $fields = combine(
+    $title,
+    $description,
+    $status,
+    $type,
+    $startDate,
+    (title, description, status, type, start_date) => ({
+      title,
+      description,
+      status,
+      type,
+      start_date,
+    }),
+  )
   sample({
     clock: resetFieldsTriggered,
-    target: [$title.reinit, $description.reinit, $status.reinit, $isDirty.reinit, $type.reinit]
+    target: [
+      $title.reinit,
+      $description.reinit,
+      $status.reinit,
+      $isDirty.reinit,
+      $type.reinit,
+    ],
   })
   sample({
     clock: titleChanged,
-    target: $title
+    target: $title,
   })
   sample({
     clock: statusChanged,
-    fn: (value) => value == 'FINISHED' ? 'INPROGRESS' : 'FINISHED',
-    target: $status
+    fn: (value) => (value == "FINISHED" ? "INPROGRESS" : "FINISHED"),
+    target: $status,
   })
   sample({
     clock: descriptionChanged,
-    target: $description
+    target: $description,
   })
   sample({
     clock: dateChanged,
-    target: $startDate
-  })
-  sample({
-    clock: dateChanged,
-    source: $type,
-    filter: (type, date) => type == 'inbox' && Boolean(date),
-    fn: () => 'unplaced' as const,
-    target: $type
+    target: $startDate,
   })
   sample({
     clock: dateChanged,
     source: $type,
-    filter: (type, date) => type == 'unplaced' && !date,
-    fn: () => 'inbox' as const,
-    target: $type
+    filter: (type, date) => type == "inbox" && Boolean(date),
+    fn: () => "unplaced" as const,
+    target: $type,
+  })
+  sample({
+    clock: dateChanged,
+    source: $type,
+    filter: (type, date) => type == "unplaced" && !date,
+    fn: () => "inbox" as const,
+    target: $type,
   })
 
   sample({
@@ -65,24 +86,30 @@ export const modifyFormFactory = ({
     source: $type,
     filter: (currentType, type) => currentType != type,
     fn: (_, type) => type,
-    target: $type
+    target: $type,
   })
   sample({
     clock: typeChanged,
-    filter: (type) => type == 'inbox',
+    filter: (type) => type == "inbox",
     fn: () => null,
-    target: $startDate
+    target: $startDate,
   })
   sample({
     clock: typeChanged,
-    filter: (type) => type == 'unplaced',
+    filter: (type) => type == "unplaced",
     fn: () => new Date(),
-    target: $startDate
+    target: $startDate,
   })
   sample({
-    clock: [titleChanged, descriptionChanged, statusChanged, typeChanged, dateChanged],
+    clock: [
+      titleChanged,
+      descriptionChanged,
+      statusChanged,
+      typeChanged,
+      dateChanged,
+    ],
     fn: () => true,
-    target: $isDirty
+    target: $isDirty,
   })
   return {
     statusChanged,
