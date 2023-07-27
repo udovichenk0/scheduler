@@ -25,14 +25,12 @@ export const BaseModal = ({
   if (!isOpened) {
     return null
   }
-
   const handleOnClickOutside = (e: MouseEvent) => {
     if (e.target === ref.current) {
       clickOutsideTriggered()
     }
     e.stopPropagation()
   }
-
   return createPortal(
     <div
       ref={ref}
