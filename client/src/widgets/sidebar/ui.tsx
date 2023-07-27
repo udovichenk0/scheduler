@@ -4,7 +4,6 @@ import { routes } from "@/shared/routing"
 import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Button } from "@/shared/ui/buttons/main-button/ui"
 import { Icon } from "@/shared/ui/icon/icon"
-import { BaseModal } from "@/shared/ui/modals/base-modal/ui"
 import { $inboxTasksCount, $todayTasksCount, modal } from "./sidebar.modal"
 import { Logo } from "./ui/logo"
 import { SideLink } from "./ui/side-link"
@@ -69,9 +68,9 @@ export const Sidebar = () => {
               intent={"leftBottonPanel"}
               onClick={toggleTriggered}
             />
-            <BaseModal className="w-[610px]" title="Settings" modal={modal}>
-              <Settings defaultTab="general" />
-            </BaseModal>
+              <Settings
+                modal={modal}
+                defaultTab="general" />
           </div>
         </div>
       </div>
