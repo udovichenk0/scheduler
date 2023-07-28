@@ -3,20 +3,19 @@ import { useUnit } from "effector-react"
 import { Checkbox } from "@/shared/ui/buttons/checkbox"
 import {
   $longBreakDuration,
+  $isEnabledNotificationSound,
   $shortBreakDuration,
+  $isEnabledAutomaticStart,
   $workDuration,
   longBreakDurationChanged,
   shortBreakDurationChanged,
-  submittedChange,
+  notificationSoundEnabled,
+  settingsApplied,
   workDurationChanged,
+  automaticTimerStartEnabled,
 } from "./model"
 import style from "./style.module.css"
 
-const checkboxesData = [
-  { label: "Show over all windows when changing the period" },
-  { label: "Start the next period automatically" },
-  { label: "Notification sound in the end of each period" },
-]
 export const PomodoroSettings = () => {
   const [
     changeWorkDuration,
@@ -25,7 +24,11 @@ export const PomodoroSettings = () => {
     workDuration,
     shortBreak,
     longBreak,
-    submit,
+    applySettings,
+    enableAutomaticTimerStart,
+    startAutomatically,
+    isEnabledNotificationSound,
+    setSoundInTheEndTriggered,
   ] = useUnit([
     workDurationChanged,
     shortBreakDurationChanged,
@@ -33,8 +36,13 @@ export const PomodoroSettings = () => {
     $workDuration,
     $shortBreakDuration,
     $longBreakDuration,
-    submittedChange,
+    settingsApplied,
+    automaticTimerStartEnabled,
+    $isEnabledAutomaticStart,
+    $isEnabledNotificationSound,
+    notificationSoundEnabled,
   ])
+
   const pomodoroData = [
     {
       label: "Work duration:",
@@ -54,7 +62,6 @@ export const PomodoroSettings = () => {
       rightText: "minutes",
       onChange: changeLongBreak,
     },
-    // { label: "Long break frequency:", value: 4, rightText: "pomodoro" },
   ]
   return (
     <div className="px-16">
@@ -66,7 +73,7 @@ export const PomodoroSettings = () => {
             </div>
             <div>
               <PomodoroInput
-                onSubmit={submit}
+                onSubmit={applySettings}
                 onChange={item.onChange}
                 className="ml-1 mr-2"
                 value={item.value}
@@ -77,17 +84,20 @@ export const PomodoroSettings = () => {
         ))}
       </div>
       <div className="space-y-3">
-        {checkboxesData.map(({ label }, id) => {
-          return (
-            <div key={id} className="flex gap-3">
-              <Checkbox
-                checked={false}
-                onChange={() => console.log("change")}
-              />
-              <span>{label}</span>
-            </div>
-          )
-        })}
+        <div className="flex gap-3">
+          <Checkbox
+            checked={startAutomatically}
+            onChange={enableAutomaticTimerStart}
+          />
+          <span>Show over all windows when changing the period</span>
+        </div>
+        <div className="flex gap-3">
+          <Checkbox
+            checked={isEnabledNotificationSound}
+            onChange={setSoundInTheEndTriggered}
+          />
+          <span>Notification sound in the end of each period</span>
+        </div>
       </div>
     </div>
   )

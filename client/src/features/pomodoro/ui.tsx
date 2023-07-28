@@ -33,7 +33,6 @@ const defaultDurations = [
 const calculateCircleDiameter = (time: number) => {
   return Math.ceil(2 * Math.sqrt(time)) + 5
 }
-//move out to shared??
 export const Pomodoro = ({
   leftSlot,
   taskTitle,
