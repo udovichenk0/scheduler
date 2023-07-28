@@ -20,7 +20,7 @@ export const StartButton = ({
         <span
           className={`h-0 w-0 rotate-90 ${
             isWorkTime ? "border-cPomodoroRed" : "border-cPomodoroGreen"
-          } border-style translate-x-[1px] border-x-[6px] border-b-[12px] border-t-[0px] border-cPomodoroRed`}
+          } border-style translate-x-[1px] border-x-[6px] border-b-[12px] border-t-[0px]`}
         />
       ) : (
         <span

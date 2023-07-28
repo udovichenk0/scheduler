@@ -2,26 +2,27 @@ import { DoneSvg } from "./done.svg"
 import "./style.css"
 export function Checkbox({
   onChange,
-  status,
+  checked,
 }: {
   onChange: () => void
-  status: "FINISHED" | "INPROGRESS"
+  checked: boolean
 }) {
   return (
-    <div className="relative flex">
+    <label className="relative flex">
       <input
+        tabIndex={-1}
         onChange={() => onChange()}
-        checked={status == "FINISHED" ? true : false}
+        checked={checked}
         type="checkbox"
         id="checkbox"
         className="h-5 w-5 appearance-none rounded-[2px] border-[3px] border-cTaskEditDefault"
       />
       <span
         id="check"
-        className="pointer-events-none absolute left-[4px] top-[4px] hidden"
+        className="pointer-events-none absolute left-[5px] top-[5px] hidden"
       >
         <DoneSvg />
       </span>
-    </div>
+    </label>
   )
 }

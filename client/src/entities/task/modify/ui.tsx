@@ -66,8 +66,11 @@ export const ModifyTaskForm = ({
     changeDate(payload)
   }
   return (
-    <div className="flex w-full gap-2 rounded-[5px] text-sm">
-      <Checkbox status={status} onChange={() => changeStatus(status)} />
+    <div className="flex w-full gap-2 rounded-[5px] text-cTaskEditDefault">
+      <Checkbox
+        checked={status == "FINISHED"}
+        onChange={() => changeStatus(status)}
+      />
       <div className="flex w-full flex-col gap-3">
         <input
           onChange={(e) => changeTitle(e.target.value)}
@@ -105,7 +108,7 @@ export const ModifyTaskForm = ({
                   size={"sm"}
                   intent={"primary"}
                 >
-                  <div className="flex">
+                  <span className="flex">
                     <Icon
                       name={"common/upcoming"}
                       className="mr-4 h-[18px] w-[18px] text-cTaskEditDefault"
@@ -114,7 +117,7 @@ export const ModifyTaskForm = ({
                     <span className="ml-2 text-accent">
                       {currentDate && normilizeDate(currentDate)}
                     </span>
-                  </div>
+                  </span>
                 </Button>
               )}
             </div>
@@ -137,7 +140,6 @@ export const ModifyTaskForm = ({
           )}
         </div>
       </div>
-      <div></div>
     </div>
   )
 }

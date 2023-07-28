@@ -23,6 +23,4 @@ sample({
   target: getTasksTriggered,
 })
 appStarted()
-createRoot(document.getElementById("root") as HTMLElement).render(
-  <App />
-)
+createRoot(document.getElementById("root") as HTMLElement).render(<App />)
