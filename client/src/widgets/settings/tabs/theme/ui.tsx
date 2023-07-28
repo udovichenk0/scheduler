@@ -1,5 +1,4 @@
-import { AccentThemeChanger } from "@/shared/theme/icon-theme"
-import { MainThemeChanger } from "@/shared/theme/main-theme"
+import { AccentThemeChanger, MainThemeChanger } from "@/entities/settings/theme"
 
 export const ThemeTab = () => {
   return (
