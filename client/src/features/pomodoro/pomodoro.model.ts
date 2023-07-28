@@ -64,7 +64,7 @@ export const $audio = createStore(audio)
 export const { tick, isRunning: $isTicking } = interval({
   start: startTimerTriggered,
   stop: stopTimerTriggered,
-  timeout: 100,
+  timeout: 1000,
 })
 
 const finishTimerFx = attach({
@@ -77,7 +77,7 @@ const finishTimerFx = attach({
 sample({
   clock: appStarted,
   source: $workDuration,
-  fn: (duration) => duration * 10,
+  fn: (duration) => duration * 60,
   target: [$currentStaticTime, $passingTime],
 })
 sample({
