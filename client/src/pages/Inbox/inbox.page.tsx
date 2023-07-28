@@ -1,7 +1,6 @@
 import { useUnit } from "effector-react"
 import { Fragment, useRef } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
-import { MainLayout } from "@/widgets/layouts/main"
 import { ModifyTaskForm } from "@/entities/task/modify"
 import { TaskItem } from "@/entities/task/tasks"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
@@ -11,6 +10,7 @@ import {
   taskAccordion,
   updateTaskModel,
 } from "./inbox.model"
+import { MainLayout } from "@/templates/main"
 
 export const Inbox = () => {
   const ref = useRef<HTMLDivElement>(null)

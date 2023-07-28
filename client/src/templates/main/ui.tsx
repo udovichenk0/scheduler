@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
+import { Header } from "@/widgets/header"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon, IconName } from "@/shared/ui/icon/icon"
-import { Header } from "./ui/header"
 type PropsType = {
   children: ReactNode
   iconName: IconName
