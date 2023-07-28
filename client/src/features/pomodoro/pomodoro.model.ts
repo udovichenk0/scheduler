@@ -8,7 +8,9 @@ import {
 import { interval } from "patronum"
 import {
   $longBreakDuration,
+  $isEnabledNotificationSound,
   $shortBreakDuration,
+  $isEnabledAutomaticStart,
   $workDuration,
   workDurationChanged,
 } from "@/entities/settings/pomodoro"
@@ -75,8 +77,8 @@ const finishTimerFx = attach({
 sample({
   clock: appStarted,
   source: $workDuration,
-  fn: (duration) => duration * 60,
-  target: [$currentStaticTime, $passingTime]
+  fn: (duration) => duration * 10,
+  target: [$currentStaticTime, $passingTime],
 })
 sample({
   clock: tick,
@@ -88,12 +90,12 @@ sample({
 sample({
   clock: timeSelected,
   target: [
-    $passingTime, 
-    $currentStaticTime, 
-    stopTimerTriggered, 
-    $isWorkTime.reinit, 
-    $activeStageId.reinit, 
-    $kvStages.reinit
+    $passingTime,
+    $currentStaticTime,
+    stopTimerTriggered,
+    $isWorkTime.reinit,
+    $activeStageId.reinit,
+    $kvStages.reinit,
   ],
 })
 sample({
@@ -105,7 +107,7 @@ sample({
 sample({
   clock: workDurationChanged,
   fn: (duration) => duration * 60,
-  target: [$currentStaticTime, $passingTime] 
+  target: [$currentStaticTime, $passingTime],
 })
 
 sample({
@@ -133,7 +135,8 @@ sample({
 
 sample({
   clock: timePassed,
-  target: finishTimerFx
+  filter: $isEnabledNotificationSound,
+  target: finishTimerFx,
 })
 
 const activeIdChanged = createEvent()
@@ -150,16 +153,17 @@ sample({
   clock: activeIdChanged,
   source: $activeStageId,
   fn: (activeStageId) => activeStageId + 1,
-  target: $activeStageId
+  target: $activeStageId,
 })
 
 sample({
   clock: timePassed,
   source: {
     activeStageId: $activeStageId,
-    isWorkTime: $isWorkTime
+    isWorkTime: $isWorkTime,
   },
-  filter: ({ activeStageId, isWorkTime }) => activeStageId > LONG_BREAK_STAGE && !isWorkTime,
+  filter: ({ activeStageId, isWorkTime }) =>
+    activeStageId > LONG_BREAK_STAGE && !isWorkTime,
   greedy: true,
   target: resetTimerTriggered,
 })
@@ -168,34 +172,50 @@ sample({
   source: {
     activeStageId: $activeStageId,
     isWorkTime: $isWorkTime,
-    shortBreakDuration: $shortBreakDuration
+    shortBreakDuration: $shortBreakDuration,
   },
-  filter: ({ activeStageId, isWorkTime }) => activeStageId < LONG_BREAK_STAGE && isWorkTime,
+  filter: ({ activeStageId, isWorkTime }) =>
+    activeStageId < LONG_BREAK_STAGE && isWorkTime,
   fn: ({ shortBreakDuration }) => shortBreakDuration * 60,
-  target: [toggleTimerState, $currentStaticTime, $passingTime, activeIdChanged], 
-  greedy: true
+  target: [toggleTimerState, $currentStaticTime, $passingTime, activeIdChanged],
+  greedy: true,
 })
 sample({
   clock: timePassed,
   source: {
     activeStageId: $activeStageId,
     isWorkTime: $isWorkTime,
-    longBreakDuration: $longBreakDuration
+    longBreakDuration: $longBreakDuration,
   },
-  filter: ({ activeStageId, isWorkTime }) => activeStageId == LONG_BREAK_STAGE && isWorkTime,
+  filter: ({ activeStageId, isWorkTime }) =>
+    activeStageId == LONG_BREAK_STAGE && isWorkTime,
   fn: ({ longBreakDuration }) => longBreakDuration * 60,
-  target: [toggleTimerState, $currentStaticTime, $passingTime, activeIdChanged], 
-  greedy: true
+  target: [toggleTimerState, $currentStaticTime, $passingTime, activeIdChanged],
+  greedy: true,
 })
 sample({
   clock: timePassed,
   source: {
     activeStageId: $activeStageId,
     isWorkTime: $isWorkTime,
-    workDuration: $workDuration
+    workDuration: $workDuration,
+    startAutomatically: $isEnabledAutomaticStart,
   },
-  filter: ({ activeStageId, isWorkTime }) => activeStageId <= LONG_BREAK_STAGE && !isWorkTime,
+  filter: ({ activeStageId, isWorkTime, startAutomatically }) =>
+    activeStageId <= LONG_BREAK_STAGE && !isWorkTime && !startAutomatically,
+  target: stopTimerTriggered,
+  greedy: true,
+})
+sample({
+  clock: timePassed,
+  source: {
+    activeStageId: $activeStageId,
+    isWorkTime: $isWorkTime,
+    workDuration: $workDuration,
+  },
+  filter: ({ activeStageId, isWorkTime }) =>
+    activeStageId <= LONG_BREAK_STAGE && !isWorkTime,
   fn: ({ workDuration }) => workDuration * 60,
   target: [$passingTime, $currentStaticTime, toggleTimerState],
-  greedy: true
+  greedy: true,
 })
