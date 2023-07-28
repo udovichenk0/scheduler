@@ -51,7 +51,7 @@ export const ExpandedTask = ({
               intent={"primary"}
               size={"xs"}
             />
-            <Settings modal={settingsModal} defaultTab="general" />
+            <Settings modal={settingsModal} defaultTab="pomodoro" />
           </>
         }
       />

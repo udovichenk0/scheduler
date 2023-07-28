@@ -44,7 +44,7 @@ export const AllUpcomingTasks = ({
               action={() => changeDate(new Date(date.toISOString()))}
               isSelected={date.isSame(selectedDate, "day")}
               title={
-                <div className="space-x-1">
+                <span className="space-x-1">
                   <span>{date.date()}</span>
                   <span>{!isCurrentMonth && months[dayjs(date).month()]}</span>
                   <span>
@@ -55,7 +55,7 @@ export const AllUpcomingTasks = ({
                       : ""}
                   </span>
                   <span>{weekDays[date.day()]}</span>
-                </div>
+                </span>
               }
               tasks={tasks}
             />
@@ -66,7 +66,7 @@ export const AllUpcomingTasks = ({
         action={() => changeDate(new Date(remainingDays.date.toISOString()))}
         isSelected={remainingDays.date.isSame(selectedDate, "day")}
         title={
-          <div>
+          <span>
             {remainingDays.isLastDate ? (
               <>
                 <span className="mr-1">{remainingDays.date.date()}</span>
@@ -84,7 +84,7 @@ export const AllUpcomingTasks = ({
                 </span>
               </>
             )}
-          </div>
+          </span>
         }
         outRef={outRef}
         tasks={remainingDays.restTasks}

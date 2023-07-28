@@ -176,7 +176,10 @@ html {
     @apply box-content inline-block h-[1em] w-[1em] select-none fill-current text-inherit;
   }
 }
-
+button,
+input {
+  outline: none;
+}
 /* width */
 ::-webkit-scrollbar {
   width: 10px;

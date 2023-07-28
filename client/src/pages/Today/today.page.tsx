@@ -55,15 +55,15 @@ export const Today = () => {
           <div className="flex items-center gap-1 border-b-2 border-t-2 border-cBorder px-5 py-2">
             <Icon
               name="common/outlined-star"
-              className="h-5 w-5 text-cIconDefault"
+              className="mr-1 h-5 w-5 text-cIconDefault"
             />
             <button
               onClick={toggleOverdueTasks}
               className="flex w-full items-center justify-between rounded-[5px] px-3 text-primary hover:bg-cHover"
             >
               <span className="text-lg">Overdue tasks</span>
-              <div className="flex items-center gap-3">
-                <span className="text-[12px]">
+              <span>
+                <span className="mr-3 text-[12px]">
                   {!isOverdueTasksOpened && overdueTasks.length}
                 </span>
                 <Icon
@@ -72,7 +72,7 @@ export const Today = () => {
                     isOverdueTasksOpened ? "rotate-90" : ""
                   }`}
                 />
-              </div>
+              </span>
             </button>
           </div>
           {!!isOverdueTasksOpened && (
@@ -105,7 +105,7 @@ export const Today = () => {
             >
               <Icon
                 name="common/outlined-star"
-                className="h-5 w-5 text-accent"
+                className="mr-1 h-5 w-5 text-accent"
               />
               <button className="flex w-full items-center justify-between rounded-[5px] px-3 text-lg hover:bg-cHover focus:bg-cFocus">
                 Today

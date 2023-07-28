@@ -1,5 +1,6 @@
 import { useUnit } from "effector-react"
 import { ReactNode } from "react"
+import { $workDuration, $customDuration } from "@/entities/settings/pomodoro"
 import { ModalType } from "@/shared/lib/modal"
 import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Icon } from "@/shared/ui/icon"
@@ -7,19 +8,19 @@ import { BaseModal } from "@/shared/ui/modals/base-modal"
 import {
   $passingTime,
   $isTicking,
-  $progress,
   startTimerTriggered,
   stopTimerTriggered,
   timeSelected,
   resetTimerTriggered,
   $isWorkTime,
   $stages,
-  $selectedTime,
+  DEFAULT_PROGRESS_BAR,
+  $currentStaticTime,
 } from "./pomodoro.model"
 import { ProgressCircle } from "./ui/circle-progress"
 import { StartButton } from "./ui/start-button"
 
-const timers = [
+const defaultDurations = [
   { time: 5 },
   { time: 10 },
   { time: 15 },
@@ -29,10 +30,10 @@ const timers = [
   { time: 45 },
   { time: 60 },
 ]
-
 const calculateCircleDiameter = (time: number) => {
   return Math.ceil(2 * Math.sqrt(time)) + 5
 }
+//move out to shared??
 export const Pomodoro = ({
   leftSlot,
   taskTitle,
@@ -45,37 +46,47 @@ export const Pomodoro = ({
   const [
     changeTimer,
     startTimer,
-    leftTime,
     defaultTimer,
     isTicking,
     stopTimer,
     resetTimer,
     isWorkTime,
     stages,
-    selectedTime,
+    workDuration,
+    currentStaticTime,
+    customDuration,
   ] = useUnit([
     timeSelected,
     startTimerTriggered,
-    $progress,
     $passingTime,
     $isTicking,
     stopTimerTriggered,
     resetTimerTriggered,
     $isWorkTime,
     $stages,
-    $selectedTime,
+    $workDuration,
+    $currentStaticTime,
+    $customDuration,
   ])
+  const durations = setCustomDuration({
+    defaultDurations,
+    customDuration: customDuration,
+  })
+  const circleProgress =
+    DEFAULT_PROGRESS_BAR -
+    ((currentStaticTime - defaultTimer) / currentStaticTime) *
+      DEFAULT_PROGRESS_BAR
   return (
     <BaseModal modal={modal} className="w-[320px]" title="Pomodoro">
       <div className="px-4">
         <div className="mb-7 flex items-center justify-around">
-          {timers.map(({ time }) => {
+          {durations.map(({ time }) => {
             const timeInSecond = time * 60
-            const activeTimer = selectedTime === timeInSecond
+            const activeTimer = workDuration === time
             return (
-              <button
+              <div
                 key={time}
-                className="flex h-[60px] flex-col items-center justify-between"
+                className="flex h-[60px] cursor-pointer flex-col items-center justify-between"
                 onClick={() => changeTimer(timeInSecond)}
               >
                 <div className="flex h-10 items-center">
@@ -86,8 +97,7 @@ export const Pomodoro = ({
                     }}
                     className={`${
                       activeTimer && "border-cPomodoroRed bg-cPomodoroRed"
-                    } 
-                flex items-center justify-center rounded-full border-2 border-cIconDefault text-start`}
+                    } flex h-10 items-center justify-center rounded-full border-2 border-cIconDefault`}
                   >
                     {activeTimer && (
                       <Icon name="common/done" className="h-[7px] w-[7px]" />
@@ -95,7 +105,7 @@ export const Pomodoro = ({
                   </div>
                 </div>
                 <span className="text-[12px] text-cIconDefault">{time}</span>
-              </button>
+              </div>
             )
           })}
         </div>
@@ -106,30 +116,11 @@ export const Pomodoro = ({
         )}
         <div className="relative">
           <ProgressCircle
-            textStyle={`${
-              isWorkTime ? "fill-cPomodoroRed" : "fill-cPomodoroGreen"
-            }`}
-            circleStyle={`${
-              isWorkTime ? "stroke-cPomodoroRed" : "stroke-cPomodoroGreen"
-            }`}
-            progressStyle={`${
-              isWorkTime ? "stroke-cPomodoroRed" : "stroke-cPomodoroGreen"
-            }`}
+            isWorkTime={isWorkTime}
             time={defaultTimer}
-            timeLeft={leftTime}
+            progress={circleProgress}
+            stages={stages}
           />
-          <div className="absolute bottom-20 left-28 flex gap-2">
-            {stages.map(({ fulfilled }, id) => {
-              return (
-                <div
-                  key={id}
-                  className={`h-[10px] w-[10px] rounded-full border-2 border-cPomodoroRed ${
-                    fulfilled && "bg-cPomodoroRed"
-                  }`}
-                />
-              )
-            })}
-          </div>
         </div>
         <div className="mt-4 flex justify-between">
           {leftSlot}
@@ -149,5 +140,21 @@ export const Pomodoro = ({
         </div>
       </div>
     </BaseModal>
+  )
+}
+
+function setCustomDuration({
+  defaultDurations,
+  customDuration,
+}: {
+  defaultDurations: { time: number }[]
+  customDuration: number
+}) {
+  const test = defaultDurations.find((item) => item.time === customDuration)
+  if (test) {
+    return defaultDurations
+  }
+  return [...defaultDurations, { time: customDuration, custom: true }].sort(
+    (a, b) => a.time - b.time,
   )
 }

@@ -1,3 +1,4 @@
+import { PomodoroSettings } from "@/entities/settings/pomodoro"
 import { ModalType } from "@/shared/lib/modal"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base-modal"
@@ -9,6 +10,7 @@ const tabsName = {
   general: "general" as const,
   synchronization: "synchronization" as const,
   theme: "theme" as const,
+  pomodoro: "pomodoro" as const,
 }
 const tabs = [
   { iconName: "settings" as const, title: "General", label: tabsName.general },
@@ -18,6 +20,7 @@ const tabs = [
     label: tabsName.synchronization,
   },
   { iconName: "palette" as const, title: "Theme", label: tabsName.theme },
+  { iconName: "timer" as const, title: "Pomodoro", label: tabsName.pomodoro },
 ]
 
 export const Settings = ({
@@ -28,9 +31,7 @@ export const Settings = ({
   modal: ModalType
 }) => {
   return (
-    <BaseModal 
-    className="w-[600px]"
-    modal={modal}>
+    <BaseModal className="w-[600px]" modal={modal}>
       <Root defaultValue={defaultTab} className="text-sm">
         <Root.List className="flex gap-5 border-b-[1px] border-cBorder px-6 pb-4">
           {tabs.map(({ iconName, title, label }) => (
@@ -53,6 +54,9 @@ export const Settings = ({
         </Root.Content>
         <Root.Content label={tabsName.theme}>
           <ThemeTab />
+        </Root.Content>
+        <Root.Content label={tabsName.pomodoro}>
+          <PomodoroSettings />
         </Root.Content>
       </Root>
     </BaseModal>

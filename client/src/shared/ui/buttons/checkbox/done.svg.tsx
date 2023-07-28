@@ -1,14 +1,14 @@
 export const DoneSvg = () => {
   return (
     <svg
+      className="fill-cTaskEditDefault"
       version="1.1"
       id="Layer_1"
       xmlns="http://www.w3.org/2000/svg"
-      fill="#76899b"
       x="0px"
       y="0px"
-      width="12px"
-      height="12px"
+      width="10px"
+      height="10px"
       viewBox="0 0 122.877 101.052"
       enableBackground="new 0 0 122.877 101.052"
     >

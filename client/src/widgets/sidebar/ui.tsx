@@ -68,9 +68,7 @@ export const Sidebar = () => {
               intent={"leftBottonPanel"}
               onClick={toggleTriggered}
             />
-              <Settings
-                modal={modal}
-                defaultTab="general" />
+            <Settings modal={modal} defaultTab="general" />
           </div>
         </div>
       </div>

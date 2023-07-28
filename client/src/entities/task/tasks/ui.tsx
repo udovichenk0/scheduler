@@ -17,31 +17,28 @@ export const TaskItem = ({
   return (
     <button
       onDoubleClick={onDoubleClick}
-      className="flex w-full cursor-default select-none items-center rounded-[5px] px-2 py-2 text-primary hover:bg-cHover focus:bg-cFocus"
+      className="flex w-full cursor-default select-none items-center rounded-[5px] px-2 py-2 text-sm text-primary hover:bg-cHover focus:bg-cFocus"
     >
-      <Checkbox onChange={onChange} status={status} />
-      <div className="flex items-center">
-        {date && start_date && (
-          <span
-            className={`ml-2 rounded-[5px] px-[5px] py-[1px] text-[12px] ${
-              dayjs(start_date).isSameOrAfter(dayjs())
-                ? "bg-cTimeInterval"
-                : "bg-cTimeIntervalLow"
-            }`}
-          >
-            {normilizeDate(start_date)}
-          </span>
-        )}
-
-        <label
-          htmlFor="default-checkbox"
-          className={`ml-2 text-sm font-medium ${
-            status == "FINISHED" && "text-grey line-through"
+      <Checkbox onChange={onChange} checked={status == "FINISHED"} />
+      {date && start_date && (
+        <span
+          className={`ml-2 rounded-[5px] px-[5px] py-[1px] text-[12px] ${
+            dayjs(start_date).isSameOrAfter(dayjs())
+              ? "bg-cTimeInterval"
+              : "bg-cTimeIntervalLow"
           }`}
         >
-          {title}
-        </label>
-      </div>
+          {normilizeDate(start_date)}
+        </span>
+      )}
+
+      <span
+        className={`ml-2 text-sm font-medium ${
+          status == "FINISHED" && "text-grey line-through"
+        }`}
+      >
+        {title}
+      </span>
     </button>
   )
 }
