@@ -1,7 +1,7 @@
 import { useUnit } from "effector-react"
 import { FormEvent, useEffect, useRef } from "react"
-import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Button } from "@/shared/ui/buttons/main-button"
+import { Icon } from "@/shared/ui/icon"
 import { Input } from "@/shared/ui/input"
 import { $email, $emailError, emailChanged, submitTriggered } from "./modal"
 
@@ -23,15 +23,17 @@ export const CheckEmailForm = ({ goBack }: { goBack: () => void }) => {
   }, [])
   return (
     <div className="relative text-center text-cFont">
-      <span className="absolute left-[-20px]">
-        <IconButton
-          className="rotate-180"
-          size={"m"}
-          iconName="common/arrow"
-          intent={"primary"}
-          onClick={() => goBack()}
+      <Button
+        className="absolute -left-[20px]"
+        onClick={goBack}
+        intent={"primary"}
+        size={"sm"}
+      >
+        <Icon
+          name="common/arrow"
+          className="text-4 rotate-180 text-cIconDefault"
         />
-      </span>
+      </Button>
       <h2 className="mb-3 text-lg font-medium">Log in by email</h2>
       <p className="mb-7 text-sm">
         Specify the address to log in to your account or register

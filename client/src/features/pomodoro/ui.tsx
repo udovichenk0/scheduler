@@ -2,12 +2,12 @@ import { useUnit } from "effector-react"
 import { ReactNode } from "react"
 import { $workDuration, $customDuration } from "@/entities/settings/pomodoro"
 import { ModalType } from "@/shared/lib/modal"
-import { IconButton } from "@/shared/ui/buttons/icon-button"
+import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base-modal"
 import {
   $passingTime,
-  $isTicking,
+  $isPomodoroRunning,
   startTimerTriggered,
   stopTimerTriggered,
   timeSelected,
@@ -45,7 +45,7 @@ export const Pomodoro = ({
   const [
     changeTimer,
     startTimer,
-    defaultTimer,
+    passingTime,
     isTicking,
     stopTimer,
     resetTimer,
@@ -58,7 +58,7 @@ export const Pomodoro = ({
     timeSelected,
     startTimerTriggered,
     $passingTime,
-    $isTicking,
+    $isPomodoroRunning,
     stopTimerTriggered,
     resetTimerTriggered,
     $isWorkTime,
@@ -73,7 +73,7 @@ export const Pomodoro = ({
   })
   const circleProgress =
     DEFAULT_PROGRESS_BAR -
-    ((currentStaticTime - defaultTimer) / currentStaticTime) *
+    ((currentStaticTime - passingTime) / currentStaticTime) *
       DEFAULT_PROGRESS_BAR
   return (
     <BaseModal modal={modal} className="w-[320px]" title="Pomodoro">
@@ -116,7 +116,7 @@ export const Pomodoro = ({
         <div className="relative">
           <ProgressCircle
             isWorkTime={isWorkTime}
-            time={defaultTimer}
+            time={passingTime}
             progress={circleProgress}
             stages={stages}
           />
@@ -129,13 +129,12 @@ export const Pomodoro = ({
             start={startTimer}
             isTicking={isTicking}
           />
-          <IconButton
-            onClick={() => resetTimer()}
-            className="text-[24px] text-cIconDefault"
-            iconName="common/reset"
-            intent={"primary"}
-            size={"xs"}
-          />
+          <Button intent={"primary"} size={"xs"} onClick={resetTimer}>
+            <Icon
+              name="common/reset"
+              className="text-[24px] text-cIconDefault"
+            />
+          </Button>
         </div>
       </div>
     </BaseModal>
