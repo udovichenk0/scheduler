@@ -1,4 +1,5 @@
 import { clsx } from "clsx"
+import { normalizeSeconds } from "@/shared/lib/normalize-time"
 
 export const ProgressCircle = ({
   time,
@@ -11,9 +12,6 @@ export const ProgressCircle = ({
   progress: number
   stages: { fulfilled: boolean }[]
 }) => {
-  const secToMin = Math.floor(time / 60)
-  const minutes = secToMin > 9 ? secToMin : `0${secToMin}`
-  const seconds = time % 60 > 9 ? time % 60 : `0${time % 60}`
   return (
     <div className="relative flex h-full w-full justify-center">
       <svg
@@ -53,7 +51,7 @@ export const ProgressCircle = ({
           fontSize={60}
           className={isWorkTime ? "fill-cPomodoroRed" : "fill-cPomodoroGreen"}
         >
-          {minutes}:{seconds}
+          {normalizeSeconds(time)}
         </text>
       </svg>
       <div className="absolute bottom-20 left-28 flex gap-2">
