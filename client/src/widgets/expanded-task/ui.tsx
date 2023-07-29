@@ -2,7 +2,8 @@ import { clsx } from "clsx"
 import { useUnit } from "effector-react/effector-react.mjs"
 import { ReactNode, RefObject } from "react"
 import { Pomodoro } from "@/features/pomodoro"
-import { IconButton } from "@/shared/ui/buttons/icon-button"
+import { Button } from "@/shared/ui/buttons/main-button"
+import { Icon } from "@/shared/ui/icon"
 import { Settings } from "../settings"
 import { pomodoroModal, settingsModal } from "./model"
 
@@ -31,26 +32,24 @@ export const ExpandedTask = ({
     >
       <div className="w-full">{children}</div>
       <div className="text-end">
-        <IconButton
-          className="text-[24px] text-cIconDefault"
-          iconName="common/timer"
-          intent={"primary"}
-          size={"xs"}
+        <Button 
           onClick={togglePomodoroModal}
-        />
+          intent={"primary"} 
+          size={"xs"}>
+          <Icon name="common/timer" className="text-[24px] text-cIconDefault" />
+        </Button>
       </div>
       <Pomodoro
         modal={pomodoroModal}
         taskTitle={taskTitle}
         leftSlot={
           <>
-            <IconButton
-              onClick={toggleSettingsModal}
-              className="text-[24px] text-cIconDefault"
-              iconName="common/settings"
-              intent={"primary"}
-              size={"xs"}
-            />
+          <Button 
+            onClick={toggleSettingsModal}
+            intent={"primary"} 
+            size={"xs"}>
+            <Icon name="common/settings" className="text-[24px] text-cIconDefault" />
+          </Button>
             <Settings modal={settingsModal} defaultTab="pomodoro" />
           </>
         }

@@ -61,10 +61,10 @@ export const $isWorkTime = createStore(true).on(
 
 export const $audio = createStore(audio)
 
-export const { tick, isRunning: $isTicking } = interval({
+export const { tick, isRunning: $isPomodoroRunning } = interval({
   start: startTimerTriggered,
   stop: stopTimerTriggered,
-  timeout: 1000,
+  timeout: 100,
 })
 
 const finishTimerFx = attach({

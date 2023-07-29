@@ -1,7 +1,6 @@
 import { useUnit } from "effector-react"
 import { Settings } from "@/widgets/settings"
 import { routes } from "@/shared/routing"
-import { IconButton } from "@/shared/ui/buttons/icon-button"
 import { Button } from "@/shared/ui/buttons/main-button/ui"
 import { Icon } from "@/shared/ui/icon/icon"
 import { $inboxTasksCount, $todayTasksCount, modal } from "./sidebar.modal"
@@ -54,20 +53,19 @@ export const Sidebar = () => {
           <Button
             size={"sm"}
             className="w-full text-start"
-            intent={"secondary"}
+            intent={"primary"}
           >
-            <Icon name="common/plus" className="mr-4" />
-            New Project
+            <Icon name="common/plus" className="mr-4 text-cOpacitySecondFont" />
+            <span className="text-[12px] text-cOpacitySecondFont">
+              New Project
+            </span>
           </Button>
         </div>
         <div className="flex border-t-[1px] border-cBorder px-2 py-1">
           <div>
-            <IconButton
-              size={"base"}
-              iconName="common/settings"
-              intent={"leftBottonPanel"}
-              onClick={toggleTriggered}
-            />
+            <Button onClick={toggleTriggered} intent={"primary"} size={"xs"}>
+              <Icon name="common/settings" className="text-[20px]" />
+            </Button>
             <Settings modal={modal} defaultTab="general" />
           </div>
         </div>

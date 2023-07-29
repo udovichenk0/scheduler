@@ -5,7 +5,7 @@ import { Checkbox } from "@/shared/ui/buttons/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { capitalizeLetter } from "./lib/capitalize-first-letter"
-import { normilizeDate } from "./lib/normilize-date"
+import { normalizeDate } from "./lib/normalize-date"
 import { DateModal } from "./ui/date-modal"
 import { TypeModal } from "./ui/type-modal"
 
@@ -115,7 +115,7 @@ export const ModifyTaskForm = ({
                     />
                     <span>Date</span>
                     <span className="ml-2 text-accent">
-                      {currentDate && normilizeDate(currentDate)}
+                      {currentDate && normalizeDate(currentDate)}
                     </span>
                   </span>
                 </Button>

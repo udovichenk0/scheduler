@@ -1,7 +1,7 @@
 import { useUnit } from "effector-react"
 import { FormEvent, useEffect, useRef, useState } from "react"
-import { DisableButton } from "@/shared/ui/buttons/disable-button"
-import { IconButton } from "@/shared/ui/buttons/icon-button"
+import { Button } from "@/shared/ui/buttons/main-button"
+import { Icon } from "@/shared/ui/icon"
 import { Input } from "@/shared/ui/input"
 import { $email } from "../by-email"
 import { TogglePasswordButton } from "../shared/ui/toggle-password-button"
@@ -31,15 +31,9 @@ export const Signin = ({ goBack }: { goBack: () => void }) => {
   }, [])
   return (
     <div className="relative text-center text-cFont">
-      <span className="absolute left-[-20px]">
-        <IconButton
-          className="rotate-180"
-          intent={"primary"}
-          size={"m"}
-          iconName="common/arrow"
-          onClick={() => goBack()}
-        />
-      </span>
+      <Button className="absolute -left-[20px]" onClick={goBack} intent={"primary"} size={"sm"}>
+        <Icon name="common/arrow" className="text-4 text-cIconDefault rotate-180" />
+      </Button>
       <h2 className="mb-3 text-lg font-semibold">Authorization</h2>
       <p className="mb-7 text-sm">
         Login in to your account using the address {email}
@@ -64,7 +58,12 @@ export const Signin = ({ goBack }: { goBack: () => void }) => {
           }
         />
         <span>
-          <DisableButton disabled={!password} />
+          <Button
+            className={`${!password && 'bg-[#1f4964] pointer-events-none'}`} 
+            disabled={!password} size={'m'} 
+            intent={'filled'}>
+              Resume
+          </Button>
         </span>
       </form>
     </div>
