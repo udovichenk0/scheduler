@@ -1,5 +1,6 @@
 import { useUnit } from "effector-react"
 import { Fragment, useRef } from "react"
+import { MainLayout } from "@/templates/main"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { ModifyTaskForm } from "@/entities/task/modify"
 import { TaskItem } from "@/entities/task/tasks"
@@ -14,7 +15,6 @@ import {
   toggleOverdueTasksOpened,
   updateTaskModel,
 } from "./today.model"
-import { MainLayout } from "@/templates/main"
 
 export const Today = () => {
   const ref = useRef<HTMLDivElement>(null)

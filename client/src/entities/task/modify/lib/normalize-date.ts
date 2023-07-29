@@ -18,7 +18,7 @@ const months = [
   "December",
 ]
 
-export function normilizeDate(date: Date) {
+export function normalizeDate(date: Date) {
   if (dayjs(date).isSame(dayjs(), "day")) {
     return "Today"
   } else if (dayjs(date).isTomorrow()) {

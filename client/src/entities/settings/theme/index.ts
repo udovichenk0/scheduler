@@ -1,2 +1,2 @@
-export * from './icon-theme'
-export * from './main-theme'
+export * from "./icon-theme"
+export * from "./main-theme"
