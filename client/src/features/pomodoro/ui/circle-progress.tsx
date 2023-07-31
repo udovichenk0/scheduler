@@ -15,16 +15,16 @@ export const ProgressCircle = ({
   return (
     <div className="relative flex h-full w-full justify-center">
       <svg
-        width="300"
-        height="300"
-        viewBox="-21.25 -31.25 312.5 312.5"
+        width="260"
+        height="260"
+        viewBox="-14.25 -0.25 312.5 312.5"
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
       >
         <circle
-          r="125"
-          cx="135"
-          cy="135"
+          r="135"
+          cx="145"
+          cy="145"
           className={
             isWorkTime ? "stroke-cPomodoroRed" : "stroke-cPomodoroGreen"
           }
@@ -33,20 +33,20 @@ export const ProgressCircle = ({
           strokeDasharray="2 7"
         ></circle>
         <circle
-          r="125"
-          cx="135"
-          cy="135"
+          r="135"
+          cx="145"
+          cy="145"
           className={clsx(
-            "translate-y-[270px] -rotate-90",
+            "translate-y-[290px] -rotate-90",
             isWorkTime ? "stroke-cPomodoroRed" : "stroke-cPomodoroGreen",
           )}
           strokeWidth="8px"
           strokeDashoffset={progress}
           fill="transparent"
-          strokeDasharray="785"
+          strokeDasharray="848"
         ></circle>
         <text
-          x="20%"
+          x="22%"
           y="49%"
           fontSize={60}
           className={isWorkTime ? "fill-cPomodoroRed" : "fill-cPomodoroGreen"}
@@ -54,7 +54,7 @@ export const ProgressCircle = ({
           {normalizeSeconds(time)}
         </text>
       </svg>
-      <div className="absolute bottom-20 left-28 flex gap-2">
+      <div className="absolute bottom-[100px] left-31 flex gap-2">
         {stages.map(({ fulfilled }, id) => {
           return (
             <div

@@ -1,4 +1,4 @@
-import dayjs from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import { $taskKv } from "@/entities/task/tasks"
 import { TaskDto } from "@/shared/api/task"
 import { MIN_DATES_LENGTH, MIN_MONTHS_LENGTH } from "../../config"
@@ -12,12 +12,12 @@ export const $upcomingTasks = $taskKv.map((kv) => {
 })
 
 export const $upcomingYears = $upcomingTasks.map((tasks) => {
-  const currentYear = dayjs()
+  const futureYear = dayjs()
     .add(MIN_DATES_LENGTH, "day")
     .add(MIN_MONTHS_LENGTH, "month")
     .format("YYYY")
   return Object.fromEntries(
-    Object.entries(tasks).filter(([year]) => currentYear != year),
+    Object.entries(tasks).filter(([year]) => futureYear != year),
   )
 })
 
@@ -29,11 +29,14 @@ export const $remainingDays = $upcomingTasks.map((tasks) => {
   const lastDayOfRemainingDays = dayjs(firstDayOfRemainingDays).endOf("month")
 
   const restTasks = tasks[currentYear]?.filter(({ start_date }) => {
-    const isSameOrBetween =
+    return (
       start_date &&
-      dayjs(start_date).isSameOrAfter(firstDayOfRemainingDays, "date") &&
-      dayjs(start_date).isSameOrBefore(lastDayOfRemainingDays, "date")
-    return start_date && isSameOrBetween
+      isSameDateOrBetween({
+        date: start_date,
+        firstDate: firstDayOfRemainingDays,
+        lastDate: lastDayOfRemainingDays,
+      })
+    )
   })
   const isLastDateOfMonth = firstDayOfRemainingDays.isSame(
     lastDayOfRemainingDays,
@@ -55,18 +58,19 @@ export const $remainingMonths = $upcomingTasks.map((tasks) => {
     .add(MIN_MONTHS_LENGTH + 1, "month")
   const lastDateOfRemainingMonths = dayjs().endOf("year")
   const restTasks = tasks[currentYear]?.filter(({ start_date }) => {
-    const isSameOrBetween =
-      dayjs(start_date).isSameOrAfter(firstDateOfRemainingMonths, "month") &&
-      dayjs(start_date).isSameOrBefore(lastDateOfRemainingMonths, "month")
-
-    return start_date && isSameOrBetween
+    return (
+      start_date &&
+      isSameDateOrBetween({
+        date: start_date,
+        firstDate: firstDateOfRemainingMonths,
+        lastDate: lastDateOfRemainingMonths,
+      })
+    )
   })
-
   const isLastMonthOfYear = firstDateOfRemainingMonths.isSame(
     lastDateOfRemainingMonths,
     "month",
   )
-
   return {
     restTasks,
     startDate: firstDateOfRemainingMonths.month(),
@@ -79,13 +83,30 @@ export const $remainingMonths = $upcomingTasks.map((tasks) => {
 function groupTasksByYear(array: TaskDto[]) {
   return array.reduce(
     (groups, task) => {
-      const formatedYear = dayjs(task.start_date).format("YYYY")
-      if (!groups[formatedYear]) {
-        groups[formatedYear] = []
+      const year = dayjs(task.start_date).format("YYYY")
+      if (!groups[year]) {
+        groups[year] = []
       }
-      groups[formatedYear].push(task)
+      groups[year].push(task)
       return groups
     },
     {} as Record<string, TaskDto[]>,
   )
+}
+// console.log(dayjs(new Date('2023-01-15')).isSameOrAfter(dayjs(new Date('2023-01-14')), "day"))
+function isSameDateOrBetween({
+  date,
+  firstDate,
+  lastDate,
+}: {
+  date: Date
+  firstDate: Dayjs
+  lastDate: Dayjs
+}) {
+  // console.log(dayjs(new Date('2023-01-15')).day())
+  // console.log(dayjs(new Date('2023-01-02')).day())
+  const isSameDateOrBetween =
+    dayjs(date).isSameOrAfter(firstDate, "date") &&
+    dayjs(date).isSameOrBefore(lastDate, "date")
+  return isSameDateOrBetween
 }

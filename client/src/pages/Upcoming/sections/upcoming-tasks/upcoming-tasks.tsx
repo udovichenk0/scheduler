@@ -2,10 +2,10 @@ import dayjs from "dayjs"
 import { useUnit } from "effector-react"
 import { RefObject } from "react"
 import {
-  remainingDaysOfMonth,
+  generateRemainingDaysOfMonth,
   weekDays,
   months,
-  remainingMonthsOfYear,
+  generateRemainingMonthsOfYear,
 } from "../../config"
 import { DateSection } from "../../ui/date-section"
 import {
@@ -28,7 +28,7 @@ export const AllUpcomingTasks = ({
     useUnit([$upcomingTasks, $upcomingYears, $remainingDays, $remainingMonths])
   return (
     <div>
-      {remainingDaysOfMonth().map((date) => {
+      {generateRemainingDaysOfMonth().map((date) => {
         const year = dayjs(date).format("YYYY")
         const tasks = upcomingTasks[year]?.filter(({ start_date }) => {
           return (
@@ -90,7 +90,7 @@ export const AllUpcomingTasks = ({
         tasks={remainingDays.restTasks}
       />
 
-      {remainingMonthsOfYear().map((date) => {
+      {generateRemainingMonthsOfYear().map((date) => {
         const year = dayjs(date).format("YYYY")
         const tasks = upcomingTasks[year]?.filter(({ start_date }) => {
           return (

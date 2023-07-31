@@ -48,22 +48,16 @@ export const authQuery = <Resp, Params extends HttpRequestType | void>({
           if (!refreshPromiseQueue) {
             refreshPromiseQueue = refreshFx()
             const { access_token } = await refreshPromiseQueue
-            if (!access_token) {
-              throw new Error()
+            if (access_token) {
+              return retrySetTokenAndResetQueue(
+                { ...request, body, params, query },
+                access_token,
+              )
             } else {
-              setTokenTriggered(access_token)
-              return baseQuery({
-                request: { ...request, body, params, query },
-                token: access_token,
-              })
+              throw new Error()
             }
           } else {
-            refreshPromiseQueue.then(({ access_token }) => {
-              return baseQuery({
-                request: { ...request, body, params, query },
-                token: access_token,
-              })
-            })
+            return retryAfterTokenRefresh({ ...request, body, params, query })
           }
         }
         return response
@@ -76,4 +70,26 @@ export const authQuery = <Resp, Params extends HttpRequestType | void>({
   })
   headlessQuery.__.executeFx.use(queryFx)
   return headlessQuery
+}
+
+function retryAfterTokenRefresh(request: Request & HttpRequestType) {
+  if (refreshPromiseQueue) {
+    refreshPromiseQueue.then(({ access_token }) => {
+      return baseQuery({
+        request,
+        token: access_token,
+      })
+    })
+  }
+}
+function retrySetTokenAndResetQueue(
+  request: Request & HttpRequestType,
+  access_token: string,
+) {
+  refreshPromiseQueue = null
+  setTokenTriggered(access_token)
+  return baseQuery({
+    request: request,
+    token: access_token,
+  })
 }
