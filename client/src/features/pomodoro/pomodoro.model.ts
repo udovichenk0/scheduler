@@ -18,7 +18,7 @@ import { appStarted } from "@/shared/config/init"
 import sound from "./assets/timer.mp3"
 
 const DEFAULT_WORK_TIME = 1500 // 25mins
-export const DEFAULT_PROGRESS_BAR = 785 // if 785 then progress is 0% otherwise its 100%
+export const DEFAULT_PROGRESS_BAR = 848 // if 785 then progress is 0% otherwise its 100%
 const LONG_BREAK_STAGE = 4
 export const audio = new Audio(sound)
 
@@ -64,7 +64,7 @@ export const $audio = createStore(audio)
 export const { tick, isRunning: $isPomodoroRunning } = interval({
   start: startTimerTriggered,
   stop: stopTimerTriggered,
-  timeout: 100,
+  timeout: 1000,
 })
 
 const finishTimerFx = attach({
@@ -168,7 +168,7 @@ sample({
   target: resetTimerTriggered,
 })
 sample({
-  clock: timePassed,
+  clock: timePassed, //workDone
   source: {
     activeStageId: $activeStageId,
     isWorkTime: $isWorkTime,
@@ -180,6 +180,31 @@ sample({
   target: [toggleTimerState, $currentStaticTime, $passingTime, activeIdChanged],
   greedy: true,
 })
+//todo try to implement events: shortBreakDone, longBreakDone, workDone
+
+// condition({
+//   source: sample({
+//     clock: timePassed,
+//     source: {
+//       activeStageId: $activeStageId,
+//       isWorkTime: $isWorkTime,
+//       shortBreakDuration: $shortBreakDuration,
+//     }
+//   }),
+//   if: Boolean,
+//   then: createEvent(),
+//   else: createEvent()
+// })
+
+/**
+ * condition({
+ *  source: timePassed,
+ *  if: sample({
+ *    source: ,
+ * })
+ * })
+ */
+
 sample({
   clock: timePassed,
   source: {

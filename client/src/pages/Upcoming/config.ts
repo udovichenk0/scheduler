@@ -25,9 +25,8 @@ export const weekDays = [
 ]
 export const MIN_DATES_LENGTH = 14
 export const MIN_MONTHS_LENGTH = 3
-export function remainingDaysOfMonth() {
+export function generateRemainingDaysOfMonth() {
   let dayCounter = dayjs().date()
-
   return new Array(MIN_DATES_LENGTH).fill(null).map(() => {
     const date = dayjs().date(dayCounter).startOf("date")
     dayCounter += 1
@@ -35,10 +34,9 @@ export function remainingDaysOfMonth() {
   })
 }
 
-export function remainingMonthsOfYear() {
+export function generateRemainingMonthsOfYear() {
   const nextMonth = dayjs().add(MIN_DATES_LENGTH, "day").month() + 1
   let monthCounter = nextMonth
-
   return new Array(MIN_MONTHS_LENGTH).fill(null).map(() => {
     const date = dayjs().month(monthCounter).startOf("month")
     monthCounter += 1

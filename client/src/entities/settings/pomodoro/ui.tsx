@@ -89,7 +89,7 @@ export const PomodoroSettings = () => {
             checked={startAutomatically}
             onChange={enableAutomaticTimerStart}
           />
-          <span>Show over all windows when changing the period</span>
+          <span>Start the next period automatically</span>
         </div>
         <div className="flex gap-3">
           <Checkbox
