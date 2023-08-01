@@ -47,21 +47,22 @@ export const ProgressCircle = ({
         ></circle>
         <text
           x="22%"
-          y="49%"
+          y="51%"
           fontSize={60}
           className={isWorkTime ? "fill-cPomodoroRed" : "fill-cPomodoroGreen"}
         >
           {normalizeSeconds(time)}
         </text>
       </svg>
-      <div className="absolute bottom-[100px] left-31 flex gap-2">
+      <div className="absolute bottom-[70px] left-[113px] grid h-[40px] grid-cols-4 grid-rows-3 gap-x-2 gap-y-1">
         {stages.map(({ fulfilled }, id) => {
           return (
             <div
               key={id}
-              className={`h-[10px] w-[10px] rounded-full border-2 border-cPomodoroRed ${
-                fulfilled && "bg-cPomodoroRed"
-              }`}
+              className={`h-[10px] w-[10px] rounded-full border-2 
+              ${isWorkTime ? "border-cPomodoroRed" : "border-cPomodoroGreen"} 
+              ${isWorkTime && fulfilled && "bg-cPomodoroRed"}
+              ${!isWorkTime && fulfilled && "bg-cPomodoroGreen"}`}
             />
           )
         })}
