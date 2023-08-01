@@ -68,6 +68,7 @@ export const { tick, isRunning: $isPomodoroRunning } = interval({
   stop: stopTimerTriggered,
   timeout: 1000,
 })
+
 sample({
   clock: activeIdChanged,
   source: { activeStageId: $activeStageId, kv: $kvStages },
@@ -77,12 +78,14 @@ sample({
   }),
   target: $kvStages,
 })
+
 sample({
   clock: activeIdChanged,
   source: $activeStageId,
   fn: (activeStageId) => activeStageId + 1,
   target: $activeStageId,
 })
+
 const finishTimerFx = attach({
   source: $audio,
   effect: createEffect((timer: HTMLAudioElement) => {
