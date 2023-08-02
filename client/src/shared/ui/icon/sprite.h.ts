@@ -15,6 +15,7 @@ export interface SpritesMap {
     | "reset"
     | "settings"
     | "timer"
+    | "trash-can"
     | "upcoming"
 }
 
@@ -35,6 +36,7 @@ export const SPRITES_META: { [K in keyof SpritesMap]: SpritesMap[K][] } = {
     "reset",
     "settings",
     "timer",
+    "trash-can",
     "upcoming",
   ],
 }

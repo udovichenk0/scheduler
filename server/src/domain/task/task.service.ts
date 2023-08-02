@@ -37,4 +37,10 @@ export class TaskService {
     });
     return task;
   }
+  deleteOne({ where }: Prisma.taskDeleteArgs) {
+    const task = this.prismaService.task.delete({
+      where,
+    });
+    return task;
+  }
 }

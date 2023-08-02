@@ -1,7 +1,7 @@
 import { RefObject, MouseEvent } from "react"
 
 export const onClickOutside = (
-  outRef: RefObject<HTMLDivElement>,
+  outRef: RefObject<HTMLElement>,
   e: MouseEvent,
   callback: () => void,
 ) => {

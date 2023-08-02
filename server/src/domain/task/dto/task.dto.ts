@@ -50,3 +50,11 @@ const taskDtoSchema = z.object({
 });
 
 export class TaskDto extends createZodDto(taskDtoSchema) {}
+
+export const DeleteTaskCredentialSchema = z.object({
+  id: z.number(),
+});
+
+export class DeleteTaskCredentialsDto extends createZodDto(
+  DeleteTaskCredentialSchema,
+) {}

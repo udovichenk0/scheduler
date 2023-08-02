@@ -1,4 +1,5 @@
 import dayjs from "dayjs"
+import { useEffect } from "react"
 import { Checkbox } from "@/shared/ui/buttons/checkbox"
 import { Task } from "./type"
 
@@ -7,17 +8,28 @@ export const TaskItem = ({
   onChange,
   onDoubleClick,
   date = false,
+  onClick,
+  isTaskSelected,
 }: {
   data: Task
   onChange: () => void
   onDoubleClick: () => void
-  date?: boolean
+  date?: boolean,
+  onClick: (task: Task | null) => void,
+  isTaskSelected: boolean,
 }) => {
   const { title, status, start_date } = data
+  useEffect(() => {
+    return () => {
+      onClick(null)
+    }
+  }, [])
   return (
     <button
       onDoubleClick={onDoubleClick}
-      className="flex w-full cursor-default select-none items-center rounded-[5px] px-2 py-2 text-sm text-primary hover:bg-cHover focus:bg-cFocus"
+      onClick={() => onClick(data)}
+      onBlur={() => onClick(null)}
+      className={`${isTaskSelected && 'bg-cFocus'} flex w-full cursor-default select-none items-center rounded-[5px] px-2 py-2 text-sm text-primary hover:bg-cHover`}
     >
       <Checkbox onChange={onChange} checked={status == "FINISHED"} />
       {date && start_date && (

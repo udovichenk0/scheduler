@@ -80,3 +80,14 @@ export const updateStatusQuery = authQuery<
     mapData: (data) => data,
   },
 })
+
+export const deleteTaskQuery = authQuery<TaskDto, { body: { id: number } }>({
+  request: {
+    url: "delete-task",
+    method: "POST",
+  },
+  response: {
+    contract: updateStatusContract,
+    mapData: (data) => data,
+  },
+})
