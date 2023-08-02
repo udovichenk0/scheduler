@@ -3,7 +3,7 @@ import { tasksQuery } from "@/shared/api/task"
 import { Task } from "./type"
 
 export const $taskKv = createStore<Record<number, Task>>({})
-
+export const $taskIds = createStore<number[]>([])
 export const getTasksTriggered = createEvent()
 
 sample({

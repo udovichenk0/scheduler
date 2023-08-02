@@ -1,12 +1,12 @@
 import { useUnit } from "effector-react"
-import { Fragment, useRef } from "react"
-import { MainLayout } from "@/templates/main"
+import { Fragment, useRef, useState } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { ModifyTaskForm } from "@/entities/task/modify"
 import { TaskItem } from "@/entities/task/tasks"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { Icon } from "@/shared/ui/icon"
 import {
+  $$deleteTask,
   $isOverdueTasksOpened,
   $overdueTasks,
   $todayTasks,
@@ -15,8 +15,10 @@ import {
   toggleOverdueTasksOpened,
   updateTaskModel,
 } from "./today.model"
+import { MainLayout } from "@/templates/main"
 
 export const Today = () => {
+  const [selectedTask, selectTask] = useState<{id: number} | null>(null)
   const ref = useRef<HTMLDivElement>(null)
   const [
     tasks,
@@ -29,6 +31,7 @@ export const Today = () => {
     isOverdueTasksOpened,
     toggleOverdueTasks,
     overdueTasks,
+    deleteTask
   ] = useUnit([
     $todayTasks,
     updateTaskModel.changeStatusTriggered,
@@ -40,11 +43,15 @@ export const Today = () => {
     $isOverdueTasksOpened,
     toggleOverdueTasksOpened,
     $overdueTasks,
+    $$deleteTask.taskDeleted
   ])
+
   return (
     <MainLayout
       action={() => createTaskOpened({ date: new Date() })}
       iconName="common/outlined-star"
+      isTaskSelected={!!selectedTask}
+      deleteTask={() => selectedTask && deleteTask({ id: selectedTask.id })}
       title="Today"
     >
       <div
@@ -89,6 +96,8 @@ export const Today = () => {
                         date
                         onDoubleClick={() => updateTaskOpened(task)}
                         onChange={() => changeStatus(task.id)}
+                        onClick={(task) => selectTask(task)}
+                        isTaskSelected={task.id == selectedTask?.id}
                         data={task}
                       />
                     )}
@@ -122,10 +131,12 @@ export const Today = () => {
                     </ExpandedTask>
                   ) : (
                     <TaskItem
-                      onDoubleClick={() => updateTaskOpened(task)}
-                      onChange={() => changeStatus(task.id)}
-                      data={task}
-                    />
+                        onDoubleClick={() => updateTaskOpened(task)}
+                        onChange={() => changeStatus(task.id)}
+                        data={task} 
+                        onClick={selectTask} 
+                        isTaskSelected={task.id == selectedTask?.id}
+                      />
                   )}
                 </Fragment>
               )

@@ -1,6 +1,7 @@
 import dayjs from "dayjs"
 import { useUnit } from "effector-react"
 import { RefObject } from "react"
+import { Task } from "@/entities/task/tasks"
 import {
   generateRemainingDaysOfMonth,
   weekDays,
@@ -19,13 +20,26 @@ export const AllUpcomingTasks = ({
   selectedDate,
   changeDate,
   outRef,
+  selectTask,
+  selectedTask
 }: {
   selectedDate: Date | null
   changeDate: (date: Date) => void
-  outRef: RefObject<HTMLDivElement>
+  outRef: RefObject<HTMLDivElement>,
+  selectTask: (task: Task | null) => void,
+  selectedTask: {id: number} | null
 }) => {
-  const [upcomingTasks, upcomingYears, remainingDays, remainingMonths] =
-    useUnit([$upcomingTasks, $upcomingYears, $remainingDays, $remainingMonths])
+  const [
+    upcomingTasks, 
+    upcomingYears, 
+    remainingDays, 
+    remainingMonths
+  ] = useUnit([
+    $upcomingTasks, 
+    $upcomingYears, 
+    $remainingDays, 
+    $remainingMonths
+  ])
   return (
     <div>
       {generateRemainingDaysOfMonth().map((date) => {
@@ -40,6 +54,8 @@ export const AllUpcomingTasks = ({
         return (
           <div key={date.date()}>
             <DateSection
+              selectedTask={selectedTask}
+              selectTask={selectTask}
               outRef={outRef}
               action={() => changeDate(new Date(date.toISOString()))}
               isSelected={date.isSame(selectedDate, "day")}
@@ -63,6 +79,8 @@ export const AllUpcomingTasks = ({
         )
       })}
       <DateSection
+        selectedTask={selectedTask}
+        selectTask={selectTask}
         action={() => changeDate(new Date(remainingDays.date.toISOString()))}
         isSelected={remainingDays.date.isSame(selectedDate, "day")}
         title={
@@ -100,6 +118,8 @@ export const AllUpcomingTasks = ({
         })
         return (
           <DateSection
+            selectedTask={selectedTask}
+            selectTask={selectTask}
             key={date.month()}
             action={() => changeDate(new Date(date.toISOString()))}
             isSelected={date.isSame(selectedDate, "day")}
@@ -110,6 +130,8 @@ export const AllUpcomingTasks = ({
         )
       })}
       <DateSection
+        selectedTask={selectedTask}
+        selectTask={selectTask}
         title={
           remainingMonths.isLastMonth ? (
             <span>{months[remainingMonths.startDate]}</span>
@@ -128,6 +150,8 @@ export const AllUpcomingTasks = ({
       {Object.entries(upcomingYears).map(([year, tasks]) => {
         return (
           <DateSection
+            selectedTask={selectedTask}
+            selectTask={selectTask}
             key={year}
             title={<span>{year}</span>}
             action={() =>

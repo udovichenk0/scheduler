@@ -2,6 +2,7 @@ import dayjs from "dayjs"
 import { combine, createEvent, createStore, sample } from "effector"
 import { persist } from "effector-storage/local"
 import { createTaskFactory } from "@/features/task/create"
+import { createRemoveTaskFactory } from "@/features/task/delete"
 import { updateTaskFactory } from "@/features/task/update"
 import { $taskKv } from "@/entities/task/tasks"
 import { createTaskAccordionFactory } from "@/shared/lib/task-accordion-factory"
@@ -13,6 +14,7 @@ export const createTaskModel = createTaskFactory({
   defaultType: "unplaced",
   defaultDate: new Date(),
 })
+export const $$deleteTask = createRemoveTaskFactory()
 
 export const $overdueTasks = combine($taskKv, (kv) => {
   return Object.values(kv).filter(

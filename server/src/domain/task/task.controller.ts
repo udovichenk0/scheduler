@@ -13,6 +13,7 @@ import { Request } from 'express';
 import { UserDto } from '../user/dto/user.dto';
 import {
   CreateTaskCredentialDto,
+  DeleteTaskCredentialsDto,
   TaskDto,
   UpdateStatusCredentialDto,
   UpdateTaskCredentialDto,
@@ -65,6 +66,17 @@ export class TaskController {
       data: {
         status,
       },
+      where: {
+        id,
+      },
+    });
+    return task;
+  }
+  @Post('delete-task')
+  @UsePipes(new ZodValidationPipe(DeleteTaskCredentialsDto))
+  async deleteTask(@Body() taskCredentials: DeleteTaskCredentialsDto) {
+    const { id } = taskCredentials;
+    const task = await this.taskService.deleteOne({
       where: {
         id,
       },

@@ -15,12 +15,16 @@ export function DateSection({
   title,
   isSelected,
   action,
+  selectTask,
+  selectedTask
 }: {
   outRef: RefObject<HTMLDivElement>
   tasks: Task[]
   title: ReactNode
   isSelected: boolean
-  action: () => void
+  action: () => void,
+  selectTask: (task: Task | null) => void,
+  selectedTask: {id: number} | null
 }) {
   const [changeStatus, taskId, updateTaskOpened, newTask] = useUnit([
     updateTaskModel.changeStatusTriggered,
@@ -55,6 +59,8 @@ export function DateSection({
                   </ExpandedTask>
                 ) : (
                   <TaskItem
+                    isTaskSelected={selectedTask?.id === task.id}
+                    onClick={selectTask}
                     date
                     onDoubleClick={() => updateTaskOpened(task)}
                     onChange={() => changeStatus(task.id)}
