@@ -8,31 +8,29 @@ import { Icon } from "@/shared/ui/icon"
 import { $form, FormEnum, gate, formSelected } from "./sync.modal"
 
 export const SynchronizationTab = () => {
+  const [form, selectForm] = useUnit([$form, formSelected])
   useGate(gate)
   return (
     <div className="flex justify-center">
       <div className="w-[391px] text-primary">
-        <Content />
+        {form === FormEnum.email && (
+          <CheckEmailForm goBack={() => selectForm(FormEnum.options)} />
+        )}
+        {form === FormEnum.login && (
+          <Signin goBack={() => selectForm(FormEnum.email)} />
+        )}
+        {form === FormEnum.register && (
+          <Signup goBack={() => selectForm(FormEnum.email)} />
+        )}
+        {form === FormEnum.logout && <Logout />}
+        {form === FormEnum.options && <AuthOptions />}
       </div>
     </div>
   )
 }
 
-function Content() {
-  const [form, selectForm] = useUnit([$form, formSelected])
-
-  if (form === FormEnum.email) {
-    return <CheckEmailForm goBack={() => selectForm(FormEnum.options)} />
-  }
-  if (form === FormEnum.login) {
-    return <Signin goBack={() => selectForm(FormEnum.email)} />
-  }
-  if (form === FormEnum.register) {
-    return <Signup goBack={() => selectForm(FormEnum.email)} />
-  }
-  if (form === FormEnum.logout) {
-    return <Logout />
-  }
+const AuthOptions = () => {
+  const selectForm = useUnit(formSelected)
   return (
     <div className="text-center text-cFont">
       <h2 className="mb-2 text-lg font-semibold">Welcome to Scheduler App</h2>

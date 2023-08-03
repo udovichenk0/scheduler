@@ -3,12 +3,8 @@ import { RefObject, ReactNode } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { ModifyTaskForm } from "@/entities/task/modify"
 import { Task, TaskItem } from "@/entities/task/tasks"
-import {
-  updateTaskModel,
-  taskAccordion,
-  createTaskModel,
-} from "../upcoming.model"
-
+import { $$updateTask, $$taskAccordion, $$createTask } from "../upcoming.model"
+//change name 
 export function DateSection({
   outRef,
   tasks,
@@ -16,21 +12,21 @@ export function DateSection({
   isSelected,
   action,
   selectTask,
-  selectedTask
+  selectedTask,
 }: {
   outRef: RefObject<HTMLDivElement>
   tasks: Task[]
   title: ReactNode
   isSelected: boolean
-  action: () => void,
-  selectTask: (task: Task | null) => void,
-  selectedTask: {id: number} | null
+  action: () => void
+  selectTask: (task: Task | null) => void
+  selectedTask: { id: number } | null
 }) {
   const [changeStatus, taskId, updateTaskOpened, newTask] = useUnit([
-    updateTaskModel.changeStatusTriggered,
-    taskAccordion.$taskId,
-    taskAccordion.updateTaskOpened,
-    taskAccordion.$newTask,
+    $$updateTask.changeStatusTriggered,
+    $$taskAccordion.$taskId,
+    $$taskAccordion.updateTaskOpened,
+    $$taskAccordion.$newTask,
   ])
   return (
     <div className="select-none border-b-2 border-cBorder text-primary">
@@ -55,7 +51,7 @@ export function DateSection({
               >
                 {task.id === taskId ? (
                   <ExpandedTask taskTitle={task.title} taskRef={outRef}>
-                    <ModifyTaskForm modifyTaskModel={updateTaskModel} />
+                    <ModifyTaskForm modifyTaskModel={$$updateTask} />
                   </ExpandedTask>
                 ) : (
                   <TaskItem
@@ -74,7 +70,7 @@ export function DateSection({
       <div className="px-4">
         {newTask && isSelected && (
           <ExpandedTask className="mb-2" taskRef={outRef}>
-            <ModifyTaskForm date modifyTaskModel={createTaskModel} />
+            <ModifyTaskForm date modifyTaskModel={$$createTask} />
           </ExpandedTask>
         )}
       </div>

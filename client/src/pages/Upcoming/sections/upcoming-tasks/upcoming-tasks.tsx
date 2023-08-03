@@ -1,7 +1,6 @@
 import dayjs from "dayjs"
 import { useUnit } from "effector-react"
 import { RefObject } from "react"
-import { Task } from "@/entities/task/tasks"
 import {
   generateRemainingDaysOfMonth,
   weekDays,
@@ -21,28 +20,73 @@ export const AllUpcomingTasks = ({
   changeDate,
   outRef,
   selectTask,
-  selectedTask
+  selectedTask,
 }: {
   selectedDate: Date | null
   changeDate: (date: Date) => void
-  outRef: RefObject<HTMLDivElement>,
-  selectTask: (task: Task | null) => void,
-  selectedTask: {id: number} | null
+  outRef: RefObject<HTMLDivElement>
+  selectTask: (task: {id:number} | null) => void
+  selectedTask: { id: number } | null
 }) => {
-  const [
-    upcomingTasks, 
-    upcomingYears, 
-    remainingDays, 
-    remainingMonths
-  ] = useUnit([
-    $upcomingTasks, 
-    $upcomingYears, 
-    $remainingDays, 
-    $remainingMonths
-  ])
   return (
     <div>
-      {generateRemainingDaysOfMonth().map((date) => {
+      <DateSectionTaskList
+        selectedDate={selectedDate}
+        changeDate={changeDate}
+        taskRef={outRef}
+        selectedTask={selectedTask}
+        selectTask={selectTask}
+      />
+      <RestDateSectionTasklist
+        selectedDate={selectedDate}
+        changeDate={changeDate}
+        taskRef={outRef}
+        selectedTask={selectedTask}
+        selectTask={selectTask}
+      />
+      <MonthSectionTaskList
+        selectedDate={selectedDate}
+        changeDate={changeDate}
+        taskRef={outRef}
+        selectedTask={selectedTask}
+        selectTask={selectTask}
+      />
+      <RestMonthSectionTasklist
+        selectedDate={selectedDate}
+        changeDate={changeDate}
+        taskRef={outRef}
+        selectedTask={selectedTask}
+        selectTask={selectTask}
+      />
+
+      <YearSectionTaskList 
+        selectedDate={selectedDate}
+        changeDate={changeDate}
+        taskRef={outRef}
+        selectedTask={selectedTask}
+        selectTask={selectTask}
+      />
+    </div>
+  )
+}
+
+const DateSectionTaskList = ({
+  selectedTask,
+  selectTask,
+  taskRef,
+  selectedDate,
+  changeDate
+}:{
+  selectedTask: { id: number } | null
+  selectTask: (task: { id: number } | null) => void
+  taskRef: RefObject<HTMLDivElement>
+  selectedDate: Date | null
+  changeDate: (date: Date) => void
+}) => {
+  const upcomingTasks = useUnit($upcomingTasks)
+  return (
+    <div>
+{generateRemainingDaysOfMonth().map((date) => {
         const year = dayjs(date).format("YYYY")
         const tasks = upcomingTasks[year]?.filter(({ start_date }) => {
           return (
@@ -56,7 +100,7 @@ export const AllUpcomingTasks = ({
             <DateSection
               selectedTask={selectedTask}
               selectTask={selectTask}
-              outRef={outRef}
+              outRef={taskRef}
               action={() => changeDate(new Date(date.toISOString()))}
               isSelected={date.isSame(selectedDate, "day")}
               title={
@@ -78,6 +122,26 @@ export const AllUpcomingTasks = ({
           </div>
         )
       })}
+    </div>
+  )
+}
+
+const RestDateSectionTasklist = ({
+  selectedTask,
+  selectTask,
+  taskRef,
+  selectedDate,
+  changeDate
+}:{
+  selectedTask: { id: number } | null
+  selectTask: (task: { id: number } | null) => void
+  taskRef: RefObject<HTMLDivElement>
+  selectedDate: Date | null
+  changeDate: (date: Date) => void
+}) => {
+  const remainingDays =
+    useUnit($remainingDays)
+  return (
       <DateSection
         selectedTask={selectedTask}
         selectTask={selectTask}
@@ -104,31 +168,68 @@ export const AllUpcomingTasks = ({
             )}
           </span>
         }
-        outRef={outRef}
+        outRef={taskRef}
         tasks={remainingDays.restTasks}
       />
+  )
+}
 
-      {generateRemainingMonthsOfYear().map((date) => {
-        const year = dayjs(date).format("YYYY")
-        const tasks = upcomingTasks[year]?.filter(({ start_date }) => {
+const MonthSectionTaskList = ({
+  selectedTask,
+  selectTask,
+  taskRef,
+  selectedDate,
+  changeDate
+}:{
+  selectedTask: { id: number } | null
+  selectTask: (task: { id: number } | null) => void
+  taskRef: RefObject<HTMLDivElement>
+  selectedDate: Date | null
+  changeDate: (date: Date) => void
+}) => {
+  const upcomingTasks = useUnit($upcomingTasks)
+  return (
+    <div>
+    {generateRemainingMonthsOfYear().map((date) => {
+          const year = dayjs(date).format("YYYY")
+          const tasks = upcomingTasks[year]?.filter(({ start_date }) => {
+            return (
+              dayjs(start_date).isSame(date, "month") &&
+              dayjs(start_date).isSame(date, "year")
+            )
+          })
           return (
-            dayjs(start_date).isSame(date, "month") &&
-            dayjs(start_date).isSame(date, "year")
+            <DateSection
+              selectedTask={selectedTask}
+              selectTask={selectTask}
+              key={date.month()}
+              action={() => changeDate(new Date(date.toISOString()))}
+              isSelected={date.isSame(selectedDate, "day")}
+              title={<span>{months[date.month()]}</span>}
+              outRef={taskRef}
+              tasks={tasks}
+            />
           )
-        })
-        return (
-          <DateSection
-            selectedTask={selectedTask}
-            selectTask={selectTask}
-            key={date.month()}
-            action={() => changeDate(new Date(date.toISOString()))}
-            isSelected={date.isSame(selectedDate, "day")}
-            title={<span>{months[date.month()]}</span>}
-            outRef={outRef}
-            tasks={tasks}
-          />
-        )
-      })}
+        })}
+    </div>
+  )
+}
+
+const RestMonthSectionTasklist = ({
+  selectedTask,
+  selectTask,
+  taskRef,
+  selectedDate,
+  changeDate
+}:{
+  selectedTask: { id: number } | null
+  selectTask: (task: { id: number } | null) => void
+  taskRef: RefObject<HTMLDivElement>
+  selectedDate: Date | null
+  changeDate: (date: Date) => void
+}) => {
+  const remainingMonths = useUnit($remainingMonths)
+  return (
       <DateSection
         selectedTask={selectedTask}
         selectTask={selectTask}
@@ -142,11 +243,29 @@ export const AllUpcomingTasks = ({
           )
         }
         action={() => changeDate(new Date(remainingMonths.date.toISOString()))}
-        outRef={outRef}
+        outRef={taskRef}
         isSelected={remainingMonths.date.isSame(selectedDate, "day")}
         tasks={remainingMonths.restTasks}
       />
+  )
+}
 
+const YearSectionTaskList = ({
+  selectedTask,
+  selectTask,
+  taskRef,
+  selectedDate,
+  changeDate
+}: {
+  selectedTask: { id: number } | null
+  selectTask: (task: { id: number } | null) => void
+  taskRef: RefObject<HTMLDivElement>
+  selectedDate: Date | null
+  changeDate: (date: Date) => void
+}) => {
+  const upcomingYears = useUnit($upcomingYears)
+  return (
+  <div>
       {Object.entries(upcomingYears).map(([year, tasks]) => {
         return (
           <DateSection
@@ -163,11 +282,11 @@ export const AllUpcomingTasks = ({
               .year(+year)
               .startOf("year")
               .isSame(selectedDate, "day")}
-            outRef={outRef}
+            outRef={taskRef}
             tasks={tasks}
           />
         )
       })}
-    </div>
+  </div>
   )
 }

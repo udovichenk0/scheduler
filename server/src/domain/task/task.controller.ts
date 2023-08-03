@@ -20,17 +20,17 @@ import {
 } from './dto/task.dto';
 import { ZodValidationPipe } from 'nestjs-zod';
 
-@Controller('')
+@Controller('tasks')
 @UseGuards(TokenGuard)
 export class TaskController {
   constructor(private taskService: TaskService) {}
-  @Get('get-tasks')
+  @Get('get')
   async getTasks(@Req() req: Request) {
     const user = req.session['user'] as UserDto;
     const tasks = await this.taskService.findMany({ id: user.id });
     return tasks;
   }
-  @Post('create-task')
+  @Post('create')
   @UsePipes(new ZodValidationPipe(CreateTaskCredentialDto))
   async createTask(
     @Req() req: Request,
@@ -47,7 +47,7 @@ export class TaskController {
     });
     return TaskDto.create(task);
   }
-  @Post('update-task')
+  @Post('update')
   async updateTask(@Body() taskCredentials: UpdateTaskCredentialDto) {
     const { id, ...credentials } = taskCredentials;
     const task = await this.taskService.updateOne({
@@ -72,7 +72,7 @@ export class TaskController {
     });
     return task;
   }
-  @Post('delete-task')
+  @Post('delete')
   @UsePipes(new ZodValidationPipe(DeleteTaskCredentialsDto))
   async deleteTask(@Body() taskCredentials: DeleteTaskCredentialsDto) {
     const { id } = taskCredentials;
