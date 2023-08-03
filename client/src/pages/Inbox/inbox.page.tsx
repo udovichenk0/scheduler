@@ -1,5 +1,6 @@
 import { useUnit } from "effector-react"
 import { Fragment, useRef, useState } from "react"
+import { Layout } from "@/templates/main"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { ModifyTaskForm } from "@/entities/task/modify"
 import { TaskItem } from "@/entities/task/tasks"
@@ -11,10 +12,9 @@ import {
   $$taskAccordion,
   $$updateTask,
 } from "./inbox.model"
-import { Layout } from "@/templates/main"
 
 export const Inbox = () => {
-  const [selectedTask, selectTask] = useState<{ id: number } | null>(null)
+  const [selectedTask, selectTask] = useState<Nullable<{ id: number }>>(null)
   const ref = useRef<HTMLDivElement>(null)
   const [
     tasks,

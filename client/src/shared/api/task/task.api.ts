@@ -6,10 +6,10 @@ const createTaskContract = zodContract(taskDtoSchema)
 
 type CreateTaskParamsType = {
   title: string
-  description: string | null
+  description: Nullable<string>
   status: "FINISHED" | "CANCELED" | "INPROGRESS"
   type: "inbox" | "unplaced"
-  start_date: Date | null
+  start_date: Nullable<Date>
 }
 
 export const createTaskQuery = authQuery<
@@ -43,10 +43,10 @@ const updateTaskContract = zodContract(taskDtoSchema)
 type UpdateTaskParams = {
   id: number
   title: string
-  description: string | null
+  description: Nullable<string>
   status: "FINISHED" | "INPROGRESS"
   type: "inbox" | "unplaced"
-  start_date: Date | null
+  start_date: Nullable<Date>
 }
 
 export const updateTaskQuery = authQuery<TaskDto, { body: UpdateTaskParams }>({

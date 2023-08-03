@@ -2,6 +2,7 @@ import { useUnit } from "effector-react"
 import { Settings } from "@/widgets/settings"
 import { $isPomodoroRunning, Pomodoro } from "@/features/pomodoro"
 import { Button } from "@/shared/ui/buttons/main-button"
+import { Typography } from "@/shared/ui/general/typography"
 import { Icon, IconName } from "@/shared/ui/icon"
 import { pomodoroModal, settingsModal } from "./header.model"
 import { PomodoroProgressBar } from "./ui/progress-bar"
@@ -54,7 +55,7 @@ export const Header = ({
       />
       <div className="flex items-center gap-4">
         <Icon name={iconName} className="h-5 w-5 fill-cIconDefault" />
-        <h2 className="text-[24px]">{title}</h2>
+        <Typography.Heading size="lg">{title}</Typography.Heading>
       </div>
     </div>
   )

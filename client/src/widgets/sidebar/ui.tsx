@@ -50,11 +50,13 @@ export const Sidebar = () => {
           </div>
         </div>
         <div className="h-full px-2 py-1">
-          <Button size={"sm"} className="w-full text-start" intent={"primary"}>
-            <Icon name="common/plus" className="mr-4 text-cOpacitySecondFont" />
-            <span className="text-[12px] text-cOpacitySecondFont">
-              New Project
-            </span>
+          <Button
+            size={"sm"}
+            className="w-full text-start text-cOpacitySecondFont"
+            intent={"primary"}
+          >
+            <Icon name="common/plus" className="mr-4" />
+            <span className="text-[12px]">New Project</span>
           </Button>
         </div>
         <div className="flex border-t-[1px] border-cBorder px-2 py-1">

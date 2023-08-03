@@ -4,7 +4,7 @@ import { debug } from "patronum"
 export const setTokenTriggered = createEvent<string>()
 export const resetToken = createEvent()
 
-export const $accessToken = createStore<string | null>(null)
+export const $accessToken = createStore<Nullable<string>>(null)
 debug($accessToken)
 sample({
   clock: setTokenTriggered,

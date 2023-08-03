@@ -6,7 +6,7 @@ import { z } from "zod"
 
 const ThemeSchema = z.enum(["space", "default", "dark", "light", "grey"])
 
-type Theme = z.infer<typeof ThemeSchema>
+export type Theme = z.infer<typeof ThemeSchema>
 export const themeChanged = createEvent<Theme>()
 
 export const $theme = createStore<Theme>("default")
@@ -14,7 +14,7 @@ export const $theme = createStore<Theme>("default")
 const changeDateThemeFx = createEffect((theme: Theme) => {
   document.documentElement.setAttribute("data-theme", theme)
 })
-
+//TODO make factory to manage cookie storage
 persist({
   store: $theme,
   key: "data-theme",

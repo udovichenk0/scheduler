@@ -109,7 +109,7 @@ export const Pomodoro = ({
           })}
         </div>
         {taskTitle && (
-          <div className="w-full rounded-[5px] mb-3 bg-cHover p-[5px] text-center">
+          <div className="mb-3 w-full rounded-[5px] bg-cHover p-[5px] text-center">
             {taskTitle}
           </div>
         )}
@@ -148,7 +148,9 @@ function setCustomDuration({
   defaultDurations: { time: number }[]
   customDuration: number
 }) {
-  const customDurationMatchDefault = defaultDurations.find((item) => item.time === customDuration)
+  const customDurationMatchDefault = defaultDurations.find(
+    (item) => item.time === customDuration,
+  )
   if (customDurationMatchDefault) {
     return defaultDurations
   }

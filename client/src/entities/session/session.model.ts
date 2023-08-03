@@ -4,18 +4,18 @@ import { User } from "./type"
 
 export const setSessionUserTriggered = createEvent<User>()
 export const resetSession = createEvent()
-const $user = createStore<User | null>(null)
+const $user = createStore<Nullable<User>>(null)
 sample({
   clock: refreshQuery.finished.success,
   fn: ({ result }) => result?.user,
-  target: $user
+  target: $user,
 })
 export const $sessionUser = $user.map((user) => user)
 sample({
   clock: setSessionUserTriggered,
-  target: $user
+  target: $user,
 })
 sample({
   clock: resetSession,
-  target: $user.reinit!
+  target: $user.reinit!,
 })

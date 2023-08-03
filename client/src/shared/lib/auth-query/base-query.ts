@@ -6,7 +6,7 @@ export const baseQuery = createEffect(
     token,
   }: {
     request: Request & HttpRequestType
-    token: string | null
+    token: Nullable<string>
   }) => {
     const { method, url, headers, body, params, query } = request
     let urlWithParams

@@ -1,0 +1,26 @@
+.heading {
+  &[data-size="xs"] {
+    @apply text-[14px] leading-tight;
+  }
+  &[data-size="sm"] {
+    @apply text-[16px] leading-tight;
+  }
+  &[data-size="base"] {
+    @apply text-[18px] leading-tight;
+  }
+  &[data-size="lg"] {
+    @apply text-[24px] leading-none;
+  }
+}
+
+.paragraph {
+  &[data-size="xs"] {
+    @apply text-[12px];
+  }
+  &[data-size="sm"] {
+    @apply text-sm;
+  }
+  &[data-size="base"] {
+    @apply text-base;
+  }
+}

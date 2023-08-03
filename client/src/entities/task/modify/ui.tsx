@@ -1,10 +1,10 @@
 import { Event as EffectorEvent, Store } from "effector"
 import { useUnit } from "effector-react"
 import { useState, useRef } from "react"
+import { capitalizeLetter } from "@/shared/lib/capitalize-first-letter"
 import { Checkbox } from "@/shared/ui/buttons/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
-import { capitalizeLetter } from "./lib/capitalize-first-letter"
 import { normalizeDate } from "./lib/normalize-date"
 import { DateModal } from "./ui/date-modal"
 import { TypeModal } from "./ui/type-modal"
@@ -14,7 +14,7 @@ type ModifyTaskFormType = {
   $description: Store<string>
   $status: Store<"FINISHED" | "INPROGRESS">
   $type: Store<"inbox" | "unplaced">
-  $startDate: Store<Date | null>
+  $startDate: Store<Nullable<Date>>
   statusChanged: EffectorEvent<"FINISHED" | "INPROGRESS">
   descriptionChanged: EffectorEvent<string>
   titleChanged: EffectorEvent<string>
@@ -86,7 +86,7 @@ export const ModifyTaskForm = ({
         />
         <div className="">
           <div className="flex flex-col gap-1">
-            <span>
+            <div>
               <Button
                 onClick={() => setTypeOpen((prev) => !prev)}
                 size={"sm"}
@@ -100,7 +100,7 @@ export const ModifyTaskForm = ({
                   {capitalizeLetter(currentType)}
                 </div>
               </Button>
-            </span>
+            </div>
             <div className="flex">
               {date && (
                 <Button

@@ -5,7 +5,7 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   icon?: ReactNode
   type?: "text" | "password"
   label?: string
-  error?: string | null
+  error?: Nullable<string>
 }
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ icon, type, label, className, disabled, error, value, ...rest }, ref) => {

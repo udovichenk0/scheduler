@@ -5,7 +5,7 @@ export const modifyFormFactory = ({
   defaultDate = null,
 }: {
   defaultType?: "inbox" | "unplaced"
-  defaultDate?: Date | null
+  defaultDate: Nullable<Date>
 }) => {
   const statusChanged = createEvent<"FINISHED" | "INPROGRESS">()
   const titleChanged = createEvent<string>()
@@ -17,7 +17,7 @@ export const modifyFormFactory = ({
   const $title = createStore("")
   const $description = createStore<string>("")
   const $status = createStore<"FINISHED" | "INPROGRESS">("INPROGRESS")
-  const $startDate = createStore<Date | null>(defaultDate)
+  const $startDate = createStore<Nullable<Date>>(defaultDate)
   const $type = createStore<"inbox" | "unplaced">(defaultType)
   const $isDirty = createStore(false)
   const $isAllowToSubmit = combine(
@@ -39,16 +39,7 @@ export const modifyFormFactory = ({
       start_date,
     }),
   )
-  sample({
-    clock: resetFieldsTriggered,
-    target: [
-      $title.reinit,
-      $description.reinit,
-      $status.reinit,
-      $isDirty.reinit,
-      $type.reinit,
-    ],
-  })
+
   sample({
     clock: titleChanged,
     target: $title,
@@ -73,6 +64,7 @@ export const modifyFormFactory = ({
     fn: () => "unplaced" as const,
     target: $type,
   })
+
   sample({
     clock: dateChanged,
     source: $type,
@@ -110,6 +102,16 @@ export const modifyFormFactory = ({
     ],
     fn: () => true,
     target: $isDirty,
+  })
+  sample({
+    clock: resetFieldsTriggered,
+    target: [
+      $title.reinit,
+      $description.reinit,
+      $status.reinit,
+      $isDirty.reinit,
+      $type.reinit,
+    ],
   })
   return {
     statusChanged,

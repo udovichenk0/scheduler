@@ -9,7 +9,7 @@ import {
 import { baseQuery } from "./base-query"
 import { Request, Response, HttpRequestType } from "./type"
 
-let refreshPromiseQueue: Promise<RefreshType> | null = null
+let refreshPromiseQueue: Nullable<Promise<RefreshType>> = null
 
 export const authQuery = <Resp, Params extends HttpRequestType | void>({
   request,
@@ -38,7 +38,7 @@ export const authQuery = <Resp, Params extends HttpRequestType | void>({
         body?: Record<string, unknown>
         params?: Record<string, unknown>
         query?: Record<string, string>
-        token: string | null
+        token: Nullable<string>
       }) => {
         const response = await baseQuery({
           request: { ...request, body, params, query },

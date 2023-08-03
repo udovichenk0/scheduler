@@ -1,20 +1,17 @@
 import { AccentThemeChanger, MainThemeChanger } from "@/entities/settings/theme"
+import { Typography } from "@/shared/ui/general/typography"
 
 export const ThemeTab = () => {
   return (
     <div className="px-8">
-      <h2 className="mb-6 text-center text-sm text-cFont">
+      <Typography.Heading size="xs" className="mb-6 text-center text-cFont">
         Select color theme
-      </h2>
-      <div className={`mb-6 flex justify-around gap-2`}>
-        <MainThemeChanger />
-      </div>
-      <h2 className="mb-6 text-center text-sm text-cFont">
+      </Typography.Heading>
+      <MainThemeChanger />
+      <Typography.Heading size="xs" className="mb-6 text-center text-cFont">
         Select an accent color
-      </h2>
-      <div className="flex justify-center gap-6">
-        <AccentThemeChanger />
-      </div>
+      </Typography.Heading>
+      <AccentThemeChanger />
     </div>
   )
 }

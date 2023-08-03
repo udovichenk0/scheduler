@@ -15,7 +15,7 @@ vi.mock("@/shared/lib/block-expansion", () => {
         $isAllowToOpenCreate: createStore(true),
         updateTaskClosed: createEvent(),
         $updatedTriggered: createStore(false),
-        $taskId: createStore<number | null>(null),
+        $taskId: createStore<Nullable<number>>(null),
         $newTask: createStore(false),
         $createdTriggered: createStore(false),
       }

@@ -1,6 +1,7 @@
 import { useUnit } from "effector-react"
 import { FormEvent, useEffect, useRef } from "react"
 import { Button } from "@/shared/ui/buttons/main-button"
+import { Typography } from "@/shared/ui/general/typography"
 import { Icon } from "@/shared/ui/icon"
 import { Input } from "@/shared/ui/input"
 import { $email, $emailError, emailChanged, submitTriggered } from "./modal"
@@ -34,10 +35,12 @@ export const CheckEmailForm = ({ goBack }: { goBack: () => void }) => {
           className="text-4 rotate-180 text-cIconDefault"
         />
       </Button>
-      <h2 className="mb-3 text-lg font-medium">Log in by email</h2>
-      <p className="mb-7 text-sm">
+      <Typography.Heading size="base" className="mb-3 font-medium">
+        Log in by email
+      </Typography.Heading>
+      <Typography.Paragraph size="sm" className="mb-7">
         Specify the address to log in to your account or register
-      </p>
+      </Typography.Paragraph>
       <form
         className="flex w-full flex-col"
         onSubmit={(e) => onSubmit(e, submit)}

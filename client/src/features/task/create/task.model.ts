@@ -12,7 +12,7 @@ export const createTaskFactory = ({
 }: {
   taskModel: ExpensionTaskType
   defaultType: "inbox" | "unplaced"
-  defaultDate: Date | null
+  defaultDate: Nullable<Date>
 }) => {
   const {
     $title,
