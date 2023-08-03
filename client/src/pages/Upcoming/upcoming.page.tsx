@@ -6,36 +6,29 @@ import {
   $$deleteTask,
   $selectedDate,
   currentDateSelected,
-  taskAccordion,
+  $$taskAccordion,
 } from "./upcoming.model"
-import { MainLayout } from "@/templates/main"
+import { Layout } from "@/templates/main"
 export const Upcoming = () => {
   const ref = useRef<HTMLDivElement>(null)
-  const [selectedTask, selectTask] = useState<{id: number} | null>(null)
+  const [selectedTask, selectTask] = useState<{ id: number } | null>(null)
   const [
-    closeTaskTriggered, 
-    createTaskOpened, 
-    startDate, 
+    closeTaskTriggered,
+    createTaskOpened,
+    startDate,
     changeDate,
-    deleteTask
-  ] = useUnit(
-    [
-      taskAccordion.closeTaskTriggered,
-      taskAccordion.createTaskToggled,
-      $selectedDate,
-      currentDateSelected,
-      $$deleteTask.taskDeleted
-    ],
-  )
+    deleteTask,
+  ] = useUnit([
+    $$taskAccordion.closeTaskTriggered,
+    $$taskAccordion.createTaskToggled,
+    $selectedDate,
+    currentDateSelected,
+    $$deleteTask.taskDeleted,
+  ])
   return (
-    <MainLayout
-      isTaskSelected={!!selectedTask}
-      deleteTask={() => selectedTask && deleteTask({ id: selectedTask.id })}
-      action={() => createTaskOpened({ date: startDate })}
-      iconName="common/upcoming"
-      title="Upcoming"
-    >
-      <div
+    <Layout>
+      <Layout.Header iconName="common/upcoming" title="Upcoming" />
+      <Layout.Content
         className="h-full"
         onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)}
       >
@@ -46,7 +39,12 @@ export const Upcoming = () => {
           selectedDate={startDate}
           outRef={ref}
         />
-      </div>
-    </MainLayout>
+      </Layout.Content>
+      <Layout.Footer
+        isTaskSelected={!!selectedTask}
+        deleteTask={() => selectedTask && deleteTask({ id: selectedTask.id })}
+        action={() => createTaskOpened({ date: startDate })}
+      />
+    </Layout>
   )
 }

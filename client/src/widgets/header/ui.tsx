@@ -6,7 +6,13 @@ import { Icon, IconName } from "@/shared/ui/icon"
 import { pomodoroModal, settingsModal } from "./header.model"
 import { PomodoroProgressBar } from "./ui/progress-bar"
 
-export const Header = ({ icon, title }: { icon: IconName; title: string }) => {
+export const Header = ({
+  iconName,
+  title,
+}: {
+  iconName: IconName
+  title: string
+}) => {
   const [togglePomodoroModal, toggleSettingsModal, isPomodoroRunning] = useUnit(
     [
       pomodoroModal.toggleTriggered,
@@ -47,7 +53,7 @@ export const Header = ({ icon, title }: { icon: IconName; title: string }) => {
         }
       />
       <div className="flex items-center gap-4">
-        <Icon name={icon} className="h-5 w-5 fill-cIconDefault" />
+        <Icon name={iconName} className="h-5 w-5 fill-cIconDefault" />
         <h2 className="text-[24px]">{title}</h2>
       </div>
     </div>

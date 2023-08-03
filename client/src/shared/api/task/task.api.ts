@@ -17,7 +17,7 @@ export const createTaskQuery = authQuery<
   { body: CreateTaskParamsType }
 >({
   request: {
-    url: "create-task",
+    url: "tasks/create",
     method: "POST",
   },
   response: {
@@ -30,7 +30,7 @@ const tasksQueryContract = zodContract(tasksDtoSchema)
 
 export const tasksQuery = authQuery<TaskDto[], void>({
   request: {
-    url: "get-tasks",
+    url: "tasks/get",
     method: "GET",
   },
   response: {
@@ -51,7 +51,7 @@ type UpdateTaskParams = {
 
 export const updateTaskQuery = authQuery<TaskDto, { body: UpdateTaskParams }>({
   request: {
-    url: "update-task",
+    url: "tasks/update",
     method: "POST",
   },
   response: {
@@ -72,7 +72,7 @@ export const updateStatusQuery = authQuery<
   { body: UpdateStatusParams }
 >({
   request: {
-    url: "update-status",
+    url: "tasks/update-status",
     method: "POST",
   },
   response: {
@@ -83,7 +83,7 @@ export const updateStatusQuery = authQuery<
 
 export const deleteTaskQuery = authQuery<TaskDto, { body: { id: number } }>({
   request: {
-    url: "delete-task",
+    url: "tasks/delete",
     method: "POST",
   },
   response: {

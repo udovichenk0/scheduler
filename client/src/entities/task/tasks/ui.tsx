@@ -14,9 +14,9 @@ export const TaskItem = ({
   data: Task
   onChange: () => void
   onDoubleClick: () => void
-  date?: boolean,
-  onClick: (task: Task | null) => void,
-  isTaskSelected: boolean,
+  date?: boolean
+  onClick: (task: Task | null) => void
+  isTaskSelected: boolean
 }) => {
   const { title, status, start_date } = data
   useEffect(() => {
@@ -29,7 +29,9 @@ export const TaskItem = ({
       onDoubleClick={onDoubleClick}
       onClick={() => onClick(data)}
       onBlur={() => onClick(null)}
-      className={`${isTaskSelected && 'bg-cFocus'} flex w-full cursor-default select-none items-center rounded-[5px] px-2 py-2 text-sm text-primary hover:bg-cHover`}
+      className={`${
+        isTaskSelected && "bg-cFocus"
+      } flex w-full cursor-default select-none items-center rounded-[5px] px-2 py-2 text-sm text-primary hover:bg-cHover`}
     >
       <Checkbox onChange={onChange} checked={status == "FINISHED"} />
       {date && start_date && (

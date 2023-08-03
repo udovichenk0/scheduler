@@ -7,10 +7,10 @@ import { updateTaskFactory } from "@/features/task/update"
 import { $taskKv } from "@/entities/task/tasks"
 import { createTaskAccordionFactory } from "@/shared/lib/task-accordion-factory"
 
-export const taskAccordion = createTaskAccordionFactory()
-export const updateTaskModel = updateTaskFactory({ taskModel: taskAccordion })
-export const createTaskModel = createTaskFactory({
-  taskModel: taskAccordion,
+export const $$taskAccordion = createTaskAccordionFactory()
+export const $$updateTask = updateTaskFactory({ taskModel: $$taskAccordion })
+export const $$createTask = createTaskFactory({
+  taskModel: $$taskAccordion,
   defaultType: "unplaced",
   defaultDate: new Date(),
 })
