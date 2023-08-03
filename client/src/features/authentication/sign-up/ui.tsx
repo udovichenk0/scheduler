@@ -1,6 +1,7 @@
 import { useUnit } from "effector-react"
 import { FormEvent, useEffect, useRef, useState } from "react"
 import { Button } from "@/shared/ui/buttons/main-button"
+import { Typography } from "@/shared/ui/general/typography"
 import { Icon } from "@/shared/ui/icon"
 import { Input } from "@/shared/ui/input"
 import { $email } from "../by-email"
@@ -41,10 +42,12 @@ export const Signup = ({ goBack }: { goBack: () => void }) => {
           className="text-4 rotate-180 text-cIconDefault"
         />
       </Button>
-      <h2 className="mb-3 text-lg font-medium">Registration</h2>
-      <p className="mb-7 text-sm">
+      <Typography.Heading size="base" className="mb-3 font-medium">
+        Registration
+      </Typography.Heading>
+      <Typography.Paragraph size="sm" className="mb-7">
         Creating an account using the address {email}
-      </p>
+      </Typography.Paragraph>
       <form
         className="flex w-full flex-col"
         onSubmit={(e) => onSubmit(e, submit)}

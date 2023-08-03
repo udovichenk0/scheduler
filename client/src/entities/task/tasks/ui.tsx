@@ -15,7 +15,7 @@ export const TaskItem = ({
   onChange: () => void
   onDoubleClick: () => void
   date?: boolean
-  onClick: (task: Task | null) => void
+  onClick: (task: Nullable<Task>) => void
   isTaskSelected: boolean
 }) => {
   const { title, status, start_date } = data
@@ -36,7 +36,7 @@ export const TaskItem = ({
       <Checkbox onChange={onChange} checked={status == "FINISHED"} />
       {date && start_date && (
         <span
-          className={`ml-2 rounded-[5px] px-[5px] py-[1px] text-[12px] ${
+          className={`ml-2 rounded-[5px] px-[5px] text-[12px] ${
             dayjs(start_date).isSameOrAfter(dayjs())
               ? "bg-cTimeInterval"
               : "bg-cTimeIntervalLow"

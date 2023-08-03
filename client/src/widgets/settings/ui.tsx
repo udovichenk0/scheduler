@@ -12,17 +12,6 @@ const tabsName = {
   theme: "theme" as const,
   pomodoro: "pomodoro" as const,
 }
-const tabs = [
-  { iconName: "settings" as const, title: "General", label: tabsName.general },
-  {
-    iconName: "cloud" as const,
-    title: "Synchronization",
-    label: tabsName.synchronization,
-  },
-  { iconName: "palette" as const, title: "Theme", label: tabsName.theme },
-  { iconName: "timer" as const, title: "Pomodoro", label: tabsName.pomodoro },
-]
-
 export const Settings = ({
   defaultTab = tabsName.general,
   modal,
@@ -34,17 +23,39 @@ export const Settings = ({
     <BaseModal title="Settings" className="w-[600px]" modal={modal}>
       <Root defaultValue={defaultTab} className="text-sm">
         <Root.List className="flex gap-5 border-b-[1px] border-cBorder px-6 pb-4">
-          {tabs.map(({ iconName, title, label }) => (
-            <Root.Trigger
-              value={label}
-              key={label}
-              activeClass={"text-cFont"}
-              className={`flex flex-col items-center gap-3 text-[#76899b] hover:text-primary`}
-            >
-              <Icon name={`common/${iconName}`} className="h-8 w-8" />
-              <span className="text-inherit">{title}</span>
-            </Root.Trigger>
-          ))}
+          <Root.Trigger
+            value={tabsName.general}
+            activeClass={"text-cFont"}
+            className={`flex flex-col items-center gap-3 text-[#76899b] hover:text-primary`}
+          >
+            <Icon name="common/settings" className="h-8 w-8" />
+            <span className="text-inherit">Settings</span>
+          </Root.Trigger>
+          <Root.Trigger
+            value={tabsName.synchronization}
+            activeClass={"text-cFont"}
+            className={`flex flex-col items-center gap-3 text-[#76899b] hover:text-primary`}
+          >
+            <Icon name="common/cloud" className="h-8 w-8" />
+            <span className="text-inherit">Synchronization</span>
+          </Root.Trigger>
+
+          <Root.Trigger
+            value={tabsName.theme}
+            activeClass={"text-cFont"}
+            className={`flex flex-col items-center gap-3 text-[#76899b] hover:text-primary`}
+          >
+            <Icon name="common/palette" className="h-8 w-8" />
+            <span className="text-inherit">Theme</span>
+          </Root.Trigger>
+          <Root.Trigger
+            value={tabsName.pomodoro}
+            activeClass={"text-cFont"}
+            className={`flex flex-col items-center gap-3 text-[#76899b] hover:text-primary`}
+          >
+            <Icon name="common/timer" className="h-8 w-8" />
+            <span className="text-inherit">Pomodoro</span>
+          </Root.Trigger>
         </Root.List>
         <Root.Content label={tabsName.general}>
           <GeneralTab />

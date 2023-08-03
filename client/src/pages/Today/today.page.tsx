@@ -1,5 +1,6 @@
 import { useUnit } from "effector-react"
 import { Fragment, RefObject, useRef, useState } from "react"
+import { Layout } from "@/templates/main"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { ModifyTaskForm } from "@/entities/task/modify"
 import { TaskItem } from "@/entities/task/tasks"
@@ -16,10 +17,9 @@ import {
   toggleOverdueTasksOpened,
   $$updateTask,
 } from "./today.model"
-import { Layout } from "@/templates/main"
 
 export const Today = () => {
-  const [selectedTask, selectTask] = useState<{ id: number } | null>(null)
+  const [selectedTask, selectTask] = useState<Nullable<{ id: number }>>(null)
   const taskRef = useRef<HTMLDivElement>(null)
   const [closeTaskTriggered, createTaskOpened, deleteTask] = useUnit([
     $$taskAccordion.closeTaskTriggered,
@@ -58,8 +58,8 @@ const OverdueTasks = ({
   selectedTask,
   taskRef,
 }: {
-  selectTask: (task: { id: number } | null) => void
-  selectedTask: { id: number } | null
+  selectTask: (task: Nullable<{ id: number }>) => void
+  selectedTask: Nullable<{ id: number }>
   taskRef: RefObject<HTMLDivElement>
 }) => {
   const [
@@ -136,8 +136,8 @@ const TodayTasks = ({
   selectTask,
 }: {
   taskRef: RefObject<HTMLDivElement>
-  selectedTask: { id: number } | null
-  selectTask: (task: { id: number } | null) => void
+  selectedTask: Nullable<{ id: number }>
+  selectTask: (task: Nullable<{ id: number }>) => void
 }) => {
   const [tasks, changeStatus, newTask, taskId, updateTaskOpened, overdueTasks] =
     useUnit([

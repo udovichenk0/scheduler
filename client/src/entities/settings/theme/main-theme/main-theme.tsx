@@ -1,101 +1,75 @@
 import { useUnit } from "effector-react"
+import { capitalizeLetter } from "@/shared/lib/capitalize-first-letter"
 import { Icon } from "@/shared/ui/icon"
-import { $theme, themeChanged } from "./main-theme.model"
-
+import { $theme, Theme, themeChanged } from "./main-theme.model"
+import style from "./styles.module.css"
 const themeBoxes = [
-  {
-    title: "Space",
-    theme: "space" as const,
-    mainBg: "bg-main-blue",
-    topBox: "bg-azure",
-    text: "text-[#ffffff]",
-    leftBox: "bg-[#1c283e]",
-    rightBox: "bg-[#121227]",
-  },
-  {
-    title: "Default",
-    theme: "default" as const,
-    mainBg: "bg-[#23242b]",
-    topBox: "bg-azure",
-    text: "text-[#ffffff]",
-    leftBox: "bg-[#fff]",
-    rightBox: "bg-[#76899b]",
-  },
-  {
-    title: "Dark",
-    theme: "dark" as const,
-    mainBg: "bg-[#0d0d0d]",
-    topBox: "bg-azure",
-    text: "text-[#a6a6a6]",
-    leftBox: "bg-[#182533]",
-    rightBox: "bg-[#262626]",
-  },
-  {
-    title: "Light",
-    theme: "light" as const,
-    mainBg: "bg-[#f9f9f9]",
-    topBox: "bg-azure",
-    text: "text-[#596175]",
-    leftBox: "bg-[#c7d6eb]",
-    rightBox: "bg-[#76899b]",
-  },
-  {
-    title: "Grey",
-    theme: "grey" as const,
-    mainBg: "bg-[#fff]",
-    topBox: "bg-azure",
-    text: "text-[#fffc]",
-    leftBox: "bg-[#595959]",
-    rightBox: "bg-[#dfe7f0]",
-  },
+  "space" as const,
+  "default" as const,
+  "dark" as const,
+  "light" as const,
+  "grey" as const,
 ]
 
 export const MainThemeChanger = () => {
-  const activeTheme = useUnit($theme)
+  const [activeTheme, changeTheme] = useUnit([$theme, themeChanged])
   return (
-    <>
-      {themeBoxes.map(
-        ({ title, theme, mainBg, topBox, text, leftBox, rightBox }) => {
-          const isActive = activeTheme == theme
-          return (
-            <button key={title} onClick={() => themeChanged(theme)}>
-              <div
-                className={`flex h-[50px] w-[50px] items-end justify-center rounded-[5px] border-[1px] ${mainBg} ${
-                  isActive ? "border-cBorder" : "border-none"
-                }`}
-              >
-                <div className="flex w-full items-end gap-[3px] p-[5px]">
-                  <div className="w-full">
-                    <div className={`w-full ${topBox} h-[8px] rounded-[2px]`} />
-                    <div className="mt-[2px] flex w-full gap-[2px]">
-                      <div
-                        className={`w-full ${leftBox} h-[8px] rounded-[2px]`}
-                      />
-                      <div
-                        className={`w-full ${rightBox} h-[8px] rounded-[2px]`}
-                      />
-                    </div>
-                  </div>
-                  <span
-                    className={`flex h-[26px] text-start text-[24px] ${text}`}
-                  >
-                    A
-                  </span>
-                </div>
-              </div>
-              <div className="flex -translate-x-[7px] justify-center gap-[3px] text-[12px] text-cFont">
-                <div className="w-[10px]">
-                  <Icon
-                    name="common/done"
-                    className={`w-[10px] pr-3 ${!isActive && "hidden"}`}
-                  />
-                </div>
-                <div className="">{title}</div>
-              </div>
-            </button>
-          )
-        },
-      )}
-    </>
+    <div className="mb-6 flex justify-around gap-2">
+      {themeBoxes.map((theme) => {
+        return (
+          <ThemeBox
+            key={theme}
+            title={capitalizeLetter(theme)}
+            theme={theme}
+            activeTheme={activeTheme}
+            changeTheme={changeTheme}
+          />
+        )
+      })}
+    </div>
+  )
+}
+
+const ThemeBox = ({
+  title,
+  theme,
+  activeTheme,
+  changeTheme,
+}: {
+  title: string
+  theme: Theme
+  activeTheme: Theme
+  changeTheme: (theme: Theme) => void
+}) => {
+  const isActive = activeTheme == theme
+  return (
+    <button key={title} onClick={() => changeTheme(theme)}>
+      <div data-color={theme} data-active={isActive} className={style.mainBg}>
+        <div className="flex w-full items-end gap-[3px] p-[5px]">
+          <div className="w-full">
+            <div
+              data-color={theme}
+              className={`w-full ${style.topBox} h-[8px] rounded-[2px]`}
+            />
+            <div className="mt-[2px] flex w-full gap-[2px]">
+              <div data-color={theme} className={style.leftBox} />
+              <div data-color={theme} className={style.rightBox} />
+            </div>
+          </div>
+          <span data-color={theme} className={style.text}>
+            A
+          </span>
+        </div>
+      </div>
+      <div className="flex -translate-x-[7px] justify-center gap-[3px] text-[12px] text-cFont">
+        <div className="w-[10px]">
+          <Icon
+            name="common/done"
+            className={`pr-3 text-[10px] ${!isActive && "hidden"}`}
+          />
+        </div>
+        <span>{title}</span>
+      </div>
+    </button>
   )
 }

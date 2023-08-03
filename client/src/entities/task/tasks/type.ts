@@ -6,6 +6,6 @@ export type Task = {
   description: string
   status: TaskStatus
   type: TaskType
-  start_date: Date | null
+  start_date: Nullable<Date>
   user_id: number
 }

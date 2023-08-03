@@ -1,40 +1,40 @@
 import { useUnit } from "effector-react"
 import { Icon } from "@/shared/ui/icon"
-import { $accent, accentChanged } from "./icon-theme.model"
-
+import { $accent, Accent, accentChanged } from "./icon-theme.model"
+import style from "./style.module.css"
 const accentColors = [
-  { color: "bg-accentBlue", accent: "blue" as const },
-  { color: "bg-accentYellow", accent: "yellow" as const },
-  { color: "bg-accentRed", accent: "red" as const },
-  { color: "bg-accentOrange", accent: "orange" as const },
-  { color: "bg-accentGreen", accent: "green" as const },
-  { color: "bg-accentPurple", accent: "purple" as const },
-  { color: "bg-accentPink", accent: "pink" as const },
+  "blue" as const,
+  "yellow" as const,
+  "red" as const,
+  "orange" as const,
+  "green" as const,
+  "purple" as const,
+  "pink" as const,
 ]
 
 export const AccentThemeChanger = () => {
-  const [changeAccent, activeAccent] = useUnit([accentChanged, $accent])
   return (
-    <>
-      {accentColors.map(({ color, accent }) => {
-        const isActive = activeAccent == accent
-        return (
-          <button
-            onClick={() => changeAccent(accent)}
-            key={color}
-            className={`inline-block h-[23px] w-[23px] rounded-[5px] text-center text-primary ${color} ${
-              isActive && "border-[1px] border-cFont"
-            }`}
-          >
-            {isActive && (
-              <Icon
-                name="common/done"
-                className="w-[10px] -translate-y-[2px]"
-              />
-            )}
-          </button>
-        )
+    <div className="flex justify-center gap-6">
+      {accentColors.map((accent) => {
+        return <AccentThemeBox key={accent} accent={accent} />
       })}
-    </>
+    </div>
+  )
+}
+const AccentThemeBox = ({ accent }: { accent: Accent }) => {
+  const [changeAccent, activeAccent] = useUnit([accentChanged, $accent])
+  const isActive = activeAccent == accent
+  return (
+    <button
+      onClick={() => changeAccent(accent)}
+      key={accent}
+      data-active={isActive}
+      data-color={accent}
+      className={style.accentColor}
+    >
+      {isActive && (
+        <Icon name="common/done" className="w-[10px] -translate-y-[1px]" />
+      )}
+    </button>
   )
 }

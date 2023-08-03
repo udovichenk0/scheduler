@@ -4,7 +4,7 @@ import { ExpandedTask } from "@/widgets/expanded-task"
 import { ModifyTaskForm } from "@/entities/task/modify"
 import { Task, TaskItem } from "@/entities/task/tasks"
 import { $$updateTask, $$taskAccordion, $$createTask } from "../upcoming.model"
-//change name 
+//change name
 export function DateSection({
   outRef,
   tasks,
@@ -19,8 +19,8 @@ export function DateSection({
   title: ReactNode
   isSelected: boolean
   action: () => void
-  selectTask: (task: Task | null) => void
-  selectedTask: { id: number } | null
+  selectTask: (task: Nullable<Task>) => void
+  selectedTask: Nullable<{ id: number }>
 }) {
   const [changeStatus, taskId, updateTaskOpened, newTask] = useUnit([
     $$updateTask.changeStatusTriggered,
@@ -69,7 +69,7 @@ export function DateSection({
       </div>
       <div className="px-4">
         {newTask && isSelected && (
-          <ExpandedTask className="mb-2" taskRef={outRef}>
+          <ExpandedTask taskRef={outRef}>
             <ModifyTaskForm date modifyTaskModel={$$createTask} />
           </ExpandedTask>
         )}

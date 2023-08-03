@@ -14,7 +14,7 @@ export const submitTriggered = createEvent()
 export const resetEmailTriggered = createEvent()
 
 export const $email = createStore("")
-export const $emailError = createStore<string | null>(null)
+export const $emailError = createStore<Nullable<string>>(null)
 const emailSchema = z.string().email().min(MIN_LENGTH).max(MAX_LENGTH)
 
 sample({

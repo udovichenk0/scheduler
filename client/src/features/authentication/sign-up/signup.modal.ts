@@ -18,7 +18,7 @@ export const submitTriggered = createEvent()
 export const resetSignupPasswordTriggered = createEvent()
 
 export const $password = createStore("")
-export const $passwordError = createStore<string | null>(null)
+export const $passwordError = createStore<Nullable<string>>(null)
 
 const signupSchema = z.string().min(8).max(50).trim()
 

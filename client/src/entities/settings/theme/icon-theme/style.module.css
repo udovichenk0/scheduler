@@ -1,0 +1,27 @@
+.accentColor {
+  @apply inline-block h-[23px] w-[23px] rounded-[5px] text-center text-primary;
+  &[data-active="true"] {
+    @apply border-[1px] border-cFont;
+  }
+  &[data-color="blue"] {
+    @apply bg-accentBlue;
+  }
+  &[data-color="yellow"] {
+    @apply bg-accentYellow;
+  }
+  &[data-color="red"] {
+    @apply bg-accentRed;
+  }
+  &[data-color="orange"] {
+    @apply bg-accentOrange;
+  }
+  &[data-color="green"] {
+    @apply bg-accentGreen;
+  }
+  &[data-color="purple"] {
+    @apply bg-accentPurple;
+  }
+  &[data-color="pink"] {
+    @apply bg-accentPink;
+  }
+}

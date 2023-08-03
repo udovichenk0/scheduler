@@ -13,7 +13,7 @@ export const submitTriggered = createEvent()
 export const resetSigninPasswordTriggered = createEvent()
 
 export const $password = createStore("")
-export const $passwordError = createStore<string | null>(null)
+export const $passwordError = createStore<Nullable<string>>(null)
 
 const signinSchema = z.string().trim().max(50)
 

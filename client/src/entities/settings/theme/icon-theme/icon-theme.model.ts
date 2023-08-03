@@ -12,7 +12,7 @@ const AccentSchema = z.enum([
   "pink",
 ])
 
-type Accent = z.infer<typeof AccentSchema>
+export type Accent = z.infer<typeof AccentSchema>
 
 export const accentChanged = createEvent<Accent>()
 

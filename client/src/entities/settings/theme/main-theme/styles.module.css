@@ -1,0 +1,93 @@
+.leftBox {
+  @apply h-[8px] w-full rounded-[2px];
+  &[data-color="space"] {
+    @apply bg-[#1c283e];
+  }
+  &[data-color="default"] {
+    @apply bg-[#fff];
+  }
+  &[data-color="dark"] {
+    @apply bg-[#182533];
+  }
+  &[data-color="light"] {
+    @apply bg-[#c7d6eb];
+  }
+  &[data-color="grey"] {
+    @apply bg-[#595959];
+  }
+}
+.rightBox {
+  @apply h-[8px] w-full rounded-[2px];
+  &[data-color="space"] {
+    @apply bg-[#121227];
+  }
+  &[data-color="default"] {
+    @apply bg-[#76899b];
+  }
+  &[data-color="dark"] {
+    @apply bg-[#262626];
+  }
+  &[data-color="light"] {
+    @apply bg-[#76899b];
+  }
+  &[data-color="grey"] {
+    @apply bg-[#dfe7f0];
+  }
+}
+.text {
+  @apply flex h-[26px] text-start text-[24px];
+  &[data-color="space"] {
+    @apply text-[#ffffff];
+  }
+  &[data-color="default"] {
+    @apply text-[#ffffff];
+  }
+  &[data-color="dark"] {
+    @apply text-[#a6a6a6];
+  }
+  &[data-color="light"] {
+    @apply text-[#596175];
+  }
+  &[data-color="grey"] {
+    @apply text-[#596175];
+  }
+}
+.topBox {
+  @apply h-[8px] w-full rounded-[2px];
+  &[data-color="space"] {
+    @apply bg-azure;
+  }
+  &[data-color="default"] {
+    @apply bg-azure;
+  }
+  &[data-color="dark"] {
+    @apply bg-azure;
+  }
+  &[data-color="light"] {
+    @apply bg-azure;
+  }
+  &[data-color="grey"] {
+    @apply bg-azure;
+  }
+}
+.mainBg {
+  @apply flex h-[50px] w-[50px] items-end justify-center rounded-[5px];
+  &[data-active="true"] {
+    @apply border-[1px] border-cBorder;
+  }
+  &[data-color="space"] {
+    @apply bg-main-blue;
+  }
+  &[data-color="default"] {
+    @apply bg-[#23242b];
+  }
+  &[data-color="dark"] {
+    @apply bg-[#0d0d0d];
+  }
+  &[data-color="light"] {
+    @apply bg-[#f9f9f9];
+  }
+  &[data-color="grey"] {
+    @apply bg-[#fff];
+  }
+}
