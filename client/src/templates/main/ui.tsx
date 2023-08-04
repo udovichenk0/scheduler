@@ -1,5 +1,7 @@
 import { ReactNode } from "react"
+
 import { Header } from "@/widgets/header"
+
 import { Content } from "./ui/content"
 import { Footer } from "./ui/footer"
 type PropsType = {

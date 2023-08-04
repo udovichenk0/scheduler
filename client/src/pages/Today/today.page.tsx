@@ -1,12 +1,17 @@
 import { useUnit } from "effector-react"
 import { RefObject, useRef, useState } from "react"
+
 import { Layout } from "@/templates/main"
+
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { List } from "@/widgets/tast-list"
+
 import { ModifyTaskForm } from "@/entities/task/modify"
+
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
+
 import {
   $$deleteTask,
   $isOverdueTasksOpened,

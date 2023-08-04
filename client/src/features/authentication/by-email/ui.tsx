@@ -1,9 +1,11 @@
 import { useUnit } from "effector-react"
 import { FormEvent, useEffect, useRef } from "react"
+
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
 import { Icon } from "@/shared/ui/icon"
 import { Input } from "@/shared/ui/input"
+
 import { $email, $emailError, emailChanged, submitTriggered } from "./modal"
 
 const onSubmit = (e: FormEvent, submit: () => void) => {

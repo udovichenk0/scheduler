@@ -1,4 +1,5 @@
 import { routes } from "@/shared/routing"
+
 import { Inbox } from "./inbox.page"
 
 export const InboxRoute = {

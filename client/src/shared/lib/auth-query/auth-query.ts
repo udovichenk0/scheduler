@@ -1,11 +1,13 @@
 import { createHeadlessQuery } from "@farfetched/core"
 import { attach, createEffect } from "effector"
+
 import {
   $accessToken,
   refreshFx,
   setTokenTriggered,
   RefreshType,
 } from "@/shared/api/token"
+
 import { baseQuery } from "./base-query"
 import { Request, Response, HttpRequestType } from "./type"
 

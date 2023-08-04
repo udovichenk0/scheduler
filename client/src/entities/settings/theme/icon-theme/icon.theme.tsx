@@ -1,5 +1,7 @@
 import { useUnit } from "effector-react"
+
 import { Icon } from "@/shared/ui/icon"
+
 import { $accent, Accent, accentChanged } from "./icon-theme.model"
 import style from "./style.module.css"
 const accentColors = [

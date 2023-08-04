@@ -1,11 +1,14 @@
 import { useUnit, useGate } from "effector-react"
+
 import { CheckEmailForm } from "@/features/authentication/by-email"
 import { Logout } from "@/features/authentication/logout"
 import { Signin } from "@/features/authentication/sign-in"
 import { Signup } from "@/features/authentication/sign-up"
+
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
 import { Icon } from "@/shared/ui/icon"
+
 import { $form, FormEnum, gate, formSelected } from "./sync.modal"
 
 export const SynchronizationTab = () => {

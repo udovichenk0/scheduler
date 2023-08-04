@@ -1,9 +1,13 @@
 import { useUnit } from "effector-react/effector-react.mjs"
 import { ReactNode, RefObject } from "react"
+
 import { Pomodoro } from "@/features/pomodoro"
+
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
+
 import { Settings } from "../settings"
+
 import { pomodoroModal, settingsModal } from "./model"
 
 export const ExpandedTask = ({

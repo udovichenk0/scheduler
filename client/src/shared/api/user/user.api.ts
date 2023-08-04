@@ -1,5 +1,7 @@
 import { createJsonQuery, declareParams } from "@farfetched/core"
+
 import { UserDto } from "@/shared/api/user"
+
 import { userSchema } from "./user.dto"
 //TODO remove farfetched from dependencies?
 export const getUserQuery = createJsonQuery({

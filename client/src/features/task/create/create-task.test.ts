@@ -1,8 +1,11 @@
 import { allSettled, createEvent, createStore, fork } from "effector"
 import { test, expect, vi } from "vitest"
+
 import { $taskKv } from "@/entities/task/tasks"
+
 import { createTaskQuery } from "@/shared/api/task"
 import { createTaskAccordionFactory } from "@/shared/lib/task-accordion-factory"
+
 import { createTaskFactory } from "."
 
 const taskModel = createTaskAccordionFactory()

@@ -1,7 +1,10 @@
 import { useUnit } from "effector-react"
 import { useRef, useState } from "react"
+
 import { Layout } from "@/templates/main"
+
 import { onClickOutside } from "@/shared/lib/on-click-outside"
+
 import { AllUpcomingTasks } from "./sections/upcoming-tasks"
 import {
   $$deleteTask,

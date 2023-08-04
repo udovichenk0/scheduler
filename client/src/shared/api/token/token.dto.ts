@@ -1,4 +1,5 @@
 import { z } from "zod"
+
 import { userSchema } from "../user/user.dto"
 export const tokenSchema = z.object({
   access_token: z.string(),

@@ -1,8 +1,11 @@
 import { useUnit } from "effector-react"
+
 import { Settings } from "@/widgets/settings"
+
+import { Icon } from "@/shared/ui/icon/icon"
 import { routes } from "@/shared/routing"
 import { Button } from "@/shared/ui/buttons/main-button/ui"
-import { Icon } from "@/shared/ui/icon/icon"
+
 import {
   $inboxTasksCount,
   $todayTasksCount,
@@ -11,6 +14,9 @@ import {
 } from "./sidebar.modal"
 import { Logo } from "./ui/logo"
 import { SideLink } from "./ui/side-link"
+
+
+
 
 export const Sidebar = () => {
   const [inboxTasksCount, todayTasksCount, toggleTriggered] = useUnit([

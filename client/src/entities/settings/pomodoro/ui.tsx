@@ -1,6 +1,8 @@
 import { clsx } from "clsx"
 import { useUnit } from "effector-react"
+
 import { Checkbox } from "@/shared/ui/buttons/checkbox"
+
 import {
   $longBreakDuration,
   $isEnabledNotificationSound,

@@ -1,6 +1,8 @@
 import { sample } from "effector"
 import { createEvent } from "effector/compat"
+
 import { resetSession } from "@/entities/session"
+
 import { logoutQuery } from "@/shared/api/auth"
 import { resetToken } from "@/shared/api/token"
 

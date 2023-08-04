@@ -1,8 +1,10 @@
 import { PomodoroSettings } from "@/entities/settings/pomodoro"
+
 import { ModalType } from "@/shared/lib/modal"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base-modal"
 import { Root } from "@/shared/ui/tab"
+
 import { SynchronizationTab, GeneralTab } from "./tabs"
 import { ThemeTab } from "./tabs/theme"
 

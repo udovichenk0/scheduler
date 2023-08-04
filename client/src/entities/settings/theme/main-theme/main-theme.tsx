@@ -1,6 +1,8 @@
 import { useUnit } from "effector-react"
+
 import { capitalizeLetter } from "@/shared/lib/capitalize-first-letter"
 import { Icon } from "@/shared/ui/icon"
+
 import { $theme, Theme, themeChanged } from "./main-theme.model"
 import style from "./styles.module.css"
 const themeBoxes = [

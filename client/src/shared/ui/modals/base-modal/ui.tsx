@@ -2,6 +2,7 @@ import { clsx } from "clsx"
 import { useUnit } from "effector-react"
 import { MouseEvent, ReactNode, useRef } from "react"
 import { createPortal } from "react-dom"
+
 import { ModalType } from "@/shared/lib/modal"
 interface ModalProps {
   children: ReactNode

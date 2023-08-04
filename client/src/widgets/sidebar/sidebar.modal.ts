@@ -1,7 +1,9 @@
 import { RouteInstance, RouteParams } from "atomic-router"
 import dayjs from "dayjs"
 import { combine, createEffect, createEvent, sample } from "effector"
+
 import { $taskKv } from "@/entities/task/tasks"
+
 import { createModal } from "@/shared/lib/modal"
 
 export const modal = createModal({ closeOnClickOutside: true })

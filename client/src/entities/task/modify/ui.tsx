@@ -1,10 +1,12 @@
 import { Event as EffectorEvent, Store } from "effector"
 import { useUnit } from "effector-react"
 import { useState, useRef } from "react"
+
 import { capitalizeLetter } from "@/shared/lib/capitalize-first-letter"
 import { Checkbox } from "@/shared/ui/buttons/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
+
 import { normalizeDate } from "./lib/normalize-date"
 import { DateModal } from "./ui/date-modal"
 import { TypeModal } from "./ui/type-modal"

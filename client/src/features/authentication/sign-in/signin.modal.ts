@@ -1,11 +1,15 @@
 import { createEvent, createStore, sample } from "effector"
 import { spread } from "patronum"
 import { z } from "zod"
+
 import { setSessionUserTriggered } from "@/entities/session"
 import { getTasksTriggered } from "@/entities/task/tasks"
+
 import { signinQuery } from "@/shared/api/auth"
 import { setTokenTriggered } from "@/shared/api/token"
+
 import { $email } from "../by-email"
+
 import { MAX_LENGTH, NOT_VALID_MESSAGE, TOO_LONG_MESSAGE } from "./constants"
 
 export const passwordChanged = createEvent<string>()

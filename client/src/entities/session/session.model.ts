@@ -1,5 +1,7 @@
 import { createEvent, createStore, sample } from "effector"
+
 import { refreshQuery } from "@/shared/api/token"
+
 import { User } from "./type"
 
 export const setSessionUserTriggered = createEvent<User>()
