@@ -85,7 +85,7 @@ const DateSectionTaskList = ({
 }) => {
   const upcomingTasks = useUnit($upcomingTasks)
   return (
-    <div>
+    <>
       {generateRemainingDaysOfMonth().map((date) => {
         const year = dayjs(date).format("YYYY")
         const tasks = upcomingTasks[year]?.filter(({ start_date }) => {
@@ -96,33 +96,32 @@ const DateSectionTaskList = ({
         })
         const isCurrentMonth = dayjs(date).month() == dayjs().month()
         return (
-          <div key={date.date()}>
-            <TasksSection
-              selectedTask={selectedTask}
-              selectTask={selectTask}
-              outRef={taskRef}
-              action={() => changeDate(new Date(date.toISOString()))}
-              isSelected={date.isSame(selectedDate, "day")}
-              title={
-                <span className="space-x-1">
-                  <span>{date.date()}</span>
-                  <span>{!isCurrentMonth && months[dayjs(date).month()]}</span>
-                  <span>
-                    {date.isToday()
-                      ? "Today"
-                      : date.isTomorrow()
-                      ? "Tomorrow"
-                      : ""}
-                  </span>
-                  <span>{weekDays[date.day()]}</span>
+          <TasksSection
+            key={date.date()}
+            selectedTask={selectedTask}
+            selectTask={selectTask}
+            outRef={taskRef}
+            action={() => changeDate(new Date(date.toISOString()))}
+            isSelected={date.isSame(selectedDate, "day")}
+            title={
+              <span className="space-x-1">
+                <span>{date.date()}</span>
+                <span>{!isCurrentMonth && months[dayjs(date).month()]}</span>
+                <span>
+                  {date.isToday()
+                    ? "Today"
+                    : date.isTomorrow()
+                    ? "Tomorrow"
+                    : ""}
                 </span>
-              }
-              tasks={tasks}
-            />
-          </div>
+                <span>{weekDays[date.day()]}</span>
+              </span>
+            }
+            tasks={tasks}
+          />
         )
       })}
-    </div>
+    </>
   )
 }
 
@@ -186,7 +185,7 @@ const MonthSectionTaskList = ({
 }) => {
   const upcomingTasks = useUnit($upcomingTasks)
   return (
-    <div>
+    <>
       {generateRemainingMonthsOfYear().map((date) => {
         const year = dayjs(date).format("YYYY")
         const tasks = upcomingTasks[year]?.filter(({ start_date }) => {
@@ -208,7 +207,7 @@ const MonthSectionTaskList = ({
           />
         )
       })}
-    </div>
+    </>
   )
 }
 
@@ -262,7 +261,7 @@ const YearSectionTaskList = ({
 }) => {
   const upcomingYears = useUnit($upcomingYears)
   return (
-    <div>
+    <>
       {Object.entries(upcomingYears).map(([year, tasks]) => {
         return (
           <TasksSection
@@ -284,6 +283,6 @@ const YearSectionTaskList = ({
           />
         )
       })}
-    </div>
+    </>
   )
 }

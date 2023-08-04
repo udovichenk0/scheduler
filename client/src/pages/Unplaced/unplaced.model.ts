@@ -14,7 +14,5 @@ export const $$createTask = createTaskFactory({
 export const $$deleteTask = createRemoveTaskFactory()
 
 export const $unplacedTasks = $taskKv.map((kv) => {
-  return Object.values(kv).filter(
-    ({ type }) => type == 'unplaced'
-  )
+  return Object.values(kv).filter(({ type }) => type == "unplaced")
 })

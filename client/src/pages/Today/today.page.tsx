@@ -1,8 +1,9 @@
 import { useUnit } from "effector-react"
-import { Fragment, RefObject, useRef, useState } from "react"
+import { RefObject, useRef, useState } from "react"
+import { Layout } from "@/templates/main"
 import { ExpandedTask } from "@/widgets/expanded-task"
+import { List } from "@/widgets/tast-list"
 import { ModifyTaskForm } from "@/entities/task/modify"
-import { TaskItem } from "@/entities/task/tasks"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
@@ -16,7 +17,6 @@ import {
   toggleOverdueTasksOpened,
   $$updateTask,
 } from "./today.model"
-import { Layout } from "@/templates/main"
 
 export const Today = () => {
   const [selectedTask, selectTask] = useState<Nullable<{ id: number }>>(null)
@@ -63,14 +63,12 @@ const OverdueTasks = ({
   taskRef: RefObject<HTMLDivElement>
 }) => {
   const [
-    changeStatus,
     taskId,
     updateTaskOpened,
     isOverdueTasksOpened,
     toggleOverdueTasks,
     overdueTasks,
   ] = useUnit([
-    $$updateTask.changeStatusTriggered,
     $$taskAccordion.$taskId,
     $$taskAccordion.updateTaskOpened,
     $isOverdueTasksOpened,
@@ -103,28 +101,16 @@ const OverdueTasks = ({
         </Button>
       </div>
       {!!isOverdueTasksOpened && (
-        <div className="border-b-2 border-cBorder px-5 py-2">
-          {overdueTasks.map((task, id) => {
-            return (
-              <Fragment key={id}>
-                {task.id === taskId ? (
-                  <ExpandedTask taskTitle={task.title} taskRef={taskRef}>
-                    <ModifyTaskForm modifyTaskModel={$$updateTask} />
-                  </ExpandedTask>
-                ) : (
-                  <TaskItem
-                    date
-                    onDoubleClick={() => updateTaskOpened(task)}
-                    onChangeCheckbox={() => changeStatus(task.id)}
-                    onClick={(task) => selectTask(task)}
-                    isTaskSelected={task.id == selectedTask?.id}
-                    data={task}
-                  />
-                )}
-              </Fragment>
-            )
-          })}
-        </div>
+        <List
+          className="border-b-2 border-cBorder"
+          $$updateTask={$$updateTask}
+          taskId={taskId}
+          tasks={overdueTasks}
+          openTask={updateTaskOpened}
+          taskRef={taskRef}
+          selectedTask={selectedTask}
+          selectTask={selectTask}
+        />
       )}
     </section>
   )
@@ -139,20 +125,18 @@ const TodayTasks = ({
   selectedTask: Nullable<{ id: number }>
   selectTask: (task: Nullable<{ id: number }>) => void
 }) => {
-  const [tasks, changeStatus, newTask, taskId, updateTaskOpened, overdueTasks] =
-    useUnit([
-      $todayTasks,
-      $$updateTask.changeStatusTriggered,
-      $$taskAccordion.$newTask,
-      $$taskAccordion.$taskId,
-      $$taskAccordion.updateTaskOpened,
-      $overdueTasks,
-    ])
+  const [tasks, newTask, taskId, updateTaskOpened, overdueTasks] = useUnit([
+    $todayTasks,
+    $$taskAccordion.$newTask,
+    $$taskAccordion.$taskId,
+    $$taskAccordion.updateTaskOpened,
+    $overdueTasks,
+  ])
   return (
     <section>
       {!!overdueTasks.length && !!tasks.length && (
         <div
-          className={`mb-2 flex items-center gap-1 border-b-2 border-cBorder px-5 py-2 text-primary `}
+          className={`flex items-center gap-1 border-b-2 border-cBorder px-5 py-2 text-primary `}
         >
           <Icon
             name="common/outlined-star"
@@ -167,32 +151,20 @@ const TodayTasks = ({
           </Button>
         </div>
       )}
-      <div className="px-5">
-        {tasks.map((task, id) => {
-          return (
-            <Fragment key={id}>
-              {task.id === taskId ? (
-                <ExpandedTask taskTitle={task.title} taskRef={taskRef}>
-                  <ModifyTaskForm modifyTaskModel={$$updateTask} />
-                </ExpandedTask>
-              ) : (
-                <TaskItem
-                  onDoubleClick={() => updateTaskOpened(task)}
-                  onChangeCheckbox={() => changeStatus(task.id)}
-                  data={task}
-                  onClick={selectTask}
-                  isTaskSelected={task.id == selectedTask?.id}
-                />
-              )}
-            </Fragment>
-          )
-        })}
-        {newTask && (
-          <ExpandedTask taskRef={taskRef}>
-            <ModifyTaskForm modifyTaskModel={$$createTask} />
-          </ExpandedTask>
-        )}
-      </div>
+      <List
+        $$updateTask={$$updateTask}
+        taskId={taskId}
+        tasks={tasks}
+        openTask={updateTaskOpened}
+        taskRef={taskRef}
+        selectedTask={selectedTask}
+        selectTask={selectTask}
+      />
+      {newTask && (
+        <ExpandedTask taskRef={taskRef}>
+          <ModifyTaskForm modifyTaskModel={$$createTask} />
+        </ExpandedTask>
+      )}
     </section>
   )
 }

@@ -1,18 +1,23 @@
 import { useUnit } from "effector-react"
-import { Fragment, useRef, useState } from "react"
-import { ExpandedTask } from "@/widgets/expanded-task"
-import { ModifyTaskForm } from "@/entities/task/modify"
-import { TaskItem } from "@/entities/task/tasks"
-import { onClickOutside } from "@/shared/lib/on-click-outside"
-import { $$createTask, $$deleteTask, $$taskAccordion, $$updateTask, $unplacedTasks } from "./unplaced.model"
+import { useRef, useState } from "react"
 import { Layout } from "@/templates/main"
+import { ExpandedTask } from "@/widgets/expanded-task"
+import { List } from "@/widgets/tast-list"
+import { ModifyTaskForm } from "@/entities/task/modify"
+import { onClickOutside } from "@/shared/lib/on-click-outside"
+import {
+  $$createTask,
+  $$deleteTask,
+  $$taskAccordion,
+  $$updateTask,
+  $unplacedTasks,
+} from "./unplaced.model"
 
 export const Unplaced = () => {
   const [selectedTask, selectTask] = useState<Nullable<{ id: number }>>(null)
   const taskRef = useRef<HTMLDivElement>(null)
-    const [
+  const [
     tasks,
-    changeStatus,
     newTask,
     taskId,
     closeTaskTriggered,
@@ -21,7 +26,6 @@ export const Unplaced = () => {
     deleteTask,
   ] = useUnit([
     $unplacedTasks,
-    $$updateTask.changeStatusTriggered,
     $$taskAccordion.$newTask,
     $$taskAccordion.$taskId,
     $$taskAccordion.closeTaskTriggered,
@@ -33,39 +37,28 @@ export const Unplaced = () => {
     <Layout>
       <Layout.Header iconName="common/cross-arrows" title="Unplaced" />
       <Layout.Content
-        className="px-5"
-        onClick={(e) => onClickOutside(taskRef, e, closeTaskTriggered)}>
-        {
-        tasks.map((task, id) => {
-          return (
-            <Fragment key={id}>
-              {task.id === taskId ? (
-                <ExpandedTask taskTitle={task.title} taskRef={taskRef}>
-                  <ModifyTaskForm date={false} modifyTaskModel={$$updateTask} />
-                </ExpandedTask>
-              ) : (
-                <TaskItem
-                  isTaskSelected={selectedTask?.id === task.id}
-                  onClick={selectTask}
-                  onDoubleClick={() => updateTaskOpened(task)}
-                  onChangeCheckbox={() => changeStatus(task.id)}
-                  data={task}
-                />
-              )}
-            </Fragment>
-          )
-        })}
+        onClick={(e) => onClickOutside(taskRef, e, closeTaskTriggered)}
+      >
+        <List
+          $$updateTask={$$updateTask}
+          taskId={taskId}
+          tasks={tasks}
+          openTask={updateTaskOpened}
+          taskRef={taskRef}
+          selectedTask={selectedTask}
+          selectTask={selectTask}
+        />
         {newTask && (
           <ExpandedTask taskRef={taskRef}>
             <ModifyTaskForm date={false} modifyTaskModel={$$createTask} />
           </ExpandedTask>
         )}
       </Layout.Content>
-      <Layout.Footer 
+      <Layout.Footer
         isTaskSelected={!!selectedTask}
         deleteTask={() => selectedTask && deleteTask({ id: selectedTask.id })}
         action={() => createTaskOpened({ date: new Date() })}
-        />
+      />
     </Layout>
   )
 }

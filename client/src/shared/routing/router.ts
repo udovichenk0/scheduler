@@ -8,7 +8,7 @@ export const routes = {
   inbox: createRoute(),
   upcoming: createRoute(),
   calendar: createRoute(),
-  unplaced: createRoute()
+  unplaced: createRoute(),
 }
 export const router = createHistoryRouter({
   routes: [
@@ -31,7 +31,7 @@ export const router = createHistoryRouter({
     {
       route: [routes.unplaced],
       path: "/unplaced",
-    }
+    },
   ],
 })
 

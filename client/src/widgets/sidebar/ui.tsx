@@ -3,7 +3,12 @@ import { Settings } from "@/widgets/settings"
 import { routes } from "@/shared/routing"
 import { Button } from "@/shared/ui/buttons/main-button/ui"
 import { Icon } from "@/shared/ui/icon/icon"
-import { $inboxTasksCount, $todayTasksCount, modal, navigate } from "./sidebar.modal"
+import {
+  $inboxTasksCount,
+  $todayTasksCount,
+  modal,
+  navigate,
+} from "./sidebar.modal"
 import { Logo } from "./ui/logo"
 import { SideLink } from "./ui/side-link"
 
@@ -50,20 +55,22 @@ export const Sidebar = () => {
           </div>
         </div>
         <div className="h-full px-2 py-1">
-          <Button
-            size={"sm"}
-            className="w-full text-start"
-            intent={"primary"}
-          >
+          <Button size={"sm"} className="w-full text-start" intent={"primary"}>
             <Icon name="common/plus" className="mr-4 text-cOpacitySecondFont" />
-            <span className="text-[12px] text-cOpacitySecondFont">New Project</span>
+            <span className="text-[12px] text-cOpacitySecondFont">
+              New Project
+            </span>
           </Button>
         </div>
-        <div className="flex text-cIconDefault border-t-[1px] gap-2 border-cBorder px-2 py-1">
+        <div className="flex gap-2 border-t-[1px] border-cBorder px-2 py-1 text-cIconDefault">
           <Button onClick={toggleTriggered} intent={"primary"} size={"xs"}>
             <Icon name="common/settings" className="text-[24px]" />
           </Button>
-          <Button onClick={() => navigate(routes.unplaced)} intent={"primary"} size={"xs"}>
+          <Button
+            onClick={() => navigate(routes.unplaced)}
+            intent={"primary"}
+            size={"xs"}
+          >
             <Icon name="common/cross-arrows" className="text-[24px]" />
           </Button>
           <Settings modal={modal} defaultTab="general" />

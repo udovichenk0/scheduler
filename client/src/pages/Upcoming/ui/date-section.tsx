@@ -1,10 +1,10 @@
 import { useUnit } from "effector-react"
 import { RefObject, ReactNode } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
+import { List } from "@/widgets/tast-list"
 import { ModifyTaskForm } from "@/entities/task/modify"
-import { Task, TaskItem } from "@/entities/task/tasks"
+import { Task } from "@/entities/task/tasks"
 import { $$updateTask, $$taskAccordion, $$createTask } from "../upcoming.model"
-//change name
 export function TasksSection({
   outRef,
   tasks,
@@ -19,54 +19,36 @@ export function TasksSection({
   title: ReactNode
   isSelected: boolean
   action: () => void
-  selectTask: (task: Nullable<Task>) => void
+  selectTask: (task: Nullable<{ id: number }>) => void
   selectedTask: Nullable<{ id: number }>
 }) {
-  const [changeStatus, taskId, updateTaskOpened, newTask] = useUnit([
-    $$updateTask.changeStatusTriggered,
+  const [taskId, updateTaskOpened, newTask] = useUnit([
     $$taskAccordion.$taskId,
     $$taskAccordion.updateTaskOpened,
     $$taskAccordion.$newTask,
   ])
   return (
-    <div className="select-none border-b-2 border-cBorder text-primary">
-      <div className={"px-2"}>
-        <button
-          disabled={isSelected}
-          onClick={action}
-          className={`${
-            isSelected && "cursor-pointer bg-cFocus"
-          } my-2 flex w-full items-center gap-2 rounded-[5px] px-3 text-lg enabled:hover:bg-cHover`}
-        >
-          {title}
-        </button>
-      </div>
-      <div>
-        {!!tasks?.length &&
-          tasks.map((task, id) => {
-            return (
-              <div
-                className="px-4 first:border-t-2 first:border-cBorder first:pt-2 last:pb-2"
-                key={id}
-              >
-                {task.id === taskId ? (
-                  <ExpandedTask taskTitle={task.title} taskRef={outRef}>
-                    <ModifyTaskForm modifyTaskModel={$$updateTask} />
-                  </ExpandedTask>
-                ) : (
-                  <TaskItem
-                    isTaskSelected={selectedTask?.id === task.id}
-                    onClick={selectTask}
-                    date
-                    onDoubleClick={() => updateTaskOpened(task)}
-                    onChangeCheckbox={() => changeStatus(task.id)}
-                    data={task}
-                  />
-                )}
-              </div>
-            )
-          })}
-      </div>
+    <div className="select-none border-t-[1px] border-cBorder text-primary">
+      <button
+        disabled={isSelected}
+        onClick={action}
+        className={`${
+          isSelected && "cursor-pointer bg-cFocus"
+        } m-2 flex w-full items-center gap-2 rounded-[5px] px-3 text-lg enabled:hover:bg-cHover`}
+      >
+        {title}
+      </button>
+      <List
+        className="border-t-[1px] border-cBorder"
+        $$updateTask={$$updateTask}
+        taskId={taskId}
+        tasks={tasks}
+        openTask={updateTaskOpened}
+        taskRef={outRef}
+        selectedTask={selectedTask}
+        selectTask={selectTask}
+        dateModifier
+      />
       <div className="px-4">
         {newTask && isSelected && (
           <ExpandedTask taskRef={outRef}>
