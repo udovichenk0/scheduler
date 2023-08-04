@@ -1,5 +1,6 @@
 import { useUnit } from "effector-react"
 import { useRef, useState } from "react"
+import { Layout } from "@/templates/main"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { AllUpcomingTasks } from "./sections/upcoming-tasks"
 import {
@@ -8,7 +9,6 @@ import {
   currentDateSelected,
   $$taskAccordion,
 } from "./upcoming.model"
-import { Layout } from "@/templates/main"
 export const Upcoming = () => {
   const ref = useRef<HTMLDivElement>(null)
   const [selectedTask, selectTask] = useState<Nullable<{ id: number }>>(null)
@@ -29,7 +29,6 @@ export const Upcoming = () => {
     <Layout>
       <Layout.Header iconName="common/upcoming" title="Upcoming" />
       <Layout.Content
-        className="h-full"
         onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)}
       >
         <AllUpcomingTasks

@@ -1,6 +1,6 @@
-import { RouteInstance, RouteParams } from 'atomic-router';
+import { RouteInstance, RouteParams } from "atomic-router"
 import dayjs from "dayjs"
-import { combine, createEffect, createEvent, sample  } from "effector"
+import { combine, createEffect, createEvent, sample } from "effector"
 import { $taskKv } from "@/entities/task/tasks"
 import { createModal } from "@/shared/lib/modal"
 
@@ -21,6 +21,6 @@ export const navigate = createEvent<RouteInstance<RouteParams>>()
 sample({
   clock: navigate,
   target: createEffect((route: RouteInstance<RouteParams>) => {
-    route.navigate({params: {}, query: {}})
-  })
+    route.navigate({ params: {}, query: {} })
+  }),
 })

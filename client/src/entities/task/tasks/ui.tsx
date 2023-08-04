@@ -27,7 +27,7 @@ export const TaskItem = ({
   }, [])
   return (
     <Button
-      intent={'primary'}
+      intent={"primary"}
       onDoubleClick={onDoubleClick}
       onClick={() => onClick(data)}
       onBlur={() => onClick(null)}
