@@ -1,6 +1,8 @@
 import dayjs from "dayjs"
 import { useState } from "react"
+
 import { generateCalendar } from "@/shared/lib/generate-calendar"
+
 import { Icon } from "../icon"
 
 const daysName = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]

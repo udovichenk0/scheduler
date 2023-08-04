@@ -1,10 +1,13 @@
 import { useUnit } from "effector-react"
 import { ReactNode } from "react"
+
 import { $workDuration, $customDuration } from "@/entities/settings/pomodoro"
+
 import { ModalType } from "@/shared/lib/modal"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base-modal"
+
 import {
   $passingTime,
   $isPomodoroRunning,

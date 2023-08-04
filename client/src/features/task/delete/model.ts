@@ -1,5 +1,7 @@
 import { createEvent, sample } from "effector"
+
 import { $taskKv } from "@/entities/task/tasks"
+
 import { deleteTaskQuery } from "@/shared/api/task"
 
 export const createRemoveTaskFactory = () => {

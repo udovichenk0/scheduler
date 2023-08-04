@@ -2,7 +2,6 @@ import { extend } from "dayjs"
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter"
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore"
 import { sample } from "effector"
-
 import { createRoot } from "react-dom/client"
 
 import App from "./app/App"

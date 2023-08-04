@@ -1,12 +1,11 @@
 {
   "env": { "browser": true, "es2020": true },
   "extends": [
-    "plugin:import/typescript",
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
     "plugin:import/warnings",
     "plugin:import/errors",
-    "@feature-sliced/eslint-config/rules/import-order"
+    "plugin:import/typescript",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
   "settings": {
     "import/resolver": {
@@ -41,6 +40,59 @@
           "{}": false
         }
       }
+    ],
+    "import/order": [
+  "error",
+  {
+    "newlines-between": "always",
+
+    "pathGroups": [
+      {
+        "pattern": "@/app/**",
+        "group": "internal",
+        "position": "after"
+      },
+      {
+        "pattern": "@/pages/**",
+        "group": "internal",
+        "position": "after"
+      },
+      {
+        "pattern": "@/templates/**",
+        "group": "internal",
+        "position": "after"
+      },
+      {
+        "pattern": "@/widgets/**",
+        "group": "internal",
+        "position": "after"
+      },
+      {
+        "pattern": "@/features/**",
+        "group": "internal",
+        "position": "after"
+      },
+      {
+        "pattern": "@/entities/**",
+        "group": "internal",
+        "position": "after"
+      },
+      {
+        "pattern": "@/shared/**",
+        "group": "internal",
+        "position": "after"
+      }
+    ],
+     "pathGroupsExcludedImportTypes": ["builtin"],
+      "groups": [
+      "builtin",
+      "external",
+      "internal",
+      "parent",
+      "sibling",
+      "index"
     ]
+  }
+]
   }
 }

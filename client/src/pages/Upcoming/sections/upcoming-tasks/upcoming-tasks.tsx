@@ -1,6 +1,7 @@
 import dayjs from "dayjs"
 import { useUnit } from "effector-react"
 import { RefObject } from "react"
+
 import {
   generateRemainingDaysOfMonth,
   weekDays,
@@ -8,6 +9,7 @@ import {
   generateRemainingMonthsOfYear,
 } from "../../config"
 import { TasksSection } from "../../ui/date-section"
+
 import {
   $upcomingTasks,
   $upcomingYears,

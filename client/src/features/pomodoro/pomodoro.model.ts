@@ -6,6 +6,7 @@ import {
   sample,
 } from "effector"
 import { condition, interval, not } from "patronum"
+
 import {
   $longBreakDuration,
   $isEnabledNotificationSound,
@@ -14,7 +15,9 @@ import {
   $workDuration,
   workDurationChanged,
 } from "@/entities/settings/pomodoro"
+
 import { appStarted } from "@/shared/config/init"
+
 import sound from "./assets/timer.mp3"
 
 const DEFAULT_WORK_TIME = 1500 // 25mins

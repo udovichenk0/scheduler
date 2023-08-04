@@ -1,10 +1,15 @@
 import { useUnit } from "effector-react"
 import { useRef, useState } from "react"
+
 import { Layout } from "@/templates/main"
+
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { List } from "@/widgets/tast-list"
+
 import { ModifyTaskForm } from "@/entities/task/modify"
+
 import { onClickOutside } from "@/shared/lib/on-click-outside"
+
 import {
   $$createTask,
   $$deleteTask,

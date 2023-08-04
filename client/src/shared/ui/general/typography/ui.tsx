@@ -1,5 +1,6 @@
 import { clsx } from "clsx"
 import { ReactNode, HTMLAttributes } from "react"
+
 import style from "./style.module.css"
 
 interface HeadingProps extends HTMLAttributes<HTMLElement> {

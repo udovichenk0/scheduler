@@ -1,10 +1,12 @@
 import { useUnit } from "effector-react"
+
 import {
   $currentStaticTime,
   $passingTime,
   $isWorkTime,
   $isPomodoroRunning,
 } from "@/features/pomodoro"
+
 import { normalizeSeconds } from "@/shared/lib/normalize-time"
 import { Button } from "@/shared/ui/buttons/main-button"
 

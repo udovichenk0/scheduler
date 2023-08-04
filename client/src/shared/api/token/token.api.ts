@@ -1,6 +1,7 @@
 import { createQuery } from "@farfetched/core"
 import { zodContract } from "@farfetched/zod"
 import { createEffect, sample } from "effector"
+
 import { RefreshType, tokenSchema } from "./token.dto"
 import { setTokenTriggered } from "./token.model"
 

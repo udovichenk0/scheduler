@@ -1,6 +1,7 @@
 import { createQuery } from "@farfetched/core"
 import { zodContract } from "@farfetched/zod"
 import { createEffect } from "effector"
+
 import { authSchema } from "./auth.dto"
 
 const authContract = zodContract(authSchema)

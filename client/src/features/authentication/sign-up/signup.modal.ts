@@ -1,10 +1,14 @@
 import { createEvent, createStore, sample } from "effector"
 import { spread } from "patronum"
 import { z } from "zod"
+
 import { setSessionUserTriggered } from "@/entities/session"
+
 import { signupQuery } from "@/shared/api/auth"
 import { setTokenTriggered } from "@/shared/api/token"
+
 import { $email } from "../by-email"
+
 import {
   MAX_LENGTH,
   MIN_LENGTH,

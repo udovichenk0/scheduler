@@ -1,9 +1,13 @@
 import { useUnit } from "effector-react"
+
 import { Settings } from "@/widgets/settings"
+
 import { $isPomodoroRunning, Pomodoro } from "@/features/pomodoro"
+
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
 import { Icon, IconName } from "@/shared/ui/icon"
+
 import { pomodoroModal, settingsModal } from "./header.model"
 import { PomodoroProgressBar } from "./ui/progress-bar"
 

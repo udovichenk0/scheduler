@@ -1,4 +1,5 @@
 import { clsx } from "clsx"
+
 import { normalizeSeconds } from "@/shared/lib/normalize-time"
 
 export const ProgressCircle = ({

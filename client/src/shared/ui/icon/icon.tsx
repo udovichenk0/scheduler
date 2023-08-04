@@ -1,5 +1,6 @@
 import { clsx } from "clsx"
 import { SVGProps } from "react"
+
 import { SpritesMap } from "./sprite.h"
 
 // Merging all icons as `SPRITE_NAME/SPRITE_ICON_NAME`

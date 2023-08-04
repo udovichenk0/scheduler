@@ -1,4 +1,5 @@
 import { AccentThemeChanger, MainThemeChanger } from "@/entities/settings/theme"
+
 import { Typography } from "@/shared/ui/general/typography"
 
 export const ThemeTab = () => {

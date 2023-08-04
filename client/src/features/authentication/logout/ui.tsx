@@ -1,7 +1,10 @@
 import { useUnit } from "effector-react/compat"
 import { FormEvent } from "react"
+
 import { $sessionUser } from "@/entities/session/session.model"
+
 import { Typography } from "@/shared/ui/general/typography"
+
 import { submitTriggered } from "./logout.model"
 const submitLogout = (e: FormEvent, submit: () => void) => {
   e.preventDefault()

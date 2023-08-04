@@ -1,11 +1,14 @@
 import { useUnit } from "effector-react"
 import { FormEvent, useEffect, useRef, useState } from "react"
+
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
 import { Icon } from "@/shared/ui/icon"
 import { Input } from "@/shared/ui/input"
+
 import { $email } from "../by-email"
 import { TogglePasswordButton } from "../shared/ui/toggle-password-button"
+
 import {
   $password,
   $passwordError,

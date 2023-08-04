@@ -1,6 +1,8 @@
 import { createEvent, createStore, sample } from "effector"
 import { z } from "zod"
+
 import { getUserQuery } from "@/shared/api/user"
+
 import {
   MAX_LENGTH,
   MIN_LENGTH,

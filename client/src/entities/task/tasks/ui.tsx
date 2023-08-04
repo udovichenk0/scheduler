@@ -1,7 +1,9 @@
 import dayjs from "dayjs"
 import { useEffect } from "react"
+
 import { Checkbox } from "@/shared/ui/buttons/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
+
 import { Task } from "./type"
 
 export const TaskItem = ({
