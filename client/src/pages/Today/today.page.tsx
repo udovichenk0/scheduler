@@ -1,6 +1,5 @@
 import { useUnit } from "effector-react"
 import { Fragment, RefObject, useRef, useState } from "react"
-import { Layout } from "@/templates/main"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { ModifyTaskForm } from "@/entities/task/modify"
 import { TaskItem } from "@/entities/task/tasks"
@@ -17,6 +16,7 @@ import {
   toggleOverdueTasksOpened,
   $$updateTask,
 } from "./today.model"
+import { Layout } from "@/templates/main"
 
 export const Today = () => {
   const [selectedTask, selectTask] = useState<Nullable<{ id: number }>>(null)
@@ -115,7 +115,7 @@ const OverdueTasks = ({
                   <TaskItem
                     date
                     onDoubleClick={() => updateTaskOpened(task)}
-                    onChange={() => changeStatus(task.id)}
+                    onChangeCheckbox={() => changeStatus(task.id)}
                     onClick={(task) => selectTask(task)}
                     isTaskSelected={task.id == selectedTask?.id}
                     data={task}
@@ -178,7 +178,7 @@ const TodayTasks = ({
               ) : (
                 <TaskItem
                   onDoubleClick={() => updateTaskOpened(task)}
-                  onChange={() => changeStatus(task.id)}
+                  onChangeCheckbox={() => changeStatus(task.id)}
                   data={task}
                   onClick={selectTask}
                   isTaskSelected={task.id == selectedTask?.id}

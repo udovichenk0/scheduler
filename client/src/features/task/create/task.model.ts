@@ -32,6 +32,7 @@ export const createTaskFactory = ({
     defaultType,
     defaultDate,
   })
+
   sample({
     clock: taskModel.createTaskToggled,
     filter: taskModel.$createdTriggered,

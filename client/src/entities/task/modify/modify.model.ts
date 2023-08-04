@@ -5,7 +5,7 @@ export const modifyFormFactory = ({
   defaultDate = null,
 }: {
   defaultType?: "inbox" | "unplaced"
-  defaultDate: Nullable<Date>
+  defaultDate?: Nullable<Date>
 }) => {
   const statusChanged = createEvent<"FINISHED" | "INPROGRESS">()
   const titleChanged = createEvent<string>()

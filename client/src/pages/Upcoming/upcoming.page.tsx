@@ -1,6 +1,5 @@
 import { useUnit } from "effector-react"
 import { useRef, useState } from "react"
-import { Layout } from "@/templates/main"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { AllUpcomingTasks } from "./sections/upcoming-tasks"
 import {
@@ -9,13 +8,14 @@ import {
   currentDateSelected,
   $$taskAccordion,
 } from "./upcoming.model"
+import { Layout } from "@/templates/main"
 export const Upcoming = () => {
   const ref = useRef<HTMLDivElement>(null)
   const [selectedTask, selectTask] = useState<Nullable<{ id: number }>>(null)
   const [
     closeTaskTriggered,
     createTaskOpened,
-    startDate,
+    selectedDate,
     changeDate,
     deleteTask,
   ] = useUnit([
@@ -36,14 +36,14 @@ export const Upcoming = () => {
           selectTask={selectTask}
           selectedTask={selectedTask}
           changeDate={changeDate}
-          selectedDate={startDate}
+          selectedDate={selectedDate}
           outRef={ref}
         />
       </Layout.Content>
       <Layout.Footer
         isTaskSelected={!!selectedTask}
         deleteTask={() => selectedTask && deleteTask({ id: selectedTask.id })}
-        action={() => createTaskOpened({ date: startDate })}
+        action={() => createTaskOpened({ date: selectedDate })}
       />
     </Layout>
   )
