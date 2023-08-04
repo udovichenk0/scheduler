@@ -35,8 +35,8 @@ export const ModifyTaskForm = ({
     title,
     description,
     status,
-    currentType,
-    currentDate,
+    taskType,
+    taskDate,
     changeStatus,
     changeDescription,
     changeTitle,
@@ -99,7 +99,7 @@ export const ModifyTaskForm = ({
                     name={"common/inbox"}
                     className="h-[18px] w-[18px] text-accent"
                   />
-                  {capitalizeLetter(currentType)}
+                  {capitalizeLetter(taskType)}
                 </div>
               </Button>
             </div>
@@ -117,7 +117,7 @@ export const ModifyTaskForm = ({
                     />
                     <span>Date</span>
                     <span className="ml-2 text-accent">
-                      {currentDate && normalizeDate(currentDate)}
+                      {taskDate && normalizeDate(taskDate)}
                     </span>
                   </span>
                 </Button>
@@ -127,14 +127,14 @@ export const ModifyTaskForm = ({
           {isTypeOpened && (
             <TypeModal
               outRef={ref}
-              currentType={currentType}
+              currentType={taskType}
               changeType={onChangeType}
               closeTypeModal={() => setTypeOpen(false)}
             />
           )}
           {isDatePickerOpened && (
             <DateModal
-              currentDate={currentDate || new Date()}
+              taskDate={taskDate || new Date()}
               outRef={ref}
               changeDate={onChangeDate}
               closeDatePicker={() => setDatePickerOpen(false)}

@@ -4,7 +4,7 @@ import { RefObject, useRef, useState } from "react"
 import { Layout } from "@/templates/main"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
-import { List } from "@/widgets/tast-list"
+import { List } from "@/widgets/task-list"
 
 import { ModifyTaskForm } from "@/entities/task/modify"
 

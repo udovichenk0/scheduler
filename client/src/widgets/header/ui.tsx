@@ -33,7 +33,7 @@ export const Header = ({
         ) : (
           <Button intent={"primary"} size={"xs"} onClick={togglePomodoroModal}>
             <Icon
-              className="text-[24px] text-cIconDefault"
+              className="text-2xl text-cIconDefault"
               name="common/timer"
             />
           </Button>
@@ -58,7 +58,7 @@ export const Header = ({
         }
       />
       <div className="flex items-center gap-4">
-        <Icon name={iconName} className="h-5 w-5 fill-cIconDefault" />
+        <Icon name={iconName} className="text-2xl fill-cIconDefault" />
         <Typography.Heading size="lg">{title}</Typography.Heading>
       </div>
     </div>

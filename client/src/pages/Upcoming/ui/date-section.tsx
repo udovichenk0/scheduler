@@ -2,7 +2,7 @@ import { useUnit } from "effector-react"
 import { RefObject, ReactNode } from "react"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
-import { List } from "@/widgets/tast-list"
+import { List } from "@/widgets/task-list"
 
 import { ModifyTaskForm } from "@/entities/task/modify"
 import { Task } from "@/entities/task/tasks"
@@ -32,15 +32,17 @@ export function TasksSection({
   ])
   return (
     <div className="select-none border-t-[1px] border-cBorder text-primary">
-      <button
-        disabled={isSelected}
-        onClick={action}
-        className={`${
-          isSelected && "cursor-pointer bg-cFocus"
-        } m-2 flex w-full items-center gap-2 rounded-[5px] px-3 text-lg enabled:hover:bg-cHover`}
-      >
-        {title}
-      </button>
+      <div className="mx-2">
+        <button
+          disabled={isSelected}
+          onClick={action}
+          className={`${
+            isSelected && "cursor-pointer bg-cFocus"
+          } my-2 flex w-full items-center gap-2 rounded-[5px] px-3 text-lg enabled:hover:bg-cHover`}
+        >
+          {title}
+        </button>
+      </div>
       <List
         className="border-t-[1px] border-cBorder"
         $$updateTask={$$updateTask}

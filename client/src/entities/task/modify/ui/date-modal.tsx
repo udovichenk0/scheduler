@@ -6,12 +6,12 @@ import { DatePicker } from "@/shared/ui/date-picker"
 
 export const DateModal = ({
   outRef,
-  currentDate,
+  taskDate,
   changeDate,
   closeDatePicker,
 }: {
   outRef: RefObject<HTMLDivElement>
-  currentDate: Date
+  taskDate: Date
   changeDate: (date: Date) => void
   closeDatePicker: () => void
 }) => {
@@ -25,14 +25,11 @@ export const DateModal = ({
         ref={outRef}
         className="absolute top-2 z-[11] flex w-[270px] translate-x-[-50px] flex-col gap-1 rounded-[5px] border-[1px] border-cBorder bg-main p-3"
       >
-        <div className="mb-4">
-          <DatePicker currentDate={currentDate} onDateChange={changeDate} />
-        </div>
-
-        <div className="flex w-full gap-3 text-primary">
+        <DatePicker currentDate={taskDate} onDateChange={changeDate} />
+        <div className="flex gap-3">
           <Button
             onClick={closeDatePicker}
-            className="flex w-full justify-center p-[1px] text-[12px]"
+            className="w-full p-[1px] text-[12px]"
           >
             Cancel
           </Button>
@@ -41,7 +38,7 @@ export const DateModal = ({
               throw new Error("Not implemented")
             }}
             intent={"filled"}
-            className="flex w-full justify-center p-[1px] text-[12px]"
+            className="w-full p-[1px] text-[12px]"
           >
             OK
           </Button>
