@@ -2,7 +2,7 @@ import dayjs from "dayjs"
 
 export const generateCalendar = (currentMonth = dayjs().month()) => {
   const year = dayjs().year()
-  const firstDayOfMonth = dayjs(new Date(year, currentMonth, 1)).day()
+  const firstDayOfMonth = dayjs(new Date(year, currentMonth - 1)).day()
   let current = 0 - firstDayOfMonth
   return new Array(5).fill([]).map(() => {
     return new Array(7).fill(null).map(() => {
