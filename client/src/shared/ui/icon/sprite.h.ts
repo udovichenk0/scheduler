@@ -3,6 +3,7 @@ export interface SpritesMap {
     | "arrow"
     | "calendar"
     | "cloud"
+    | "cross-arrows"
     | "done"
     | "eye-closed"
     | "eye-opened"
@@ -24,6 +25,7 @@ export const SPRITES_META: { [K in keyof SpritesMap]: SpritesMap[K][] } = {
     "arrow",
     "calendar",
     "cloud",
+    "cross-arrows",
     "done",
     "eye-closed",
     "eye-opened",

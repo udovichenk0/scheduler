@@ -7,7 +7,7 @@ import {
   months,
   generateRemainingMonthsOfYear,
 } from "../../config"
-import { DateSection } from "../../ui/date-section"
+import { TasksSection } from "../../ui/date-section"
 import {
   $upcomingTasks,
   $upcomingYears,
@@ -97,7 +97,7 @@ const DateSectionTaskList = ({
         const isCurrentMonth = dayjs(date).month() == dayjs().month()
         return (
           <div key={date.date()}>
-            <DateSection
+            <TasksSection
               selectedTask={selectedTask}
               selectTask={selectTask}
               outRef={taskRef}
@@ -141,7 +141,7 @@ const RestDateSectionTasklist = ({
 }) => {
   const remainingDays = useUnit($remainingDays)
   return (
-    <DateSection
+    <TasksSection
       selectedTask={selectedTask}
       selectTask={selectTask}
       action={() => changeDate(new Date(remainingDays.date.toISOString()))}
@@ -196,7 +196,7 @@ const MonthSectionTaskList = ({
           )
         })
         return (
-          <DateSection
+          <TasksSection
             selectedTask={selectedTask}
             selectTask={selectTask}
             key={date.month()}
@@ -227,7 +227,7 @@ const RestMonthSectionTasklist = ({
 }) => {
   const remainingMonths = useUnit($remainingMonths)
   return (
-    <DateSection
+    <TasksSection
       selectedTask={selectedTask}
       selectTask={selectTask}
       title={
@@ -265,7 +265,7 @@ const YearSectionTaskList = ({
     <div>
       {Object.entries(upcomingYears).map(([year, tasks]) => {
         return (
-          <DateSection
+          <TasksSection
             selectedTask={selectedTask}
             selectTask={selectTask}
             key={year}

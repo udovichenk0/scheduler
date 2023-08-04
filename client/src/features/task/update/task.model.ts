@@ -25,7 +25,6 @@ export const updateTaskFactory = ({
     $status,
     $type,
   } = modifyFormFactory({})
-
   const changeStatusTriggered = createEvent<number>()
   sample({
     clock: taskModel.updateTaskOpened,
@@ -78,7 +77,6 @@ export const updateTaskFactory = ({
     fn: () => true,
     target: [taskModel.$newTask, taskModel.$createdTriggered.reinit],
   })
-
   return {
     statusChanged,
     titleChanged,

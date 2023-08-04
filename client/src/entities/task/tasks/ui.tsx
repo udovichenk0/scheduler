@@ -1,18 +1,19 @@
 import dayjs from "dayjs"
 import { useEffect } from "react"
 import { Checkbox } from "@/shared/ui/buttons/checkbox"
+import { Button } from "@/shared/ui/buttons/main-button"
 import { Task } from "./type"
 
 export const TaskItem = ({
   data,
-  onChange,
+  onChangeCheckbox,
   onDoubleClick,
   date = false,
   onClick,
   isTaskSelected,
 }: {
   data: Task
-  onChange: () => void
+  onChangeCheckbox: () => void
   onDoubleClick: () => void
   date?: boolean
   onClick: (task: Nullable<Task>) => void
@@ -25,15 +26,16 @@ export const TaskItem = ({
     }
   }, [])
   return (
-    <button
+    <Button
+      intent={'primary'}
       onDoubleClick={onDoubleClick}
       onClick={() => onClick(data)}
       onBlur={() => onClick(null)}
       className={`${
         isTaskSelected && "bg-cFocus"
-      } flex w-full cursor-default select-none items-center rounded-[5px] px-2 py-2 text-sm text-primary hover:bg-cHover`}
+      } flex w-full select-none items-center px-2 py-2 text-sm`}
     >
-      <Checkbox onChange={onChange} checked={status == "FINISHED"} />
+      <Checkbox onChange={onChangeCheckbox} checked={status == "FINISHED"} />
       {date && start_date && (
         <span
           className={`ml-2 rounded-[5px] px-[5px] text-[12px] ${
@@ -53,7 +55,7 @@ export const TaskItem = ({
       >
         {title}
       </span>
-    </button>
+    </Button>
   )
 }
 

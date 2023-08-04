@@ -5,7 +5,7 @@ import { ModifyTaskForm } from "@/entities/task/modify"
 import { Task, TaskItem } from "@/entities/task/tasks"
 import { $$updateTask, $$taskAccordion, $$createTask } from "../upcoming.model"
 //change name
-export function DateSection({
+export function TasksSection({
   outRef,
   tasks,
   title,
@@ -59,7 +59,7 @@ export function DateSection({
                     onClick={selectTask}
                     date
                     onDoubleClick={() => updateTaskOpened(task)}
-                    onChange={() => changeStatus(task.id)}
+                    onChangeCheckbox={() => changeStatus(task.id)}
                     data={task}
                   />
                 )}

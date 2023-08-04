@@ -1,15 +1,15 @@
 .heading {
   &[data-size="xs"] {
-    @apply text-[14px] leading-tight;
+    @apply text-sm leading-tight;
   }
   &[data-size="sm"] {
-    @apply text-[16px] leading-tight;
+    @apply text-base leading-tight;
   }
   &[data-size="base"] {
-    @apply text-[18px] leading-tight;
+    @apply text-lg leading-tight;
   }
   &[data-size="lg"] {
-    @apply text-[24px] leading-none;
+    @apply text-2xl leading-none;
   }
 }
 

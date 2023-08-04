@@ -52,11 +52,11 @@ export const Sidebar = () => {
         <div className="h-full px-2 py-1">
           <Button
             size={"sm"}
-            className="w-full text-start text-cOpacitySecondFont"
+            className="w-full text-start"
             intent={"primary"}
           >
-            <Icon name="common/plus" className="mr-4" />
-            <span className="text-[12px]">New Project</span>
+            <Icon name="common/plus" className="mr-4 text-cOpacitySecondFont" />
+            <span className="text-[12px] text-cOpacitySecondFont">New Project</span>
           </Button>
         </div>
         <div className="flex border-t-[1px] border-cBorder px-2 py-1">
@@ -64,8 +64,11 @@ export const Sidebar = () => {
             <Button onClick={toggleTriggered} intent={"primary"} size={"xs"}>
               <Icon name="common/settings" className="text-[20px]" />
             </Button>
-            <Settings modal={modal} defaultTab="general" />
+            <Button onClick={toggleTriggered} intent={"primary"} size={"xs"}>
+              <Icon name="common/cross-arrows" className="text-[20px]" />
+            </Button>
           </div>
+            <Settings modal={modal} defaultTab="general" />
         </div>
       </div>
     </aside>
