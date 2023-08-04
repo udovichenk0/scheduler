@@ -7,7 +7,7 @@ export const Content = (props: HTMLAttributes<HTMLElement>) => {
     <section
       {...rest}
       className={clsx(
-        "h-full w-full scroll-pr-2.5 overflow-hidden overflow-y-scroll",
+        "w-full scroll-pr-2.5 overflow-hidden overflow-y-scroll",
         className,
       )}
     >
