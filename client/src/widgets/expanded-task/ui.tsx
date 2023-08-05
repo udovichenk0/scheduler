@@ -27,7 +27,7 @@ export const ExpandedTask = ({
     <div
       ref={taskRef}
       className={
-        "mb-2 flex w-full flex-col rounded-[5px] bg-cTaskEdit px-2 py-2 text-sm"
+        "mb-2 flex w-full flex-col rounded-[5px] bg-cTaskEdit p-2 text-sm"
       }
     >
       {children}

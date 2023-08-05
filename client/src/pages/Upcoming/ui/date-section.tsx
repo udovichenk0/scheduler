@@ -7,6 +7,8 @@ import { List } from "@/widgets/task-list"
 import { ModifyTaskForm } from "@/entities/task/modify"
 import { Task } from "@/entities/task/tasks"
 
+import { Container } from "@/shared/ui/general/container"
+
 import { $$updateTask, $$taskAccordion, $$createTask } from "../upcoming.model"
 export function TasksSection({
   outRef,
@@ -32,17 +34,17 @@ export function TasksSection({
   ])
   return (
     <div className="select-none border-t-[1px] border-cBorder text-primary">
-      <div className="mx-2">
+      <Container>
         <button
           disabled={isSelected}
           onClick={action}
           className={`${
             isSelected && "cursor-pointer bg-cFocus"
-          } my-2 flex w-full items-center gap-2 rounded-[5px] px-3 text-lg enabled:hover:bg-cHover`}
+          } flex w-full items-center gap-2 rounded-[5px] px-3 text-lg enabled:hover:bg-cHover`}
         >
           {title}
         </button>
-      </div>
+      </Container>
       <List
         className="border-t-[1px] border-cBorder"
         $$updateTask={$$updateTask}
@@ -52,9 +54,8 @@ export function TasksSection({
         taskRef={outRef}
         selectedTask={selectedTask}
         selectTask={selectTask}
-        dateModifier
       />
-      <div className="px-4">
+      <div className="px-5">
         {newTask && isSelected && (
           <ExpandedTask taskRef={outRef}>
             <ModifyTaskForm date modifyTaskModel={$$createTask} />
