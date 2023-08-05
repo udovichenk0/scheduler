@@ -7,6 +7,7 @@ import { $isPomodoroRunning, Pomodoro } from "@/features/pomodoro"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
 import { Icon, IconName } from "@/shared/ui/icon"
+import { Container } from "@/shared/ui/general/container"
 
 import { pomodoroModal, settingsModal } from "./header.model"
 import { PomodoroProgressBar } from "./ui/progress-bar"
@@ -26,8 +27,8 @@ export const Header = ({
     ],
   )
   return (
-    <div className="mb-5 px-4 text-primary">
-      <div className="flex h-[40px] items-center justify-end py-2">
+    <Container padding="xl" className="text-primary">
+      <div className="flex h-[40px] items-center justify-end">
         {isPomodoroRunning ? (
           <PomodoroProgressBar onClick={togglePomodoroModal} />
         ) : (
@@ -61,6 +62,6 @@ export const Header = ({
         <Icon name={iconName} className="text-2xl fill-cIconDefault" />
         <Typography.Heading size="lg">{title}</Typography.Heading>
       </div>
-    </div>
+    </Container>
   )
 }

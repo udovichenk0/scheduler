@@ -7,6 +7,7 @@ import { ModalType } from "@/shared/lib/modal"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base-modal"
+import { Container } from "@/shared/ui/general/container"
 
 import {
   $passingTime,
@@ -99,10 +100,10 @@ export const Pomodoro = ({
                     }}
                     className={`${
                       activeTimer && "border-cPomodoroRed bg-cPomodoroRed"
-                    } flex h-10 items-center justify-center rounded-full border-2 border-cIconDefault`}
+                    } flex items-center justify-center rounded-full border-2 border-cIconDefault`}
                   >
                     {activeTimer && (
-                      <Icon name="common/done" className="h-[7px] w-[7px]" />
+                      <Icon name="common/done" className="w-[7px]" />
                     )}
                   </div>
                 </div>
@@ -112,18 +113,17 @@ export const Pomodoro = ({
           })}
         </div>
         {taskTitle && (
-          <div className="mb-3 w-full rounded-[5px] bg-cHover p-[5px] text-center">
+          <Container rounded="base" padding="sm"
+            className="bg-cHover text-center mb-3">
             {taskTitle}
-          </div>
+          </Container>
         )}
-        <div className="relative">
           <ProgressCircle
             isWorkTime={isWorkTime}
             time={passingTime}
             progress={circleProgress}
             stages={stages}
           />
-        </div>
         <div className="mt-4 flex justify-between">
           {leftSlot}
           <StartButton

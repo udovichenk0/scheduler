@@ -31,7 +31,7 @@ export const AllUpcomingTasks = ({
   selectedTask: Nullable<{ id: number }>
 }) => {
   return (
-    <div>
+    <>
       <DateSectionTaskList
         selectedDate={selectedDate}
         changeDate={changeDate}
@@ -68,7 +68,7 @@ export const AllUpcomingTasks = ({
         selectedTask={selectedTask}
         selectTask={selectTask}
       />
-    </div>
+    </>
   )
 }
 

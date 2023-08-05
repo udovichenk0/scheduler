@@ -54,11 +54,13 @@ export const Inbox = () => {
           selectedTask={selectedTask}
           selectTask={selectTask}
         />
+      <div className="mx-5">
         {newTask && (
           <ExpandedTask taskRef={ref}>
             <ModifyTaskForm date={false} modifyTaskModel={$$createTask} />
           </ExpandedTask>
         )}
+      </div>
       </Layout.Content>
 
       <Layout.Footer

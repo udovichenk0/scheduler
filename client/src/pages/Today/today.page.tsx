@@ -165,11 +165,13 @@ const TodayTasks = ({
         selectedTask={selectedTask}
         selectTask={selectTask}
       />
-      {newTask && (
-        <ExpandedTask taskRef={taskRef}>
-          <ModifyTaskForm modifyTaskModel={$$createTask} />
-        </ExpandedTask>
-      )}
+      <div className="mx-5">
+        {newTask && (
+          <ExpandedTask taskRef={taskRef}>
+            <ModifyTaskForm modifyTaskModel={$$createTask} />
+          </ExpandedTask>
+        )}
+      </div>
     </section>
   )
 }

@@ -5,6 +5,7 @@ import { Settings } from "@/widgets/settings"
 import { Icon } from "@/shared/ui/icon/icon"
 import { routes } from "@/shared/routing"
 import { Button } from "@/shared/ui/buttons/main-button/ui"
+import { Container } from "@/shared/ui/general/container"
 
 import {
   $inboxTasksCount,
@@ -27,7 +28,8 @@ export const Sidebar = () => {
   return (
     <aside className={`border-r-[1px] border-cBorder bg-brand text-primary`}>
       <div className="flex h-full w-[250px] flex-col">
-        <div className="mb-2 border-b-[1px] border-cBorder px-2 py-2">
+        <Container 
+          className="border-b-[1px] border-cBorder">
           <div className="mb-2 flex items-center justify-between px-2">
             <div className="flex items-center gap-1">
               <Logo />
@@ -35,7 +37,7 @@ export const Sidebar = () => {
             </div>
             <div>... {/* make a popup*/}</div>
           </div>
-          <div className="gap-2 space-y-2">
+          <div className="space-y-2">
             <SideLink
               route={routes.inbox}
               title="Inbox"
@@ -59,16 +61,16 @@ export const Sidebar = () => {
               iconName="common/calendar"
             />
           </div>
-        </div>
-        <div className="h-full px-2 py-1">
+        </Container>
+        <Container className="h-full">
           <Button size={"sm"} className="w-full text-start" intent={"primary"}>
             <Icon name="common/plus" className="mr-4 text-cOpacitySecondFont" />
             <span className="text-[12px] text-cOpacitySecondFont">
               New Project
             </span>
           </Button>
-        </div>
-        <div className="flex gap-2 border-t-[1px] border-cBorder px-2 py-1 text-cIconDefault">
+        </Container>
+        <Container className="flex gap-2 border-t-[1px] border-cBorder text-cIconDefault">
           <Button onClick={toggleTriggered} intent={"primary"} size={"xs"}>
             <Icon name="common/settings" className="text-[24px]" />
           </Button>
@@ -80,7 +82,7 @@ export const Sidebar = () => {
             <Icon name="common/cross-arrows" className="text-[24px]" />
           </Button>
           <Settings modal={modal} defaultTab="general" />
-        </div>
+        </Container>
       </div>
     </aside>
   )
