@@ -16,9 +16,6 @@ import {
 import { Logo } from "./ui/logo"
 import { SideLink } from "./ui/side-link"
 
-
-
-
 export const Sidebar = () => {
   const [inboxTasksCount, todayTasksCount, toggleTriggered] = useUnit([
     $inboxTasksCount,
@@ -28,8 +25,7 @@ export const Sidebar = () => {
   return (
     <aside className={`border-r-[1px] border-cBorder bg-brand text-primary`}>
       <div className="flex h-full w-[250px] flex-col">
-        <Container 
-          className="border-b-[1px] border-cBorder">
+        <Container className="border-b-[1px] border-cBorder">
           <div className="mb-2 flex items-center justify-between px-2">
             <div className="flex items-center gap-1">
               <Logo />

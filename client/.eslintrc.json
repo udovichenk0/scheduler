@@ -42,57 +42,57 @@
       }
     ],
     "import/order": [
-  "error",
-  {
-    "newlines-between": "always",
+      "error",
+      {
+        "newlines-between": "always",
 
-    "pathGroups": [
-      {
-        "pattern": "@/app/**",
-        "group": "internal",
-        "position": "after"
-      },
-      {
-        "pattern": "@/pages/**",
-        "group": "internal",
-        "position": "after"
-      },
-      {
-        "pattern": "@/templates/**",
-        "group": "internal",
-        "position": "after"
-      },
-      {
-        "pattern": "@/widgets/**",
-        "group": "internal",
-        "position": "after"
-      },
-      {
-        "pattern": "@/features/**",
-        "group": "internal",
-        "position": "after"
-      },
-      {
-        "pattern": "@/entities/**",
-        "group": "internal",
-        "position": "after"
-      },
-      {
-        "pattern": "@/shared/**",
-        "group": "internal",
-        "position": "after"
+        "pathGroups": [
+          {
+            "pattern": "@/app/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "@/pages/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "@/templates/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "@/widgets/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "@/features/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "@/entities/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "@/shared/**",
+            "group": "internal",
+            "position": "after"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index"
+        ]
       }
-    ],
-     "pathGroupsExcludedImportTypes": ["builtin"],
-      "groups": [
-      "builtin",
-      "external",
-      "internal",
-      "parent",
-      "sibling",
-      "index"
     ]
-  }
-]
   }
 }

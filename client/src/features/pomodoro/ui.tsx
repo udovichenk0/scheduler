@@ -113,17 +113,20 @@ export const Pomodoro = ({
           })}
         </div>
         {taskTitle && (
-          <Container rounded="base" padding="sm"
-            className="bg-cHover text-center mb-3">
+          <Container
+            rounded="base"
+            padding="sm"
+            className="mb-3 bg-cHover text-center"
+          >
             {taskTitle}
           </Container>
         )}
-          <ProgressCircle
-            isWorkTime={isWorkTime}
-            time={passingTime}
-            progress={circleProgress}
-            stages={stages}
-          />
+        <ProgressCircle
+          isWorkTime={isWorkTime}
+          time={passingTime}
+          progress={circleProgress}
+          stages={stages}
+        />
         <div className="mt-4 flex justify-between">
           {leftSlot}
           <StartButton

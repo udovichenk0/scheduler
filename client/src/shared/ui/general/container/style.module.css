@@ -1,7 +1,15 @@
 .container {
-  &[data-padding="sm"] { @apply p-1};
-  &[data-padding="base"] { @apply p-2};
-  &[data-padding="xl"] { @apply p-4};
+  &[data-padding="sm"] {
+    @apply p-1;
+  }
+  &[data-padding="base"] {
+    @apply p-2;
+  }
+  &[data-padding="xl"] {
+    @apply p-4;
+  }
 
-  &[data-rounded="base"] { @apply rounded-[5px]};
+  &[data-rounded="base"] {
+    @apply rounded-[5px];
+  }
 }

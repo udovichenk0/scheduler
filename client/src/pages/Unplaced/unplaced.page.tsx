@@ -53,13 +53,13 @@ export const Unplaced = () => {
           selectedTask={selectedTask}
           selectTask={selectTask}
         />
-      <div className="mx-5">
-        {newTask && (
-          <ExpandedTask taskRef={taskRef}>
-            <ModifyTaskForm date={false} modifyTaskModel={$$createTask} />
-          </ExpandedTask>
-        )}
-      </div>
+        <div className="mx-5">
+          {newTask && (
+            <ExpandedTask taskRef={taskRef}>
+              <ModifyTaskForm date={false} modifyTaskModel={$$createTask} />
+            </ExpandedTask>
+          )}
+        </div>
       </Layout.Content>
       <Layout.Footer
         isTaskSelected={!!selectedTask}
