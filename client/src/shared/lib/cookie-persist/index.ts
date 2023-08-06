@@ -24,8 +24,7 @@ export const cookiePersist = ({
 
   sample({
     clock: source,
-    filter: Boolean,
-    target: [setFx],
+    target: setFx,
   })
 
   sample({
