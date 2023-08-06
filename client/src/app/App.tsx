@@ -1,12 +1,12 @@
 import { RouterProvider } from "atomic-router-react"
 
-import { RoutesView } from "@/pages"
 
 import { Sidebar } from "@/widgets/sidebar"
 
 import { router } from "@/shared/routing/router"
 import { parseCookieValue } from "@/shared/lib/parse-cookie-value"
 
+import { RoutesView } from "@/pages"
 
 function App() {
   return (
@@ -26,7 +26,10 @@ if (typeof window != "undefined") {
     document.documentElement.setAttribute("data-theme", `${theme}`)
   }
   if (accent) {
-    document.documentElement.style.setProperty("--accent", `var(--${accent})`)
+    document.documentElement.style.setProperty(
+      "--accent",
+      `var(--${accent})`,
+    )
   }
   if (!theme) {
     document.documentElement.setAttribute("data-theme", "default")
