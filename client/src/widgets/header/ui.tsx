@@ -33,10 +33,7 @@ export const Header = ({
           <PomodoroProgressBar onClick={togglePomodoroModal} />
         ) : (
           <Button intent={"primary"} size={"xs"} onClick={togglePomodoroModal}>
-            <Icon
-              className="text-2xl text-cIconDefault"
-              name="common/timer"
-            />
+            <Icon className="text-2xl text-cIconDefault" name="common/timer" />
           </Button>
         )}
       </div>
@@ -59,7 +56,7 @@ export const Header = ({
         }
       />
       <div className="flex items-center gap-4">
-        <Icon name={iconName} className="text-2xl fill-cIconDefault" />
+        <Icon name={iconName} className="fill-cIconDefault text-2xl" />
         <Typography.Heading size="lg">{title}</Typography.Heading>
       </div>
     </Container>
