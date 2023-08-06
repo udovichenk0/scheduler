@@ -13,6 +13,7 @@ sample({
   target: $user,
 })
 export const $sessionUser = $user.map((user) => user)
+export const $isAuthenticated = $user.map((user) => Boolean(user))
 sample({
   clock: setSessionUserTriggered,
   target: $user,

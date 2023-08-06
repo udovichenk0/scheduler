@@ -10,7 +10,7 @@ import { TokenService } from '../token/token.service';
 import { UserDto } from '../user/dto/user.dto';
 import { passwordNotCorrect, userNotFound } from './constant/authErrorMessages';
 import { compareHash } from 'src/lib/hash-password/compareHash';
-import { ConfigService } from '@nestjs/config';
+import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class AuthService {
   constructor(
@@ -32,6 +32,7 @@ export class AuthService {
       data: {
         email: credentials.email,
         hash,
+        id: uuidv4(),
       },
     });
     const { access_token, refresh_token } = await this.tokenService.issueTokens(

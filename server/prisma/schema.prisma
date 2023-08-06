@@ -11,7 +11,7 @@ datasource db {
 }
 
 model user {
-  id        Int     @default(autoincrement()) @id
+  id        String     @id
   email     String  @unique
   hash      String
   verified  Boolean @default(false)
@@ -19,14 +19,14 @@ model user {
 }
 
 model task {
-  id          Int       @default(autoincrement()) @id
+  id          String    @id
   title       String
   description String?
   type        Type
   status      Status    @default(INPROGRESS)
   start_date  DateTime?
   user        user      @relation(fields: [user_id], references: [id])
-  user_id     Int
+  user_id     String
 }
 enum Status {
   FINISHED

@@ -1,6 +1,5 @@
 import dayjs from "dayjs"
 import { combine, createEvent, createStore, sample } from "effector"
-import { persist } from "effector-storage/local"
 
 import { createTaskFactory } from "@/features/task/create"
 import { createRemoveTaskFactory } from "@/features/task/delete"
@@ -9,6 +8,7 @@ import { updateTaskFactory } from "@/features/task/update"
 import { $taskKv } from "@/entities/task/tasks"
 
 import { createTaskAccordionFactory } from "@/shared/lib/task-accordion-factory"
+import { cookiePersist } from "@/shared/lib/cookie-persist"
 
 export const $$taskAccordion = createTaskAccordionFactory()
 export const $$updateTask = updateTaskFactory({ taskModel: $$taskAccordion })
@@ -40,8 +40,7 @@ sample({
   fn: (isOpened) => !isOpened,
   target: $isOverdueTasksOpened,
 })
-
-persist({
-  store: $isOverdueTasksOpened,
-  key: "overdueTasksState",
+cookiePersist({
+  source: $isOverdueTasksOpened,
+  name: 'overdueTasksOpened'
 })
