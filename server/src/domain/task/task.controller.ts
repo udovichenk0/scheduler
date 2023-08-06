@@ -7,6 +7,7 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 import { TokenGuard } from '../token/guards/token-guard';
 import { TaskService } from './task.service';
 import { Request } from 'express';
@@ -37,7 +38,12 @@ export class TaskController {
     @Body() taskCredentials: CreateTaskCredentialDto,
   ) {
     const user = req.session['user'] as UserDto;
+    // const task = await this.taskService.createOne({
+    //   ...taskCredentials
+    //   id: uuidv4(),
+    // })
     const task = await this.taskService.createOne({
+      id: uuidv4(),
       ...taskCredentials,
       user: {
         connect: {

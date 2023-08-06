@@ -1,11 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { Prisma } from '@prisma/client';
-import {
-  UpdateStatusCredentialDto,
-  UpdateTaskCredentialDto,
-} from './dto/task.dto';
-import { z } from 'zod';
+import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class TaskService {
   constructor(private prismaService: PrismaService) {}
@@ -19,7 +15,10 @@ export class TaskService {
   }
   createOne(data: Prisma.taskCreateInput) {
     const task = this.prismaService.task.create({
-      data,
+      data: {
+        ...data,
+        id: uuidv4(),
+      },
     });
     return task;
   }

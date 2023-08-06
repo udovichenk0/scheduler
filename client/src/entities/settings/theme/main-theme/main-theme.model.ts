@@ -3,7 +3,7 @@ import { createEffect } from "effector/effector.umd"
 import { z } from "zod"
 
 import { cookiePersist } from "@/shared/lib/cookie-persist"
-
+//TODO change naming to ThemeContract
 const ThemeSchema = z.enum(["space", "default", "dark", "light", "grey"])
 
 export type Theme = z.infer<typeof ThemeSchema>

@@ -1,6 +1,8 @@
-import { createEvent, sample } from "effector"
-import { spread } from "patronum"
+import { createEffect, createEvent, sample } from "effector"
+import { spread, and, not } from "patronum"
+// import { v4 as uuidv4 } from 'uuid';
 
+import { $isAuthenticated } from '@/entities/session';
 import { modifyFormFactory } from "@/entities/task/modify"
 import { $taskKv } from "@/entities/task/tasks"
 
@@ -28,6 +30,23 @@ export const updateTaskFactory = ({
     $type,
   } = modifyFormFactory({})
   const changeStatusTriggered = createEvent<number>()
+
+  type TaskCredentials = {
+    description: string,
+    title: string,
+    type: 'unplaced' | 'inbox',
+    status: 'INPROGRESS' | 'FINISHED',
+    start_date: Nullable<Date>,
+    id: any,
+  }
+
+  const updateTaskFromLocalStorageFx = createEffect((cred: TaskCredentials) => { 
+    const tasksFromLs = localStorage.getItem("tasks")
+    const parsedTasks = JSON.parse(tasksFromLs!)
+    const updatedTasks = parsedTasks.map((task: TaskCredentials) => task.id === cred.id ? cred : task)
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks))
+    return cred as TaskCredentials
+  })
   sample({
     clock: taskModel.updateTaskOpened,
     target: spread({
@@ -55,9 +74,16 @@ export const updateTaskFactory = ({
   sample({
     clock: taskModel.updateTaskClosed,
     source: $fields,
-    filter: $isAllowToSubmit,
+    filter: and($isAllowToSubmit, $isAuthenticated),
     fn: (fields, id) => ({ body: { ...fields, id } }),
     target: updateTaskQuery.start,
+  })
+  sample({
+    clock: taskModel.updateTaskClosed,
+    source: $fields,
+    filter: and($isAllowToSubmit, not($isAuthenticated)),
+    fn: (fields, id) => ({...fields, id}),
+    target: updateTaskFromLocalStorageFx,
   })
   sample({
     clock: [
@@ -74,11 +100,23 @@ export const updateTaskFactory = ({
     ],
   })
   sample({
-    clock: updateTaskQuery.finished.success,
+    clock: updateTaskFromLocalStorageFx.doneData,
+    source: $taskKv,
+    fn: (kv, result) => ({ ...kv, [result.id]: result }),
+    target: [
+      $taskKv,
+      taskModel.$taskId.reinit,
+      resetFieldsTriggered,
+      taskModel.$updatedTriggered.reinit,
+    ],
+  })
+  sample({
+    clock: [updateTaskQuery.finished.success, updateTaskFromLocalStorageFx.done],
     filter: taskModel.$createdTriggered,
     fn: () => true,
     target: [taskModel.$newTask, taskModel.$createdTriggered.reinit],
   })
+
   return {
     statusChanged,
     titleChanged,

@@ -25,14 +25,14 @@ const updateTaskCredentialsDto = z.object({
     .nullable()
     .transform((str) => (str ? new Date(str) : null)),
   type: z.enum(['inbox', 'unplaced']),
-  id: z.number(),
+  id: z.string(),
 });
 export class UpdateTaskCredentialDto extends createZodDto(
   updateTaskCredentialsDto,
 ) {}
 
 export const updateStatusCredentialsDto = z.object({
-  id: z.number(),
+  id: z.string(),
   status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
 });
 export class UpdateStatusCredentialDto extends createZodDto(
@@ -40,19 +40,19 @@ export class UpdateStatusCredentialDto extends createZodDto(
 ) {}
 
 const taskDtoSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   title: z.string(),
   description: z.string(),
   status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
   start_date: z.date().nullable(),
   type: z.enum(['inbox', 'unplaced']),
-  user_id: z.number(),
+  user_id: z.string(),
 });
 
 export class TaskDto extends createZodDto(taskDtoSchema) {}
 
 export const DeleteTaskCredentialSchema = z.object({
-  id: z.number(),
+  id: z.string(),
 });
 
 export class DeleteTaskCredentialsDto extends createZodDto(

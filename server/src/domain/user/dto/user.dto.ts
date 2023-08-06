@@ -6,7 +6,7 @@ const userCredentialsSchema = z.object({
 });
 
 export const userDtoSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   email: z.string().email().min(4),
   verified: z.boolean(),
 });
