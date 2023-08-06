@@ -1,5 +1,6 @@
 import { createEvent, createStore, sample } from "effector"
-import { persist } from "effector-storage/local"
+
+import { cookiePersist } from "@/shared/lib/cookie-persist"
 
 const DEFAULT_WORK_DURATION = 10
 const MAX_WORK_DURATION = 120
@@ -100,27 +101,27 @@ sample({
   target: $longBreakDuration,
 })
 
-persist({
-  store: $workDuration,
-  key: "workDuration",
+cookiePersist({
+  source: $workDuration,
+  name: "workDuration",
 })
-persist({
-  store: $shortBreakDuration,
-  key: "shortBreak",
+cookiePersist({
+  source: $shortBreakDuration,
+  name: "shortBreak",
 })
-persist({
-  store: $longBreakDuration,
-  key: "longBreak",
+cookiePersist({
+  source: $longBreakDuration,
+  name: "longBreak",
 })
-persist({
-  store: $customDuration,
-  key: "customDuration",
+cookiePersist({
+  source: $customDuration,
+  name: "customDuration",
 })
-persist({
-  store: $isEnabledAutomaticStart,
-  key: "startTimerAutomatically",
+cookiePersist({
+  source: $isEnabledAutomaticStart,
+  name: "startTimerAutomatically"
 })
-persist({
-  store: $isEnabledNotificationSound,
-  key: "notificationSound",
+cookiePersist({
+  source: $isEnabledNotificationSound,
+  name: "notificationSound",
 })
