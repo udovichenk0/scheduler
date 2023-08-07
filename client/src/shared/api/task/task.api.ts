@@ -1,4 +1,5 @@
 import { zodContract } from "@farfetched/zod"
+import { z } from "zod"
 
 import { authQuery } from "@/shared/lib/auth-query"
 
@@ -43,7 +44,7 @@ export const tasksQuery = authQuery<TaskDto[], void>({
 
 const updateTaskContract = zodContract(taskDtoSchema)
 type UpdateTaskParams = {
-  id: number
+  id: string
   title: string
   description: Nullable<string>
   status: "FINISHED" | "INPROGRESS"
@@ -65,7 +66,7 @@ export const updateTaskQuery = authQuery<TaskDto, { body: UpdateTaskParams }>({
 const updateStatusContract = zodContract(taskDtoSchema)
 
 type UpdateStatusParams = {
-  id: number
+  id: string
   status: "FINISHED" | "CANCELED" | "INPROGRESS"
 }
 
@@ -83,13 +84,41 @@ export const updateStatusQuery = authQuery<
   },
 })
 
-export const deleteTaskQuery = authQuery<TaskDto, { body: { id: number } }>({
+export const deleteTaskQuery = authQuery<TaskDto, { body: { id: string } }>({
   request: {
     url: "tasks/delete",
     method: "POST",
   },
   response: {
     contract: updateStatusContract,
+    mapData: (data) => data,
+  },
+})
+type CreateManyTasks = {
+  tasks: {
+    id: string
+    title: string
+    description: string
+    status: "FINISHED" | "INPROGRESS"
+    type: "inbox" | "unplaced"
+    start_date: Nullable<Date>
+  }[]
+  user_id: string
+}
+const CreateManyTasksContract = z.object({
+  count: z.number(),
+})
+const CreateManyTasksZodContract = zodContract(CreateManyTasksContract)
+export const createManyTasksQuery = authQuery<
+  { count: number },
+  { body: CreateManyTasks }
+>({
+  request: {
+    url: "tasks/create-many",
+    method: "POST",
+  },
+  response: {
+    contract: CreateManyTasksZodContract,
     mapData: (data) => data,
   },
 })

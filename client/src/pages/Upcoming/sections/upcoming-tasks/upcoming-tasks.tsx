@@ -27,8 +27,8 @@ export const AllUpcomingTasks = ({
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void
   outRef: RefObject<HTMLDivElement>
-  selectTask: (task: Nullable<{ id: number }>) => void
-  selectedTask: Nullable<{ id: number }>
+  selectTask: (task: Nullable<{ id: string }>) => void
+  selectedTask: Nullable<{ id: string }>
 }) => {
   return (
     <>
@@ -79,8 +79,8 @@ const DateSectionTaskList = ({
   selectedDate,
   changeDate,
 }: {
-  selectedTask: Nullable<{ id: number }>
-  selectTask: (task: Nullable<{ id: number }>) => void
+  selectedTask: Nullable<{ id: string }>
+  selectTask: (task: Nullable<{ id: string }>) => void
   taskRef: RefObject<HTMLDivElement>
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void
@@ -134,8 +134,8 @@ const RestDateSectionTasklist = ({
   selectedDate,
   changeDate,
 }: {
-  selectedTask: Nullable<{ id: number }>
-  selectTask: (task: Nullable<{ id: number }>) => void
+  selectedTask: Nullable<{ id: string }>
+  selectTask: (task: Nullable<{ id: string }>) => void
   taskRef: RefObject<HTMLDivElement>
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void
@@ -179,8 +179,8 @@ const MonthSectionTaskList = ({
   selectedDate,
   changeDate,
 }: {
-  selectedTask: Nullable<{ id: number }>
-  selectTask: (task: Nullable<{ id: number }>) => void
+  selectedTask: Nullable<{ id: string }>
+  selectTask: (task: Nullable<{ id: string }>) => void
   taskRef: RefObject<HTMLDivElement>
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void
@@ -220,8 +220,8 @@ const RestMonthSectionTasklist = ({
   selectedDate,
   changeDate,
 }: {
-  selectedTask: Nullable<{ id: number }>
-  selectTask: (task: Nullable<{ id: number }>) => void
+  selectedTask: Nullable<{ id: string }>
+  selectTask: (task: Nullable<{ id: string }>) => void
   taskRef: RefObject<HTMLDivElement>
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void
@@ -255,8 +255,8 @@ const YearSectionTaskList = ({
   selectedDate,
   changeDate,
 }: {
-  selectedTask: Nullable<{ id: number }>
-  selectTask: (task: Nullable<{ id: number }>) => void
+  selectedTask: Nullable<{ id: string }>
+  selectTask: (task: Nullable<{ id: string }>) => void
   taskRef: RefObject<HTMLDivElement>
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void

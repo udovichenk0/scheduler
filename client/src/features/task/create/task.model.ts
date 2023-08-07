@@ -1,7 +1,7 @@
 import { merge, sample } from "effector"
 import { not, and, condition } from "patronum"
 import { createEffect } from "effector/effector.mjs"
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid"
 
 import { modifyFormFactory } from "@/entities/task/modify"
 import { $taskKv } from "@/entities/task/tasks"
@@ -38,26 +38,27 @@ export const createTaskFactory = ({
     defaultDate,
   })
   type TaskCredentials = {
-    description: string,
-    title: string,
-    type: 'unplaced' | 'inbox',
-    status: 'INPROGRESS' | 'FINISHED',
+    description: string
+    title: string
+    type: "unplaced" | "inbox"
+    status: "INPROGRESS" | "FINISHED"
     start_date: Nullable<Date>
   }
-  const setTaskToLocalStorageFx = createEffect(({body}:{body: TaskCredentials}) => { 
-    const tasksFromLs = localStorage.getItem("tasks")
-    if (tasksFromLs) {
-      const tasks = JSON.parse(tasksFromLs)
-      const task = {...body, id: uuidv4()}
-      localStorage.setItem("tasks", JSON.stringify([...tasks, task]))
-      return task
-    }
-    else {
-      const task = { ...body, id: uuidv4() }
-      localStorage.setItem("tasks", JSON.stringify([task]))
-      return task
-    }
-  })
+  const setTaskToLocalStorageFx = createEffect(
+    ({ body }: { body: TaskCredentials }) => {
+      const tasksFromLs = localStorage.getItem("tasks")
+      if (tasksFromLs) {
+        const tasks = JSON.parse(tasksFromLs)
+        const task = { ...body, id: uuidv4() }
+        localStorage.setItem("tasks", JSON.stringify([...tasks, task]))
+        return task
+      } else {
+        const task = { ...body, id: uuidv4() }
+        localStorage.setItem("tasks", JSON.stringify([task]))
+        return task
+      }
+    },
+  )
 
   sample({
     clock: taskModel.createTaskToggled,
@@ -98,7 +99,7 @@ export const createTaskFactory = ({
   })
   sample({
     clock: [createTaskQuery.finished.finally, setTaskToLocalStorageFx.done],
-    target: [resetFieldsTriggered]
+    target: [resetFieldsTriggered],
   })
   sample({
     clock: setTaskToLocalStorageFx.doneData,
@@ -107,12 +108,15 @@ export const createTaskFactory = ({
     target: $taskKv,
   })
   condition({
-    source: merge([createTaskQuery.finished.success, setTaskToLocalStorageFx.done]),
+    source: merge([
+      createTaskQuery.finished.success,
+      setTaskToLocalStorageFx.done,
+    ]),
     if: taskModel.$createdTriggered,
     then: taskModel.$createdTriggered.reinit!,
     else: taskModel.$newTask.reinit!,
   })
-  
+
   sample({
     clock: taskModel.createTaskClosed,
     filter: not($isAllowToSubmit),

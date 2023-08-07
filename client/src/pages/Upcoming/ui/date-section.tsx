@@ -24,8 +24,8 @@ export function TasksSection({
   title: ReactNode
   isSelected: boolean
   action: () => void
-  selectTask: (task: Nullable<{ id: number }>) => void
-  selectedTask: Nullable<{ id: number }>
+  selectTask: (task: Nullable<{ id: string }>) => void
+  selectedTask: Nullable<{ id: string }>
 }) {
   const [taskId, updateTaskOpened, newTask] = useUnit([
     $$taskAccordion.$taskId,

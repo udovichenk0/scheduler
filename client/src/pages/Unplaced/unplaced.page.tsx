@@ -19,7 +19,7 @@ import {
 } from "./unplaced.model"
 
 export const Unplaced = () => {
-  const [selectedTask, selectTask] = useState<Nullable<{ id: number }>>(null)
+  const [selectedTask, selectTask] = useState<Nullable<{ id: string }>>(null)
   const taskRef = useRef<HTMLDivElement>(null)
   const [
     tasks,

@@ -13,6 +13,7 @@ import { TaskService } from './task.service';
 import { Request } from 'express';
 import { UserDto } from '../user/dto/user.dto';
 import {
+  CreateManyTasksCredentialDto,
   CreateTaskCredentialDto,
   DeleteTaskCredentialsDto,
   TaskDto,
@@ -38,10 +39,6 @@ export class TaskController {
     @Body() taskCredentials: CreateTaskCredentialDto,
   ) {
     const user = req.session['user'] as UserDto;
-    // const task = await this.taskService.createOne({
-    //   ...taskCredentials
-    //   id: uuidv4(),
-    // })
     const task = await this.taskService.createOne({
       id: uuidv4(),
       ...taskCredentials,
@@ -88,5 +85,14 @@ export class TaskController {
       },
     });
     return task;
+  }
+  @Post('create-many')
+  async createMany(@Body() taskCredentials: CreateManyTasksCredentialDto) {
+    const { user_id, tasks } = taskCredentials;
+    const response = await this.taskService.createMany({
+      user_id,
+      data: tasks,
+    });
+    return response;
   }
 }

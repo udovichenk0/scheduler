@@ -6,7 +6,7 @@ export const createTaskAccordionFactory = () => {
   const closeTaskTriggered = createEvent()
 
   const createTaskClosed = createEvent()
-  const updateTaskClosed = createEvent<number>()
+  const updateTaskClosed = createEvent<string>()
   const updateTaskOpened = createEvent<TaskDto>()
   const createTaskToggled = createEvent<{ date: Nullable<Date> }>()
 
@@ -16,7 +16,7 @@ export const createTaskAccordionFactory = () => {
   const $isAllowToOpenCreate = createStore(true)
 
   const $newTask = createStore(false)
-  const $taskId = createStore<Nullable<number>>(null)
+  const $taskId = createStore<Nullable<string>>(null)
 
   sample({
     clock: closeTaskTriggered,

@@ -14,7 +14,7 @@ import {
 } from "./upcoming.model"
 export const Upcoming = () => {
   const ref = useRef<HTMLDivElement>(null)
-  const [selectedTask, selectTask] = useState<Nullable<{ id: number }>>(null)
+  const [selectedTask, selectTask] = useState<Nullable<{ id: string }>>(null)
   const [
     closeTaskTriggered,
     createTaskOpened,

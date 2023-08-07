@@ -2,7 +2,7 @@ import { createEffect, createEvent, sample } from "effector"
 import { spread, and, not } from "patronum"
 // import { v4 as uuidv4 } from 'uuid';
 
-import { $isAuthenticated } from '@/entities/session';
+import { $isAuthenticated } from "@/entities/session"
 import { modifyFormFactory } from "@/entities/task/modify"
 import { $taskKv } from "@/entities/task/tasks"
 
@@ -29,21 +29,23 @@ export const updateTaskFactory = ({
     $status,
     $type,
   } = modifyFormFactory({})
-  const changeStatusTriggered = createEvent<number>()
+  const changeStatusTriggered = createEvent<string>()
 
   type TaskCredentials = {
-    description: string,
-    title: string,
-    type: 'unplaced' | 'inbox',
-    status: 'INPROGRESS' | 'FINISHED',
-    start_date: Nullable<Date>,
-    id: any,
+    description: string
+    title: string
+    type: "unplaced" | "inbox"
+    status: "INPROGRESS" | "FINISHED"
+    start_date: Nullable<Date>
+    id: string
   }
 
-  const updateTaskFromLocalStorageFx = createEffect((cred: TaskCredentials) => { 
+  const updateTaskFromLocalStorageFx = createEffect((cred: TaskCredentials) => {
     const tasksFromLs = localStorage.getItem("tasks")
     const parsedTasks = JSON.parse(tasksFromLs!)
-    const updatedTasks = parsedTasks.map((task: TaskCredentials) => task.id === cred.id ? cred : task)
+    const updatedTasks = parsedTasks.map((task: TaskCredentials) =>
+      task.id === cred.id ? cred : task,
+    )
     localStorage.setItem("tasks", JSON.stringify(updatedTasks))
     return cred as TaskCredentials
   })
@@ -82,7 +84,7 @@ export const updateTaskFactory = ({
     clock: taskModel.updateTaskClosed,
     source: $fields,
     filter: and($isAllowToSubmit, not($isAuthenticated)),
-    fn: (fields, id) => ({...fields, id}),
+    fn: (fields, id) => ({ ...fields, id }),
     target: updateTaskFromLocalStorageFx,
   })
   sample({
@@ -111,7 +113,10 @@ export const updateTaskFactory = ({
     ],
   })
   sample({
-    clock: [updateTaskQuery.finished.success, updateTaskFromLocalStorageFx.done],
+    clock: [
+      updateTaskQuery.finished.success,
+      updateTaskFromLocalStorageFx.done,
+    ],
     filter: taskModel.$createdTriggered,
     fn: () => true,
     target: [taskModel.$newTask, taskModel.$createdTriggered.reinit],

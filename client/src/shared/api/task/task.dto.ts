@@ -1,12 +1,12 @@
 import { z } from "zod"
 
 export const taskDtoSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   title: z.string(),
   description: z.string(),
   status: z.enum(["FINISHED", "INPROGRESS"]),
   start_date: z.coerce.date().nullable(),
-  user_id: z.number(),
+  user_id: z.string(),
   type: z.enum(["inbox", "unplaced"]),
 })
 export const tasksDtoSchema = z.array(taskDtoSchema)
