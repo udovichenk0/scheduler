@@ -1,3 +1,4 @@
+import { $isAuthenticated } from '@/entities/session';
 import { allSettled, createEvent, createStore, fork } from "effector"
 import { test, expect, vi } from "vitest"
 
@@ -22,6 +23,7 @@ vi.mock("@/shared/lib/block-expansion", () => {
         createTaskClosed: createEvent(),
         $newTask: createStore(false),
         $createdTriggered: createStore(false),
+        $isAuthenticated: createStore(true),
         $isAllowToOpenUpdate: createStore(true),
         createTaskToggled: createEvent(),
       }
@@ -30,116 +32,116 @@ vi.mock("@/shared/lib/block-expansion", () => {
 })
 
 const items = {
-  1: {
-    id: 1,
+  '1': {
+    id: '1',
     title: "without date",
     description: "",
     type: "inbox",
     status: "INPROGRESS",
     start_date: null,
-    user_id: 1,
+    user_id: '1',
   },
-  2: {
-    id: 2,
+  '2': {
+    id: '2',
     title: "without date",
     description: "",
     type: "inbox",
     status: "INPROGRESS",
     start_date: null,
-    user_id: 1,
+    user_id: '1',
   },
-  3: {
-    id: 3,
+  '3': {
+    id: '3',
     title: "without date",
     description: "",
     type: "inbox",
     status: "INPROGRESS",
     start_date: null,
-    user_id: 1,
+    user_id: '1',
   },
-  4: {
-    id: 4,
+  '4': {
+    id: '4',
     title: "without date",
     description: "",
     type: "inbox",
     status: "INPROGRESS",
     start_date: null,
-    user_id: 1,
+    user_id: '1',
   },
-  5: {
-    id: 5,
+  '5': {
+    id: '5',
     title: "without date",
     description: "",
     type: "inbox",
     status: "INPROGRESS",
     start_date: null,
-    user_id: 1,
+    user_id: '1',
   },
 }
 const newItems = {
-  1: {
-    id: 1,
+  '1': {
+    id: '1',
     title: "without date",
     description: "",
     type: "inbox",
     status: "INPROGRESS",
     start_date: null,
-    user_id: 1,
+    user_id: '1',
   },
-  2: {
-    id: 2,
+  '2': {
+    id: '2',
     title: "without date",
     description: "",
     type: "inbox",
     status: "INPROGRESS",
     start_date: null,
-    user_id: 1,
+    user_id: '1',
   },
-  3: {
-    id: 3,
+  '3': {
+    id: '3',
     title: "without date",
     description: "",
     type: "inbox",
     status: "INPROGRESS",
     start_date: null,
-    user_id: 1,
+    user_id: '1',
   },
-  4: {
-    id: 4,
+  '4': {
+    id: '4',
     title: "without date",
     description: "",
     type: "inbox",
     status: "INPROGRESS",
     start_date: null,
-    user_id: 1,
+    user_id: '1',
   },
-  5: {
-    id: 5,
+  '5': {
+    id: '5',
     title: "without date",
     description: "",
     type: "inbox",
     status: "INPROGRESS",
     start_date: null,
-    user_id: 1,
+    user_id: '1',
   },
-  6: {
-    id: 6,
+  '6': {
+    id: '6',
     title: "sixth",
     description: "my note",
     type: "inbox",
     status: "FINISHED",
     start_date: null,
-    user_id: 1,
+    user_id: '1',
   },
 }
 const returnedValue = {
-  id: 6,
+  id: '6',
   title: "sixth",
   description: "my note",
   type: "inbox",
   status: "FINISHED",
   start_date: null,
-  user_id: 1,
+  user_id: '1',
 }
 
 test("Make a request after task being closed, set new task to the kv store and reset fields", async () => {
@@ -154,6 +156,7 @@ test("Make a request after task being closed, set new task to the kv store and r
       [$status, "FINISHED"],
       [$startDate, null],
       [$type, "inbox"],
+      [$isAuthenticated, true],
       [$isAllowToSubmit, true],
       [$taskKv, items],
     ],
