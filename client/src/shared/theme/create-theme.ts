@@ -6,7 +6,10 @@ export const createTheme = () => {
   const init = createEvent()
   const setMainThemeFx = createEffect(() => {
     const theme = parseCookieValue("theme")
-    document.documentElement.setAttribute("data-theme", `${theme || "default"}`)
+    if(theme) {
+      console.log(theme)
+      document.documentElement.setAttribute("data-theme", `${theme}`)
+    }
   })
   const setAccentThemeFx = createEffect(() => {
     const accent = parseCookieValue("accent")
