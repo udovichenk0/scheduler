@@ -8,12 +8,14 @@ html {
   --white: #ffffff;
   --light-blue: #0e162e;
 }
+
 @layer base {
   html {
     font-family:
       Helvetica Nova,
       sans-serif;
   }
+
   html[data-theme="space"] {
     --main: #0b0417;
     --accent: #2ebcff;
@@ -43,6 +45,7 @@ html {
     --cTimeInterval: #174468;
     --cPomodoroRed: #ff5f58;
     --cPomodoroGreen: #62c554;
+    --cCalendarFont: #fff;
   }
 
   html[data-theme="default"] {
@@ -76,6 +79,7 @@ html {
     --cTimeInterval: #244250;
     --cPomodoroRed: #ff5f58;
     --cPomodoroGreen: #62c554;
+    --cCalendarFont: #fff;
   }
   html[data-theme="dark"] {
     --main: #121212;
@@ -107,6 +111,7 @@ html {
     --cTimeInterval: #243952;
     --cPomodoroRed: #ff5f58;
     --cPomodoroGreen: #62c554;
+    --cCalendarFont: hsla(0,0%,100%,.8);
   }
   html[data-theme="light"] {
     --main: #f9f9f9;
@@ -138,6 +143,7 @@ html {
     --cTimeInterval: #d3e0ef;
     --cPomodoroRed: #ff5f58;
     --cPomodoroGreen: #62c554;
+    --cCalendarFont: #76899b;
   }
   html[data-theme="grey"] {
     --main: #f4f4f4;
@@ -169,6 +175,7 @@ html {
     --cTimeInterval: #ccd4de;
     --cPomodoroRed: #ff5f58;
     --cPomodoroGreen: #62c554;
+    --cCalendarFont: rgba(51,51,51,.8);
   }
 }
 @layer components {
