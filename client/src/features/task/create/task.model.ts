@@ -1,6 +1,5 @@
-import { merge, sample } from "effector"
+import { merge, sample, createEffect } from "effector"
 import { not, and, condition } from "patronum"
-import { createEffect } from "effector/effector.mjs"
 import { v4 as uuidv4 } from "uuid"
 
 import { modifyFormFactory } from "@/entities/task/modify"
