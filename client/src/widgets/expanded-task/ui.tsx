@@ -1,4 +1,4 @@
-import { useUnit } from "effector-react/effector-react.mjs"
+import { useUnit } from "effector-react"
 import { ReactNode, RefObject } from "react"
 
 import { Pomodoro } from "@/features/pomodoro"
