@@ -1,7 +1,7 @@
-import { $isAuthenticated } from '@/entities/session';
 import { allSettled, createEvent, createStore, fork } from "effector"
 import { test, expect, vi } from "vitest"
 
+import { $isAuthenticated } from '@/entities/session';
 import { $taskKv } from "@/entities/task/tasks"
 
 import { createTaskQuery } from "@/shared/api/task"

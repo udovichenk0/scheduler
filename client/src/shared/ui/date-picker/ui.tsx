@@ -58,54 +58,23 @@ export function DatePicker({
               const isLeftDateBigger =
                 id != item.length - 1 &&
                 dates[rowId][id].date > dates[rowId][id + 1].date
-              const isToday = dayjs(new Date(year, month, date)).isSame(
-                dayjs(),
-                "date",
-              )
-              const isCurrent = dayjs(new Date(year, month, date)).isSame(
-                currentDate,
-                "date",
-              )
-              const isPast = dayjs(new Date(year, month, date)).isBefore(
-                dayjs(),
-                "date",
-              )
               return (
                 <div
-                  className={`w-full py-[2px] ${
-                    isTopDateBigger && "border-b-[1px] border-cBorder"
+                  className={`w-full py-[2px] border-cBorder ${
+                    isTopDateBigger && "border-b-[1px]"
                   } ${
                     isLeftDateBigger &&
-                    "border-b-[1px] border-r-[1px] border-cBorder"
+                    "border-b-[1px] border-r-[1px]"
                   }`}
                   key={`${date}/${month}/${year}`}
                 >
-                  <button
-                    onClick={() => onDateChange(new Date(year, month, date))}
-                    disabled={isPast || isCurrent}
-                    className={`h-[35px] w-[35px] text-[13px] ${
-                      !isCurrent && !isPast && "hover:bg-cHover"
-                    } 
-                          flex items-center justify-center rounded-[5px] 
-                          ${isPast && "text-[#AAA]"} ${isToday && "text-accent"}
-                          ${isCurrent && "bg-cFocus"}
-                          `}
-                  >
-                    {isToday ? (
-                      <Icon name="common/filled-star" />
-                    ) : (
-                      <div>
-                        {date === 1 ? (
-                          <div className="grid text-[9px] leading-[9px]">
-                            <div>{date}</div>
-                            <span>{months[month]}</span>
-                          </div>
-                        ) : (
-                          <span>{date}</span>
-                        )}
-                      </div>
-                    )}
-                  </button>
+                <Cell
+                  onDateChange={onDateChange}
+                  year={year}
+                  month={month}
+                  date={date}
+                  currentDate={currentDate}
+                />
                 </div>
               )
             })}
@@ -115,6 +84,63 @@ export function DatePicker({
     </div>
   )
 }
+
+const Cell = ({
+  onDateChange,
+  year,
+  month,
+  date,
+  currentDate
+}: {
+  onDateChange: (date: Date) => void,
+  year: number,
+  month: number,
+  date: number, 
+  currentDate: Date
+}) => {
+  const isToday = dayjs(new Date(year, month, date)).isSame(
+    dayjs(),
+    "date",
+  )
+  const isPast = dayjs(new Date(year, month, date)).isBefore(
+    dayjs(),
+    "date",
+  )
+
+  const isCurrent = dayjs(new Date(year, month, date)).isSame(
+    currentDate,
+    "date",
+  )
+  return (
+      <button
+        onClick={() => onDateChange(new Date(year, month, date))}
+        disabled={isPast || isCurrent}
+        className={`text-cCalendarFont h-[35px] w-[35px] text-[13px] ${
+          !isCurrent && !isPast && "hover:bg-cHover"
+        } 
+        flex items-center justify-center rounded-[5px] 
+        ${isPast && "text-cSecondBorder"} ${isToday && "text-accent"}
+        ${isCurrent && "bg-cFocus"}
+        `}
+      >
+        {isToday ? (
+          <Icon name="common/filled-star" className="text-accent"/>
+        ) : (
+          <div>
+            {date === 1 || isCurrent ? (
+              <div className="grid text-[9px] leading-[9px]">
+                <div>{date}</div>
+                <span>{months[month]}</span>
+              </div>
+            ) : (
+              <span>{date}</span>
+            )}
+          </div>
+        )}
+      </button>
+  )
+}
+
 const WeeksName = () => {
   return (
     <div className="flex justify-around border-b-[1px] border-cBorder">

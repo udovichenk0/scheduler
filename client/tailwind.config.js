@@ -41,6 +41,7 @@ export default {
         cTimeInterval: "var(--cTimeInterval)",
         cPomodoroRed: "var(--cPomodoroRed)",
         cPomodoroGreen: "var(--cPomodoroGreen)",
+        cCalendarFont: "var(--cCalendarFont)",
       },
     },
   },
