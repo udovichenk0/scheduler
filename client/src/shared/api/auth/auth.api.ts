@@ -1,6 +1,7 @@
 import { createQuery } from "@farfetched/core"
 import { zodContract } from "@farfetched/zod"
 import { createEffect } from "effector"
+import { debug } from "patronum"
 
 import { authSchema } from "./auth.dto"
 
@@ -20,6 +21,7 @@ const signinFx = createEffect(
     return res
   },
 )
+debug(signinFx.doneData)
 export const signinQuery = createQuery({
   effect: signinFx,
   contract: authContract,
