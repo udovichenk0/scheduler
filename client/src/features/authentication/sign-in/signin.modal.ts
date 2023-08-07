@@ -51,7 +51,7 @@ sample({
 })
 sample({
   clock: signinQuery.finished.success,
-  fn: () => console.log('success')
+  fn: () => console.log("success"),
 })
 sample({
   clock: signinQuery.finished.success,

@@ -13,13 +13,13 @@ type ListProps = {
   $$updateTask: UpdateTaskType
   className?: string
   tasks: Task[]
-  taskId: Nullable<number>
+  taskId: Nullable<string>
   openTask: (task: Task) => void
   taskRef: RefObject<HTMLDivElement>
   dateModifier?: boolean
   dateLabel?: boolean
-  selectedTask: Nullable<{ id: number }>
-  selectTask: (task: Nullable<{ id: number }>) => void
+  selectedTask: Nullable<{ id: string }>
+  selectTask: (task: Nullable<{ id: string }>) => void
 }
 export const List = ({
   tasks,

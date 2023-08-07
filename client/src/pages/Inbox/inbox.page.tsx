@@ -19,7 +19,7 @@ import {
 } from "./inbox.model"
 
 export const Inbox = () => {
-  const [selectedTask, selectTask] = useState<Nullable<{ id: number }>>(null)
+  const [selectedTask, selectTask] = useState<Nullable<{ id: string }>>(null)
   const ref = useRef<HTMLDivElement>(null)
   const [
     tasks,

@@ -16,8 +16,6 @@ import {
   workDurationChanged,
 } from "@/entities/settings/pomodoro"
 
-import { appStarted } from "@/shared/config/init"
-
 import sound from "./assets/timer.mp3"
 
 const DEFAULT_WORK_TIME = 1500 // 25mins
@@ -97,7 +95,7 @@ const finishTimerFx = attach({
 })
 
 sample({
-  clock: appStarted,
+  clock: $workDuration,
   source: $workDuration,
   fn: (duration) => duration * 60,
   target: [$currentStaticTime, $passingTime],

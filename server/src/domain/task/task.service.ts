@@ -42,4 +42,19 @@ export class TaskService {
     });
     return task;
   }
+  createMany({
+    user_id,
+    data,
+  }: {
+    user_id: string;
+    data: Omit<Prisma.taskCreateManyInput, 'user_id'>[];
+  }) {
+    const tasks = this.prismaService.task.createMany({
+      data: data.map((task) => ({
+        ...task,
+        user_id,
+      })),
+    });
+    return tasks;
+  }
 }

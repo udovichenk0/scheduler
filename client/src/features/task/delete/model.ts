@@ -5,7 +5,7 @@ import { $taskKv } from "@/entities/task/tasks"
 import { deleteTaskQuery } from "@/shared/api/task"
 
 export const createRemoveTaskFactory = () => {
-  const taskDeleted = createEvent<{ id: number }>()
+  const taskDeleted = createEvent<{ id: string }>()
 
   sample({
     clock: taskDeleted,

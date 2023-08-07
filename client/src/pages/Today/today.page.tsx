@@ -24,7 +24,7 @@ import {
 } from "./today.model"
 
 export const Today = () => {
-  const [selectedTask, selectTask] = useState<Nullable<{ id: number }>>(null)
+  const [selectedTask, selectTask] = useState<Nullable<{ id: string }>>(null)
   const taskRef = useRef<HTMLDivElement>(null)
   const [closeTaskTriggered, createTaskOpened, deleteTask] = useUnit([
     $$taskAccordion.closeTaskTriggered,
@@ -63,8 +63,8 @@ const OverdueTasks = ({
   selectedTask,
   taskRef,
 }: {
-  selectTask: (task: Nullable<{ id: number }>) => void
-  selectedTask: Nullable<{ id: number }>
+  selectTask: (task: Nullable<{ id: string }>) => void
+  selectedTask: Nullable<{ id: string }>
   taskRef: RefObject<HTMLDivElement>
 }) => {
   const [
@@ -127,8 +127,8 @@ const TodayTasks = ({
   selectTask,
 }: {
   taskRef: RefObject<HTMLDivElement>
-  selectedTask: Nullable<{ id: number }>
-  selectTask: (task: Nullable<{ id: number }>) => void
+  selectedTask: Nullable<{ id: string }>
+  selectTask: (task: Nullable<{ id: string }>) => void
 }) => {
   const [tasks, newTask, taskId, updateTaskOpened, overdueTasks] = useUnit([
     $todayTasks,

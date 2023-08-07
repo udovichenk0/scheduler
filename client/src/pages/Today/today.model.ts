@@ -42,5 +42,5 @@ sample({
 })
 cookiePersist({
   source: $isOverdueTasksOpened,
-  name: 'overdueTasksOpened'
+  name: "overdueTasksOpened",
 })

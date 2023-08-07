@@ -39,6 +39,25 @@ export class UpdateStatusCredentialDto extends createZodDto(
   updateStatusCredentialsDto,
 ) {}
 
+const createManyTasksCredentialsDto = z.object({
+  tasks: z
+    .object({
+      title: z.string().nonempty(),
+      description: z.string(),
+      status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
+      type: z.enum(['inbox', 'unplaced']),
+      id: z.string(),
+      start_date: z
+        .string()
+        .nullable()
+        .transform((str) => (str ? new Date(str) : null)),
+    })
+    .array(),
+  user_id: z.string(),
+});
+export class CreateManyTasksCredentialDto extends createZodDto(
+  createManyTasksCredentialsDto,
+) {}
 const taskDtoSchema = z.object({
   id: z.string(),
   title: z.string(),
