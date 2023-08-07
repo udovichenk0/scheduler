@@ -61,6 +61,7 @@ export class AuthService {
     const { access_token, refresh_token } = await this.tokenService.issueTokens(
       UserDto.create(user),
     );
+    console.log(access_token, user);
     return {
       user,
       access_token,
