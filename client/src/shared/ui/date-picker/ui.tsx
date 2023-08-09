@@ -60,21 +60,18 @@ export function DatePicker({
                 dates[rowId][id].date > dates[rowId][id + 1].date
               return (
                 <div
-                  className={`w-full py-[2px] border-cBorder ${
+                  className={`w-full border-cBorder py-[2px] ${
                     isTopDateBigger && "border-b-[1px]"
-                  } ${
-                    isLeftDateBigger &&
-                    "border-b-[1px] border-r-[1px]"
-                  }`}
+                  } ${isLeftDateBigger && "border-b-[1px] border-r-[1px]"}`}
                   key={`${date}/${month}/${year}`}
                 >
-                <Cell
-                  onDateChange={onDateChange}
-                  year={year}
-                  month={month}
-                  date={date}
-                  currentDate={currentDate}
-                />
+                  <Cell
+                    onDateChange={onDateChange}
+                    year={year}
+                    month={month}
+                    date={date}
+                    currentDate={currentDate}
+                  />
                 </div>
               )
             })}
@@ -90,54 +87,48 @@ const Cell = ({
   year,
   month,
   date,
-  currentDate
+  currentDate,
 }: {
-  onDateChange: (date: Date) => void,
-  year: number,
-  month: number,
-  date: number, 
+  onDateChange: (date: Date) => void
+  year: number
+  month: number
+  date: number
   currentDate: Date
 }) => {
-  const isToday = dayjs(new Date(year, month, date)).isSame(
-    dayjs(),
-    "date",
-  )
-  const isPast = dayjs(new Date(year, month, date)).isBefore(
-    dayjs(),
-    "date",
-  )
+  const isToday = dayjs(new Date(year, month, date)).isSame(dayjs(), "date")
+  const isPast = dayjs(new Date(year, month, date)).isBefore(dayjs(), "date")
 
   const isCurrent = dayjs(new Date(year, month, date)).isSame(
     currentDate,
     "date",
   )
   return (
-      <button
-        onClick={() => onDateChange(new Date(year, month, date))}
-        disabled={isPast || isCurrent}
-        className={`text-cCalendarFont h-[35px] w-[35px] text-[13px] ${
-          !isCurrent && !isPast && "hover:bg-cHover"
-        } 
+    <button
+      onClick={() => onDateChange(new Date(year, month, date))}
+      disabled={isPast || isCurrent}
+      className={`h-[35px] w-[35px] text-[13px] text-cCalendarFont ${
+        !isCurrent && !isPast && "hover:bg-cHover"
+      } 
         flex items-center justify-center rounded-[5px] 
         ${isPast && "text-cSecondBorder"} ${isToday && "text-accent"}
         ${isCurrent && "bg-cFocus"}
         `}
-      >
-        {isToday ? (
-          <Icon name="common/filled-star" className="text-accent"/>
-        ) : (
-          <div>
-            {date === 1 || isCurrent ? (
-              <div className="grid text-[9px] leading-[9px]">
-                <div>{date}</div>
-                <span>{months[month]}</span>
-              </div>
-            ) : (
-              <span>{date}</span>
-            )}
-          </div>
-        )}
-      </button>
+    >
+      {isToday ? (
+        <Icon name="common/filled-star" className="text-accent" />
+      ) : (
+        <div>
+          {date === 1 || isCurrent ? (
+            <div className="grid text-[9px] leading-[9px]">
+              <div>{date}</div>
+              <span>{months[month]}</span>
+            </div>
+          ) : (
+            <span>{date}</span>
+          )}
+        </div>
+      )}
+    </button>
   )
 }
 

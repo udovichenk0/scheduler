@@ -2,58 +2,60 @@ import { createEvent, createStore, sample } from "effector"
 import { createGate } from "effector-react"
 import { not } from "patronum"
 
-import { resetEmailTriggered } from "@/features/authentication/by-email"
-import { resetSigninPasswordTriggered } from "@/features/authentication/sign-in"
-import { resetSignupPasswordTriggered } from "@/features/authentication/sign-up"
+import { $isAuthenticated } from "@/entities/session"
 
 import { logoutQuery, signinQuery, signupQuery } from "@/shared/api/auth"
-import { $accessToken, setTokenTriggered } from "@/shared/api/token"
+import { setTokenTriggered } from "@/shared/api/token"
 import { getUserQuery } from "@/shared/api/user"
 
-export enum FormEnum {
+import { resetEmailTriggered } from "./by-email"
+import { resetSigninPasswordTriggered } from "./sign-in"
+import { resetSignupPasswordTriggered } from "./sign-up"
+
+export enum Flow {
   email = "email",
   login = "login",
   register = "register",
   options = "options",
   logout = "logout",
 }
-export const formSelected = createEvent<FormEnum>()
-export const resetFormTriggered = createEvent()
+export const flowChanged = createEvent<Flow>()
+export const reset = createEvent()
 
-export const $form = createStore<FormEnum>(FormEnum.options)
+export const $flow = createStore<Flow>(Flow.options)
 
 export const gate = createGate()
 
 sample({
   clock: gate.close,
-  filter: not($accessToken),
-  target: resetFormTriggered,
+  filter: not($isAuthenticated),
+  target: reset,
 })
 
 sample({
-  clock: formSelected,
-  target: $form,
+  clock: flowChanged,
+  target: $flow,
 })
 
 sample({
   clock: getUserQuery.finished.success,
   filter: ({ result }) => !result.id,
-  fn: () => FormEnum.register,
-  target: $form,
+  fn: () => Flow.register,
+  target: $flow,
 })
 
 sample({
   clock: getUserQuery.finished.success,
   filter: ({ result }) => Boolean(result.id),
-  fn: () => FormEnum.login,
-  target: $form,
+  fn: () => Flow.login,
+  target: $flow,
 })
 
 sample({
   clock: logoutQuery.finished.success,
   fiilter: Boolean,
-  fn: () => FormEnum.email,
-  target: $form,
+  fn: () => Flow.email,
+  target: $flow,
 })
 
 sample({
@@ -62,14 +64,14 @@ sample({
     signupQuery.finished.success,
     setTokenTriggered,
   ],
-  fn: () => FormEnum.logout,
-  target: $form,
+  fn: () => Flow.logout,
+  target: $flow,
 })
 
 sample({
-  clock: resetFormTriggered,
+  clock: reset,
   target: [
-    $form.reinit!,
+    $flow.reinit!,
     resetEmailTriggered,
     resetSigninPasswordTriggered,
     resetSignupPasswordTriggered,

@@ -1,7 +1,7 @@
 import { fork, allSettled, createEvent, createStore } from "effector"
 import { test, expect, vi } from "vitest"
 
-import { $isAuthenticated } from '@/entities/session';
+import { $isAuthenticated } from "@/entities/session"
 import { $taskKv } from "@/entities/task/tasks"
 
 import { updateTaskQuery } from "@/shared/api/task"
@@ -145,7 +145,7 @@ test("Make a request after task being closed, update the value in kv store and r
       [$status, "FINISHED"],
       [$type, "inbox"],
       [$startDate, null],
-      [$isAuthenticated, true,],
+      [$isAuthenticated, true],
       [$isAllowToSubmit, true],
     ],
     handlers: [[updateTaskQuery.__.executeFx, mock]],

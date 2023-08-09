@@ -8,10 +8,10 @@ const ThemeContract = z.enum(["space", "default", "dark", "light", "grey"])
 export type Theme = z.infer<typeof ThemeContract>
 export const themeChanged = createEvent<Theme>()
 
-export const $theme = createStore<Theme>('default')
+export const $theme = createStore<Theme>("default")
 
 const changeDateThemeFx = createEffect((theme: Theme) => {
-  if(theme){
+  if (theme) {
     document.documentElement.setAttribute("data-theme", theme)
   }
 })
