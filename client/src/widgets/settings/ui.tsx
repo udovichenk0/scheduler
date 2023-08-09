@@ -1,12 +1,12 @@
+import { Authentication } from "@/features/authentication"
+
 import { PomodoroSettings } from "@/entities/settings/pomodoro"
+import { ThemeChanger } from "@/entities/settings/theme"
 
 import { ModalType } from "@/shared/lib/modal"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base-modal"
 import { Root } from "@/shared/ui/tab"
-
-import { SynchronizationTab, GeneralTab } from "./tabs"
-import { ThemeTab } from "./tabs/theme"
 
 const tabsName = {
   general: "general" as const,
@@ -60,13 +60,13 @@ export const Settings = ({
           </Root.Trigger>
         </Root.List>
         <Root.Content label={tabsName.general}>
-          <GeneralTab />
+          generalTab
         </Root.Content>
         <Root.Content label={tabsName.synchronization}>
-          <SynchronizationTab />
+          <Authentication />
         </Root.Content>
         <Root.Content label={tabsName.theme}>
-          <ThemeTab />
+          <ThemeChanger/>
         </Root.Content>
         <Root.Content label={tabsName.pomodoro}>
           <PomodoroSettings />

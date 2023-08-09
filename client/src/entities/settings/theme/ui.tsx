@@ -1,10 +1,12 @@
-import { AccentThemeChanger, MainThemeChanger } from "@/entities/settings/theme"
-
 import { Typography } from "@/shared/ui/general/typography"
 
-export const ThemeTab = () => {
+import { MainThemeChanger } from "./main-theme"
+import { AccentThemeChanger } from "./icon-theme"
+
+
+export const ThemeChanger = () => {
   return (
-    <div className="px-8">
+    <div>
       <Typography.Heading size="xs" className="mb-6 text-center text-cFont">
         Select color theme
       </Typography.Heading>

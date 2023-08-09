@@ -24,7 +24,6 @@ sample({
   target: $email,
 })
 
-// fetch after success email validation
 sample({
   clock: submitTriggered,
   source: $email,
@@ -33,7 +32,6 @@ sample({
   target: getUserQuery.start,
 })
 
-// store an error after failure validation
 sample({
   clock: submitTriggered,
   source: $email,
@@ -42,7 +40,6 @@ sample({
   target: $emailError,
 })
 
-// restore emailError
 sample({
   clock: resetEmailTriggered,
   target: [$emailError.reinit!, $email.reinit!],

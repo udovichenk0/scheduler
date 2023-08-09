@@ -111,7 +111,7 @@ html {
     --cTimeInterval: #243952;
     --cPomodoroRed: #ff5f58;
     --cPomodoroGreen: #62c554;
-    --cCalendarFont: hsla(0,0%,100%,.8);
+    --cCalendarFont: hsla(0, 0%, 100%, 0.8);
   }
   html[data-theme="light"] {
     --main: #f9f9f9;
@@ -175,7 +175,7 @@ html {
     --cTimeInterval: #ccd4de;
     --cPomodoroRed: #ff5f58;
     --cPomodoroGreen: #62c554;
-    --cCalendarFont: rgba(51,51,51,.8);
+    --cCalendarFont: rgba(51, 51, 51, 0.8);
   }
 }
 @layer components {

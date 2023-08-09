@@ -1,40 +1,39 @@
 import { useUnit, useGate } from "effector-react"
 
-import { CheckEmailForm } from "@/features/authentication/by-email"
-import { Logout } from "@/features/authentication/logout"
-import { Signin } from "@/features/authentication/sign-in"
-import { Signup } from "@/features/authentication/sign-up"
-
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
 import { Icon } from "@/shared/ui/icon"
 
-import { $form, FormEnum, gate, formSelected } from "./sync.modal"
+import { CheckEmailForm } from "./by-email"
+import { Logout } from "./logout"
+import { $flow, flowChanged, gate, Flow } from "./model"
+import { Signin } from "./sign-in"
+import { Signup } from "./sign-up"
 
-export const SynchronizationTab = () => {
-  const [form, selectForm] = useUnit([$form, formSelected])
+export const Authentication = () => {
+  const [form, selectForm] = useUnit([$flow, flowChanged])
   useGate(gate)
   return (
     <div className="flex justify-center">
       <div className="w-[391px] text-primary">
-        {form === FormEnum.email && (
-          <CheckEmailForm goBack={() => selectForm(FormEnum.options)} />
+        {form === Flow.email && (
+          <CheckEmailForm goBack={() => selectForm(Flow.options)} />
         )}
-        {form === FormEnum.login && (
-          <Signin goBack={() => selectForm(FormEnum.email)} />
+        {form === Flow.login && (
+          <Signin goBack={() => selectForm(Flow.email)} />
         )}
-        {form === FormEnum.register && (
-          <Signup goBack={() => selectForm(FormEnum.email)} />
+        {form === Flow.register && (
+          <Signup goBack={() => selectForm(Flow.email)} />
         )}
-        {form === FormEnum.logout && <Logout />}
-        {form === FormEnum.options && <AuthOptions />}
+        {form === Flow.logout && <Logout />}
+        {form === Flow.options && <AuthOptions />}
       </div>
     </div>
   )
 }
 
 const AuthOptions = () => {
-  const selectForm = useUnit(formSelected)
+  const selectForm = useUnit(flowChanged)
   return (
     <div className="text-center text-cFont">
       <Typography.Heading size="base" className="mb-2 font-semibold">
@@ -44,7 +43,7 @@ const AuthOptions = () => {
         Log in to access your your account and sync the data between devices
       </Typography.Paragraph>
       <div className="text- inline-flex flex-col gap-5">
-        <Button onClick={() => selectForm(FormEnum.email)} size={"lg"}>
+        <Button onClick={() => selectForm(Flow.email)} size={"lg"}>
           <Icon name="common/mail" className="mr-4 w-[15px] text-primary" />
           Continue with Email
         </Button>
