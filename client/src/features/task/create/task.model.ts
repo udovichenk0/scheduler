@@ -93,7 +93,7 @@ export const createTaskFactory = ({
   sample({
     clock: createTaskQuery.finished.success,
     source: $taskKv,
-    fn: (kv, { result: { result } }) => ({ ...kv, [result.id]: result }),
+    fn: (kv, { result }) => ({ ...kv, [result.id]: result }),
     target: $taskKv,
   })
   sample({

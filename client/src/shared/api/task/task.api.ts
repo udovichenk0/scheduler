@@ -25,7 +25,7 @@ export const createTaskQuery = authQuery<
   },
   response: {
     contract: createTaskContract,
-    mapData: (data) => data,
+    mapData: (data) => data.result,
   },
 })
 
@@ -38,7 +38,7 @@ export const tasksQuery = authQuery<TaskDto[], void>({
   },
   response: {
     contract: tasksQueryContract,
-    mapData: (data) => data,
+    mapData: (data) => data.result,
   },
 })
 
@@ -59,7 +59,7 @@ export const updateTaskQuery = authQuery<TaskDto, { body: UpdateTaskParams }>({
   },
   response: {
     contract: updateTaskContract,
-    mapData: (data) => data,
+    mapData: (data) => data.result,
   },
 })
 
@@ -80,7 +80,7 @@ export const updateStatusQuery = authQuery<
   },
   response: {
     contract: updateStatusContract,
-    mapData: (data) => data,
+    mapData: (data) => data.result,
   },
 })
 
@@ -91,7 +91,7 @@ export const deleteTaskQuery = authQuery<TaskDto, { body: { id: string } }>({
   },
   response: {
     contract: updateStatusContract,
-    mapData: (data) => data,
+    mapData: (data) => data.result,
   },
 })
 type CreateManyTasks = {
@@ -119,6 +119,6 @@ export const createManyTasksQuery = authQuery<
   },
   response: {
     contract: CreateManyTasksZodContract,
-    mapData: (data) => data,
+    mapData: (data) => data.result,
   },
 })

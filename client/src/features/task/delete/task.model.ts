@@ -36,8 +36,7 @@ export const createRemoveTaskFactory = () => {
   sample({
     clock: deleteTaskQuery.finished.success,
     source: $taskKv,
-    fn: (kv, { result: { result } }) => {
-      //! FIX result: {result}
+    fn: (kv, { result }) => {
       return Object.values(kv).filter((task) => task.id !== result.id)
     },
     target: $taskKv,

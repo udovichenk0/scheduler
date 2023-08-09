@@ -20,10 +20,7 @@ export interface Response<Resp, Params> {
       result: Resp
       params: Params
     },
-    {
-      result: Resp
-      params: unknown
-    },
+    Resp,
     unknown
   >
 }
