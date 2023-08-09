@@ -9,7 +9,7 @@ export const resetSession = createEvent()
 const $user = createStore<Nullable<User>>(null)
 sample({
   clock: refreshQuery.finished.success,
-  fn: ({ result }) => result?.user,
+  fn: ({ result }) => result.user,
   target: $user,
 })
 export const $sessionUser = $user.map((user) => user)
