@@ -59,14 +59,12 @@ export const Settings = ({
             <span className="text-inherit">Pomodoro</span>
           </Root.Trigger>
         </Root.List>
-        <Root.Content label={tabsName.general}>
-          generalTab
-        </Root.Content>
+        <Root.Content label={tabsName.general}>generalTab</Root.Content>
         <Root.Content label={tabsName.synchronization}>
           <Authentication />
         </Root.Content>
         <Root.Content label={tabsName.theme}>
-          <ThemeChanger/>
+          <ThemeChanger />
         </Root.Content>
         <Root.Content label={tabsName.pomodoro}>
           <PomodoroSettings />

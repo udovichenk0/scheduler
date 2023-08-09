@@ -1,14 +1,13 @@
 import { createEffect, createEvent, sample } from "effector"
 import { spread, and, not } from "patronum"
-// import { v4 as uuidv4 } from 'uuid';
 
 import { $isAuthenticated } from "@/entities/session"
 import { modifyFormFactory } from "@/entities/task/modify"
-import { $taskKv } from "@/entities/task/tasks"
+import { $taskKv, Task } from "@/entities/task/tasks"
 
 import { updateStatusQuery, updateTaskQuery } from "@/shared/api/task"
 import { ExpensionTaskType } from "@/shared/lib/task-accordion-factory"
-
+type TaskLocalStorage = Omit<Task, "user_id">
 export const updateTaskFactory = ({
   taskModel,
 }: {
@@ -31,24 +30,17 @@ export const updateTaskFactory = ({
   } = modifyFormFactory({})
   const changeStatusTriggered = createEvent<string>()
 
-  type TaskCredentials = {
-    description: string
-    title: string
-    type: "unplaced" | "inbox"
-    status: "INPROGRESS" | "FINISHED"
-    start_date: Nullable<Date>
-    id: string
-  }
-
-  const updateTaskFromLocalStorageFx = createEffect((cred: TaskCredentials) => {
-    const tasksFromLs = localStorage.getItem("tasks")
-    const parsedTasks = JSON.parse(tasksFromLs!)
-    const updatedTasks = parsedTasks.map((task: TaskCredentials) =>
-      task.id === cred.id ? cred : task,
-    )
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks))
-    return cred as TaskCredentials
-  })
+  const updateTaskFromLocalStorageFx = createEffect(
+    (cred: TaskLocalStorage) => {
+      const tasksFromLs = localStorage.getItem("tasks")
+      const parsedTasks = JSON.parse(tasksFromLs!)
+      const updatedTasks = parsedTasks.map((task: TaskLocalStorage) =>
+        task.id === cred.id ? cred : task,
+      )
+      localStorage.setItem("tasks", JSON.stringify(updatedTasks))
+      return cred as TaskLocalStorage
+    },
+  )
   sample({
     clock: taskModel.updateTaskOpened,
     target: spread({

@@ -91,7 +91,7 @@ export const createTaskFactory = ({
     target: setTaskToLocalStorageFx,
   })
   sample({
-    clock: [createTaskQuery.finished.success],
+    clock: createTaskQuery.finished.success,
     source: $taskKv,
     fn: (kv, { result: { result } }) => ({ ...kv, [result.id]: result }),
     target: $taskKv,
