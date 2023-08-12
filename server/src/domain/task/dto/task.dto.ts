@@ -5,10 +5,7 @@ const TaskContract = z.object({
   description: z.string(),
   status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
   type: z.enum(['inbox', 'unplaced']),
-  start_date: z
-    .string()
-    .nullable()
-    .transform((str) => (str ? new Date(str) : null)),
+  start_date: z.date(),
 });
 
 export class CreateTaskCredentialDto extends createZodDto(TaskContract) {}
@@ -18,6 +15,15 @@ const UpdateTaskContract = TaskContract.extend({
 });
 
 export class UpdateTaskCredentialDto extends createZodDto(UpdateTaskContract) {}
+
+const UpdateDateContract = z.object({
+  id: z.string(),
+  date: z.date(),
+});
+
+export class UpdateDateCredentialsDto extends createZodDto(
+  UpdateDateContract,
+) {}
 
 export const updateStatusCredentialsDto = z.object({
   id: z.string(),
