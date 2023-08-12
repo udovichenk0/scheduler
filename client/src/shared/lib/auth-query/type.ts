@@ -8,11 +8,10 @@ export type HttpRequestType = {
 }
 
 export interface Request {
-  method: "GET" | "POST"
+  method: "GET" | "POST" | "PATCH" | "PUT" | "DELETE"
   url: string | UrlType
   headers?: Record<string, string | string[]>
 }
-//!TODO fix later Params extends HttpRequestType
 export interface Response<Resp, Params> {
   contract: Contract<unknown, Resp>
   mapData: DynamicallySourcedField<
