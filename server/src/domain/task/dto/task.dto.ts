@@ -1,8 +1,6 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
-
-//TODO Need to fix, because there are many types repeats
-const createTaskCredentialsDto = z.object({
+const TaskContract = z.object({
   title: z.string().nonempty(),
   description: z.string(),
   status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
@@ -12,24 +10,14 @@ const createTaskCredentialsDto = z.object({
     .nullable()
     .transform((str) => (str ? new Date(str) : null)),
 });
-export class CreateTaskCredentialDto extends createZodDto(
-  createTaskCredentialsDto,
-) {}
 
-const updateTaskCredentialsDto = z.object({
-  title: z.string().nonempty(),
-  description: z.string(),
-  status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
-  start_date: z
-    .string()
-    .nullable()
-    .transform((str) => (str ? new Date(str) : null)),
-  type: z.enum(['inbox', 'unplaced']),
+export class CreateTaskCredentialDto extends createZodDto(TaskContract) {}
+
+const UpdateTaskContract = TaskContract.extend({
   id: z.string(),
 });
-export class UpdateTaskCredentialDto extends createZodDto(
-  updateTaskCredentialsDto,
-) {}
+
+export class UpdateTaskCredentialDto extends createZodDto(UpdateTaskContract) {}
 
 export const updateStatusCredentialsDto = z.object({
   id: z.string(),
@@ -39,36 +27,20 @@ export class UpdateStatusCredentialDto extends createZodDto(
   updateStatusCredentialsDto,
 ) {}
 
-const createManyTasksCredentialsDto = z.object({
-  tasks: z
-    .object({
-      title: z.string().nonempty(),
-      description: z.string(),
-      status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
-      type: z.enum(['inbox', 'unplaced']),
-      id: z.string(),
-      start_date: z
-        .string()
-        .nullable()
-        .transform((str) => (str ? new Date(str) : null)),
-    })
-    .array(),
+const CreateManyTasksCredentials = z.object({
+  tasks: TaskContract.extend({
+    id: z.string(),
+  }).array(),
   user_id: z.string(),
 });
 export class CreateManyTasksCredentialDto extends createZodDto(
-  createManyTasksCredentialsDto,
+  CreateManyTasksCredentials,
 ) {}
-const taskDtoSchema = z.object({
+const TaskDtoSchema = TaskContract.extend({
   id: z.string(),
-  title: z.string(),
-  description: z.string(),
-  status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
-  start_date: z.date().nullable(),
-  type: z.enum(['inbox', 'unplaced']),
   user_id: z.string(),
 });
-
-export class TaskDto extends createZodDto(taskDtoSchema) {}
+export class TaskDto extends createZodDto(TaskDtoSchema) {}
 
 export const DeleteTaskCredentialSchema = z.object({
   id: z.string(),
