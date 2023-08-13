@@ -6,15 +6,13 @@ import { Layout } from "@/templates/main"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { List } from "@/widgets/task-list"
 
-import { ModifyTaskForm } from "@/entities/task/modify"
-
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 
 import {
   $$deleteTask,
   $inboxTasks,
   $$createTask,
-  $$taskAccordion,
+  $$taskDisclosure,
   $$updateTask,
 } from "./inbox.model"
 
@@ -31,11 +29,11 @@ export const Inbox = () => {
     deleteTask,
   ] = useUnit([
     $inboxTasks,
-    $$taskAccordion.$newTask,
-    $$taskAccordion.$taskId,
-    $$taskAccordion.closeTaskTriggered,
-    $$taskAccordion.updateTaskOpened,
-    $$taskAccordion.createTaskToggled,
+    $$taskDisclosure.$newTask,
+    $$taskDisclosure.$taskId,
+    $$taskDisclosure.closeTaskTriggered,
+    $$taskDisclosure.updateTaskOpened,
+    $$taskDisclosure.createTaskToggled,
     $$deleteTask.taskDeleted,
   ])
   return (
@@ -56,9 +54,11 @@ export const Inbox = () => {
         />
         <div className="mx-5">
           {newTask && (
-            <ExpandedTask taskRef={ref}>
-              <ModifyTaskForm date={false} modifyTaskModel={$$createTask} />
-            </ExpandedTask>
+            <ExpandedTask
+              modifyTaskModel={$$createTask}
+              dateModifier={false}
+              taskRef={ref}
+            />
           )}
         </div>
       </Layout.Content>

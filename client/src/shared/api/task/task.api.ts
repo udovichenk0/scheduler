@@ -122,3 +122,14 @@ export const createManyTasksQuery = authQuery<
     mapData: (data) => data.result,
   },
 })
+
+export const updateTaskDate = authQuery<TaskDto, { body: { id: string; date: Date } }>({
+  request: {
+    url: "tasks/update-date",
+    method: "PATCH",
+  },
+  response: {
+    contract: updateStatusContract,
+    mapData: (data) => data.result,
+  },
+})

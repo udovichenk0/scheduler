@@ -4,14 +4,13 @@ import { RefObject, ReactNode } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { List } from "@/widgets/task-list"
 
-import { ModifyTaskForm } from "@/entities/task/modify"
 import { Task } from "@/entities/task/tasks"
 
 import { Container } from "@/shared/ui/general/container"
 
-import { $$updateTask, $$taskAccordion, $$createTask } from "../upcoming.model"
+import { $$updateTask, $$taskDisclosure, $$createTask } from "../upcoming.model"
 export function TasksSection({
-  outRef,
+  taskRef,
   tasks,
   title,
   isSelected,
@@ -19,7 +18,7 @@ export function TasksSection({
   selectTask,
   selectedTask,
 }: {
-  outRef: RefObject<HTMLDivElement>
+  taskRef: RefObject<HTMLDivElement>
   tasks: Task[]
   title: ReactNode
   isSelected: boolean
@@ -28,22 +27,26 @@ export function TasksSection({
   selectedTask: Nullable<{ id: string }>
 }) {
   const [taskId, updateTaskOpened, newTask] = useUnit([
-    $$taskAccordion.$taskId,
-    $$taskAccordion.updateTaskOpened,
-    $$taskAccordion.$newTask,
+    $$taskDisclosure.$taskId,
+    $$taskDisclosure.updateTaskOpened,
+    $$taskDisclosure.$newTask,
+    $$createTask.$startDate,
+    $$createTask.dateChanged,
   ])
   return (
     <div className="select-none border-t-[1px] border-cBorder text-primary">
       <Container>
-        <button
-          disabled={isSelected}
-          onClick={action}
-          className={`${
-            isSelected && "cursor-pointer bg-cFocus"
-          } flex w-full items-center gap-2 rounded-[5px] px-3 text-lg enabled:hover:bg-cHover`}
-        >
-          {title}
-        </button>
+        <div className="pl-7">
+          <button
+            disabled={isSelected}
+            onClick={action}
+            className={`${
+              isSelected && "cursor-pointer bg-cFocus"
+            } flex w-full items-center gap-2 rounded-[5px] px-3 text-lg enabled:hover:bg-cHover`}
+          >
+            {title}
+          </button>
+        </div>
       </Container>
       <List
         className="border-t-[1px] border-cBorder"
@@ -51,15 +54,17 @@ export function TasksSection({
         taskId={taskId}
         tasks={tasks}
         openTask={updateTaskOpened}
-        taskRef={outRef}
+        taskRef={taskRef}
         selectedTask={selectedTask}
         selectTask={selectTask}
       />
       <div className="px-5">
         {newTask && isSelected && (
-          <ExpandedTask taskRef={outRef}>
-            <ModifyTaskForm date modifyTaskModel={$$createTask} />
-          </ExpandedTask>
+          <ExpandedTask
+            dateModifier={true}
+            modifyTaskModel={$$createTask}
+            taskRef={taskRef}
+          />
         )}
       </div>
     </div>

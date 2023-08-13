@@ -1,6 +1,6 @@
 import { combine, createEvent, createStore, sample } from "effector"
 
-export const modifyFormFactory = ({
+export const modifyTask = ({
   defaultType = "inbox",
   defaultDate = null,
 }: {
@@ -11,6 +11,7 @@ export const modifyFormFactory = ({
   const titleChanged = createEvent<string>()
   const typeChanged = createEvent<"inbox" | "unplaced">()
   const dateChanged = createEvent<Date>()
+  const dateChangedById = createEvent<{date: Date, id: string}>()
   const descriptionChanged = createEvent<string>()
   const resetFieldsTriggered = createEvent()
 
@@ -118,6 +119,7 @@ export const modifyFormFactory = ({
     titleChanged,
     typeChanged,
     dateChanged,
+    dateChangedById,
     descriptionChanged,
     resetFieldsTriggered,
     $title,
@@ -130,3 +132,5 @@ export const modifyFormFactory = ({
     $isDirty,
   }
 }
+
+export type ModifyTask = ReturnType<typeof modifyTask>

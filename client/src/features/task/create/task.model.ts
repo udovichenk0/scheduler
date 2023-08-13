@@ -2,12 +2,12 @@ import { merge, sample, createEffect } from "effector"
 import { not, and, condition } from "patronum"
 import { v4 as uuidv4 } from "uuid"
 
-import { modifyFormFactory } from "@/entities/task/modify"
+import { modifyTask } from "@/entities/task/modify"
 import { $taskKv } from "@/entities/task/tasks"
 import { $isAuthenticated } from "@/entities/session"
 
 import { createTaskQuery } from "@/shared/api/task"
-import { ExpensionTaskType } from "@/shared/lib/task-accordion-factory"
+import { ExpensionTaskType } from "@/shared/lib/task-disclosure-factory"
 
 export const createTaskFactory = ({
   taskModel,
@@ -32,7 +32,7 @@ export const createTaskFactory = ({
     $fields,
     $isAllowToSubmit,
     resetFieldsTriggered,
-  } = modifyFormFactory({
+  } = modifyTask({
     defaultType,
     defaultDate,
   })
