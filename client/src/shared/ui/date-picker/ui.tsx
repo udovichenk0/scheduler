@@ -45,9 +45,9 @@ export function DatePicker({
         changeMonth={changeMonth}
       />
       <WeeksName />
-      <span className="absolute left-[30%] top-[50%] -z-[10] text-[90px] font-bold text-main opacity-10 invert">
+      <div className="absolute left-[30%] h-[50px] flex items-center top-[50%] -z-[10] text-[90px] font-bold text-main opacity-10 invert">
         {normilizeDate(currentSetMonth + 1)}
-      </span>
+      </div>
       {dates.map((item, rowId) => {
         return (
           <div className="flex justify-around" key={rowId}>
@@ -98,27 +98,27 @@ const Cell = ({
   const isToday = dayjs(new Date(year, month, date)).isSame(dayjs(), "date")
   const isPast = dayjs(new Date(year, month, date)).isBefore(dayjs(), "date")
 
-  const isCurrent = dayjs(new Date(year, month, date)).isSame(
+  const isTaskDate = dayjs(new Date(year, month, date)).isSame(
     currentDate,
     "date",
   )
   return (
     <button
       onClick={() => onDateChange(new Date(year, month, date))}
-      disabled={isPast || isCurrent}
-      className={`h-[35px] w-[35px] text-[13px] text-cCalendarFont ${
-        !isCurrent && !isPast && "hover:bg-cHover"
+      disabled={isPast || isTaskDate}
+      className={`h-[35px] w-[35px] text-[13px] ${
+        !isTaskDate && !isPast && "hover:bg-cHover"
       } 
-        flex items-center justify-center rounded-[5px] 
-        ${isPast && "text-cSecondBorder"} ${isToday && "text-accent"}
-        ${isCurrent && "bg-cFocus"}
+        flex items-center justify-center rounded-[5px] text-cCalendarFont 
+        ${isPast && "text-cSecondBorder"} 
+        ${isTaskDate && "bg-cFocus"}
         `}
     >
       {isToday ? (
         <Icon name="common/filled-star" className="text-accent" />
       ) : (
         <div>
-          {date === 1 || isCurrent ? (
+          {date === 1 || isTaskDate ? (
             <div className="grid text-[9px] leading-[9px]">
               <div>{date}</div>
               <span>{months[month]}</span>
@@ -134,7 +134,7 @@ const Cell = ({
 
 const WeeksName = () => {
   return (
-    <div className="flex justify-around border-b-[1px] border-cBorder">
+    <div className="flex justify-around border-b-[1px] border-cBorder text-primary">
       {daysName.map((name) => {
         return (
           <span className="justify-self-center py-2 text-[12px]" key={name}>
@@ -154,7 +154,7 @@ const MonthSwitcher = ({
 }) => {
   const isCurrentMonth = dayjs().month() === displayedMonth
   return (
-    <div className="flex items-center justify-end gap-2 text-primary">
+    <div className="flex items-center justify-end gap-2">
       <Button
         disabled={isCurrentMonth}
         intent={"primary"}

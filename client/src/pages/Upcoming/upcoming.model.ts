@@ -5,12 +5,12 @@ import { createTaskFactory } from "@/features/task/create"
 import { createRemoveTaskFactory } from "@/features/task/delete"
 import { updateTaskFactory } from "@/features/task/update"
 
-import { createTaskAccordionFactory } from "@/shared/lib/task-accordion-factory"
+import { createTaskDisclosure } from "@/shared/lib/task-disclosure-factory"
 
-export const $$taskAccordion = createTaskAccordionFactory()
-export const $$updateTask = updateTaskFactory({ taskModel: $$taskAccordion })
+export const $$taskDisclosure = createTaskDisclosure()
+export const $$updateTask = updateTaskFactory({ taskModel: $$taskDisclosure })
 export const $$createTask = createTaskFactory({
-  taskModel: $$taskAccordion,
+  taskModel: $$taskDisclosure,
   defaultType: "unplaced",
   defaultDate: new Date(),
 })

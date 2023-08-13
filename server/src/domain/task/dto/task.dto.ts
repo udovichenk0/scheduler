@@ -5,7 +5,7 @@ const TaskContract = z.object({
   description: z.string(),
   status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
   type: z.enum(['inbox', 'unplaced']),
-  start_date: z.date(),
+  start_date: z.string().pipe(z.coerce.date()).nullable(),
 });
 
 export class CreateTaskCredentialDto extends createZodDto(TaskContract) {}
@@ -18,7 +18,7 @@ export class UpdateTaskCredentialDto extends createZodDto(UpdateTaskContract) {}
 
 const UpdateDateContract = z.object({
   id: z.string(),
-  date: z.date(),
+  date: z.string().pipe(z.coerce.date()).nullable(),
 });
 
 export class UpdateDateCredentialsDto extends createZodDto(
@@ -42,11 +42,16 @@ const CreateManyTasksCredentials = z.object({
 export class CreateManyTasksCredentialDto extends createZodDto(
   CreateManyTasksCredentials,
 ) {}
-const TaskDtoSchema = TaskContract.extend({
+const TaskDtoContract = TaskContract.extend({
+  title: z.string().nonempty(),
+  description: z.string(),
+  status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
+  type: z.enum(['inbox', 'unplaced']),
+  start_date: z.date().nullable(),
   id: z.string(),
   user_id: z.string(),
 });
-export class TaskDto extends createZodDto(TaskDtoSchema) {}
+export class TaskDto extends createZodDto(TaskDtoContract) {}
 
 export const DeleteTaskCredentialSchema = z.object({
   id: z.string(),

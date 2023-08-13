@@ -6,14 +6,12 @@ import { Layout } from "@/templates/main"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { List } from "@/widgets/task-list"
 
-import { ModifyTaskForm } from "@/entities/task/modify"
-
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 
 import {
   $$createTask,
   $$deleteTask,
-  $$taskAccordion,
+  $$taskDisclosure,
   $$updateTask,
   $unplacedTasks,
 } from "./unplaced.model"
@@ -31,11 +29,11 @@ export const Unplaced = () => {
     deleteTask,
   ] = useUnit([
     $unplacedTasks,
-    $$taskAccordion.$newTask,
-    $$taskAccordion.$taskId,
-    $$taskAccordion.closeTaskTriggered,
-    $$taskAccordion.updateTaskOpened,
-    $$taskAccordion.createTaskToggled,
+    $$taskDisclosure.$newTask,
+    $$taskDisclosure.$taskId,
+    $$taskDisclosure.closeTaskTriggered,
+    $$taskDisclosure.updateTaskOpened,
+    $$taskDisclosure.createTaskToggled,
     $$deleteTask.taskDeleted,
   ])
   return (
@@ -55,9 +53,11 @@ export const Unplaced = () => {
         />
         <div className="mx-5">
           {newTask && (
-            <ExpandedTask taskRef={taskRef}>
-              <ModifyTaskForm date={false} modifyTaskModel={$$createTask} />
-            </ExpandedTask>
+            <ExpandedTask
+              modifyTaskModel={$$createTask}
+              dateModifier={false}
+              taskRef={taskRef}
+            />
           )}
         </div>
       </Layout.Content>

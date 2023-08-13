@@ -2,7 +2,7 @@ import { createEvent, createStore, sample } from "effector"
 import { not, and, or } from "patronum"
 
 import { TaskDto } from "@/shared/api/task"
-export const createTaskAccordionFactory = () => {
+export const createTaskDisclosure = () => {
   const closeTaskTriggered = createEvent()
 
   const createTaskClosed = createEvent()
@@ -83,4 +83,4 @@ export const createTaskAccordionFactory = () => {
     closeTaskTriggered,
   }
 }
-export type ExpensionTaskType = ReturnType<typeof createTaskAccordionFactory>
+export type ExpensionTaskType = ReturnType<typeof createTaskDisclosure>

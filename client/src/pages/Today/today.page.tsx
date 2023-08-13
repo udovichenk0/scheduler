@@ -6,8 +6,6 @@ import { Layout } from "@/templates/main"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { List } from "@/widgets/task-list"
 
-import { ModifyTaskForm } from "@/entities/task/modify"
-
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
@@ -18,7 +16,7 @@ import {
   $overdueTasks,
   $todayTasks,
   $$createTask,
-  $$taskAccordion,
+  $$taskDisclosure,
   toggleOverdueTasksOpened,
   $$updateTask,
 } from "./today.model"
@@ -27,8 +25,8 @@ export const Today = () => {
   const [selectedTask, selectTask] = useState<Nullable<{ id: string }>>(null)
   const taskRef = useRef<HTMLDivElement>(null)
   const [closeTaskTriggered, createTaskOpened, deleteTask] = useUnit([
-    $$taskAccordion.closeTaskTriggered,
-    $$taskAccordion.createTaskToggled,
+    $$taskDisclosure.closeTaskTriggered,
+    $$taskDisclosure.createTaskToggled,
     $$deleteTask.taskDeleted,
   ])
 
@@ -74,8 +72,8 @@ const OverdueTasks = ({
     toggleOverdueTasks,
     overdueTasks,
   ] = useUnit([
-    $$taskAccordion.$taskId,
-    $$taskAccordion.updateTaskOpened,
+    $$taskDisclosure.$taskId,
+    $$taskDisclosure.updateTaskOpened,
     $isOverdueTasksOpened,
     toggleOverdueTasksOpened,
     $overdueTasks,
@@ -122,9 +120,9 @@ const OverdueTasks = ({
 }
 
 const TodayTasks = ({
-  taskRef,
   selectedTask,
   selectTask,
+  taskRef,
 }: {
   taskRef: RefObject<HTMLDivElement>
   selectedTask: Nullable<{ id: string }>
@@ -132,9 +130,9 @@ const TodayTasks = ({
 }) => {
   const [tasks, newTask, taskId, updateTaskOpened, overdueTasks] = useUnit([
     $todayTasks,
-    $$taskAccordion.$newTask,
-    $$taskAccordion.$taskId,
-    $$taskAccordion.updateTaskOpened,
+    $$taskDisclosure.$newTask,
+    $$taskDisclosure.$taskId,
+    $$taskDisclosure.updateTaskOpened,
     $overdueTasks,
   ])
   return (
@@ -167,9 +165,11 @@ const TodayTasks = ({
       />
       <div className="mx-5">
         {newTask && (
-          <ExpandedTask taskRef={taskRef}>
-            <ModifyTaskForm modifyTaskModel={$$createTask} />
-          </ExpandedTask>
+          <ExpandedTask
+            modifyTaskModel={$$createTask}
+            dateModifier={false}
+            taskRef={taskRef}
+          />
         )}
       </div>
     </section>

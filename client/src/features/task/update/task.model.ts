@@ -1,13 +1,28 @@
-import { createEffect, createEvent, sample } from "effector"
+import { attach, createEffect, createEvent, sample } from "effector"
 import { spread, and, not } from "patronum"
 
 import { $isAuthenticated } from "@/entities/session"
-import { modifyFormFactory } from "@/entities/task/modify"
+import { modifyTask } from "@/entities/task/modify"
 import { $taskKv, Task } from "@/entities/task/tasks"
 
-import { updateStatusQuery, updateTaskQuery } from "@/shared/api/task"
-import { ExpensionTaskType } from "@/shared/lib/task-accordion-factory"
+import { updateStatusQuery, updateTaskDate, updateTaskQuery } from "@/shared/api/task"
+import { ExpensionTaskType } from "@/shared/lib/task-disclosure-factory"
 type TaskLocalStorage = Omit<Task, "user_id">
+const updateTaskDateFromLsFx = attach({
+  source: $taskKv,
+  effect: (kv, { date, id }) => {
+    const updatedTask = { ...kv[id], start_date: date }
+    const tasksFromLs = localStorage.getItem("tasks")
+    if(tasksFromLs) {
+      const parsedTasks = JSON.parse(tasksFromLs!)
+      const updatedTasks = parsedTasks.map((task: TaskLocalStorage) =>
+        task.id === id ? updatedTask : task,
+      )
+      localStorage.setItem("tasks", JSON.stringify(updatedTasks))
+    }
+    return updatedTask
+  }
+})
 export const updateTaskFactory = ({
   taskModel,
 }: {
@@ -17,6 +32,7 @@ export const updateTaskFactory = ({
     statusChanged,
     titleChanged,
     dateChanged,
+    dateChangedById,
     typeChanged,
     descriptionChanged,
     resetFieldsTriggered,
@@ -27,10 +43,11 @@ export const updateTaskFactory = ({
     $startDate,
     $status,
     $type,
-  } = modifyFormFactory({})
+  } = modifyTask({})
   const changeStatusTriggered = createEvent<string>()
 
-  const updateTaskFromLocalStorageFx = createEffect(
+  const updateTaskFromLocalStorageFx = attach({
+    effect: createEffect(
     (cred: TaskLocalStorage) => {
       const tasksFromLs = localStorage.getItem("tasks")
       const parsedTasks = JSON.parse(tasksFromLs!)
@@ -41,7 +58,9 @@ export const updateTaskFactory = ({
       return cred as TaskLocalStorage
     },
   )
-  sample({
+
+  }) 
+   sample({
     clock: taskModel.updateTaskOpened,
     target: spread({
       targets: {
@@ -58,7 +77,17 @@ export const updateTaskFactory = ({
     fn: (val) => !val,
     target: taskModel.$isAllowToOpenCreate,
   })
-
+  sample({
+    clock: dateChangedById,
+    filter: and(not($isAuthenticated), not(taskModel.$taskId)),
+    target: updateTaskDateFromLsFx
+  })
+  sample({
+    clock: dateChangedById,
+    filter: and($isAuthenticated, not(taskModel.$taskId)),
+    fn: ({ date, id }) => ({body: { date, id } }),
+    target: updateTaskDate.start
+  })
   sample({
     clock: taskModel.updateTaskClosed,
     filter: $isAllowToSubmit,
@@ -83,6 +112,7 @@ export const updateTaskFactory = ({
     clock: [
       updateTaskQuery.finished.success,
       updateStatusQuery.finished.success,
+      updateTaskDate.finished.success
     ],
     source: $taskKv,
     fn: (kv, { result }) => ({ ...kv, [result.id]: result }),
@@ -94,7 +124,7 @@ export const updateTaskFactory = ({
     ],
   })
   sample({
-    clock: updateTaskFromLocalStorageFx.doneData,
+    clock: [updateTaskFromLocalStorageFx.doneData, updateTaskDateFromLsFx.doneData],
     source: $taskKv,
     fn: (kv, result) => ({ ...kv, [result.id]: result }),
     target: [
@@ -118,6 +148,7 @@ export const updateTaskFactory = ({
     statusChanged,
     titleChanged,
     dateChanged,
+    dateChangedById,
     typeChanged,
     descriptionChanged,
     $title,

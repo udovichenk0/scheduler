@@ -20,13 +20,13 @@ import {
 export const AllUpcomingTasks = ({
   selectedDate,
   changeDate,
-  outRef,
+  taskRef,
   selectTask,
   selectedTask,
 }: {
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void
-  outRef: RefObject<HTMLDivElement>
+  taskRef: RefObject<HTMLDivElement>
   selectTask: (task: Nullable<{ id: string }>) => void
   selectedTask: Nullable<{ id: string }>
 }) => {
@@ -35,28 +35,28 @@ export const AllUpcomingTasks = ({
       <DateSectionTaskList
         selectedDate={selectedDate}
         changeDate={changeDate}
-        taskRef={outRef}
+        taskRef={taskRef}
         selectedTask={selectedTask}
         selectTask={selectTask}
       />
       <RestDateSectionTasklist
         selectedDate={selectedDate}
         changeDate={changeDate}
-        taskRef={outRef}
+        taskRef={taskRef}
         selectedTask={selectedTask}
         selectTask={selectTask}
       />
       <MonthSectionTaskList
         selectedDate={selectedDate}
         changeDate={changeDate}
-        taskRef={outRef}
+        taskRef={taskRef}
         selectedTask={selectedTask}
         selectTask={selectTask}
       />
       <RestMonthSectionTasklist
         selectedDate={selectedDate}
         changeDate={changeDate}
-        taskRef={outRef}
+        taskRef={taskRef}
         selectedTask={selectedTask}
         selectTask={selectTask}
       />
@@ -64,7 +64,7 @@ export const AllUpcomingTasks = ({
       <YearSectionTaskList
         selectedDate={selectedDate}
         changeDate={changeDate}
-        taskRef={outRef}
+        taskRef={taskRef}
         selectedTask={selectedTask}
         selectTask={selectTask}
       />
@@ -102,7 +102,7 @@ const DateSectionTaskList = ({
             key={date.date()}
             selectedTask={selectedTask}
             selectTask={selectTask}
-            outRef={taskRef}
+            taskRef={taskRef}
             action={() => changeDate(new Date(date.toISOString()))}
             isSelected={date.isSame(selectedDate, "day")}
             title={
@@ -166,7 +166,7 @@ const RestDateSectionTasklist = ({
           )}
         </span>
       }
-      outRef={taskRef}
+      taskRef={taskRef}
       tasks={remainingDays.restTasks}
     />
   )
@@ -204,7 +204,7 @@ const MonthSectionTaskList = ({
             action={() => changeDate(new Date(date.toISOString()))}
             isSelected={date.isSame(selectedDate, "day")}
             title={<span>{months[date.month()]}</span>}
-            outRef={taskRef}
+            taskRef={taskRef}
             tasks={tasks}
           />
         )
@@ -241,7 +241,7 @@ const RestMonthSectionTasklist = ({
         )
       }
       action={() => changeDate(new Date(remainingMonths.date.toISOString()))}
-      outRef={taskRef}
+      taskRef={taskRef}
       isSelected={remainingMonths.date.isSame(selectedDate, "day")}
       tasks={remainingMonths.restTasks}
     />
@@ -280,7 +280,7 @@ const YearSectionTaskList = ({
               .year(+year)
               .startOf("year")
               .isSame(selectedDate, "day")}
-            outRef={taskRef}
+            taskRef={taskRef}
             tasks={tasks}
           />
         )

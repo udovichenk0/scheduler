@@ -5,11 +5,11 @@ import { $isAuthenticated } from "@/entities/session"
 import { $taskKv } from "@/entities/task/tasks"
 
 import { createTaskQuery } from "@/shared/api/task"
-import { createTaskAccordionFactory } from "@/shared/lib/task-accordion-factory"
+import { createTaskDisclosure } from "@/shared/lib/task-disclosure-factory"
 
 import { createTaskFactory } from "."
 
-const taskModel = createTaskAccordionFactory()
+const taskModel = createTaskDisclosure()
 const createTaskModel = createTaskFactory({
   taskModel,
   defaultType: "inbox",

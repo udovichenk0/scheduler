@@ -26,10 +26,10 @@ type ModifyTaskFormType = {
 
 export const ModifyTaskForm = ({
   modifyTaskModel,
-  date = true,
+  dateModifier = true,
 }: {
   modifyTaskModel: ModifyTaskFormType
-  date?: boolean
+  dateModifier?: boolean
 }) => {
   const [
     title,
@@ -86,39 +86,36 @@ export const ModifyTaskForm = ({
           value={description || ""}
           onChange={(e) => changeDescription(e.target.value)}
         />
-        <div className="">
           <div className="flex flex-col gap-1">
             <div>
               <Button
                 onClick={() => setTypeOpen((prev) => !prev)}
                 size={"sm"}
                 intent={"primary"}
+                className="flex gap-4"
               >
-                <div className="flex gap-4">
-                  <Icon
-                    name={"common/inbox"}
-                    className="h-[18px] w-[18px] text-accent"
-                  />
-                  {capitalizeLetter(taskType)}
-                </div>
+                <Icon
+                  name={"common/inbox"}
+                  className="h-[18px] w-[18px] text-accent"
+                />
+                <span>{capitalizeLetter(taskType)}</span>
               </Button>
             </div>
             <div className="flex">
-              {date && (
+              {dateModifier && (
                 <Button
                   onClick={() => setDatePickerOpen((prev) => !prev)}
                   size={"sm"}
                   intent={"primary"}
+                  className="flex"
                 >
-                  <span className="flex">
-                    <Icon
-                      name={"common/upcoming"}
-                      className="mr-4 h-[18px] w-[18px] text-cTaskEditDefault"
-                    />
-                    <span>Date</span>
-                    <span className="ml-2 text-accent">
-                      {taskDate && normalizeDate(taskDate)}
-                    </span>
+                  <Icon
+                    name={"common/upcoming"}
+                    className="mr-4 h-[18px] w-[18px] text-cTaskEditDefault"
+                  />
+                  <span>Date</span>
+                  <span className="ml-2 text-accent">
+                    {taskDate && normalizeDate(taskDate)}
                   </span>
                 </Button>
               )}
@@ -135,13 +132,11 @@ export const ModifyTaskForm = ({
           {isDatePickerOpened && (
             <DateModal
               taskDate={taskDate || new Date()}
-              outRef={ref}
               changeDate={onChangeDate}
               closeDatePicker={() => setDatePickerOpen(false)}
             />
           )}
         </div>
-      </div>
     </div>
   )
 }

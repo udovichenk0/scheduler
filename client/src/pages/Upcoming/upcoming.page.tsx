@@ -10,7 +10,7 @@ import {
   $$deleteTask,
   $selectedDate,
   currentDateSelected,
-  $$taskAccordion,
+  $$taskDisclosure,
 } from "./upcoming.model"
 export const Upcoming = () => {
   const ref = useRef<HTMLDivElement>(null)
@@ -22,8 +22,8 @@ export const Upcoming = () => {
     changeDate,
     deleteTask,
   ] = useUnit([
-    $$taskAccordion.closeTaskTriggered,
-    $$taskAccordion.createTaskToggled,
+    $$taskDisclosure.closeTaskTriggered,
+    $$taskDisclosure.createTaskToggled,
     $selectedDate,
     currentDateSelected,
     $$deleteTask.taskDeleted,
@@ -39,7 +39,7 @@ export const Upcoming = () => {
           selectedTask={selectedTask}
           changeDate={changeDate}
           selectedDate={selectedDate}
-          outRef={ref}
+          taskRef={ref}
         />
       </Layout.Content>
       <Layout.Footer
