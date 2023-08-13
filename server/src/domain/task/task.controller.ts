@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -17,6 +18,7 @@ import {
   CreateTaskCredentialDto,
   DeleteTaskCredentialsDto,
   TaskDto,
+  UpdateDateCredentialsDto,
   UpdateStatusCredentialDto,
   UpdateTaskCredentialDto,
 } from './dto/task.dto';
@@ -51,6 +53,7 @@ export class TaskController {
     return TaskDto.create(task);
   }
   @Post('update')
+  @UsePipes(new ZodValidationPipe(UpdateTaskCredentialDto))
   async updateTask(@Body() taskCredentials: UpdateTaskCredentialDto) {
     const { id, ...credentials } = taskCredentials;
     const task = await this.taskService.updateOne({
@@ -71,6 +74,18 @@ export class TaskController {
       },
       where: {
         id,
+      },
+    });
+    return task;
+  }
+  @Patch('update-date')
+  async updateDate(@Body() taskCredentials: UpdateDateCredentialsDto) {
+    const task = await this.taskService.updateOne({
+      data: {
+        start_date: taskCredentials.date,
+      },
+      where: {
+        id: taskCredentials.id,
       },
     });
     return task;
