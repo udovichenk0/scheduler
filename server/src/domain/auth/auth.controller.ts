@@ -6,6 +6,9 @@ import {
   UsePipes,
   Session,
   HttpCode,
+  Query,
+  Param,
+  Redirect,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto, AuthDto } from './dto/auth.dto';
@@ -15,12 +18,8 @@ export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('sign-up')
   @UsePipes(AuthCredentialsDto)
-  async Signup(
-    @Body() body: AuthCredentialsDto,
-    @Session() session: Record<string, any>,
-  ) {
+  async Signup(@Body() body: AuthCredentialsDto) {
     const data = await this.authService.createUser(body);
-    session.refresh_token = data.refresh_token;
     return AuthDto.create(data);
   }
   @Post('sign-in')
@@ -38,5 +37,15 @@ export class AuthController {
   async logout(@Req() req: Request) {
     req.session['refresh_token'] = null;
     return { message: 'The user session has ended' };
+  }
+  @Post('verify-email')
+  async verifyEmail(
+    @Body() creds: { code: string; email: string },
+    @Session() session: Record<string, any>,
+  ) {
+    const { code, email } = creds;
+    const verified = await this.authService.verifyEmail({ code, email });
+    session.refresh_token = verified.refresh_token;
+    return verified;
   }
 }
