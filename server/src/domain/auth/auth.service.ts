@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
@@ -11,6 +12,9 @@ import { UserDto } from '../user/dto/user.dto';
 import { passwordNotCorrect, userNotFound } from './constant/authErrorMessages';
 import { compareHash } from 'src/lib/hash-password/compareHash';
 import { v4 as uuidv4 } from 'uuid';
+// import { sign, verify } from 'jsonwebtoken';
+import { sendEmail } from 'src/nodemailer/send-email';
+import { randomCode } from 'src/lib/random-code';
 @Injectable()
 export class AuthService {
   constructor(
@@ -28,6 +32,7 @@ export class AuthService {
       throw new ConflictException('User already exist');
     }
     const hash = await encryptPassword(credentials.password);
+    const code = randomCode();
     const user = await this.prismaService.user.create({
       data: {
         email: credentials.email,
@@ -35,16 +40,16 @@ export class AuthService {
         id: uuidv4(),
       },
     });
-    const { access_token, refresh_token } = await this.tokenService.issueTokens(
-      UserDto.create(user),
-    );
-    return {
-      user,
-      access_token,
-      refresh_token,
-    };
+    await this.prismaService.emailConfirmation.create({
+      data: {
+        id: uuidv4(),
+        code,
+        user_id: user.id,
+      },
+    });
+    await sendEmail(credentials.email, code);
+    return user;
   }
-
   async verifyUser(credentials: AuthCredentialsDto) {
     const user = await this.prismaService.user.findUnique({
       where: {
@@ -63,6 +68,44 @@ export class AuthService {
     );
     return {
       user,
+      access_token,
+      refresh_token,
+    };
+  }
+  async verifyEmail({ code, email }: { code: string; email: string }) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        email,
+      },
+    });
+    if (!user) {
+      throw new NotFoundException(userNotFound(email));
+    }
+    const confirmation = await this.prismaService.emailConfirmation.findUnique({
+      where: {
+        user_id: user.id,
+      },
+    });
+    if (!confirmation) {
+      throw new NotFoundException(userNotFound(email));
+    }
+    const isValid = confirmation.code === code;
+    if (!isValid) {
+      throw new NotAcceptableException('Code is not valid');
+    }
+    const verifiedUser = await this.prismaService.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        verified: true,
+      },
+    });
+    const { access_token, refresh_token } = await this.tokenService.issueTokens(
+      UserDto.create(user),
+    );
+    return {
+      user: verifiedUser,
       access_token,
       refresh_token,
     };

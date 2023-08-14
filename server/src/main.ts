@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
-import { PrismaService } from './database/prisma.service';
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
