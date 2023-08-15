@@ -7,12 +7,15 @@ import { verifyQuery } from "@/shared/api/auth";
 import { setTokenTriggered } from "@/shared/api/token";
 
 import { $email } from "../by-email";
-
+export const CODE_LENGTH = 6
 export const $code = createStore('')
 export const codeChanged = createEvent<string>()
 export const submitTriggered = createEvent()
-
-
+sample({
+  clock: codeChanged,
+  filter: (code) => code.length === CODE_LENGTH,
+  target: submitTriggered
+})
 sample({
   clock: submitTriggered,
   source: {code: $code, email: $email},
