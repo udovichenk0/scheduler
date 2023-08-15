@@ -1,10 +1,10 @@
-import { useRef, useEffect, FormEvent } from "react"
+import { useRef, FormEvent } from "react"
 import { useUnit } from "effector-react"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
 import { Icon } from "@/shared/ui/icon"
-import { Input } from "@/shared/ui/input"
+import { CodeInput } from "@/shared/ui/data-entry/code-input"
 
 import { $code, codeChanged, submitTriggered } from "./verify.model"
 
@@ -19,9 +19,6 @@ export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
     submit()
   }
   const ref = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    ref.current && ref.current.focus()
-  }, [])
   return (
     <div className="relative text-center text-cFont">
       <Button
@@ -39,27 +36,18 @@ export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
         Verification
       </Typography.Heading>
       <form
-        className="flex w-full flex-col"
+        className="flex justify-center"
         onSubmit={(e) => onSubmit(e)}
       >
-        <Input
-          onChange={(e) => changeCode(e.target.value)}
-          ref={ref}
-          className="mb-10"
-          value={code}
-          label="Confirmation code"
-        />
-        <span>
-          <Button
-            className={`${!code && "pointer-events-none bg-[#1f4964]"}`}
-            disabled={!code}
-            size={"m"}
-            intent={"filled"}
-          >
-            Resume
-          </Button>
-        </span>
+        <CodeInput 
+          inputStyle="focus:border-cHover bg-transparent border-b p-1 mx-0 w-6 border-cSecondBorder"
+          containerStyle="gap-2 py-5"
+          length={6} 
+          value={code} 
+          onChange={(e) => changeCode(e)} 
+          ref={ref}/>
       </form>
     </div>
   )
 }
+

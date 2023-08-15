@@ -1,10 +1,10 @@
 import { useUnit } from "effector-react"
-import { FormEvent, useEffect, useRef } from "react"
+import { FormEvent, useRef } from "react"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
 import { Icon } from "@/shared/ui/icon"
-import { Input } from "@/shared/ui/input"
+import { Input } from "@/shared/ui/data-entry/main-input"
 
 import { $email, $emailError, emailChanged, submitTriggered } from "./modal"
 
@@ -21,9 +21,6 @@ export const CheckEmailForm = ({ goBack }: { goBack: () => void }) => {
     emailChanged,
     submitTriggered,
   ])
-  useEffect(() => {
-    ref.current && ref.current.focus()
-  }, [])
   return (
     <div className="relative text-center text-cFont">
       <Button
@@ -50,6 +47,7 @@ export const CheckEmailForm = ({ goBack }: { goBack: () => void }) => {
         <Input
           onChange={(e) => changeEmail(e.target.value)}
           error={error}
+          autoFocus
           className="mb-10"
           ref={ref}
           value={email}
