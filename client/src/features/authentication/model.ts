@@ -4,7 +4,7 @@ import { not } from "patronum"
 
 import { $isAuthenticated } from "@/entities/session"
 
-import { logoutQuery, signinQuery, signupQuery } from "@/shared/api/auth"
+import { logoutQuery, signupQuery } from "@/shared/api/auth"
 import { setTokenTriggered } from "@/shared/api/token"
 import { getUserQuery } from "@/shared/api/user"
 
@@ -18,6 +18,7 @@ export enum Flow {
   register = "register",
   options = "options",
   logout = "logout",
+  verify  = 'verify'
 }
 export const flowChanged = createEvent<Flow>()
 export const reset = createEvent()
@@ -57,13 +58,13 @@ sample({
   fn: () => Flow.email,
   target: $flow,
 })
-
 sample({
-  clock: [
-    signinQuery.finished.success,
-    signupQuery.finished.success,
-    setTokenTriggered,
-  ],
+  clock: signupQuery.finished.success,
+  fn: () => Flow.verify,
+  target: $flow
+})
+sample({
+  clock: setTokenTriggered,
   fn: () => Flow.logout,
   target: $flow,
 })
