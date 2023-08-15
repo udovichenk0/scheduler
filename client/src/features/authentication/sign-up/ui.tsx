@@ -1,10 +1,10 @@
 import { useUnit } from "effector-react"
-import { FormEvent, useEffect, useRef, useState } from "react"
+import { FormEvent, useRef, useState } from "react"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
 import { Icon } from "@/shared/ui/icon"
-import { Input } from "@/shared/ui/input"
+import { Input } from "@/shared/ui/data-entry/main-input"
 
 import { $email } from "../by-email"
 import { TogglePasswordButton } from "../shared/ui/toggle-password-button"
@@ -29,9 +29,6 @@ export const Signup = ({ goBack }: { goBack: () => void }) => {
   ])
   const [isPasswordShown, togglePasswortView] = useState(false)
   const ref = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    ref.current && ref.current.focus()
-  }, [])
   return (
     <div className="relative text-center text-cFont">
       <Button
@@ -61,6 +58,7 @@ export const Signup = ({ goBack }: { goBack: () => void }) => {
           value={password}
           label="Password"
           className="mb-10"
+          autoFocus
           ref={ref}
           type={isPasswordShown ? "text" : "password"}
           icon={

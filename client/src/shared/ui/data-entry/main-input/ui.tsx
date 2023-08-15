@@ -1,20 +1,37 @@
 import { clsx } from "clsx"
-import { InputHTMLAttributes, ReactNode, forwardRef } from "react"
+import { InputHTMLAttributes, ReactNode, forwardRef, useEffect, useImperativeHandle, useRef } from "react"
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   icon?: ReactNode
   type?: "text" | "password"
   label?: string
   error?: Nullable<string>
+  autoFocus?: boolean
 }
-export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ icon, type, label, className, disabled, error, value, ...rest }, ref) => {
+type InputRef = {
+  focus: () => void,
+}
+export const Input = forwardRef<InputRef, InputProps>(
+  ({ icon, autoFocus = false, type, label, className, disabled, error, value, ...rest }, ref) => {
+    const inputRef = useRef<HTMLInputElement>(null)
+      useImperativeHandle(ref, () => ({
+        focus: () => {
+          if(inputRef.current) {
+            inputRef.current.focus()
+          }
+        },
+      }))
+    useEffect(() => {
+      if(autoFocus && inputRef.current){
+        inputRef.current.focus()
+      }
+    }, [])
     return (
       <label className={clsx("relative flex w-full flex-col", className)}>
         <label className="text-left text-[12px] text-grey">{label}</label>
         <input
           {...rest}
-          ref={ref}
+          ref={inputRef}
           type={type}
           disabled={disabled}
           value={value}
