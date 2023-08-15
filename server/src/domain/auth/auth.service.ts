@@ -12,7 +12,6 @@ import { UserDto } from '../user/dto/user.dto';
 import { passwordNotCorrect, userNotFound } from './constant/authErrorMessages';
 import { compareHash } from 'src/lib/hash-password/compareHash';
 import { v4 as uuidv4 } from 'uuid';
-// import { sign, verify } from 'jsonwebtoken';
 import { sendEmail } from 'src/nodemailer/send-email';
 import { randomCode } from 'src/lib/random-code';
 @Injectable()
@@ -99,6 +98,11 @@ export class AuthService {
       },
       data: {
         verified: true,
+      },
+    });
+    await this.prismaService.emailConfirmation.delete({
+      where: {
+        user_id: verifiedUser.id,
       },
     });
     const { access_token, refresh_token } = await this.tokenService.issueTokens(
