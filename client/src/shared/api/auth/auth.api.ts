@@ -1,12 +1,14 @@
 import { createQuery } from "@farfetched/core"
 import { zodContract } from "@farfetched/zod"
 import { createEffect } from "effector"
-import { debug } from "patronum"
+
+import { UserDto } from "../user"
+import { userSchema } from "../user/user.dto"
 
 import { authSchema } from "./auth.dto"
 
 const authContract = zodContract(authSchema)
-
+const userContract = zodContract(userSchema)
 const signinFx = createEffect(
   async (body: { email: string; password: string }) => {
     const data = await fetch("http://localhost:3000/auth/sign-in", {
@@ -21,10 +23,9 @@ const signinFx = createEffect(
     return res
   },
 )
-debug(signinFx.doneData)
 export const signinQuery = createQuery({
   effect: signinFx,
-  contract: authContract,
+  contract: authContract
 })
 
 export const signupFx = createEffect(
@@ -43,7 +44,7 @@ export const signupFx = createEffect(
 )
 export const signupQuery = createQuery({
   effect: signupFx,
-  contract: authContract,
+  contract: userContract,
 })
 
 export const logoutQuery = createQuery({
@@ -55,4 +56,25 @@ export const logoutQuery = createQuery({
     const res = await data.json()
     return res
   }),
+})
+
+
+type VerifyEmailResponse = {
+  user: UserDto,
+  access_token: string
+  refresh_token: string
+}
+export const verifyQuery = createQuery({
+  effect: createEffect<{code: string, email: string}, VerifyEmailResponse>(async ({code, email}) => {
+    const result = await fetch('http://localhost:3000/auth/verify-email', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({code, email})
+    })
+    return result.json()
+  }),
+  contract: authContract,
 })

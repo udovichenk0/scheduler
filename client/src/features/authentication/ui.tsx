@@ -9,6 +9,7 @@ import { Logout } from "./logout"
 import { $flow, flowChanged, gate, Flow } from "./model"
 import { Signin } from "./sign-in"
 import { Signup } from "./sign-up"
+import { VerifyEmail } from "./verify-email/ui"
 
 export const Authentication = () => {
   const [form, selectForm] = useUnit([$flow, flowChanged])
@@ -27,6 +28,7 @@ export const Authentication = () => {
         )}
         {form === Flow.logout && <Logout />}
         {form === Flow.options && <AuthOptions />}
+        {form === Flow.verify && <VerifyEmail goBack={() => selectForm(Flow.email)}/>}
       </div>
     </div>
   )
@@ -46,14 +48,6 @@ const AuthOptions = () => {
         <Button onClick={() => selectForm(Flow.email)} size={"lg"}>
           <Icon name="common/mail" className="mr-4 w-[15px] text-primary" />
           Continue with Email
-        </Button>
-        <Button size={"lg"}>
-          <Icon name="common/mail" className="mr-4 w-[15px] text-primary" />
-          Continue with Google
-        </Button>
-        <Button size={"lg"}>
-          <Icon name="common/mail" className="mr-4 w-[15px] text-primary" />
-          Continue with Apple
         </Button>
       </div>
     </div>

@@ -1,11 +1,7 @@
 import { createEvent, createStore, sample } from "effector"
-import { spread } from "patronum"
 import { z } from "zod"
 
-import { setSessionUserTriggered } from "@/entities/session"
-
 import { signupQuery } from "@/shared/api/auth"
-import { setTokenTriggered } from "@/shared/api/token"
 
 import { $email } from "../by-email"
 
@@ -34,20 +30,6 @@ sample({
 })
 
 sample({
-  clock: signupQuery.finished.success,
-  fn: ({ result }) => ({
-    user: result.user,
-    token: result.access_token,
-  }),
-  target: spread({
-    targets: {
-      user: setSessionUserTriggered,
-      token: setTokenTriggered,
-    },
-  }),
-})
-
-sample({
   clock: submitTriggered,
   source: $password,
   filter: (password) => !signupSchema.safeParse(password).success,
@@ -58,19 +40,6 @@ sample({
 sample({
   clock: passwordChanged,
   target: $password,
-})
-sample({
-  clock: signupQuery.finished.success,
-  fn: ({ result }) => ({
-    user: result.user,
-    token: result.access_token,
-  }),
-  target: spread({
-    targets: {
-      user: setSessionUserTriggered,
-      token: setTokenTriggered,
-    },
-  }),
 })
 
 sample({

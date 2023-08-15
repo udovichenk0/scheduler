@@ -1,5 +1,6 @@
 import { useUnit } from "effector-react/compat"
 import { FormEvent } from "react"
+import { createEffect, sample } from "effector"
 
 import { $sessionUser } from "@/entities/session/session.model"
 
@@ -10,6 +11,15 @@ const submitLogout = (e: FormEvent, submit: () => void) => {
   e.preventDefault()
   submit()
 }
+const verifyQuery = createEffect(async () => {
+  const result = await fetch("http://localhost:3000/auth/verify-email")
+  return result.json()
+})
+
+sample({
+  clock: verifyQuery.done,
+  fn: () => console.log('something')
+})
 
 export const Logout = () => {
   const [user, submit] = useUnit([$sessionUser, submitTriggered])

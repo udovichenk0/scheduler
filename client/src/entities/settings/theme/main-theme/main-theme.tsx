@@ -16,7 +16,7 @@ const themeBoxes = [
 export const MainThemeChanger = () => {
   const [activeTheme, changeTheme] = useUnit([$theme, themeChanged])
   return (
-    <div className="mb-6 flex justify-around gap-2">
+    <div className="mb-6 flex justify-around px-10">
       {themeBoxes.map((theme) => {
         return (
           <ThemeBox
