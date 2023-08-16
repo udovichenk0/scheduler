@@ -56,18 +56,18 @@ export const ExpandedTask = ({
   }
   return (
     <div ref={taskRef} className="group flex gap-2">
-        <Icon
-          onClick={() => setDatePickerOpen(true)}
-          name="common/upcoming"
-          className="invisible translate-y-2 text-lg text-accent group-hover:visible"
+      <Icon
+        onClick={() => setDatePickerOpen(true)}
+        name="common/upcoming"
+        className="invisible translate-y-2 text-lg text-accent group-hover:visible"
+      />
+      {isDatePickerOpened && (
+        <DateModal
+          taskDate={startDate || new Date()}
+          changeDate={onChangeDate}
+          closeDatePicker={() => setDatePickerOpen(false)}
         />
-        {isDatePickerOpened && (
-          <DateModal
-            taskDate={startDate || new Date()}
-            changeDate={onChangeDate}
-            closeDatePicker={() => setDatePickerOpen(false)}
-          />
-        )}
+      )}
       <div
         className={
           "mb-2 flex w-full flex-col rounded-[5px] bg-cTaskEdit p-2 text-sm"

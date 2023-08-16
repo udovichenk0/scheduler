@@ -45,7 +45,7 @@ export function DatePicker({
         changeMonth={changeMonth}
       />
       <WeeksName />
-      <div className="absolute left-[30%] h-[50px] flex items-center top-[50%] -z-[10] text-[90px] font-bold text-main opacity-10 invert">
+      <div className="absolute left-[30%] top-[50%] -z-[10] flex h-[50px] items-center text-[90px] font-bold text-main opacity-10 invert">
         {normilizeDate(currentSetMonth + 1)}
       </div>
       {dates.map((item, rowId) => {

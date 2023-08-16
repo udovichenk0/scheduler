@@ -18,7 +18,7 @@ export enum Flow {
   register = "register",
   options = "options",
   logout = "logout",
-  verify  = 'verify'
+  verify = "verify",
 }
 export const flowChanged = createEvent<Flow>()
 export const reset = createEvent()
@@ -61,7 +61,7 @@ sample({
 sample({
   clock: signupQuery.finished.success,
   fn: () => Flow.verify,
-  target: $flow
+  target: $flow,
 })
 sample({
   clock: setTokenTriggered,

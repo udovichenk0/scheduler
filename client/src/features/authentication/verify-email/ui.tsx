@@ -11,7 +11,7 @@ export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
   const [code, changeCode, onSubmit] = useUnit([
     $code,
     codeChanged,
-    submitTriggered
+    submitTriggered,
   ])
   return (
     <AuthTemplate
@@ -21,14 +21,14 @@ export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
       onSubmit={onSubmit}
       className="flex justify-center"
     >
-    <CodeInput 
-      inputStyle="focus:border-cHover bg-transparent border-b p-1 mx-0 w-6 border-cSecondBorder"
-      containerStyle="gap-2 py-5"
-      length={6} 
-      value={code} 
-      onChange={(e) => changeCode(e)} 
-      ref={ref}/>
+      <CodeInput
+        inputStyle="focus:border-cHover bg-transparent border-b p-1 mx-0 w-6 border-cSecondBorder"
+        containerStyle="gap-2 py-5"
+        length={6}
+        value={code}
+        onChange={(e) => changeCode(e)}
+        ref={ref}
+      />
     </AuthTemplate>
   )
 }
-

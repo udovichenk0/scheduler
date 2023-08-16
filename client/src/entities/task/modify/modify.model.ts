@@ -11,7 +11,7 @@ export const modifyTask = ({
   const titleChanged = createEvent<string>()
   const typeChanged = createEvent<"inbox" | "unplaced">()
   const dateChanged = createEvent<Date>()
-  const dateChangedById = createEvent<{date: Date, id: string}>()
+  const dateChangedById = createEvent<{ date: Date; id: string }>()
   const descriptionChanged = createEvent<string>()
   const resetFieldsTriggered = createEvent()
 

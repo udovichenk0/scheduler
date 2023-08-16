@@ -123,7 +123,10 @@ export const createManyTasksQuery = authQuery<
   },
 })
 
-export const updateTaskDate = authQuery<TaskDto, { body: { id: string; date: Date } }>({
+export const updateTaskDate = authQuery<
+  TaskDto,
+  { body: { id: string; date: Date } }
+>({
   request: {
     url: "tasks/update-date",
     method: "PATCH",

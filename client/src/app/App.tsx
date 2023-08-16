@@ -6,7 +6,6 @@ import { Sidebar } from "@/widgets/sidebar"
 
 import { router } from "@/shared/routing/router"
 
-
 function App() {
   return (
     <RouterProvider router={router}>
