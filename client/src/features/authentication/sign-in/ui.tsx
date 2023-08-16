@@ -32,10 +32,6 @@ export const Signin = ({ goBack }: { goBack: () => void }) => {
       subtitle={`Login in to your account using the address ${email}`}
       onArrowClick={goBack}
     >
-    <form
-      className="flex w-full flex-col"
-      onSubmit={(e) => console.log(e)}
-    >
       <Input
         onChange={(e) => changePassword(e.target.value)}
         error={error}
@@ -62,7 +58,6 @@ export const Signin = ({ goBack }: { goBack: () => void }) => {
           Resume
         </Button>
       </span>
-    </form>
     </AuthTemplate>
   )
 }
