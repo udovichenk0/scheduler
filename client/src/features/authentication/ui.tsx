@@ -28,7 +28,9 @@ export const Authentication = () => {
         )}
         {form === Flow.logout && <Logout />}
         {form === Flow.options && <AuthOptions />}
-        {form === Flow.verify && <VerifyEmail goBack={() => selectForm(Flow.email)}/>}
+        {form === Flow.verify && (
+          <VerifyEmail goBack={() => selectForm(Flow.email)} />
+        )}
       </div>
     </div>
   )

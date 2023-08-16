@@ -25,7 +25,7 @@ const signinFx = createEffect(
 )
 export const signinQuery = createQuery({
   effect: signinFx,
-  contract: authContract
+  contract: authContract,
 })
 
 export const signupFx = createEffect(
@@ -58,23 +58,24 @@ export const logoutQuery = createQuery({
   }),
 })
 
-
 type VerifyEmailResponse = {
-  user: UserDto,
+  user: UserDto
   access_token: string
   refresh_token: string
 }
 export const verifyQuery = createQuery({
-  effect: createEffect<{code: string, email: string}, VerifyEmailResponse>(async ({code, email}) => {
-    const result = await fetch('http://localhost:3000/auth/verify-email', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({code, email})
-    })
-    return result.json()
-  }),
+  effect: createEffect<{ code: string; email: string }, VerifyEmailResponse>(
+    async ({ code, email }) => {
+      const result = await fetch("http://localhost:3000/auth/verify-email", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ code, email }),
+      })
+      return result.json()
+    },
+  ),
   contract: authContract,
 })

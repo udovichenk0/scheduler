@@ -1,4 +1,3 @@
-
 import { ReactNode, FormEvent } from "react"
 
 import { Button } from "../../buttons/main-button"
@@ -6,15 +5,22 @@ import { Typography } from "../../general/typography"
 import { Icon } from "../../icon"
 
 type AuthTemplateProps = {
-  children: ReactNode,
-  title: string,
-  subtitle?: string,
-  disabled?: boolean,
-  onArrowClick: () => void,
-  onSubmit: () => void,
+  children: ReactNode
+  title: string
+  subtitle?: string
+  disabled?: boolean
+  onArrowClick: () => void
+  onSubmit: () => void
   className?: string
 }
-export const AuthTemplate = ({ children, title, subtitle, onArrowClick, onSubmit, className }: AuthTemplateProps) => {
+export const AuthTemplate = ({
+  children,
+  title,
+  subtitle,
+  onArrowClick,
+  onSubmit,
+  className,
+}: AuthTemplateProps) => {
   const submitForm = (e: FormEvent) => {
     e.preventDefault()
     onSubmit()
@@ -38,11 +44,8 @@ export const AuthTemplate = ({ children, title, subtitle, onArrowClick, onSubmit
       <Typography.Paragraph size="sm" className="mb-7">
         {subtitle}
       </Typography.Paragraph>
-      
-      <form
-        className={className}
-        onSubmit={(e) => submitForm(e)}
-      >
+
+      <form className={className} onSubmit={(e) => submitForm(e)}>
         {children}
       </form>
     </div>

@@ -18,7 +18,7 @@ const verifyQuery = createEffect(async () => {
 
 sample({
   clock: verifyQuery.done,
-  fn: () => console.log('something')
+  fn: () => console.log("something"),
 })
 
 export const Logout = () => {

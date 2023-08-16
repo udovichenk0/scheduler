@@ -24,13 +24,13 @@ export const TaskItem = ({
   date?: boolean
   onClick: (task: Nullable<Task>) => void
   isTaskSelected: boolean
-  changeDate: ({ date, id }: { date: Date, id: string}) => void
+  changeDate: ({ date, id }: { date: Date; id: string }) => void
 }) => {
   const [isDatePickerOpened, setDatePickerOpen] = useState(false)
   const { title, status, start_date } = task
   const onChangeDate = (date: Date) => {
     setDatePickerOpen(false)
-    changeDate({ date, id: task.id})
+    changeDate({ date, id: task.id })
   }
   useEffect(() => {
     return () => {
@@ -39,18 +39,18 @@ export const TaskItem = ({
   }, [])
   return (
     <div className="group flex gap-2">
-        <Icon
-          onClick={() => setDatePickerOpen(true)}
-          name="common/upcoming"
-          className="invisible translate-y-2 text-lg text-accent group-hover:visible"
+      <Icon
+        onClick={() => setDatePickerOpen(true)}
+        name="common/upcoming"
+        className="invisible translate-y-2 text-lg text-accent group-hover:visible"
+      />
+      {isDatePickerOpened && (
+        <DateModal
+          taskDate={task.start_date || new Date()}
+          changeDate={onChangeDate}
+          closeDatePicker={() => setDatePickerOpen(false)}
         />
-        {isDatePickerOpened && (
-          <DateModal
-            taskDate={task.start_date || new Date()}
-            changeDate={onChangeDate}
-            closeDatePicker={() => setDatePickerOpen(false)}
-          />
-        )}
+      )}
       <Button
         intent={"primary"}
         onDoubleClick={onDoubleClick}

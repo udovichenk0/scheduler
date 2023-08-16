@@ -1,5 +1,5 @@
-import { allSettled, createEvent, createStore, fork } from "effector"
-import { test, expect, vi } from "vitest"
+import { allSettled, fork } from "effector"
+import { test, expect, vi, describe } from "vitest"
 
 import { $isAuthenticated } from "@/entities/session"
 import { $taskKv } from "@/entities/task/tasks"
@@ -8,68 +8,16 @@ import { createTaskQuery } from "@/shared/api/task"
 import { createTaskDisclosure } from "@/shared/lib/task-disclosure-factory"
 
 import { createTaskFactory } from "."
-
 const taskModel = createTaskDisclosure()
 const createTaskModel = createTaskFactory({
   taskModel,
   defaultType: "inbox",
   defaultDate: null,
 })
-vi.mock("@/shared/lib/block-expansion", () => {
-  return {
-    taskExpansionFactory: vi.fn(() => {
-      return {
-        updateTaskClosed: createEvent(),
-        createTaskClosed: createEvent(),
-        $newTask: createStore(false),
-        $createdTriggered: createStore(false),
-        $isAuthenticated: createStore(true),
-        $isAllowToOpenUpdate: createStore(true),
-        createTaskToggled: createEvent(),
-      }
-    }),
-  }
-})
 
-const items = {
+const tasks = {
   "1": {
     id: "1",
-    title: "without date",
-    description: "",
-    type: "inbox",
-    status: "INPROGRESS",
-    start_date: null,
-    user_id: "1",
-  },
-  "2": {
-    id: "2",
-    title: "without date",
-    description: "",
-    type: "inbox",
-    status: "INPROGRESS",
-    start_date: null,
-    user_id: "1",
-  },
-  "3": {
-    id: "3",
-    title: "without date",
-    description: "",
-    type: "inbox",
-    status: "INPROGRESS",
-    start_date: null,
-    user_id: "1",
-  },
-  "4": {
-    id: "4",
-    title: "without date",
-    description: "",
-    type: "inbox",
-    status: "INPROGRESS",
-    start_date: null,
-    user_id: "1",
-  },
-  "5": {
-    id: "5",
     title: "without date",
     description: "",
     type: "inbox",
@@ -78,7 +26,7 @@ const items = {
     user_id: "1",
   },
 }
-const newItems = {
+const resultedTasks = {
   "1": {
     id: "1",
     title: "without date",
@@ -90,43 +38,7 @@ const newItems = {
   },
   "2": {
     id: "2",
-    title: "without date",
-    description: "",
-    type: "inbox",
-    status: "INPROGRESS",
-    start_date: null,
-    user_id: "1",
-  },
-  "3": {
-    id: "3",
-    title: "without date",
-    description: "",
-    type: "inbox",
-    status: "INPROGRESS",
-    start_date: null,
-    user_id: "1",
-  },
-  "4": {
-    id: "4",
-    title: "without date",
-    description: "",
-    type: "inbox",
-    status: "INPROGRESS",
-    start_date: null,
-    user_id: "1",
-  },
-  "5": {
-    id: "5",
-    title: "without date",
-    description: "",
-    type: "inbox",
-    status: "INPROGRESS",
-    start_date: null,
-    user_id: "1",
-  },
-  "6": {
-    id: "6",
-    title: "sixth",
+    title: "second",
     description: "my note",
     type: "inbox",
     status: "FINISHED",
@@ -134,9 +46,9 @@ const newItems = {
     user_id: "1",
   },
 }
-const returnedValue = {
-  id: "6",
-  title: "sixth",
+const returnedTask = {
+  id: "2",
+  title: "second",
   description: "my note",
   type: "inbox",
   status: "FINISHED",
@@ -144,39 +56,90 @@ const returnedValue = {
   user_id: "1",
 }
 
-test("Make a request after task being closed, set new task to the kv store and reset fields", async () => {
-  const mock = vi.fn(() => returnedValue)
-  const { $title, $description, $status, $startDate, $isAllowToSubmit, $type } =
-    createTaskModel
-  const { createTaskClosed } = taskModel
-  const scope = fork({
-    values: [
-      [$title, "sixth"],
-      [$description, "my note"],
-      [$status, "FINISHED"],
-      [$startDate, null],
-      [$type, "inbox"],
-      [$isAuthenticated, true],
-      [$isAllowToSubmit, true],
-      [$taskKv, items],
-    ],
-    handlers: [[createTaskQuery.__.executeFx, mock]],
+describe("create task", () => {
+  test("Create task on the server if user is authenticated", async () => {
+    const mock = vi.fn(() => returnedTask)
+    const {
+      $title,
+      $description,
+      $status,
+      $startDate,
+      $isAllowToSubmit,
+      $type,
+    } = createTaskModel
+    const { createTaskClosed } = taskModel
+    const scope = fork({
+      values: [
+        [$title, "sixth"],
+        [$description, "my note"],
+        [$status, "FINISHED"],
+        [$startDate, null],
+        [$type, "inbox"],
+        [$isAuthenticated, true],
+        [$isAllowToSubmit, true],
+        [$taskKv, tasks],
+      ],
+      handlers: [[createTaskQuery.__.executeFx, mock]],
+    })
+    await allSettled(createTaskClosed, { scope })
+    expect(mock).toHaveBeenCalledOnce()
+    expect(mock).toBeCalledWith({
+      body: {
+        title: "sixth",
+        description: "my note",
+        type: "inbox",
+        status: "FINISHED",
+        start_date: null,
+      },
+    })
+    expect(mock).toReturnWith(returnedTask)
+    expect(scope.getState($taskKv)).toStrictEqual(resultedTasks)
+    expect(scope.getState($title)).toBe("")
+    expect(scope.getState($description)).toBe("")
+    expect(scope.getState($status)).toBe("INPROGRESS")
+    expect(scope.getState($isAllowToSubmit)).toBeFalsy()
   })
-  await allSettled(createTaskClosed, { scope })
-  expect(mock).toHaveBeenCalledOnce()
-  expect(mock).toBeCalledWith({
-    body: {
-      title: "sixth",
-      description: "my note",
-      type: "inbox",
-      status: "FINISHED",
-      start_date: null,
-    },
+  test("Create task in localStorage if user is not authenticated", async () => {
+    const mock = vi.fn(() => returnedTask)
+    const {
+      $title,
+      $description,
+      $status,
+      $startDate,
+      $isAllowToSubmit,
+      $type,
+      _,
+    } = createTaskModel
+    const { createTaskClosed } = taskModel
+    const scope = fork({
+      values: [
+        [$title, "sixth"],
+        [$description, "my note"],
+        [$status, "FINISHED"],
+        [$startDate, null],
+        [$type, "inbox"],
+        [$isAuthenticated, false],
+        [$isAllowToSubmit, true],
+        [$taskKv, tasks],
+      ],
+      handlers: [[_.setTaskToLocalStorageFx, mock]],
+    })
+    await allSettled(createTaskClosed, { scope })
+    expect(mock).toHaveBeenCalledOnce()
+    expect(mock).toBeCalledWith({
+      body: {
+        title: "sixth",
+        description: "my note",
+        type: "inbox",
+        status: "FINISHED",
+        start_date: null,
+      },
+    })
+    expect(mock).toReturnWith(returnedTask)
+    expect(scope.getState($taskKv)).toStrictEqual(resultedTasks)
+    expect(scope.getState($title)).toBe("")
+    expect(scope.getState($description)).toBe("")
+    expect(scope.getState($status)).toBe("INPROGRESS")
+    expect(scope.getState($isAllowToSubmit)).toBeFalsy()
   })
-  expect(mock).toReturnWith(returnedValue)
-  expect(scope.getState($taskKv)).toStrictEqual(newItems)
-  expect(scope.getState($title)).toBe("")
-  expect(scope.getState($description)).toBe("")
-  expect(scope.getState($status)).toBe("INPROGRESS")
-  expect(scope.getState($isAllowToSubmit)).toBeFalsy()
 })

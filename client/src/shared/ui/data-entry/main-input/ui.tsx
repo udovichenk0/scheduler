@@ -1,5 +1,12 @@
 import { clsx } from "clsx"
-import { InputHTMLAttributes, ReactNode, forwardRef, useEffect, useImperativeHandle, useRef } from "react"
+import {
+  InputHTMLAttributes,
+  ReactNode,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from "react"
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   icon?: ReactNode
@@ -9,20 +16,33 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   autoFocus?: boolean
 }
 type InputRef = {
-  focus: () => void,
+  focus: () => void
 }
 export const Input = forwardRef<InputRef, InputProps>(
-  ({ icon, autoFocus = false, type, label, className, disabled, error, value, ...rest }, ref) => {
+  (
+    {
+      icon,
+      autoFocus = false,
+      type,
+      label,
+      className,
+      disabled,
+      error,
+      value,
+      ...rest
+    },
+    ref,
+  ) => {
     const inputRef = useRef<HTMLInputElement>(null)
-      useImperativeHandle(ref, () => ({
-        focus: () => {
-          if(inputRef.current) {
-            inputRef.current.focus()
-          }
-        },
-      }))
+    useImperativeHandle(ref, () => ({
+      focus: () => {
+        if (inputRef.current) {
+          inputRef.current.focus()
+        }
+      },
+    }))
     useEffect(() => {
-      if(autoFocus && inputRef.current){
+      if (autoFocus && inputRef.current) {
         inputRef.current.focus()
       }
     }, [])

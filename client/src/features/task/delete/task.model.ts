@@ -46,6 +46,6 @@ export const createRemoveTaskFactory = () => {
     _: {
       deleteTaskFromLsFx,
       deleteTaskQuery,
-    }
+    },
   }
 }
