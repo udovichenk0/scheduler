@@ -8,7 +8,6 @@ import { deleteTaskQuery } from "@/shared/api/task"
 
 export const createRemoveTaskFactory = () => {
   const taskDeleted = createEvent<{ id: string }>()
-
   const deleteTaskFromLsFx = createEffect(({ id }: { id: string }) => {
     const tasksFromLs = localStorage.getItem("tasks")
     const tasks = JSON.parse(tasksFromLs!) as Task[]
@@ -37,12 +36,16 @@ export const createRemoveTaskFactory = () => {
     clock: deleteTaskQuery.finished.success,
     source: $taskKv,
     fn: (kv, { result }) => {
-      return Object.values(kv).filter((task) => task.id !== result.id)
+      const array = Object.entries(kv).filter(([key]) => key !== result.id)
+      return Object.fromEntries(array)
     },
     target: $taskKv,
   })
-
   return {
     taskDeleted,
+    _: {
+      deleteTaskFromLsFx,
+      deleteTaskQuery,
+    }
   }
 }
