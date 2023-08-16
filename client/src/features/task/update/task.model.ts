@@ -158,6 +158,9 @@ export const updateTaskFactory = ({
     $status,
     $type,
     changeStatusTriggered,
+    _: {
+      updateTaskFromLocalStorageFx
+    }
   }
 }
 
