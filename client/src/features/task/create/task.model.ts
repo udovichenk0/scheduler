@@ -134,6 +134,9 @@ export const createTaskFactory = ({
     descriptionChanged,
     typeChanged,
     query: createTaskQuery,
+    _: {
+      setTaskToLocalStorageFx
+    }
   }
 }
 

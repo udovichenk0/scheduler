@@ -2,6 +2,7 @@ import { sample } from "effector"
 import { createEvent } from "effector/compat"
 
 import { resetSession } from "@/entities/session"
+import { clearTaskKvTriggered } from "@/entities/task/tasks"
 
 import { logoutQuery } from "@/shared/api/auth"
 import { resetToken } from "@/shared/api/token"
@@ -15,5 +16,5 @@ sample({
 
 sample({
   clock: logoutQuery.finished.success,
-  target: [resetSession, resetToken],
+  target: [resetSession, resetToken, clearTaskKvTriggered],
 })
