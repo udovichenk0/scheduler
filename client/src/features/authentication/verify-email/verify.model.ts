@@ -21,6 +21,10 @@ sample({
   target: $code,
 })
 sample({
+  clock: codeChanged,
+  target: $code,
+})
+sample({
   clock: submitTriggered,
   source: { code: $code, email: $email },
   fn: ({ code, email }) => ({ code, email }),
