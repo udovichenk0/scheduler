@@ -1,7 +1,7 @@
 import dayjs from "dayjs"
 import { useEffect, useState } from "react"
 
-import { Checkbox } from "@/shared/ui/buttons/checkbox"
+import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 

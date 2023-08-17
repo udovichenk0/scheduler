@@ -3,7 +3,7 @@ import { useUnit } from "effector-react"
 import { useState, useRef } from "react"
 
 import { capitalizeLetter } from "@/shared/lib/capitalize-first-letter"
-import { Checkbox } from "@/shared/ui/buttons/checkbox"
+import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 
