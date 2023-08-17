@@ -1,7 +1,7 @@
 import { clsx } from "clsx"
 import { useUnit } from "effector-react"
 
-import { Checkbox } from "@/shared/ui/buttons/checkbox"
+import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 
 import {
   $longBreakDuration,

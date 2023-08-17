@@ -19,7 +19,7 @@ import {
 import sound from "./assets/timer.mp3"
 
 const DEFAULT_WORK_TIME = 1500 // 25mins
-export const DEFAULT_PROGRESS_BAR = 848 // if 785 then progress is 0% otherwise its 100%
+export const DEFAULT_PROGRESS_BAR = 848 // if 848 then progress is 0% otherwise its 100%
 const LAST_STAGE = 4
 const MAX_STAGES_LENGTH = 12
 export const audio = new Audio(sound)
@@ -38,6 +38,12 @@ const defaultStages = {
     fulfilled: false,
   },
 }
+const workDone = createEvent()
+const breakDone = createEvent()
+const longBreakTriggered = createEvent()
+const shortBreakTriggered = createEvent()
+const shortBreakPassed = createEvent()
+const longBreakPassed = createEvent()
 export const timeSelected = createEvent<number>()
 export const startTimerTriggered = createEvent()
 export const stopTimerTriggered = createEvent()
@@ -159,10 +165,6 @@ sample({
   target: finishTimerFx,
 })
 
-const workDone = createEvent()
-const breakDone = createEvent()
-const longBreakTriggered = createEvent()
-const shortBreakTriggered = createEvent()
 sample({
   clock: timePassed,
   filter: $isWorkTime,
@@ -199,9 +201,6 @@ sample({
   greedy: true,
   target: [breakDone, toggleTimerState],
 })
-
-const shortBreakPassed = createEvent()
-const longBreakPassed = createEvent()
 
 condition({
   source: sample({
