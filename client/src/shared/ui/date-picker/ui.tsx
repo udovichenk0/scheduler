@@ -2,25 +2,12 @@ import dayjs from "dayjs"
 import { useState } from "react"
 
 import { generateCalendar } from "@/shared/lib/generate-calendar"
+import { months } from "@/shared/config/constants"
 
 import { Icon } from "../icon"
 import { Button } from "../buttons/main-button"
 
 const daysName = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-]
 
 export function DatePicker({
   currentDate,

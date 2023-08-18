@@ -27,7 +27,7 @@ export const Header = ({
     ],
   )
   return (
-    <Container padding="xl" className="text-primary">
+    <Container padding="xl" className="mb-4 text-primary">
       <div className="flex h-[40px] items-center justify-end">
         {isPomodoroRunning ? (
           <PomodoroProgressBar onClick={togglePomodoroModal} />
