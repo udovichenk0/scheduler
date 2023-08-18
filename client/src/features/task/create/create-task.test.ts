@@ -44,7 +44,7 @@ const resultedTasks = {
     status: "FINISHED",
     start_date: null,
     user_id: "1",
-  }
+  },
 }
 const returnedTask = {
   id: "2",
