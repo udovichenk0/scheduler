@@ -44,6 +44,6 @@ export class AuthController {
     const { code, email } = creds;
     const verified = await this.authService.verifyEmail({ code, email });
     session.refresh_token = verified.refresh_token;
-    return verified;
+    return AuthDto.create(verified);
   }
 }
