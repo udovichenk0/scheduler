@@ -16,7 +16,7 @@ export const MonthSwitcher = ({
       <Button
         disabled={isCurrentMonth}
         intent={"primary"}
-        className="h-6 w-6"
+        className="h-7 w-7"
         onClick={() => changeMonth(displayedMonth - 1)}
       >
         <Icon

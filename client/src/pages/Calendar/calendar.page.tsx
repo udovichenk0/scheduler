@@ -10,25 +10,30 @@ import { $mappedTasks } from "./calendar.model"
 import { MonthSwitcher } from "./ui/month-switcher"
 import { WeekNames } from "./ui/week-names"
 import { CalendarTable } from "./ui/calendar-table"
-
+const fullNameMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 export const Calendar = () => {
   const [calendar, setCalendar] = useState(generateCalendar())
-  const [displayedMonth, setDisplayedMonth] = useState(dayjs().month())
+  const [date, setDate] = useState(dayjs())
   const changeMonth = (month: number) => {
-    setDisplayedMonth(month)
+    setDate(dayjs().month(month))
     setCalendar(generateCalendar(month))
   }
   const [tasks] = useUnit([$mappedTasks])
+  const displayedMonth = date.month()
+  const displayedYear = date.year()
   return (
     <Layout>
-      <Layout.Header iconName="common/calendar" title="Calendar" />
-      <Layout.Content className="px-5">
+      <Layout.Header iconName="common/calendar" title={`Calendar, ${fullNameMonths[displayedMonth]} ${displayedYear}`} />
+      <Layout.Content className="">
+        <div className="h-full flex flex-col">
         <MonthSwitcher
-          displayedMonth={displayedMonth}
+          displayedMonth={date.month()}
           changeMonth={changeMonth}
         />
         <WeekNames />
         <CalendarTable calendar={calendar} tasks={tasks} />
+
+        </div>
       </Layout.Content>
     </Layout>
   )
