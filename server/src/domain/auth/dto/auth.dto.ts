@@ -9,7 +9,6 @@ const authCredentialSchema = z.object({
 const authDtoSchema = z.object({
   user: userDtoSchema,
   access_token: z.string(),
-  refresh_token: z.string(),
 });
 
 export class AuthCredentialsDto extends createZodDto(authCredentialSchema) {}
