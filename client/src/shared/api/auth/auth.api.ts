@@ -2,10 +2,9 @@ import { createQuery } from "@farfetched/core"
 import { zodContract } from "@farfetched/zod"
 import { createEffect } from "effector"
 
-import { UserDto } from "../user"
 import { userSchema } from "../user/user.dto"
 
-import { authSchema } from "./auth.dto"
+import { AuthDto, authSchema } from "./auth.dto"
 
 const authContract = zodContract(authSchema)
 const userContract = zodContract(userSchema)
@@ -58,13 +57,8 @@ export const logoutQuery = createQuery({
   }),
 })
 
-type VerifyEmailResponse = {
-  user: UserDto
-  access_token: string
-  refresh_token: string
-}
 export const verifyQuery = createQuery({
-  effect: createEffect<{ code: string; email: string }, VerifyEmailResponse>(
+  effect: createEffect<{ code: string; email: string }, AuthDto>(
     async ({ code, email }) => {
       const result = await fetch("http://localhost:3000/auth/verify-email", {
         method: "POST",

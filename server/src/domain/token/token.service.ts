@@ -39,12 +39,9 @@ export class TokenService {
       throw new UnauthorizedException(userNotAuthorized);
     }
     const user = await this.userService.findOne({ id: userData.id });
-    const { access_token, refresh_token } = await this.issueTokens(
-      UserDto.create(user),
-    );
+    const { access_token } = await this.issueTokens(UserDto.create(user));
     return {
       access_token,
-      refresh_token,
       userData,
     };
   }
