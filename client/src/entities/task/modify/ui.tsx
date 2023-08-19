@@ -70,6 +70,7 @@ export const ModifyTaskForm = ({
   return (
     <div className="flex w-full gap-2 rounded-[5px] text-cTaskEditDefault">
       <Checkbox
+        iconClassName="fill-cTaskEditDefault"
         checked={status == "FINISHED"}
         onChange={() => changeStatus(status)}
       />

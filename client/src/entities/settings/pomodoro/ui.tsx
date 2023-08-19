@@ -88,6 +88,7 @@ export const PomodoroSettings = () => {
       <div className="space-y-3">
         <div className="flex gap-3">
           <Checkbox
+            iconClassName="fill-cTaskEditDefault"
             checked={startAutomatically}
             onChange={enableAutomaticTimerStart}
           />

@@ -60,7 +60,11 @@ export const TaskItem = ({
           isTaskSelected && "bg-cFocus"
         } flex w-full select-none items-center px-2 py-2 text-sm`}
       >
-        <Checkbox onChange={onChangeCheckbox} checked={status == "FINISHED"} />
+        <Checkbox
+          iconClassName="fill-cTaskEditDefault"
+          onChange={onChangeCheckbox}
+          checked={status == "FINISHED"}
+        />
         {date && start_date && (
           <span
             className={`ml-2 rounded-[5px] px-[5px] text-[12px] ${

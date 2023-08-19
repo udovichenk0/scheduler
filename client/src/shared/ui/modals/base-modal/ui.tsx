@@ -40,7 +40,7 @@ export const BaseModal = ({
     >
       <div
         className={clsx(
-          "rounded-[5px] border-[1px] border-cBorder bg-main drop-shadow-[0_35px_35px_rgba(0,0,0,.56)]",
+          "rounded-[5px] border-[1px] border-cBorder bg-main drop-shadow-base",
           className,
         )}
       >
