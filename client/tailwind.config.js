@@ -6,6 +6,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      dropShadow: {
+        "base": "0 35px 35px rgba(0, 0, 0, 0.56)"
+      },
       colors: {
         "main-blue": "#0b0417",
         azure: "#2ebcff",
@@ -42,7 +45,7 @@ export default {
         cPomodoroRed: "var(--cPomodoroRed)",
         cPomodoroGreen: "var(--cPomodoroGreen)",
         cCalendarFont: "var(--cCalendarFont)",
-        cCalendarTooltip: "var(--cCalendarTooltip)"
+        cCalendarTooltip: "var(--cCalendarTooltip)",
       },
     },
   },
