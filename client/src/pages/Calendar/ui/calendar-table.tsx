@@ -23,7 +23,7 @@ export const CalendarTable = memo(
         {calendar.map((row, rowId) => {
           return (
             <div
-              className="flex justify-around border-cBorder text-primary first:border-t"
+              className="grid grid-cols-7 border-cBorder text-primary first:border-t"
               key={rowId}
             >
               {row.map((cell) => {
@@ -109,13 +109,18 @@ const Cell = ({
                   checked
                 />
               </span>
-              <span
-                className="absolute -top-12 left-1/2 hidden -translate-x-1/2 rounded-[5px] bg-cCalendarTooltip px-3 py-1 after:absolute
-              after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:translate-y-full after:border-x-[7px] after:border-t-[7px] after:border-x-transparent after:border-t-cCalendarTooltip group-hover:block"
-              >
+                <div
+                  className="text-ellipsis max-w-[150px] absolute -top-12 left-1/2 hidden -translate-x-1/2 rounded-[5px] bg-cCalendarTooltip px-3 py-1 after:absolute
+                after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:translate-y-full after:border-x-[7px] after:border-t-[7px] after:border-x-transparent after:border-t-cCalendarTooltip group-hover:block"
+                >
+                  <div className="truncate">
+                    {task.title}
+                  </div>
+                </div>
+
+              <div className="truncate">
                 {task.title}
-              </span>
-              {task.title}
+              </div>
             </div>
           )
         })}
