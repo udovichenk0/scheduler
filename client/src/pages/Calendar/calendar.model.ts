@@ -32,17 +32,27 @@ export const $mappedTasks = $taskKv.map((tasks) => {
     [] as unknown as Record<string, Task[]>,
   )
 })
+export const canceled = createEvent()
+export const saved = createEvent()
 sample({
   clock: $$taskDisclosure.createTaskToggled,
   fn: ({ date }) => date,
   target: $$createTask.$startDate,
 })
-sample({
-  clock: $$modal.$isOpened,
-  filter: (isOpened) => !isOpened,
-  target: $$taskDisclosure.closeTaskTriggered,
-})
 
+sample({
+  clock: canceled,
+  target: [
+    $$createTask.resetFieldsTriggered,
+    $$updateTask.resetFieldsTriggered, 
+    $$taskDisclosure.closeTaskTriggered, 
+    $$modal.toggleTriggered
+  ]
+})
+sample({
+  clock: saved,
+  target: [$$taskDisclosure.closeTaskTriggered, $$modal.toggleTriggered],
+})
 export const createTaskModalOpened = createEvent<Date>()
 export const updateTaskModalOpened = createEvent<Task>()
 sample({

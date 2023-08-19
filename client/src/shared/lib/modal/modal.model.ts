@@ -5,6 +5,7 @@ export const createModal = ({
 }: {
   closeOnClickOutside?: boolean
 }) => {
+  //TODO make a close and open events
   const toggleTriggered = createEvent()
   const clickOutsideTriggered = createEvent()
   const $isOpened = createStore(false).on(toggleTriggered, (state) => !state)

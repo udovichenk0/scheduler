@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { RefObject, useState } from "react"
+import { ReactNode, RefObject, useState } from "react"
 import { Store, Event } from "effector"
 
 import { Pomodoro } from "@/features/pomodoro"
@@ -32,11 +32,13 @@ export const ExpandedTask = ({
   dateModifier,
   modifyTaskModel,
   sideDatePicker = true,
+  rightPanelSlot
 }: {
   taskRef?: RefObject<HTMLDivElement>
   dateModifier: boolean
   modifyTaskModel: ModifyTaskFormType
   sideDatePicker?: boolean
+  rightPanelSlot?: ReactNode
 }) => {
   const [isDatePickerOpened, setDatePickerOpen] = useState(false)
   const [
@@ -81,7 +83,7 @@ export const ExpandedTask = ({
           dateModifier={dateModifier}
           modifyTaskModel={modifyTaskModel}
         />
-        <div className="space-x-2 text-end">
+        <div className="space-x-2 justify-end items-center flex">
           <Button onClick={togglePomodoroModal} intent={"primary"} size={"xs"}>
             <Icon
               name="common/timer"
@@ -98,6 +100,7 @@ export const ExpandedTask = ({
               className="p-[3px] text-[18px] text-cIconDefault"
             />
           </Button>
+          {rightPanelSlot}
         </div>
         <PomodoroModal
           title={title}

@@ -161,6 +161,7 @@ export const updateTaskFactory = ({
     $startDate,
     $status,
     $type,
+    resetFieldsTriggered,
     changeStatusTriggered,
     _: {
       updateTaskFromLocalStorageFx,

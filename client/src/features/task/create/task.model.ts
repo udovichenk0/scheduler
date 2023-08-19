@@ -133,6 +133,7 @@ export const createTaskFactory = ({
     dateChanged,
     descriptionChanged,
     typeChanged,
+    resetFieldsTriggered,
     query: createTaskQuery,
     _: {
       setTaskToLocalStorageFx,
