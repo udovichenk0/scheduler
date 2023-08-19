@@ -1,5 +1,5 @@
 import { createEvent, createStore, sample } from "effector"
-import { not, and, or } from "patronum"
+import { not, and, or, debug } from "patronum"
 
 import { TaskDto } from "@/shared/api/task"
 export const createTaskDisclosure = () => {
@@ -17,7 +17,7 @@ export const createTaskDisclosure = () => {
 
   const $newTask = createStore(false)
   const $taskId = createStore<Nullable<string>>(null)
-
+  debug($newTask)
   sample({
     clock: closeTaskTriggered,
     source: $newTask,

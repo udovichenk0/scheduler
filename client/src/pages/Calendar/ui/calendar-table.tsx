@@ -99,16 +99,16 @@ const Cell = ({
               key={task.id}
               className={`
               group relative
-              rounded-[5px] bg-[#607d8b] px-1 text-start text-white`}
+              rounded-[5px] cursor-pointer bg-[#607d8b] px-1 text-start text-white`}
             >
-              <div className="absolute left-[2px] top-[2px] hidden group-hover:block">
+              <span className="absolute left-[2px] top-[2px] hidden group-hover:block">
                 <Checkbox
                   iconClassName="fill-white"
                   className="border-white bg-[#607d8b]"
                   onChange={() => console.log(1)}
                   checked
-                ></Checkbox>
-              </div>
+                />
+              </span>
               <span
                 className="absolute -top-12 left-1/2 hidden -translate-x-1/2 rounded-[5px] bg-cCalendarTooltip px-3 py-1 after:absolute
               after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:translate-y-full after:border-x-[7px] after:border-t-[7px] after:border-x-transparent after:border-t-cCalendarTooltip group-hover:block"

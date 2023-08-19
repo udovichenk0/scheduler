@@ -9,6 +9,7 @@ import { ExpandedTask } from "@/widgets/expanded-task"
 
 import { generateCalendar } from "@/shared/lib/generate-calendar"
 import { ModalType } from "@/shared/lib/modal"
+import { Button } from "@/shared/ui/buttons/main-button"
 
 import {
   $$createTask,
@@ -16,7 +17,9 @@ import {
   $$taskDisclosure,
   $$updateTask,
   $mappedTasks,
+  canceled,
   createTaskModalOpened,
+  saved,
   updateTaskModalOpened,
 } from "./calendar.model"
 import { MonthSwitcher } from "./ui/month-switcher"
@@ -75,6 +78,7 @@ export const Calendar = () => {
             modifyTaskModel={newTask ? $$createTask : $$updateTask}
             dateModifier={true}
             sideDatePicker={false}
+            rightPanelSlot={<ActionsButtons/>}
           />
         </ModifyTaskFormModal>
       </Layout.Content>
@@ -82,8 +86,28 @@ export const Calendar = () => {
   )
 }
 
+const ActionsButtons = () => {
+  const [onCancel, onSave] = useUnit([canceled, saved])
+  return (
+    <div className="flex gap-3 text-primary">
+      <Button
+        onClick={onCancel}
+        className="w-24 p-[1px] text-[12px]"
+      >
+        Cancel
+      </Button>
+      <Button
+        onClick={onSave}
+        intent={"filled"}
+        className="w-24 p-[1px] text-[12px]"
+      >
+        Save
+      </Button>
+    </div>
+  )
+} 
 
-export const ModifyTaskFormModal = ({ 
+const ModifyTaskFormModal = ({ 
   modal, 
   children
 }: { 
@@ -91,7 +115,7 @@ export const ModifyTaskFormModal = ({
     children: ReactNode
   }) => {
   const [clickOutsideTriggered, isOpened] = useUnit([
-    modal.clickOutsideTriggered,
+    saved,
     modal.$isOpened,
   ])
   const ref = useRef<HTMLDivElement>(null)

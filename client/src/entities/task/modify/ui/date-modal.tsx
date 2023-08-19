@@ -1,4 +1,5 @@
 import { MouseEvent, useRef } from "react"
+import { createPortal } from 'react-dom'
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { DatePicker } from "@/shared/ui/date-picker"
@@ -19,14 +20,14 @@ export const DateModal = ({
     }
     e.stopPropagation()
   }
-  return (
+  return createPortal(
     <>
       <div
         ref={ref}
         onClick={handleOnClickOutside}
-        className="absolute left-0 top-0 z-10 h-full w-full bg-black/50"
+        className="absolute left-0 top-0 z-[1000] flex h-screen w-full items-center justify-center bg-black/40 text-primary"
       />
-      <div className="absolute z-[11] flex w-[270px] -translate-x-10  flex-col gap-1 rounded-[5px] border-[1px] border-cBorder bg-main p-3">
+      <div className="absolute top-1/2 left-1/2 z-[1001] flex w-[270px] -translate-x-1/2 -translate-y-1/2  flex-col gap-1 rounded-[5px] border-[1px] border-cBorder bg-main p-3">
         <DatePicker currentDate={taskDate} onDateChange={changeDate} />
         <div className="flex gap-3 text-primary">
           <Button
@@ -46,6 +47,7 @@ export const DateModal = ({
           </Button>
         </div>
       </div>
-    </>
+    </>,
+    document.body
   )
 }
