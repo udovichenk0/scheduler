@@ -9,11 +9,17 @@ import { deleteTaskQuery } from "@/shared/api/task"
 export const createRemoveTaskFactory = () => {
   const taskDeleted = createEvent<{ id: string }>()
   const deleteTaskFromLsFx = createEffect(({ id }: { id: string }) => {
+
     const tasksFromLs = localStorage.getItem("tasks")
-    const tasks = JSON.parse(tasksFromLs!) as Task[]
-    const filteredTasks = tasks.filter((task) => task.id !== id)
+    const parsedTasks = JSON.parse(tasksFromLs!) as Task[]
+
+    const filteredTasks = parsedTasks.filter((task) => task.id !== id)
+
     localStorage.setItem("tasks", JSON.stringify(filteredTasks))
-    return filteredTasks
+    const deletedTask = parsedTasks.find((task) => task.id === id)
+    return {
+      result: deletedTask!
+    }
   })
   sample({
     clock: taskDeleted,
@@ -27,13 +33,7 @@ export const createRemoveTaskFactory = () => {
     target: deleteTaskFromLsFx,
   })
   sample({
-    clock: deleteTaskFromLsFx.doneData,
-    fn: (result) =>
-      result.reduce((kv, task) => ({ ...kv, [task.id]: task }), {}),
-    target: $taskKv,
-  })
-  sample({
-    clock: deleteTaskQuery.finished.success,
+    clock: [deleteTaskQuery.finished.success, deleteTaskFromLsFx.doneData],
     source: $taskKv,
     fn: (kv, { result }) => {
       const array = Object.entries(kv).filter(([key]) => key !== result.id)

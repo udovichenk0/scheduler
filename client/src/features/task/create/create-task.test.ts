@@ -100,7 +100,7 @@ describe("create task", () => {
     expect(scope.getState($isAllowToSubmit)).toBeFalsy()
   })
   test("Create task in localStorage if user is not authenticated", async () => {
-    const mock = vi.fn(() => returnedTask)
+    const mock = vi.fn(() => ({result: returnedTask}))
     const {
       $title,
       $description,
@@ -135,7 +135,7 @@ describe("create task", () => {
         start_date: null,
       },
     })
-    expect(mock).toReturnWith(returnedTask)
+    expect(mock).toReturnWith({result: returnedTask})
     expect(scope.getState($taskKv)).toStrictEqual(resultedTasks)
     expect(scope.getState($title)).toBe("")
     expect(scope.getState($description)).toBe("")

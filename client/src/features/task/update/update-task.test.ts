@@ -82,7 +82,7 @@ describe("update task", () => {
     expect(scope.getState($isAllowToSubmit)).toBeFalsy()
   })
   test("Update task from localstorage if user is not authenticated, update the value in kv and reset fields", async () => {
-    const mock = vi.fn(() => returnedValue)
+    const mock = vi.fn(() => ({result: returnedValue}))
     const {
       $status,
       $description,
@@ -109,7 +109,7 @@ describe("update task", () => {
     await allSettled(updateTaskClosed, { scope, params: "1" })
 
     expect(mock).toHaveBeenCalledOnce()
-    expect(mock).toReturnWith(returnedValue)
+    expect(mock).toReturnWith({result: returnedValue})
     expect(scope.getState($taskKv)).toStrictEqual(updatedTasks)
     expect(scope.getState($isAllowToSubmit)).toBeFalsy()
     expect(scope.getState($title)).toBe("")
