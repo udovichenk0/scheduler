@@ -119,6 +119,9 @@ export const createTaskFactory = ({
     filter: not($isAllowToSubmit),
     target: resetFieldsTriggered,
   })
+
+  const taskSuccessfullyCreated = merge([setTaskToLocalStorageFx.done, createTaskQuery.finished.success])
+
   return {
     $title,
     $status,
@@ -133,8 +136,10 @@ export const createTaskFactory = ({
     typeChanged,
     resetFieldsTriggered,
     query: createTaskQuery,
+    taskSuccessfullyCreated,
     _: {
       setTaskToLocalStorageFx,
+      createTaskQuery
     },
   }
 }

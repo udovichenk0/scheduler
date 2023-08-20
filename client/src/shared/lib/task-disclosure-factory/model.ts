@@ -17,7 +17,7 @@ export const createTaskDisclosure = () => {
 
   const $newTask = createStore(false)
   const $taskId = createStore<Nullable<string>>(null)
-  debug($newTask)
+  debug($taskId)
   sample({
     clock: closeTaskTriggered,
     source: $newTask,

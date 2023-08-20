@@ -1,14 +1,17 @@
 import dayjs from "dayjs"
 import { createEvent, sample } from "effector"
+import { and, not } from "patronum"
 
 import { updateTaskFactory } from "@/features/task/update"
 import { createTaskFactory } from "@/features/task/create"
+import { createRemoveTaskFactory } from "@/features/task/delete"
 
 import { $taskKv, Task } from "@/entities/task/tasks"
 
 import { createTaskDisclosure } from "@/shared/lib/task-disclosure-factory"
 import { createModal } from "@/shared/lib/modal"
 export const $$taskDisclosure = createTaskDisclosure()
+export const $$deleteTask = createRemoveTaskFactory()
 export const $$updateTask = updateTaskFactory({ taskModel: $$taskDisclosure })
 export const $$createTask = createTaskFactory({
   taskModel: $$taskDisclosure,
@@ -50,17 +53,31 @@ sample({
   ]
 })
 sample({
-  clock: saved,
-  target: [$$taskDisclosure.closeTaskTriggered, $$modal.toggleTriggered],
+  clock: [saved, $$deleteTask.taskSuccessfullyDeleted],
+  target: [$$taskDisclosure.closeTaskTriggered],
 })
 export const createTaskModalOpened = createEvent<Date>()
 export const updateTaskModalOpened = createEvent<Task>()
+sample({
+  clock: [$$createTask.taskSuccessfullyCreated, $$updateTask.taskSuccessfullyUpdated],
+  target: $$modal.toggleTriggered
+})
+sample({
+  clock: $$deleteTask.taskSuccessfullyDeleted,
+  target: [$$taskDisclosure.closeTaskTriggered, $$modal.toggleTriggered]
+})
+sample({
+  clock: saved,
+  filter: and(not($$updateTask.$isAllowToSubmit), not($$createTask.$isAllowToSubmit)),
+  target: $$modal.toggleTriggered
+})
+
 sample({
   clock: createTaskModalOpened,
   fn: (date) => ({ date }),
   target: [$$modal.toggleTriggered, $$taskDisclosure.createTaskToggled],
 })
 sample({
-  clock: updateTaskModalOpened,
+  clock: [updateTaskModalOpened],
   target: [$$modal.toggleTriggered, $$taskDisclosure.updateTaskOpened],
 })

@@ -83,7 +83,7 @@ export const ExpandedTask = ({
           dateModifier={dateModifier}
           modifyTaskModel={modifyTaskModel}
         />
-        <div className="space-x-2 justify-end items-center flex">
+        <div className="space-x-1 justify-end items-center flex">
           <Button onClick={togglePomodoroModal} intent={"primary"} size={"xs"}>
             <Icon
               name="common/timer"
@@ -97,7 +97,7 @@ export const ExpandedTask = ({
           >
             <Icon
               name="common/upcoming"
-              className="p-[3px] text-[18px] text-cIconDefault"
+              className="p-[3px] text-[19px] text-cIconDefault"
             />
           </Button>
           {rightPanelSlot}

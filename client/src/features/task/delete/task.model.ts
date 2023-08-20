@@ -1,4 +1,4 @@
-import { createEffect, createEvent, sample } from "effector"
+import { createEffect, createEvent, sample, merge } from "effector"
 import { not } from "patronum"
 
 import { $isAuthenticated } from "@/entities/session"
@@ -41,8 +41,10 @@ export const createRemoveTaskFactory = () => {
     },
     target: $taskKv,
   })
+  const taskSuccessfullyDeleted = merge([deleteTaskFromLsFx.done, deleteTaskQuery.finished.success])
   return {
     taskDeleted,
+    taskSuccessfullyDeleted,
     _: {
       deleteTaskFromLsFx,
       deleteTaskQuery,

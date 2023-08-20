@@ -1,4 +1,4 @@
-import { attach, createEffect, createEvent, sample } from "effector"
+import { attach, createEffect, createEvent, merge, sample } from "effector"
 import { spread, and, not } from "patronum"
 
 import { $isAuthenticated } from "@/entities/session"
@@ -139,7 +139,7 @@ export const updateTaskFactory = ({
     fn: () => true,
     target: [taskModel.$newTask, taskModel.$createdTriggered.reinit],
   })
-
+  const taskSuccessfullyUpdated = merge([updateTaskQuery.finished.success, updateTaskFromLocalStorageFx.done])
   return {
     statusChanged,
     titleChanged,
@@ -155,6 +155,7 @@ export const updateTaskFactory = ({
     $type,
     resetFieldsTriggered,
     changeStatusTriggered,
+    taskSuccessfullyUpdated,
     _: {
       updateTaskFromLocalStorageFx,
     },
