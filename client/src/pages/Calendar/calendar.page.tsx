@@ -10,9 +10,11 @@ import { ExpandedTask } from "@/widgets/expanded-task"
 import { generateCalendar } from "@/shared/lib/generate-calendar"
 import { ModalType } from "@/shared/lib/modal"
 import { Button } from "@/shared/ui/buttons/main-button"
+import { Icon } from "@/shared/ui/icon"
 
 import {
   $$createTask,
+  $$deleteTask,
   $$modal,
   $$taskDisclosure,
   $$updateTask,
@@ -46,7 +48,7 @@ export const Calendar = () => {
     setDate(dayjs().month(month))
     setCalendar(generateCalendar(month))
   }
-  const [tasks, openTaskCreating, openTaskUpdating, newTask] = useUnit([
+  const [tasks, openTaskCreating, openTaskUpdating, newTask, taskId] = useUnit([
     $mappedTasks,
     createTaskModalOpened,
     updateTaskModalOpened,
@@ -78,7 +80,7 @@ export const Calendar = () => {
             modifyTaskModel={newTask ? $$createTask : $$updateTask}
             dateModifier={true}
             sideDatePicker={false}
-            rightPanelSlot={<ActionsButtons/>}
+            rightPanelSlot={<ActionsButtons taskId={taskId!}/>}
           />
         </ModifyTaskFormModal>
       </Layout.Content>
@@ -86,13 +88,23 @@ export const Calendar = () => {
   )
 }
 
-const ActionsButtons = () => {
-  const [onCancel, onSave] = useUnit([canceled, saved])
+const ActionsButtons = ({ taskId }: { taskId: string}) => {
+  const [onCancel, onSave, deleteTask] = useUnit([canceled, saved, $$deleteTask.taskDeleted])
   return (
-    <div className="flex gap-3 text-primary">
+    <div className="space-x-2 text-primary">
+      <Button
+        onClick={() => deleteTask({id: taskId})}
+        size={'xs'}
+        intent={'primary'}
+      >
+        <Icon
+          name="common/trash-can"
+          className="text-[24px] text-cIconDefault"
+        />
+      </Button>
       <Button
         onClick={onCancel}
-        className="w-24 p-[1px] text-[12px]"
+        className="w-24 text-[12px]"
       >
         Cancel
       </Button>

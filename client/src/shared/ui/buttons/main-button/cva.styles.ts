@@ -6,7 +6,7 @@ export const buttonCva = cva(
     variants: {
       intent: {
         outline: ["border", "border-cSecondBorder", "hover:bg-cHover"],
-        primary: ["hover:bg-cHover", "text-primary", "text-sm"],
+        primary: ["hover:bg-cHover", "text-primary"],
         filled: ["bg-cButtonBg", "hover:bg-cButtunHover", "text-cButtonText"],
       },
       size: {
