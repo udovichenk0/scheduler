@@ -50,11 +50,15 @@ export const createTaskFactory = ({
         const tasks = JSON.parse(tasksFromLs)
         const task = { ...body, id: uuidv4() }
         localStorage.setItem("tasks", JSON.stringify([...tasks, task]))
-        return task
+        return {
+          result: task
+        }
       } else {
         const task = { ...body, id: uuidv4() }
         localStorage.setItem("tasks", JSON.stringify([task]))
-        return task
+        return {
+          result: task
+        }
       }
     },
   )
@@ -91,7 +95,7 @@ export const createTaskFactory = ({
     target: setTaskToLocalStorageFx,
   })
   sample({
-    clock: createTaskQuery.finished.success,
+    clock: [createTaskQuery.finished.success, setTaskToLocalStorageFx.doneData],
     source: $taskKv,
     fn: (kv, { result }) => ({ ...kv, [result.id]: result }),
     target: $taskKv,
@@ -99,12 +103,6 @@ export const createTaskFactory = ({
   sample({
     clock: [createTaskQuery.finished.finally, setTaskToLocalStorageFx.done],
     target: [resetFieldsTriggered],
-  })
-  sample({
-    clock: setTaskToLocalStorageFx.doneData,
-    source: $taskKv,
-    fn: (kv, task) => ({ ...kv, [task.id]: task }),
-    target: $taskKv,
   })
   condition({
     source: merge([

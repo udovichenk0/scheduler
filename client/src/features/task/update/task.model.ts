@@ -24,7 +24,9 @@ const updateTaskDateFromLsFx = attach({
       )
       localStorage.setItem("tasks", JSON.stringify(updatedTasks))
     }
-    return updatedTask
+    return {
+      result: updatedTask
+    }
   },
 })
 export const updateTaskFactory = ({
@@ -58,7 +60,9 @@ export const updateTaskFactory = ({
         task.id === cred.id ? cred : task,
       )
       localStorage.setItem("tasks", JSON.stringify(updatedTasks))
-      return cred as TaskLocalStorage
+      return {
+        result: cred as TaskLocalStorage
+      }
     }),
   })
   sample({
@@ -114,23 +118,11 @@ export const updateTaskFactory = ({
       updateTaskQuery.finished.success,
       updateStatusQuery.finished.success,
       updateTaskDate.finished.success,
-    ],
-    source: $taskKv,
-    fn: (kv, { result }) => ({ ...kv, [result.id]: result }),
-    target: [
-      $taskKv,
-      taskModel.$taskId.reinit,
-      resetFieldsTriggered,
-      taskModel.$updatedTriggered.reinit,
-    ],
-  })
-  sample({
-    clock: [
       updateTaskFromLocalStorageFx.doneData,
       updateTaskDateFromLsFx.doneData,
     ],
     source: $taskKv,
-    fn: (kv, result) => ({ ...kv, [result.id]: result }),
+    fn: (kv, { result }) => ({ ...kv, [result.id]: result }),
     target: [
       $taskKv,
       taskModel.$taskId.reinit,
