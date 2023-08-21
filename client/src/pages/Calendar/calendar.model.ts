@@ -60,21 +60,25 @@ sample({
   clock: [
     updateTaskModalOpened,
     createTaskModalOpened,
-    canceled,
+  ],
+  target: $$modal.open,
+})
+sample({
+  clock: [
     $$createTask.taskSuccessfullyCreated,
     $$updateTask.taskSuccessfullyUpdated,
     $$deleteTask.taskSuccessfullyDeleted,
+    canceled
   ],
-  target: $$modal.toggleTriggered,
+  target: $$modal.close
 })
-
 sample({
   clock: saved,
   filter: and(
     not($$updateTask.$isAllowToSubmit),
     not($$createTask.$isAllowToSubmit),
   ),
-  target: $$modal.toggleTriggered,
+  target: $$modal.close,
 })
 sample({
   clock: saved,
@@ -104,12 +108,12 @@ sample({
 
 //reset fields after modal is closed
 sample({
-  clock: [$$modal.$isOpened, canceled],
-  filter: and(not($$modal.$isOpened), $createdTask),
+  clock: [$$modal.close, canceled],
+  filter: $createdTask,
   target: [$createdTask.reinit, $$createTask.resetFieldsTriggered],
 })
 sample({
-  clock: [$$modal.$isOpened, canceled],
-  filter: and(not($$modal.$isOpened), $updatedTask),
+  clock: [$$modal.close, canceled],
+  filter: and($updatedTask),
   target: [$updatedTask.reinit, $$updateTask.resetFieldsTriggered],
 })

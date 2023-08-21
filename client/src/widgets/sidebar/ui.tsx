@@ -10,17 +10,17 @@ import { Container } from "@/shared/ui/general/container"
 import {
   $inboxTasksCount,
   $todayTasksCount,
-  modal,
+  $$modal,
   navigate,
 } from "./sidebar.modal"
 import { Logo } from "./ui/logo"
 import { SideLink } from "./ui/side-link"
 
 export const Sidebar = () => {
-  const [inboxTasksCount, todayTasksCount, toggleTriggered] = useUnit([
+  const [inboxTasksCount, todayTasksCount, openSettingsModal] = useUnit([
     $inboxTasksCount,
     $todayTasksCount,
-    modal.toggleTriggered,
+    $$modal.open,
   ])
   return (
     <aside className={`border-r-[1px] border-cBorder bg-brand text-primary`}>
@@ -67,7 +67,7 @@ export const Sidebar = () => {
           </Button>
         </Container>
         <Container className="flex gap-2 border-t-[1px] border-cBorder text-cIconDefault">
-          <Button onClick={toggleTriggered} intent={"primary"} size={"xs"}>
+          <Button onClick={openSettingsModal} intent={"primary"} size={"xs"}>
             <Icon name="common/settings" className="text-[24px]" />
           </Button>
           <Button
@@ -77,7 +77,7 @@ export const Sidebar = () => {
           >
             <Icon name="common/cross-arrows" className="text-[24px]" />
           </Button>
-          <Settings modal={modal} defaultTab="general" />
+          <Settings modal={$$modal} defaultTab="general" />
         </Container>
       </div>
     </aside>

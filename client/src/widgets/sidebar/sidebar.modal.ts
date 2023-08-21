@@ -6,7 +6,7 @@ import { $taskKv } from "@/entities/task/tasks"
 
 import { createModal } from "@/shared/lib/modal"
 
-export const modal = createModal({ closeOnClickOutside: true })
+export const $$modal = createModal({ closeOnClickOutside: true })
 
 export const $inboxTasksCount = combine($taskKv, (kv) => {
   return Object.values(kv).filter((task) => task.type == "inbox").length

@@ -42,14 +42,14 @@ export const ExpandedTask = ({
 }) => {
   const [isDatePickerOpened, setDatePickerOpen] = useState(false)
   const [
-    togglePomodoroModal,
-    toggleSettingsModal,
+    openPomodoroModal,
+    openSettingsModal,
     startDate,
     changeDate,
     title,
   ] = useUnit([
-    pomodoroModal.toggleTriggered,
-    settingsModal.toggleTriggered,
+    pomodoroModal.open,
+    settingsModal.open,
     modifyTaskModel.$startDate,
     modifyTaskModel.dateChanged,
     modifyTaskModel.$title,
@@ -84,7 +84,7 @@ export const ExpandedTask = ({
           modifyTaskModel={modifyTaskModel}
         />
         <div className="flex items-center justify-end space-x-1">
-          <Button onClick={togglePomodoroModal} intent={"primary"} size={"xs"}>
+          <Button onClick={openPomodoroModal} intent={"primary"} size={"xs"}>
             <Icon
               name="common/timer"
               className="text-[24px] text-cIconDefault"
@@ -104,7 +104,7 @@ export const ExpandedTask = ({
         </div>
         <PomodoroModal
           title={title}
-          toggleSettingsModal={toggleSettingsModal}
+          toggleSettingsModal={openSettingsModal}
         />
       </div>
     </div>

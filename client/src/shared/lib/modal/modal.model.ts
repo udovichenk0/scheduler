@@ -5,10 +5,12 @@ export const createModal = ({
 }: {
   closeOnClickOutside?: boolean
 }) => {
-  //TODO make a close and open events
-  const toggleTriggered = createEvent()
+  const open = createEvent()
+  const close = createEvent()
   const clickOutsideTriggered = createEvent()
-  const $isOpened = createStore(false).on(toggleTriggered, (state) => !state)
+  const $isOpened = createStore(false)
+  .on(open, () => true)
+  .on(close, () => false)
   if (closeOnClickOutside) {
     sample({
       clock: clickOutsideTriggered,
@@ -18,9 +20,10 @@ export const createModal = ({
   }
 
   return {
-    toggleTriggered,
     clickOutsideTriggered,
     $isOpened,
+    open,
+    close
   }
 }
 
