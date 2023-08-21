@@ -17,9 +17,9 @@ export const BaseModal = ({
   title,
   className,
 }: ModalProps) => {
-  const [clickOutsideTriggered, toggleTriggered, isOpened] = useUnit([
+  const [clickOutsideTriggered, closeModal, isOpened] = useUnit([
     modal.clickOutsideTriggered,
-    modal.toggleTriggered,
+    modal.close,
     modal.$isOpened,
   ])
   const ref = useRef<HTMLDivElement>(null)
@@ -47,7 +47,7 @@ export const BaseModal = ({
         <div className={"m-2 flex justify-end"}>
           <span className="w-full pl-6 text-center text-[12px]">{title}</span>
           <button
-            onClick={toggleTriggered}
+            onClick={closeModal}
             className={
               "relative h-[22px]  w-[22px] rounded-[4px] hover:bg-cHover"
             }

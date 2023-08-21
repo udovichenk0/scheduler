@@ -19,10 +19,10 @@ export const Header = ({
   iconName: IconName
   title: string
 }) => {
-  const [togglePomodoroModal, toggleSettingsModal, isPomodoroRunning] = useUnit(
+  const [openPomodoroModal, openSettingsModal, isPomodoroRunning] = useUnit(
     [
-      pomodoroModal.toggleTriggered,
-      settingsModal.toggleTriggered,
+      pomodoroModal.open,
+      settingsModal.open,
       $isPomodoroRunning,
     ],
   )
@@ -30,9 +30,9 @@ export const Header = ({
     <Container padding="xl" className="mb-4 text-primary">
       <div className="flex h-[40px] items-center justify-end">
         {isPomodoroRunning ? (
-          <PomodoroProgressBar onClick={togglePomodoroModal} />
+          <PomodoroProgressBar onClick={openPomodoroModal} />
         ) : (
-          <Button intent={"primary"} size={"xs"} onClick={togglePomodoroModal}>
+          <Button intent={"primary"} size={"xs"} onClick={openPomodoroModal}>
             <Icon className="text-2xl text-cIconDefault" name="common/timer" />
           </Button>
         )}
@@ -44,7 +44,7 @@ export const Header = ({
             <Button
               intent={"primary"}
               size={"xs"}
-              onClick={toggleSettingsModal}
+              onClick={openSettingsModal}
             >
               <Icon
                 className="text-[24px] text-cIconDefault"
