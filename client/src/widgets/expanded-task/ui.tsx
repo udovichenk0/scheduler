@@ -32,7 +32,7 @@ export const ExpandedTask = ({
   dateModifier,
   modifyTaskModel,
   sideDatePicker = true,
-  rightPanelSlot
+  rightPanelSlot,
 }: {
   taskRef?: RefObject<HTMLDivElement>
   dateModifier: boolean
@@ -83,7 +83,7 @@ export const ExpandedTask = ({
           dateModifier={dateModifier}
           modifyTaskModel={modifyTaskModel}
         />
-        <div className="space-x-1 justify-end items-center flex">
+        <div className="flex items-center justify-end space-x-1">
           <Button onClick={togglePomodoroModal} intent={"primary"} size={"xs"}>
             <Icon
               name="common/timer"

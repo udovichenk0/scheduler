@@ -5,12 +5,9 @@ import { $isAuthenticated } from "@/entities/session"
 import { $taskKv } from "@/entities/task/tasks"
 
 import { createTaskQuery } from "@/shared/api/task"
-import { createTaskDisclosure } from "@/shared/lib/task-disclosure-factory"
 
 import { createTaskFactory } from "."
-const taskModel = createTaskDisclosure()
 const createTaskModel = createTaskFactory({
-  taskModel,
   defaultType: "inbox",
   defaultDate: null,
 })
@@ -66,8 +63,8 @@ describe("create task", () => {
       $startDate,
       $isAllowToSubmit,
       $type,
+      createTaskTriggered,
     } = createTaskModel
-    const { createTaskClosed } = taskModel
     const scope = fork({
       values: [
         [$title, "sixth"],
@@ -81,7 +78,7 @@ describe("create task", () => {
       ],
       handlers: [[createTaskQuery.__.executeFx, mock]],
     })
-    await allSettled(createTaskClosed, { scope })
+    await allSettled(createTaskTriggered, { scope })
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toBeCalledWith({
       body: {
@@ -100,7 +97,7 @@ describe("create task", () => {
     expect(scope.getState($isAllowToSubmit)).toBeFalsy()
   })
   test("Create task in localStorage if user is not authenticated", async () => {
-    const mock = vi.fn(() => ({result: returnedTask}))
+    const mock = vi.fn(() => ({ result: returnedTask }))
     const {
       $title,
       $description,
@@ -108,9 +105,9 @@ describe("create task", () => {
       $startDate,
       $isAllowToSubmit,
       $type,
+      createTaskTriggered,
       _,
     } = createTaskModel
-    const { createTaskClosed } = taskModel
     const scope = fork({
       values: [
         [$title, "sixth"],
@@ -124,7 +121,7 @@ describe("create task", () => {
       ],
       handlers: [[_.setTaskToLocalStorageFx, mock]],
     })
-    await allSettled(createTaskClosed, { scope })
+    await allSettled(createTaskTriggered, { scope })
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toBeCalledWith({
       body: {
@@ -135,7 +132,7 @@ describe("create task", () => {
         start_date: null,
       },
     })
-    expect(mock).toReturnWith({result: returnedTask})
+    expect(mock).toReturnWith({ result: returnedTask })
     expect(scope.getState($taskKv)).toStrictEqual(resultedTasks)
     expect(scope.getState($title)).toBe("")
     expect(scope.getState($description)).toBe("")

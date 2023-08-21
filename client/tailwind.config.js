@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       dropShadow: {
-        "base": "0 35px 35px rgba(0, 0, 0, 0.56)"
+        base: "0 35px 35px rgba(0, 0, 0, 0.56)",
       },
       colors: {
         "main-blue": "#0b0417",

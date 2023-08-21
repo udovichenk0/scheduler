@@ -1,22 +1,21 @@
 import dayjs from "dayjs"
-import { createEvent, sample } from "effector"
+import { createEvent, createStore, sample } from "effector"
 import { and, not } from "patronum"
 
-import { updateTaskFactory } from "@/features/task/update"
-import { createTaskFactory } from "@/features/task/create"
 import { createRemoveTaskFactory } from "@/features/task/delete"
+import { createTaskFactory } from "@/features/task/create"
+import { updateTaskFactory } from "@/features/task/update"
 
 import { $taskKv, Task } from "@/entities/task/tasks"
 
-import { createTaskDisclosure } from "@/shared/lib/task-disclosure-factory"
 import { createModal } from "@/shared/lib/modal"
-export const $$taskDisclosure = createTaskDisclosure()
+
 export const $$deleteTask = createRemoveTaskFactory()
-export const $$updateTask = updateTaskFactory({ taskModel: $$taskDisclosure })
+
+export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
-  taskModel: $$taskDisclosure,
-  defaultDate: new Date(),
   defaultType: "unplaced",
+  defaultDate: new Date(),
 })
 export const $$modal = createModal({ closeOnClickOutside: true })
 export const $mappedTasks = $taskKv.map((tasks) => {
@@ -37,47 +36,80 @@ export const $mappedTasks = $taskKv.map((tasks) => {
 })
 export const canceled = createEvent()
 export const saved = createEvent()
-sample({
-  clock: $$taskDisclosure.createTaskToggled,
-  fn: ({ date }) => date,
-  target: $$createTask.$startDate,
-})
+export const $updatedTask = createStore<{ id: string } | null>(null)
+export const $createdTask = createStore(false)
 
-sample({
-  clock: canceled,
-  target: [
-    $$createTask.resetFieldsTriggered,
-    $$updateTask.resetFieldsTriggered, 
-    $$taskDisclosure.closeTaskTriggered, 
-    $$modal.toggleTriggered
-  ]
-})
-sample({
-  clock: [saved, $$deleteTask.taskSuccessfullyDeleted],
-  target: [$$taskDisclosure.closeTaskTriggered],
-})
 export const createTaskModalOpened = createEvent<Date>()
 export const updateTaskModalOpened = createEvent<Task>()
 sample({
-  clock: [$$createTask.taskSuccessfullyCreated, $$updateTask.taskSuccessfullyUpdated],
-  target: $$modal.toggleTriggered
+  clock: createTaskModalOpened,
+  target: $$createTask.$startDate,
 })
 sample({
-  clock: $$deleteTask.taskSuccessfullyDeleted,
-  target: [$$taskDisclosure.closeTaskTriggered, $$modal.toggleTriggered]
-})
-sample({
-  clock: saved,
-  filter: and(not($$updateTask.$isAllowToSubmit), not($$createTask.$isAllowToSubmit)),
-  target: $$modal.toggleTriggered
+  clock: createTaskModalOpened,
+  fn: () => true,
+  target: $createdTask,
 })
 
 sample({
-  clock: createTaskModalOpened,
-  fn: (date) => ({ date }),
-  target: [$$modal.toggleTriggered, $$taskDisclosure.createTaskToggled],
+  clock: updateTaskModalOpened,
+  target: [$$updateTask.setFieldsTriggered, $updatedTask],
+})
+
+sample({
+  clock: [
+    updateTaskModalOpened,
+    createTaskModalOpened,
+    canceled,
+    $$createTask.taskSuccessfullyCreated,
+    $$updateTask.taskSuccessfullyUpdated,
+    $$deleteTask.taskSuccessfullyDeleted,
+  ],
+  target: $$modal.toggleTriggered,
+})
+
+sample({
+  clock: saved,
+  filter: and(
+    not($$updateTask.$isAllowToSubmit),
+    not($$createTask.$isAllowToSubmit),
+  ),
+  target: $$modal.toggleTriggered,
 })
 sample({
-  clock: [updateTaskModalOpened],
-  target: [$$modal.toggleTriggered, $$taskDisclosure.updateTaskOpened],
+  clock: saved,
+  filter: $$createTask.$isAllowToSubmit,
+  target: $$createTask.createTaskTriggered,
+})
+
+type P = {
+  updatedTask: { id: string } | null
+  canUpdate: boolean
+}
+type P1 = {
+  updatedTask: { id: string }
+  canUpdate: boolean
+}
+sample({
+  clock: saved,
+  source: {
+    updatedTask: $updatedTask,
+    canUpdate: $$updateTask.$isAllowToSubmit,
+  },
+  filter: (payload: P): payload is P1 =>
+    payload.canUpdate && Boolean(payload.updatedTask),
+  fn: ({ updatedTask }) => ({ id: updatedTask.id }),
+  target: $$updateTask.updateTaskTriggered,
+})
+
+//reset fields after modal is closed
+sample({
+  clock: [$$modal.$isOpened, canceled],
+  filter: and(not($$modal.$isOpened), $createdTask),
+  target: [$createdTask.reinit, $$createTask.resetFieldsTriggered],
+})
+sample({
+  clock: [$$modal.$isOpened, canceled],
+  filter: and(not($$modal.$isOpened), $updatedTask),
+  target: [$updatedTask.reinit, $$updateTask.resetFieldsTriggered],
 })

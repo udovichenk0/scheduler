@@ -9,7 +9,6 @@ import { deleteTaskQuery } from "@/shared/api/task"
 export const createRemoveTaskFactory = () => {
   const taskDeleted = createEvent<{ id: string }>()
   const deleteTaskFromLsFx = createEffect(({ id }: { id: string }) => {
-
     const tasksFromLs = localStorage.getItem("tasks")
     const parsedTasks = JSON.parse(tasksFromLs!) as Task[]
 
@@ -18,7 +17,7 @@ export const createRemoveTaskFactory = () => {
     localStorage.setItem("tasks", JSON.stringify(filteredTasks))
     const deletedTask = parsedTasks.find((task) => task.id === id)
     return {
-      result: deletedTask!
+      result: deletedTask!,
     }
   })
   sample({
@@ -41,7 +40,10 @@ export const createRemoveTaskFactory = () => {
     },
     target: $taskKv,
   })
-  const taskSuccessfullyDeleted = merge([deleteTaskFromLsFx.done, deleteTaskQuery.finished.success])
+  const taskSuccessfullyDeleted = merge([
+    deleteTaskFromLsFx.done,
+    deleteTaskQuery.finished.success,
+  ])
   return {
     taskDeleted,
     taskSuccessfullyDeleted,

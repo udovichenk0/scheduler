@@ -23,12 +23,14 @@ export const AllUpcomingTasks = ({
   taskRef,
   selectTask,
   selectedTask,
+  nextDate,
 }: {
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void
   taskRef: RefObject<HTMLDivElement>
   selectTask: (task: Nullable<{ id: string }>) => void
   selectedTask: Nullable<{ id: string }>
+  nextDate: Date
 }) => {
   return (
     <>
@@ -36,6 +38,7 @@ export const AllUpcomingTasks = ({
         selectedDate={selectedDate}
         changeDate={changeDate}
         taskRef={taskRef}
+        nextDate={nextDate}
         selectedTask={selectedTask}
         selectTask={selectTask}
       />
@@ -74,12 +77,14 @@ export const AllUpcomingTasks = ({
 
 const DateSectionTaskList = ({
   selectedTask,
+  nextDate,
   selectTask,
   taskRef,
   selectedDate,
   changeDate,
 }: {
   selectedTask: Nullable<{ id: string }>
+  nextDate: Date
   selectTask: (task: Nullable<{ id: string }>) => void
   taskRef: RefObject<HTMLDivElement>
   selectedDate: Nullable<Date>
@@ -101,6 +106,7 @@ const DateSectionTaskList = ({
           <TasksSection
             key={date.date()}
             selectedTask={selectedTask}
+            isNextSelectedTask={date.isSame(nextDate, "day")}
             selectTask={selectTask}
             taskRef={taskRef}
             action={() => changeDate(new Date(date.toISOString()))}

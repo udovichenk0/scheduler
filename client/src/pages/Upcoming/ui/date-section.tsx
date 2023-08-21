@@ -14,6 +14,7 @@ export function TasksSection({
   tasks,
   title,
   isSelected,
+  isNextSelectedTask,
   action,
   selectTask,
   selectedTask,
@@ -22,14 +23,15 @@ export function TasksSection({
   tasks: Task[]
   title: ReactNode
   isSelected: boolean
+  isNextSelectedTask?: boolean
   action: () => void
   selectTask: (task: Nullable<{ id: string }>) => void
   selectedTask: Nullable<{ id: string }>
 }) {
   const [taskId, updateTaskOpened, newTask] = useUnit([
-    $$taskDisclosure.$taskId,
-    $$taskDisclosure.updateTaskOpened,
-    $$taskDisclosure.$newTask,
+    $$taskDisclosure.$updatedTask,
+    $$taskDisclosure.updatedTaskOpened,
+    $$taskDisclosure.$createdTask,
     $$createTask.$startDate,
     $$createTask.dateChanged,
   ])
@@ -38,10 +40,10 @@ export function TasksSection({
       <Container>
         <div className="pl-7">
           <button
-            disabled={isSelected}
+            disabled={isNextSelectedTask}
             onClick={action}
             className={`${
-              isSelected && "cursor-pointer bg-cFocus"
+              isNextSelectedTask && "cursor-pointer bg-cFocus"
             } flex w-full items-center gap-2 rounded-[5px] px-3 text-lg enabled:hover:bg-cHover`}
           >
             {title}
@@ -51,11 +53,12 @@ export function TasksSection({
       <List
         className="border-t-[1px] border-cBorder"
         $$updateTask={$$updateTask}
-        taskId={taskId}
+        taskId={taskId?.id || null}
         tasks={tasks}
         openTask={updateTaskOpened}
         taskRef={taskRef}
         selectedTask={selectedTask}
+        dateLabel
         selectTask={selectTask}
       />
       <div className="px-5">

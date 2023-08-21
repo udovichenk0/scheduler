@@ -29,11 +29,11 @@ export const Unplaced = () => {
     deleteTask,
   ] = useUnit([
     $unplacedTasks,
-    $$taskDisclosure.$newTask,
-    $$taskDisclosure.$taskId,
+    $$taskDisclosure.$createdTask,
+    $$taskDisclosure.$updatedTask,
     $$taskDisclosure.closeTaskTriggered,
-    $$taskDisclosure.updateTaskOpened,
-    $$taskDisclosure.createTaskToggled,
+    $$taskDisclosure.updatedTaskOpened,
+    $$taskDisclosure.createdTaskOpened,
     $$deleteTask.taskDeleted,
   ])
   return (
@@ -44,7 +44,7 @@ export const Unplaced = () => {
       >
         <List
           $$updateTask={$$updateTask}
-          taskId={taskId}
+          taskId={taskId?.id || null}
           tasks={tasks}
           openTask={updateTaskOpened}
           taskRef={taskRef}
@@ -64,7 +64,7 @@ export const Unplaced = () => {
       <Layout.Footer
         isTaskSelected={!!selectedTask}
         deleteTask={() => selectedTask && deleteTask({ id: selectedTask.id })}
-        action={() => createTaskOpened({ date: new Date() })}
+        action={() => createTaskOpened()}
       />
     </Layout>
   )
