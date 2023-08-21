@@ -3,7 +3,7 @@ import { createEvent, createStore, sample } from "effector"
 import { tasksQuery } from "@/shared/api/task"
 
 import { Task } from "./type"
-
+// change type number to string
 export const $taskKv = createStore<Record<number, Task>>({})
 export const getTasksTriggered = createEvent()
 export const clearTaskKvTriggered = createEvent()

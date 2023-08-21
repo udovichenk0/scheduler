@@ -11,9 +11,9 @@ import { onClickOutside } from "@/shared/lib/on-click-outside"
 import {
   $$deleteTask,
   $inboxTasks,
-  $$createTask,
   $$taskDisclosure,
-  $$updateTask,
+  $updateTask,
+  $createTask,
 } from "./inbox.model"
 
 export const Inbox = () => {
@@ -29,11 +29,11 @@ export const Inbox = () => {
     deleteTask,
   ] = useUnit([
     $inboxTasks,
-    $$taskDisclosure.$newTask,
-    $$taskDisclosure.$taskId,
+    $$taskDisclosure.$createdTask,
+    $$taskDisclosure.$updatedTask,
     $$taskDisclosure.closeTaskTriggered,
-    $$taskDisclosure.updateTaskOpened,
-    $$taskDisclosure.createTaskToggled,
+    $$taskDisclosure.updatedTaskOpened,
+    $$taskDisclosure.createdTaskOpened,
     $$deleteTask.taskDeleted,
   ])
   return (
@@ -43,8 +43,8 @@ export const Inbox = () => {
         onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)}
       >
         <List
-          $$updateTask={$$updateTask}
-          taskId={taskId}
+          $$updateTask={$updateTask}
+          taskId={taskId?.id || null}
           tasks={tasks}
           openTask={updateTaskOpened}
           dateModifier={false}
@@ -55,7 +55,7 @@ export const Inbox = () => {
         <div className="mx-5">
           {newTask && (
             <ExpandedTask
-              modifyTaskModel={$$createTask}
+              modifyTaskModel={$createTask}
               dateModifier={false}
               taskRef={ref}
             />
@@ -66,7 +66,7 @@ export const Inbox = () => {
       <Layout.Footer
         isTaskSelected={!!selectedTask}
         deleteTask={() => selectedTask && deleteTask({ id: selectedTask.id })}
-        action={() => createTaskOpened({ date: new Date() })}
+        action={() => createTaskOpened()}
       />
     </Layout>
   )

@@ -16,9 +16,9 @@ import {
   $$createTask,
   $$deleteTask,
   $$modal,
-  $$taskDisclosure,
   $$updateTask,
   $mappedTasks,
+  $updatedTask,
   canceled,
   createTaskModalOpened,
   saved,
@@ -48,12 +48,11 @@ export const Calendar = () => {
     setDate(dayjs().month(month))
     setCalendar(generateCalendar(month))
   }
-  const [tasks, openTaskCreating, openTaskUpdating, newTask, taskId] = useUnit([
+  const [tasks, openTaskCreating, openTaskUpdating, updatedTask] = useUnit([
     $mappedTasks,
     createTaskModalOpened,
     updateTaskModalOpened,
-    $$taskDisclosure.$newTask,
-    $$taskDisclosure.$taskId,
+    $updatedTask,
   ])
   const displayedMonth = date.month()
   const displayedYear = date.year()
@@ -76,36 +75,51 @@ export const Calendar = () => {
           tasks={tasks}
         />
         <ModifyTaskFormModal modal={$$modal}>
-          <ExpandedTask
-            modifyTaskModel={newTask ? $$createTask : $$updateTask}
-            dateModifier={true}
-            sideDatePicker={false}
-            rightPanelSlot={<ActionsButtons taskId={taskId!}/>}
-          />
+          {updatedTask?.id ? (
+            <ExpandedTask
+              modifyTaskModel={$$updateTask}
+              dateModifier={true}
+              sideDatePicker={false}
+              rightPanelSlot={<UpdateActionsButtons taskId={updatedTask?.id} />}
+            />
+          ) : (
+            <ExpandedTask
+              modifyTaskModel={$$createTask}
+              dateModifier={true}
+              sideDatePicker={false}
+              rightPanelSlot={<ActionsButton />}
+            />
+          )}
         </ModifyTaskFormModal>
       </Layout.Content>
     </Layout>
   )
 }
 
-const ActionsButtons = ({ taskId }: { taskId: string}) => {
-  const [onCancel, onSave, deleteTask] = useUnit([canceled, saved, $$deleteTask.taskDeleted])
+const UpdateActionsButtons = ({ taskId }: { taskId: string }) => {
+  const deleteTask = useUnit($$deleteTask.taskDeleted)
   return (
-    <div className="space-x-2 text-primary">
+    <div className="flex items-center">
       <Button
-        onClick={() => deleteTask({id: taskId})}
-        size={'xs'}
-        intent={'primary'}
+        onClick={() => deleteTask({ id: taskId })}
+        size={"xs"}
+        className="mr-2"
+        intent={"primary"}
       >
         <Icon
           name="common/trash-can"
           className="text-[24px] text-cIconDefault"
         />
       </Button>
-      <Button
-        onClick={onCancel}
-        className="w-24 text-[12px]"
-      >
+      <ActionsButton />
+    </div>
+  )
+}
+const ActionsButton = () => {
+  const [onCancel, onSave] = useUnit([canceled, saved])
+  return (
+    <div className="space-x-2">
+      <Button onClick={onCancel} className="w-24 text-[12px]">
         Cancel
       </Button>
       <Button
@@ -117,19 +131,16 @@ const ActionsButtons = ({ taskId }: { taskId: string}) => {
       </Button>
     </div>
   )
-} 
+}
 
-const ModifyTaskFormModal = ({ 
-  modal, 
-  children
-}: { 
-    modal: ModalType;
-    children: ReactNode
-  }) => {
-  const [clickOutsideTriggered, isOpened] = useUnit([
-    saved,
-    modal.$isOpened,
-  ])
+const ModifyTaskFormModal = ({
+  modal,
+  children,
+}: {
+  modal: ModalType
+  children: ReactNode
+}) => {
+  const [clickOutsideTriggered, isOpened] = useUnit([saved, modal.$isOpened])
   const ref = useRef<HTMLDivElement>(null)
   if (!isOpened) {
     return null
@@ -147,7 +158,9 @@ const ModifyTaskFormModal = ({
       className="absolute left-0 top-0 z-[999] flex h-screen w-full items-center justify-center bg-black/40 text-primary"
     >
       <div
-        className={"w-[600px] rounded-[5px] border-[1px] border-cBorder bg-main drop-shadow-base"}
+        className={
+          "w-[600px] rounded-[5px] border-[1px] border-cBorder bg-main drop-shadow-base"
+        }
       >
         {children}
       </div>

@@ -11,6 +11,7 @@ import {
   $selectedDate,
   currentDateSelected,
   $$taskDisclosure,
+  $nextDate,
 } from "./upcoming.model"
 export const Upcoming = () => {
   const ref = useRef<HTMLDivElement>(null)
@@ -21,12 +22,14 @@ export const Upcoming = () => {
     selectedDate,
     changeDate,
     deleteTask,
+    nextDate,
   ] = useUnit([
     $$taskDisclosure.closeTaskTriggered,
-    $$taskDisclosure.createTaskToggled,
+    $$taskDisclosure.createdTaskOpened,
     $selectedDate,
     currentDateSelected,
     $$deleteTask.taskDeleted,
+    $nextDate,
   ])
   return (
     <Layout>
@@ -35,6 +38,7 @@ export const Upcoming = () => {
         onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)}
       >
         <AllUpcomingTasks
+          nextDate={nextDate}
           selectTask={selectTask}
           selectedTask={selectedTask}
           changeDate={changeDate}
@@ -45,7 +49,7 @@ export const Upcoming = () => {
       <Layout.Footer
         isTaskSelected={!!selectedTask}
         deleteTask={() => selectedTask && deleteTask({ id: selectedTask.id })}
-        action={() => createTaskOpened({ date: selectedDate })}
+        action={() => createTaskOpened()}
       />
     </Layout>
   )

@@ -1,19 +1,21 @@
-import { createTaskFactory } from "@/features/task/create"
+import { disclosureTask } from "@/widgets/expanded-task/model"
+
 import { createRemoveTaskFactory } from "@/features/task/delete"
+import { createTaskFactory } from "@/features/task/create"
 import { updateTaskFactory } from "@/features/task/update"
 
 import { $taskKv } from "@/entities/task/tasks"
-
-import { createTaskDisclosure } from "@/shared/lib/task-disclosure-factory"
-
-export const $$taskDisclosure = createTaskDisclosure()
-export const $$updateTask = updateTaskFactory({ taskModel: $$taskDisclosure })
+export const $$deleteTask = createRemoveTaskFactory()
+export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
-  taskModel: $$taskDisclosure,
   defaultType: "unplaced",
   defaultDate: new Date(),
 })
-export const $$deleteTask = createRemoveTaskFactory()
+export const $$taskDisclosure = disclosureTask({
+  tasks: $taskKv,
+  updateTaskModel: $$updateTask,
+  createTaskModel: $$createTask,
+})
 
 export const $unplacedTasks = $taskKv.map((kv) => {
   return Object.values(kv).filter(({ type }) => type == "unplaced")

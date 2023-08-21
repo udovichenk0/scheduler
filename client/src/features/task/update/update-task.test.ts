@@ -5,12 +5,10 @@ import { $isAuthenticated } from "@/entities/session"
 import { $taskKv } from "@/entities/task/tasks"
 
 import { updateTaskQuery } from "@/shared/api/task"
-import { createTaskDisclosure } from "@/shared/lib/task-disclosure-factory"
 
 import { updateTaskFactory } from "."
 
-const taskModel = createTaskDisclosure()
-const updateTaskModel = updateTaskFactory({ taskModel })
+const updateTaskModel = updateTaskFactory()
 
 const tasks = {
   "1": {
@@ -55,8 +53,8 @@ describe("update task", () => {
       $title,
       $type,
       $startDate,
+      updateTaskTriggered,
     } = updateTaskModel
-    const { updateTaskClosed } = taskModel
     const scope = fork({
       values: [
         [$taskKv, tasks],
@@ -70,7 +68,7 @@ describe("update task", () => {
       ],
       handlers: [[updateTaskQuery.__.executeFx, mock]],
     })
-    await allSettled(updateTaskClosed, { scope, params: "5" })
+    await allSettled(updateTaskTriggered, { scope, params: { id: "5" } })
 
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toReturnWith(returnedValue)
@@ -82,7 +80,7 @@ describe("update task", () => {
     expect(scope.getState($isAllowToSubmit)).toBeFalsy()
   })
   test("Update task from localstorage if user is not authenticated, update the value in kv and reset fields", async () => {
-    const mock = vi.fn(() => ({result: returnedValue}))
+    const mock = vi.fn(() => ({ result: returnedValue }))
     const {
       $status,
       $description,
@@ -90,9 +88,9 @@ describe("update task", () => {
       $title,
       $type,
       $startDate,
+      updateTaskTriggered,
       _,
     } = updateTaskModel
-    const { updateTaskClosed } = taskModel
     const scope = fork({
       values: [
         [$taskKv, tasks],
@@ -106,10 +104,10 @@ describe("update task", () => {
       ],
       handlers: [[_.updateTaskFromLocalStorageFx, mock]],
     })
-    await allSettled(updateTaskClosed, { scope, params: "1" })
+    await allSettled(updateTaskTriggered, { scope, params: { id: "1" } })
 
     expect(mock).toHaveBeenCalledOnce()
-    expect(mock).toReturnWith({result: returnedValue})
+    expect(mock).toReturnWith({ result: returnedValue })
     expect(scope.getState($taskKv)).toStrictEqual(updatedTasks)
     expect(scope.getState($isAllowToSubmit)).toBeFalsy()
     expect(scope.getState($title)).toBe("")

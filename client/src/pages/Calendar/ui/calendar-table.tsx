@@ -99,7 +99,7 @@ const Cell = ({
               key={task.id}
               className={`
               group relative
-              rounded-[5px] cursor-pointer bg-[#607d8b] px-1 text-start text-white`}
+              cursor-pointer rounded-[5px] bg-[#607d8b] px-1 text-start text-white`}
             >
               <span className="absolute left-[2px] top-[2px] hidden group-hover:block">
                 <Checkbox
@@ -109,18 +109,14 @@ const Cell = ({
                   checked
                 />
               </span>
-                <div
-                  className="text-ellipsis max-w-[150px] absolute -top-12 left-1/2 hidden -translate-x-1/2 rounded-[5px] bg-cCalendarTooltip px-3 py-1 after:absolute
+              <div
+                className="absolute -top-12 left-1/2 hidden max-w-[150px] -translate-x-1/2 text-ellipsis rounded-[5px] bg-cCalendarTooltip px-3 py-1 after:absolute
                 after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:translate-y-full after:border-x-[7px] after:border-t-[7px] after:border-x-transparent after:border-t-cCalendarTooltip group-hover:block"
-                >
-                  <div className="truncate">
-                    {task.title}
-                  </div>
-                </div>
-
-              <div className="truncate">
-                {task.title}
+              >
+                <div className="truncate">{task.title}</div>
               </div>
+
+              <div className="truncate">{task.title}</div>
             </div>
           )
         })}

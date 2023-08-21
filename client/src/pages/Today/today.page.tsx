@@ -15,10 +15,10 @@ import {
   $isOverdueTasksOpened,
   $overdueTasks,
   $todayTasks,
-  $$createTask,
-  $$taskDisclosure,
   toggleOverdueTasksOpened,
+  $$taskDisclosure,
   $$updateTask,
+  $$createTask,
 } from "./today.model"
 
 export const Today = () => {
@@ -26,7 +26,7 @@ export const Today = () => {
   const taskRef = useRef<HTMLDivElement>(null)
   const [closeTaskTriggered, createTaskOpened, deleteTask] = useUnit([
     $$taskDisclosure.closeTaskTriggered,
-    $$taskDisclosure.createTaskToggled,
+    $$taskDisclosure.createdTaskOpened,
     $$deleteTask.taskDeleted,
   ])
 
@@ -48,7 +48,7 @@ export const Today = () => {
         />
       </Layout.Content>
       <Layout.Footer
-        action={() => createTaskOpened({ date: new Date() })}
+        action={() => createTaskOpened()}
         isTaskSelected={!!selectedTask}
         deleteTask={() => selectedTask && deleteTask({ id: selectedTask.id })}
       />
@@ -72,8 +72,8 @@ const OverdueTasks = ({
     toggleOverdueTasks,
     overdueTasks,
   ] = useUnit([
-    $$taskDisclosure.$taskId,
-    $$taskDisclosure.updateTaskOpened,
+    $$taskDisclosure.$updatedTask,
+    $$taskDisclosure.updatedTaskOpened,
     $isOverdueTasksOpened,
     toggleOverdueTasksOpened,
     $overdueTasks,
@@ -107,8 +107,9 @@ const OverdueTasks = ({
         <List
           className="border-b-2 border-cBorder"
           $$updateTask={$$updateTask}
-          taskId={taskId}
+          taskId={taskId?.id || null}
           tasks={overdueTasks}
+          dateLabel
           openTask={updateTaskOpened}
           taskRef={taskRef}
           selectedTask={selectedTask}
@@ -130,9 +131,9 @@ const TodayTasks = ({
 }) => {
   const [tasks, newTask, taskId, updateTaskOpened, overdueTasks] = useUnit([
     $todayTasks,
-    $$taskDisclosure.$newTask,
-    $$taskDisclosure.$taskId,
-    $$taskDisclosure.updateTaskOpened,
+    $$taskDisclosure.$createdTask,
+    $$taskDisclosure.$updatedTask,
+    $$taskDisclosure.updatedTaskOpened,
     $overdueTasks,
   ])
   return (
@@ -156,7 +157,7 @@ const TodayTasks = ({
       )}
       <List
         $$updateTask={$$updateTask}
-        taskId={taskId}
+        taskId={taskId?.id || null}
         tasks={tasks}
         openTask={updateTaskOpened}
         taskRef={taskRef}
@@ -167,7 +168,7 @@ const TodayTasks = ({
         {newTask && (
           <ExpandedTask
             modifyTaskModel={$$createTask}
-            dateModifier={false}
+            dateModifier={true}
             taskRef={taskRef}
           />
         )}
