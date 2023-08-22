@@ -1,9 +1,9 @@
 import { attach, createEffect, createEvent, merge, sample } from "effector"
 import { spread, and, not } from "patronum"
 
-import { $isAuthenticated } from "@/entities/session"
+import { $$session } from "@/entities/session"
 import { modifyTaskFactory } from "@/entities/task/modify"
-import { $taskKv, Task } from "@/entities/task/tasks"
+import { $$task, Task } from "@/entities/task/tasks"
 
 import {
   updateStatusQuery,
@@ -12,7 +12,7 @@ import {
 } from "@/shared/api/task"
 type TaskLocalStorage = Omit<Task, "user_id">
 const updateTaskDateFromLsFx = attach({
-  source: $taskKv,
+  source: $$task.$taskKv,
   effect: (kv, { date, id }) => {
     const updatedTask = { ...kv[id], start_date: date }
     const tasksFromLs = localStorage.getItem("tasks")
@@ -62,12 +62,12 @@ export const updateTaskFactory = () => {
   //updatae task from localstorage or from the server
   sample({
     clock: dateChangedAndUpdated,
-    filter: not($isAuthenticated),
+    filter: not($$session.$isAuthenticated),
     target: updateTaskDateFromLsFx,
   })
   sample({
     clock: dateChangedAndUpdated,
-    filter: $isAuthenticated,
+    filter: $$session.$isAuthenticated,
     fn: ({ date, id }) => ({ body: { date, id } }),
     target: updateTaskDate.start,
   })
@@ -76,20 +76,20 @@ export const updateTaskFactory = () => {
   sample({
     clock: updateTaskTriggered,
     source: $fields,
-    filter: and($isAllowToSubmit, $isAuthenticated),
+    filter: and($isAllowToSubmit, $$session.$isAuthenticated),
     fn: (fields, { id }) => ({ body: { ...fields, id } }),
     target: updateTaskQuery.start,
   })
   sample({
     clock: updateTaskTriggered,
     source: $fields,
-    filter: and($isAllowToSubmit, not($isAuthenticated)),
+    filter: and($isAllowToSubmit, not($$session.$isAuthenticated)),
     fn: (fields, { id }) => ({ ...fields, id }),
     target: updateTaskFromLocalStorageFx,
   })
   sample({
     clock: setFieldsTriggered,
-    source: $taskKv,
+    source: $$task.$taskKv,
     fn: (tasks, { id }) => {
       //@ts-ignore
       return tasks[id]
@@ -113,9 +113,9 @@ export const updateTaskFactory = () => {
       updateTaskFromLocalStorageFx.doneData,
       updateTaskDateFromLsFx.doneData,
     ],
-    source: $taskKv,
+    source: $$task.$taskKv,
     fn: (kv, { result }) => ({ ...kv, [result.id]: result }),
-    target: [$taskKv, resetFieldsTriggered],
+    target: [$$task.$taskKv, resetFieldsTriggered],
   })
   const taskSuccessfullyUpdated = merge([
     updateTaskQuery.finished.success,

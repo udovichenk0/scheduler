@@ -3,8 +3,8 @@ import { not, and } from "patronum"
 import { v4 as uuidv4 } from "uuid"
 
 import { modifyTask } from "@/entities/task/modify"
-import { $taskKv } from "@/entities/task/tasks"
-import { $isAuthenticated } from "@/entities/session"
+import { $$task } from "@/entities/task/tasks"
+import { $$session } from "@/entities/session"
 
 import { createTaskQuery } from "@/shared/api/task"
 
@@ -50,22 +50,22 @@ export const createTaskFactory = ({
   sample({
     clock: createTaskTriggered,
     source: $fields,
-    filter: and($isAllowToSubmit, $isAuthenticated),
+    filter: and($isAllowToSubmit, $$session.$isAuthenticated),
     fn: (fields) => ({ body: fields }),
     target: createTaskQuery.start,
   })
   sample({
     clock: createTaskTriggered,
     source: $fields,
-    filter: and($isAllowToSubmit, not($isAuthenticated)),
+    filter: and($isAllowToSubmit, not($$session.$isAuthenticated)),
     fn: (fields) => ({ body: fields }),
     target: setTaskToLocalStorageFx,
   })
   sample({
     clock: [createTaskQuery.finished.success, setTaskToLocalStorageFx.doneData],
-    source: $taskKv,
+    source: $$task.$taskKv,
     fn: (kv, { result }) => ({ ...kv, [result.id]: result }),
-    target: $taskKv,
+    target: $$task.$taskKv,
   })
 
   sample({

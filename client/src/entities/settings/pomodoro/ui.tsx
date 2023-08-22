@@ -1,9 +1,13 @@
 import { clsx } from "clsx"
 import { useUnit } from "effector-react"
+import { useState } from "react"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 
-import {
+import { $$pomodoroSettings } from "./model"
+import style from "./style.module.css"
+
+const {
   $longBreakDuration,
   $isEnabledNotificationSound,
   $shortBreakDuration,
@@ -15,8 +19,7 @@ import {
   settingsApplied,
   workDurationChanged,
   automaticTimerStartEnabled,
-} from "./model"
-import style from "./style.module.css"
+} = $$pomodoroSettings
 
 export const PomodoroSettings = () => {
   const [
@@ -45,7 +48,7 @@ export const PomodoroSettings = () => {
     notificationSoundEnabled,
   ])
 
-  const pomodoroData = [
+  const [pomodoroData] = useState([
     {
       label: "Work duration:",
       value: workDuration,
@@ -64,7 +67,7 @@ export const PomodoroSettings = () => {
       rightText: "minutes",
       onChange: changeLongBreak,
     },
-  ]
+  ])
   return (
     <div className="px-16">
       <div className="mb-6 space-y-3">

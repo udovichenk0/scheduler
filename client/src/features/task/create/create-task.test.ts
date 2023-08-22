@@ -1,8 +1,8 @@
 import { allSettled, fork } from "effector"
 import { test, expect, vi, describe } from "vitest"
 
-import { $isAuthenticated } from "@/entities/session"
-import { $taskKv } from "@/entities/task/tasks"
+import { $$session } from "@/entities/session"
+import { $$task } from "@/entities/task/tasks"
 
 import { createTaskQuery } from "@/shared/api/task"
 
@@ -72,9 +72,9 @@ describe("create task", () => {
         [$status, "FINISHED"],
         [$startDate, null],
         [$type, "inbox"],
-        [$isAuthenticated, true],
+        [$$session.$isAuthenticated, true],
         [$isAllowToSubmit, true],
-        [$taskKv, tasks],
+        [$$task.$taskKv, tasks],
       ],
       handlers: [[createTaskQuery.__.executeFx, mock]],
     })
@@ -90,7 +90,7 @@ describe("create task", () => {
       },
     })
     expect(mock).toReturnWith(returnedTask)
-    expect(scope.getState($taskKv)).toStrictEqual(resultedTasks)
+    expect(scope.getState($$task.$taskKv)).toStrictEqual(resultedTasks)
     expect(scope.getState($title)).toBe("")
     expect(scope.getState($description)).toBe("")
     expect(scope.getState($status)).toBe("INPROGRESS")
@@ -115,9 +115,9 @@ describe("create task", () => {
         [$status, "FINISHED"],
         [$startDate, null],
         [$type, "inbox"],
-        [$isAuthenticated, false],
+        [$$session.$isAuthenticated, false],
         [$isAllowToSubmit, true],
-        [$taskKv, tasks],
+        [$$task.$taskKv, tasks],
       ],
       handlers: [[_.setTaskToLocalStorageFx, mock]],
     })
@@ -133,7 +133,7 @@ describe("create task", () => {
       },
     })
     expect(mock).toReturnWith({ result: returnedTask })
-    expect(scope.getState($taskKv)).toStrictEqual(resultedTasks)
+    expect(scope.getState($$task.$taskKv)).toStrictEqual(resultedTasks)
     expect(scope.getState($title)).toBe("")
     expect(scope.getState($description)).toBe("")
     expect(scope.getState($status)).toBe("INPROGRESS")

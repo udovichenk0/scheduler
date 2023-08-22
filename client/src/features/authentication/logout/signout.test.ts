@@ -1,7 +1,7 @@
 import { fork, allSettled } from "effector"
 import { expect, test, vi } from "vitest"
 
-import { $taskKv } from "@/entities/task/tasks"
+import { $$task } from "@/entities/task/tasks"
 
 import { logoutQuery } from "@/shared/api/auth"
 
@@ -21,10 +21,10 @@ const tasks = {
 test("logout", async () => {
   const mock = vi.fn()
   const scope = fork({
-    values: [[$taskKv, tasks]],
+    values: [[$$task.$taskKv, tasks]],
     handlers: [[logoutQuery.__.executeFx, mock]],
   })
   await allSettled(submitTriggered, { scope })
   expect(mock).toHaveBeenCalled()
-  expect(scope.getState($taskKv)).toStrictEqual({})
+  expect(scope.getState($$task.$taskKv)).toStrictEqual({})
 })

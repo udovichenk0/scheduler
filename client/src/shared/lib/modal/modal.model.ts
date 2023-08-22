@@ -9,8 +9,8 @@ export const createModal = ({
   const close = createEvent()
   const clickOutsideTriggered = createEvent()
   const $isOpened = createStore(false)
-  .on(open, () => true)
-  .on(close, () => false)
+    .on(open, () => true)
+    .on(close, () => false)
   if (closeOnClickOutside) {
     sample({
       clock: clickOutsideTriggered,
@@ -23,7 +23,7 @@ export const createModal = ({
     clickOutsideTriggered,
     $isOpened,
     open,
-    close
+    close,
   }
 }
 

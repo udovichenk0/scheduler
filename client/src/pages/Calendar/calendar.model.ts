@@ -6,7 +6,7 @@ import { createRemoveTaskFactory } from "@/features/task/delete"
 import { createTaskFactory } from "@/features/task/create"
 import { updateTaskFactory } from "@/features/task/update"
 
-import { $taskKv, Task } from "@/entities/task/tasks"
+import { $$task, Task } from "@/entities/task/tasks"
 
 import { createModal } from "@/shared/lib/modal"
 
@@ -18,7 +18,7 @@ export const $$createTask = createTaskFactory({
   defaultDate: new Date(),
 })
 export const $$modal = createModal({ closeOnClickOutside: true })
-export const $mappedTasks = $taskKv.map((tasks) => {
+export const $mappedTasks = $$task.$taskKv.map((tasks) => {
   return Object.values(tasks).reduce(
     (acc, task) => {
       const date = dayjs(task.start_date).format("YYYY-MM-DD")
@@ -57,10 +57,7 @@ sample({
 })
 
 sample({
-  clock: [
-    updateTaskModalOpened,
-    createTaskModalOpened,
-  ],
+  clock: [updateTaskModalOpened, createTaskModalOpened],
   target: $$modal.open,
 })
 sample({
@@ -68,9 +65,9 @@ sample({
     $$createTask.taskSuccessfullyCreated,
     $$updateTask.taskSuccessfullyUpdated,
     $$deleteTask.taskSuccessfullyDeleted,
-    canceled
+    canceled,
   ],
-  target: $$modal.close
+  target: $$modal.close,
 })
 sample({
   clock: saved,

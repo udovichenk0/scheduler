@@ -7,14 +7,14 @@ import { createRemoveTaskFactory } from "@/features/task/delete"
 import { createTaskFactory } from "@/features/task/create"
 import { updateTaskFactory } from "@/features/task/update"
 
-import { $taskKv } from "@/entities/task/tasks"
+import { $$task } from "@/entities/task/tasks"
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
   defaultType: "unplaced",
   defaultDate: new Date(),
 })
 export const $$taskDisclosure = disclosureTask({
-  tasks: $taskKv,
+  tasks: $$task.$taskKv,
   updateTaskModel: $$updateTask,
   createTaskModel: $$createTask,
 })
