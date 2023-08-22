@@ -1,5 +1,5 @@
-type TaskStatus = "FINISHED" | "INPROGRESS"
-type TaskType = "inbox" | "unplaced"
+export type TaskStatus = "FINISHED" | "INPROGRESS"
+export type TaskType = "inbox" | "unplaced"
 export type Task = {
   id: string
   title: string
@@ -7,5 +7,5 @@ export type Task = {
   status: TaskStatus
   type: TaskType
   start_date: Nullable<Date>
-  user_id: string
+  user_id: string | null
 }

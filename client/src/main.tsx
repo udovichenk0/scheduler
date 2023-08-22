@@ -22,13 +22,11 @@ sample({
   clock: init,
   target: refreshQuery.start,
 })
-
-type TaskPayload = Omit<Task, "user_id">
-
+type TaskFromLocalStorage = Task & { user_id: null }
 const takeTasksFromlsFx = createEffect(() => {
   const tasks = localStorage.getItem("tasks")
   if (tasks) {
-    return JSON.parse(tasks) as TaskPayload[]
+    return JSON.parse(tasks) as TaskFromLocalStorage[]
   }
   return []
 })
@@ -43,7 +41,7 @@ sample({
 sample({
   clock: takeTasksFromlsFx.doneData,
   source: $$session.$user,
-  filter: (user: Nullable<User>, data: TaskPayload[]): user is User =>
+  filter: (user: Nullable<User>, data: TaskFromLocalStorage[]): user is User =>
     Boolean(user) && data.length === 0,
   target: $$task.getTasksTriggered,
 })
@@ -51,11 +49,12 @@ sample({
 sample({
   clock: takeTasksFromlsFx.doneData,
   source: $$session.$user,
-  filter: (user: Nullable<User>, data: TaskPayload[]): user is User =>
+  filter: (user: Nullable<User>, data: TaskFromLocalStorage[]): user is User =>
     Boolean(user) && data.length > 0,
   fn: (user, data) => ({ body: { user_id: user.id, tasks: data } }),
   target: createManyTasksQuery.start,
 })
+
 sample({
   clock: createManyTasksQuery.finished.success,
   target: [$$task.getTasksTriggered, deleteTasksFromlsFx],
@@ -64,8 +63,7 @@ sample({
 sample({
   clock: takeTasksFromlsFx.doneData,
   filter: not($$session.$isAuthenticated),
-  fn: (tasks) => tasks.reduce((kv, task) => ({ ...kv, [task.id]: task }), {}),
-  target: $$task.$taskKv,
+  target: $$task.setTaskKvTriggered,
 })
 init()
 createRoot(document.getElementById("root") as HTMLElement).render(<App />)

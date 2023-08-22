@@ -1,8 +1,6 @@
 import dayjs, { Dayjs } from "dayjs"
 
-import { $$task } from "@/entities/task/tasks"
-
-import { TaskDto } from "@/shared/api/task"
+import { $$task, Task } from "@/entities/task/tasks"
 
 import { MIN_DATES_LENGTH, MIN_MONTHS_LENGTH } from "../../config"
 
@@ -83,7 +81,7 @@ export const $remainingMonths = $upcomingTasks.map((tasks) => {
   }
 })
 
-function groupTasksByYear(array: TaskDto[]) {
+function groupTasksByYear(array: Task[]) {
   return array.reduce(
     (groups, task) => {
       const year = dayjs(task.start_date).format("YYYY")
@@ -93,7 +91,7 @@ function groupTasksByYear(array: TaskDto[]) {
       groups[year].push(task)
       return groups
     },
-    {} as Record<string, TaskDto[]>,
+    {} as Record<string, Task[]>,
   )
 }
 // console.log(dayjs(new Date('2023-01-15')).isSameOrAfter(dayjs(new Date('2023-01-14')), "day"))

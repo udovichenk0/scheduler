@@ -3,47 +3,57 @@ import { spread, and, not } from "patronum"
 
 import { $$session } from "@/entities/session"
 import { modifyTaskFactory } from "@/entities/task/modify"
-import { $$task, Task } from "@/entities/task/tasks"
+import { $$task, Task, TaskStatus, TaskType } from "@/entities/task/tasks"
 
 import {
   updateStatusQuery,
   updateTaskDate,
   updateTaskQuery,
 } from "@/shared/api/task"
-type TaskLocalStorage = Omit<Task, "user_id">
-const updateTaskDateFromLsFx = attach({
-  source: $$task.$taskKv,
-  effect: (kv, { date, id }) => {
-    const updatedTask = { ...kv[id], start_date: date }
-    const tasksFromLs = localStorage.getItem("tasks")
-    if (tasksFromLs) {
-      const parsedTasks = JSON.parse(tasksFromLs!)
-      const updatedTasks = parsedTasks.map((task: TaskLocalStorage) =>
-        task.id === id ? updatedTask : task,
-      )
-      localStorage.setItem("tasks", JSON.stringify(updatedTasks))
-    }
-    return {
-      result: updatedTask,
-    }
-  },
-})
 
-const updateTaskFromLocalStorageFx = attach({
-  effect: createEffect(async (cred: TaskLocalStorage) => {
+export const updateTaskFactory = () => {
+  const updateTaskDateFromLsFx = attach({
+    source: $$task.$taskKv,
+    effect: (kv, { date, id }) => {
+      const updatedTask = { ...kv[id], start_date: date }
+      const tasksFromLs = localStorage.getItem("tasks")
+      if (tasksFromLs) {
+        const parsedTasks = JSON.parse(tasksFromLs!)
+        const updatedTasks = parsedTasks.map((task: Task) =>
+          task.id === id ? updatedTask : task,
+        )
+        localStorage.setItem("tasks", JSON.stringify(updatedTasks))
+      }
+      return {
+        result: updatedTask,
+      }
+    },
+  })
+
+  type Cred = {
+    id: string
+    title: string
+    description: string
+    status: TaskStatus
+    type: TaskType
+    start_date: Nullable<Date>
+  }
+
+  const updateTaskFromLocalStorageFx = createEffect(async (cred: Cred) => {
     const tasksFromLs = localStorage.getItem("tasks")
     const parsedTasks = JSON.parse(tasksFromLs!)
-    const updatedTasks = parsedTasks.map((task: TaskLocalStorage) =>
+    const updatedTasks = parsedTasks.map((task: Task) =>
       task.id === cred.id ? cred : task,
     )
     localStorage.setItem("tasks", JSON.stringify(updatedTasks))
-    return new Promise((res) => {
-      setTimeout(() => res({ result: cred }), 1000)
-    }) as unknown as { result: TaskLocalStorage }
-  }),
-})
+    return {
+      result: {
+        ...cred,
+        user_id: null,
+      },
+    }
+  })
 
-export const updateTaskFactory = () => {
   const $$modifyTask = modifyTaskFactory({})
   const {
     resetFieldsTriggered,
@@ -90,10 +100,7 @@ export const updateTaskFactory = () => {
   sample({
     clock: setFieldsTriggered,
     source: $$task.$taskKv,
-    fn: (tasks, { id }) => {
-      //@ts-ignore
-      return tasks[id]
-    },
+    fn: (tasks, { id }) => tasks[id],
     target: spread({
       targets: {
         title: $title,
@@ -113,9 +120,8 @@ export const updateTaskFactory = () => {
       updateTaskFromLocalStorageFx.doneData,
       updateTaskDateFromLsFx.doneData,
     ],
-    source: $$task.$taskKv,
-    fn: (kv, { result }) => ({ ...kv, [result.id]: result }),
-    target: [$$task.$taskKv, resetFieldsTriggered],
+    fn: ({ result }) => result,
+    target: [$$task.setTaskTriggered, resetFieldsTriggered],
   })
   const taskSuccessfullyUpdated = merge([
     updateTaskQuery.finished.success,

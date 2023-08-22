@@ -4,13 +4,14 @@ import { tasksQuery } from "@/shared/api/task"
 import { singleton } from "@/shared/lib/singleton"
 
 import { Task } from "./type"
+
 export const $$task = singleton(() => {
-  // change type number to string
-  const $taskKv = createStore<Record<number, Task>>({})
+  const $taskKv = createStore<Record<string, Task>>({})
   const setTaskKvTriggered = createEvent<Task[]>()
   const setTaskTriggered = createEvent<Task>()
   const getTasksTriggered = createEvent()
-  const clearTaskKvTriggered = createEvent()
+  const taskDeleted = createEvent<Task>()
+  const reset = createEvent()
   sample({
     clock: tasksQuery.finished.success,
     fn: ({ result }) =>
@@ -20,6 +21,7 @@ export const $$task = singleton(() => {
   sample({
     clock: setTaskKvTriggered,
     fn: (tasks) => tasks.reduce((kv, task) => ({ ...kv, [task.id]: task }), {}),
+    target: $taskKv,
   })
   sample({
     clock: setTaskTriggered,
@@ -28,20 +30,34 @@ export const $$task = singleton(() => {
     target: $taskKv,
   })
   sample({
+    clock: taskDeleted,
+    source: $taskKv,
+    fn: (kv, task) => {
+      const array = Object.entries(kv).filter(([key]) => key !== task.id)
+      return Object.fromEntries(array)
+    },
+    target: $taskKv,
+  })
+  sample({
     clock: getTasksTriggered,
     target: tasksQuery.start,
   })
 
   sample({
-    clock: clearTaskKvTriggered,
+    clock: reset,
     target: $taskKv.reinit!,
   })
+
   return {
     $taskKv: $taskKv.map((kv) => kv),
     setTaskKvTriggered,
     setTaskTriggered,
-    clearTaskKvTriggered,
+    reset,
     getTasksTriggered,
+    taskDeleted,
+    _: {
+      $taskKv,
+    },
   }
 })
 export type TaskKv = typeof $$task.$taskKv
