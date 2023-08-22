@@ -7,7 +7,7 @@ import { not } from "patronum"
 
 import App from "./app/App"
 import "./app/index.css"
-import { $$task, Task } from "./entities/task/tasks"
+import { $$task, LocalStorageTask } from "./entities/task/tasks"
 import { refreshQuery } from "./shared/api/token"
 import { appInitializer } from "./app/initializer"
 import { $$session, User } from "./entities/session"
@@ -22,11 +22,10 @@ sample({
   clock: init,
   target: refreshQuery.start,
 })
-type TaskFromLocalStorage = Task & { user_id: null }
 const takeTasksFromlsFx = createEffect(() => {
   const tasks = localStorage.getItem("tasks")
   if (tasks) {
-    return JSON.parse(tasks) as TaskFromLocalStorage[]
+    return JSON.parse(tasks) as LocalStorageTask[]
   }
   return []
 })
@@ -41,7 +40,7 @@ sample({
 sample({
   clock: takeTasksFromlsFx.doneData,
   source: $$session.$user,
-  filter: (user: Nullable<User>, data: TaskFromLocalStorage[]): user is User =>
+  filter: (user: Nullable<User>, data: LocalStorageTask[]): user is User =>
     Boolean(user) && data.length === 0,
   target: $$task.getTasksTriggered,
 })
@@ -49,7 +48,7 @@ sample({
 sample({
   clock: takeTasksFromlsFx.doneData,
   source: $$session.$user,
-  filter: (user: Nullable<User>, data: TaskFromLocalStorage[]): user is User =>
+  filter: (user: Nullable<User>, data: LocalStorageTask[]): user is User =>
     Boolean(user) && data.length > 0,
   fn: (user, data) => ({ body: { user_id: user.id, tasks: data } }),
   target: createManyTasksQuery.start,

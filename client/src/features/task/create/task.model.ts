@@ -3,7 +3,7 @@ import { not, and } from "patronum"
 import { v4 as uuidv4 } from "uuid"
 
 import { modifyTask } from "@/entities/task/modify"
-import { $$task, Task } from "@/entities/task/tasks"
+import { $$task, LocalStorageTask } from "@/entities/task/tasks"
 import { $$session } from "@/entities/session"
 
 import { createTaskQuery } from "@/shared/api/task"
@@ -31,13 +31,13 @@ export const createTaskFactory = ({
         const task = { ...body, id: uuidv4(), user_id: null }
         localStorage.setItem("tasks", JSON.stringify([...tasks, task]))
         return {
-          result: task as Task & { user_id: null },
+          result: task as LocalStorageTask,
         }
       } else {
         const task = { ...body, id: uuidv4() }
         localStorage.setItem("tasks", JSON.stringify([task]))
         return {
-          result: task as Task & { user_id: null },
+          result: task as LocalStorageTask,
         }
       }
     },
