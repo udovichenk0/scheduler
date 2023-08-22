@@ -1,7 +1,7 @@
 import { zodContract } from "@farfetched/zod"
 import { z } from "zod"
 
-import { authQuery } from "@/shared/lib/auth-query"
+import { authQuery } from "@/shared/api/auth-query"
 
 import { TaskDto, taskDtoSchema, tasksDtoSchema } from "./task.dto"
 

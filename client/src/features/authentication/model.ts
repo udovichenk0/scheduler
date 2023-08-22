@@ -2,7 +2,7 @@ import { createEvent, createStore, sample } from "effector"
 import { createGate } from "effector-react"
 import { not } from "patronum"
 
-import { $isAuthenticated } from "@/entities/session"
+import { $$session } from "@/entities/session"
 
 import { logoutQuery, signupQuery } from "@/shared/api/auth"
 import { setTokenTriggered } from "@/shared/api/token"
@@ -29,7 +29,7 @@ export const gate = createGate()
 
 sample({
   clock: gate.close,
-  filter: not($isAuthenticated),
+  filter: not($$session.$isAuthenticated),
   target: reset,
 })
 

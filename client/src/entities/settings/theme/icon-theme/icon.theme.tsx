@@ -1,23 +1,25 @@
 import { useUnit } from "effector-react"
+import { useState } from "react"
 
 import { Icon } from "@/shared/ui/icon"
 
-import { $accent, Accent, accentChanged } from "./icon-theme.model"
+import { $$accentSettings, Accent } from "./icon-theme.model"
 import style from "./style.module.css"
-const accentColors = [
-  "blue" as const,
-  "yellow" as const,
-  "red" as const,
-  "orange" as const,
-  "green" as const,
-  "purple" as const,
-  "pink" as const,
-]
 
+const { accentChanged, $accent } = $$accentSettings
 export const AccentThemeChanger = () => {
+  const [themes] = useState([
+    "blue" as const,
+    "yellow" as const,
+    "red" as const,
+    "orange" as const,
+    "green" as const,
+    "purple" as const,
+    "pink" as const,
+  ])
   return (
     <div className="flex justify-center gap-6">
-      {accentColors.map((accent) => {
+      {themes.map((accent) => {
         return <AccentThemeBox key={accent} accent={accent} />
       })}
     </div>

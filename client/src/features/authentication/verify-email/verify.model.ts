@@ -1,7 +1,7 @@
 import { createEvent, createStore, sample } from "effector"
 import { spread } from "patronum"
 
-import { setSessionUserTriggered } from "@/entities/session"
+import { $$session } from "@/entities/session"
 
 import { verifyQuery } from "@/shared/api/auth"
 import { setTokenTriggered } from "@/shared/api/token"
@@ -38,7 +38,7 @@ sample({
   }),
   target: spread({
     targets: {
-      user: setSessionUserTriggered,
+      user: $$session.sessionSet,
       token: setTokenTriggered,
     },
   }),

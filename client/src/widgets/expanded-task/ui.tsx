@@ -41,19 +41,14 @@ export const ExpandedTask = ({
   rightPanelSlot?: ReactNode
 }) => {
   const [isDatePickerOpened, setDatePickerOpen] = useState(false)
-  const [
-    openPomodoroModal,
-    openSettingsModal,
-    startDate,
-    changeDate,
-    title,
-  ] = useUnit([
-    pomodoroModal.open,
-    settingsModal.open,
-    modifyTaskModel.$startDate,
-    modifyTaskModel.dateChanged,
-    modifyTaskModel.$title,
-  ])
+  const [openPomodoroModal, openSettingsModal, startDate, changeDate, title] =
+    useUnit([
+      pomodoroModal.open,
+      settingsModal.open,
+      modifyTaskModel.$startDate,
+      modifyTaskModel.dateChanged,
+      modifyTaskModel.$title,
+    ])
   const onChangeDate = (date: Date) => {
     setDatePickerOpen(false)
     changeDate(date)
@@ -102,10 +97,7 @@ export const ExpandedTask = ({
           </Button>
           {rightPanelSlot}
         </div>
-        <PomodoroModal
-          title={title}
-          toggleSettingsModal={openSettingsModal}
-        />
+        <PomodoroModal title={title} toggleSettingsModal={openSettingsModal} />
       </div>
     </div>
   )
