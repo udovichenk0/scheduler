@@ -2,14 +2,14 @@ import { createEffect, createEvent, sample, merge } from "effector"
 import { not } from "patronum"
 
 import { $$session } from "@/entities/session"
-import { $$task, Task } from "@/entities/task/tasks"
+import { $$task, LocalStorageTask } from "@/entities/task/tasks"
 
 import { deleteTaskQuery } from "@/shared/api/task"
 export const createRemoveTaskFactory = () => {
   const taskDeleted = createEvent<{ id: string }>()
   const deleteTaskFromLsFx = createEffect(({ id }: { id: string }) => {
     const tasksFromLs = localStorage.getItem("tasks")
-    const parsedTasks = JSON.parse(tasksFromLs!) as (Task & { user_id: null })[]
+    const parsedTasks = JSON.parse(tasksFromLs!) as LocalStorageTask[]
 
     const filteredTasks = parsedTasks.filter((task) => task.id !== id)
 
