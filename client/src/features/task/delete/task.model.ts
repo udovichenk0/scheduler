@@ -5,12 +5,11 @@ import { $$session } from "@/entities/session"
 import { $$task, Task } from "@/entities/task/tasks"
 
 import { deleteTaskQuery } from "@/shared/api/task"
-
 export const createRemoveTaskFactory = () => {
   const taskDeleted = createEvent<{ id: string }>()
   const deleteTaskFromLsFx = createEffect(({ id }: { id: string }) => {
     const tasksFromLs = localStorage.getItem("tasks")
-    const parsedTasks = JSON.parse(tasksFromLs!) as Task[]
+    const parsedTasks = JSON.parse(tasksFromLs!) as (Task & { user_id: null })[]
 
     const filteredTasks = parsedTasks.filter((task) => task.id !== id)
 
@@ -33,12 +32,8 @@ export const createRemoveTaskFactory = () => {
   })
   sample({
     clock: [deleteTaskQuery.finished.success, deleteTaskFromLsFx.doneData],
-    source: $$task.$taskKv,
-    fn: (kv, { result }) => {
-      const array = Object.entries(kv).filter(([key]) => key !== result.id)
-      return Object.fromEntries(array)
-    },
-    target: $$task.$taskKv,
+    fn: ({ result }) => result,
+    target: $$task.taskDeleted,
   })
   const taskSuccessfullyDeleted = merge([
     deleteTaskFromLsFx.done,

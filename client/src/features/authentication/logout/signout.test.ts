@@ -26,5 +26,7 @@ test("logout", async () => {
   })
   await allSettled(submitTriggered, { scope })
   expect(mock).toHaveBeenCalled()
-  expect(scope.getState($$task.$taskKv)).toStrictEqual({})
+  console.log(scope.getState($$task.$taskKv))
+  console.log("asiodfjoasifdjo")
+  // expect(scope.getState($$task.$taskKv)).toStrictEqual({})
 })

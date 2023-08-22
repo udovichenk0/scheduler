@@ -16,5 +16,5 @@ sample({
 
 sample({
   clock: logoutQuery.finished.success,
-  target: [$$session.reset, resetToken, $$task.clearTaskKvTriggered],
+  target: [$$session.reset, resetToken, $$task.reset],
 })

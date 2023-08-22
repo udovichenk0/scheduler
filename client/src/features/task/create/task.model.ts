@@ -3,7 +3,7 @@ import { not, and } from "patronum"
 import { v4 as uuidv4 } from "uuid"
 
 import { modifyTask } from "@/entities/task/modify"
-import { $$task } from "@/entities/task/tasks"
+import { $$task, Task } from "@/entities/task/tasks"
 import { $$session } from "@/entities/session"
 
 import { createTaskQuery } from "@/shared/api/task"
@@ -15,25 +15,6 @@ type TaskCredentials = {
   status: "INPROGRESS" | "FINISHED"
   start_date: Nullable<Date>
 }
-const setTaskToLocalStorageFx = createEffect(
-  ({ body }: { body: TaskCredentials }) => {
-    const tasksFromLs = localStorage.getItem("tasks")
-    if (tasksFromLs) {
-      const tasks = JSON.parse(tasksFromLs)
-      const task = { ...body, id: uuidv4() }
-      localStorage.setItem("tasks", JSON.stringify([...tasks, task]))
-      return new Promise((res) => {
-        setTimeout(() => res({ result: task }), 1000)
-      }) as unknown as { result: TaskCredentials & { id: string } }
-    } else {
-      const task = { ...body, id: uuidv4() }
-      localStorage.setItem("tasks", JSON.stringify([task]))
-      return {
-        result: task,
-      }
-    }
-  },
-)
 
 export const createTaskFactory = ({
   defaultType,
@@ -42,6 +23,25 @@ export const createTaskFactory = ({
   defaultType: "inbox" | "unplaced"
   defaultDate: Nullable<Date>
 }) => {
+  const setTaskToLocalStorageFx = createEffect(
+    ({ body }: { body: TaskCredentials }) => {
+      const tasksFromLs = localStorage.getItem("tasks")
+      if (tasksFromLs) {
+        const tasks = JSON.parse(tasksFromLs)
+        const task = { ...body, id: uuidv4(), user_id: null }
+        localStorage.setItem("tasks", JSON.stringify([...tasks, task]))
+        return {
+          result: task as Task & { user_id: null },
+        }
+      } else {
+        const task = { ...body, id: uuidv4() }
+        localStorage.setItem("tasks", JSON.stringify([task]))
+        return {
+          result: task as Task & { user_id: null },
+        }
+      }
+    },
+  )
   const $$modifyTask = modifyTask({ defaultType, defaultDate })
   const { $fields, $isAllowToSubmit, resetFieldsTriggered } = $$modifyTask
 
@@ -63,9 +63,8 @@ export const createTaskFactory = ({
   })
   sample({
     clock: [createTaskQuery.finished.success, setTaskToLocalStorageFx.doneData],
-    source: $$task.$taskKv,
-    fn: (kv, { result }) => ({ ...kv, [result.id]: result }),
-    target: $$task.$taskKv,
+    fn: ({ result }) => result,
+    target: $$task.setTaskTriggered,
   })
 
   sample({

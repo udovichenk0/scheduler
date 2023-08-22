@@ -74,7 +74,7 @@ describe("create task", () => {
         [$type, "inbox"],
         [$$session.$isAuthenticated, true],
         [$isAllowToSubmit, true],
-        [$$task.$taskKv, tasks],
+        [$$task._.$taskKv, tasks],
       ],
       handlers: [[createTaskQuery.__.executeFx, mock]],
     })
@@ -117,7 +117,7 @@ describe("create task", () => {
         [$type, "inbox"],
         [$$session.$isAuthenticated, false],
         [$isAllowToSubmit, true],
-        [$$task.$taskKv, tasks],
+        [$$task._.$taskKv, tasks],
       ],
       handlers: [[_.setTaskToLocalStorageFx, mock]],
     })
