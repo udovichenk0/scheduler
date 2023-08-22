@@ -1,7 +1,7 @@
 import { allSettled, fork } from "effector"
 import { describe, test, expect, vi, beforeEach } from "vitest"
 
-import { $sessionUser } from "@/entities/session/session.model"
+import { $$session } from "@/entities/session/session.model"
 
 import { signupQuery } from "@/shared/api/auth"
 
@@ -14,7 +14,7 @@ describe("signup", () => {
     values: [
       [$password, ""],
       [$email, "myemail@gmail.com"],
-      [$sessionUser, null],
+      [$$session.$user, null],
       [$passwordError, null],
     ],
     handlers: [[signupQuery.__.executeFx, mock]],

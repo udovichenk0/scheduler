@@ -1,7 +1,7 @@
 import { fork, allSettled } from "effector"
 import { expect, test, vi } from "vitest"
 
-import { $sessionUser } from "@/entities/session/session.model"
+import { $$session } from "@/entities/session/session.model"
 
 import { verifyQuery } from "@/shared/api/auth"
 
@@ -22,7 +22,7 @@ test("verify email", async () => {
   const scope = fork({
     values: [
       [$code, ""],
-      [$sessionUser, null],
+      [$$session.$user, null],
       [$email, "myemail@gmail.com"],
     ],
     handlers: [[verifyQuery.__.executeFx, mock]],
@@ -33,5 +33,5 @@ test("verify email", async () => {
   })
   expect(scope.getState($code)).toBe("123456")
   expect(mock).toHaveBeenCalledOnce()
-  expect(scope.getState($sessionUser)).not.toBeNull()
+  expect(scope.getState($$session.$user)).not.toBeNull()
 })

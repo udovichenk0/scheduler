@@ -1,8 +1,8 @@
 import { createEffect, createEvent, sample, merge } from "effector"
 import { not } from "patronum"
 
-import { $isAuthenticated } from "@/entities/session"
-import { $taskKv, Task } from "@/entities/task/tasks"
+import { $$session } from "@/entities/session"
+import { $$task, Task } from "@/entities/task/tasks"
 
 import { deleteTaskQuery } from "@/shared/api/task"
 
@@ -22,23 +22,23 @@ export const createRemoveTaskFactory = () => {
   })
   sample({
     clock: taskDeleted,
-    filter: $isAuthenticated,
+    filter: $$session.$isAuthenticated,
     fn: ({ id }) => ({ body: { id } }),
     target: deleteTaskQuery.start,
   })
   sample({
     clock: taskDeleted,
-    filter: not($isAuthenticated),
+    filter: not($$session.$isAuthenticated),
     target: deleteTaskFromLsFx,
   })
   sample({
     clock: [deleteTaskQuery.finished.success, deleteTaskFromLsFx.doneData],
-    source: $taskKv,
+    source: $$task.$taskKv,
     fn: (kv, { result }) => {
       const array = Object.entries(kv).filter(([key]) => key !== result.id)
       return Object.fromEntries(array)
     },
-    target: $taskKv,
+    target: $$task.$taskKv,
   })
   const taskSuccessfullyDeleted = merge([
     deleteTaskFromLsFx.done,

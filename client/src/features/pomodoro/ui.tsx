@@ -1,7 +1,7 @@
 import { useUnit } from "effector-react"
 import { ReactNode } from "react"
 
-import { $workDuration, $customDuration } from "@/entities/settings/pomodoro"
+import { $$pomodoroSettings } from "@/entities/settings/pomodoro"
 
 import { ModalType } from "@/shared/lib/modal"
 import { Button } from "@/shared/ui/buttons/main-button"
@@ -24,6 +24,7 @@ import {
 import { ProgressCircle } from "./ui/circle-progress"
 import { StartButton } from "./ui/start-button"
 
+const { $workDuration, $customDuration } = $$pomodoroSettings
 const defaultDurations = [
   { time: 5 },
   { time: 10 },
