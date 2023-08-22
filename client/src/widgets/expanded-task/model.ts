@@ -4,7 +4,7 @@ import { spread, and, not, or } from "patronum"
 import { CreateTaskType } from "@/features/task/create"
 import { UpdateTaskType } from "@/features/task/update"
 
-import { $taskKv } from "@/entities/task/tasks"
+import { TaskKv } from "@/entities/task/tasks"
 
 import { createModal } from "@/shared/lib/modal"
 
@@ -18,7 +18,7 @@ export const disclosureTask = ({
 }: {
   updateTaskModel: UpdateTaskType
   createTaskModel: CreateTaskType
-  tasks: typeof $taskKv
+  tasks: TaskKv
 }) => {
   const {
     _: { updateTaskQuery, updateTaskFromLocalStorageFx },

@@ -7,14 +7,7 @@ import {
 } from "effector"
 import { condition, interval, not } from "patronum"
 
-import {
-  $longBreakDuration,
-  $isEnabledNotificationSound,
-  $shortBreakDuration,
-  $isEnabledAutomaticStart,
-  $workDuration,
-  workDurationChanged,
-} from "@/entities/settings/pomodoro"
+import { $$pomodoroSettings } from "@/entities/settings/pomodoro"
 
 import sound from "./assets/timer.mp3"
 
@@ -23,6 +16,15 @@ export const DEFAULT_PROGRESS_BAR = 848 // if 848 then progress is 0% otherwise 
 const LAST_STAGE = 4
 const MAX_STAGES_LENGTH = 12
 export const audio = new Audio(sound)
+
+export const {
+  $longBreakDuration,
+  $isEnabledNotificationSound,
+  $shortBreakDuration,
+  $isEnabledAutomaticStart,
+  $workDuration,
+  workDurationChanged,
+} = $$pomodoroSettings
 
 const defaultStages = {
   0: {

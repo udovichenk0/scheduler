@@ -1,12 +1,12 @@
 import dayjs, { Dayjs } from "dayjs"
 
-import { $taskKv } from "@/entities/task/tasks"
+import { $$task } from "@/entities/task/tasks"
 
 import { TaskDto } from "@/shared/api/task"
 
 import { MIN_DATES_LENGTH, MIN_MONTHS_LENGTH } from "../../config"
 
-export const $upcomingTasks = $taskKv.map((kv) => {
+export const $upcomingTasks = $$task.$taskKv.map((kv) => {
   const mappedTasks = Object.values(kv).filter(
     ({ start_date }) =>
       start_date && dayjs(start_date).isSameOrAfter(dayjs(), "date"),

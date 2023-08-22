@@ -1,8 +1,8 @@
 import { fork, allSettled } from "effector"
 import { test, expect, vi, describe } from "vitest"
 
-import { $isAuthenticated } from "@/entities/session"
-import { $taskKv } from "@/entities/task/tasks"
+import { $$session } from "@/entities/session"
+import { $$task } from "@/entities/task/tasks"
 
 import { updateTaskQuery } from "@/shared/api/task"
 
@@ -57,13 +57,13 @@ describe("update task", () => {
     } = updateTaskModel
     const scope = fork({
       values: [
-        [$taskKv, tasks],
+        [$$task.$taskKv, tasks],
         [$title, "title"],
         [$description, "my description"],
         [$status, "FINISHED"],
         [$type, "inbox"],
         [$startDate, null],
-        [$isAuthenticated, true],
+        [$$session.$isAuthenticated, true],
         [$isAllowToSubmit, true],
       ],
       handlers: [[updateTaskQuery.__.executeFx, mock]],
@@ -72,7 +72,7 @@ describe("update task", () => {
 
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toReturnWith(returnedValue)
-    expect(scope.getState($taskKv)).toStrictEqual(updatedTasks)
+    expect(scope.getState($$task.$taskKv)).toStrictEqual(updatedTasks)
     expect(scope.getState($isAllowToSubmit)).toBeFalsy()
     expect(scope.getState($title)).toBe("")
     expect(scope.getState($description)).toBe("")
@@ -93,13 +93,13 @@ describe("update task", () => {
     } = updateTaskModel
     const scope = fork({
       values: [
-        [$taskKv, tasks],
+        [$$task.$taskKv, tasks],
         [$title, "title"],
         [$description, "my description"],
         [$status, "FINISHED"],
         [$type, "inbox"],
         [$startDate, null],
-        [$isAuthenticated, false],
+        [$$session.$isAuthenticated, false],
         [$isAllowToSubmit, true],
       ],
       handlers: [[_.updateTaskFromLocalStorageFx, mock]],
@@ -108,7 +108,7 @@ describe("update task", () => {
 
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toReturnWith({ result: returnedValue })
-    expect(scope.getState($taskKv)).toStrictEqual(updatedTasks)
+    expect(scope.getState($$task.$taskKv)).toStrictEqual(updatedTasks)
     expect(scope.getState($isAllowToSubmit)).toBeFalsy()
     expect(scope.getState($title)).toBe("")
     expect(scope.getState($description)).toBe("")

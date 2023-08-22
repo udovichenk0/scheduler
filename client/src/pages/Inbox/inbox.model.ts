@@ -4,10 +4,10 @@ import { createRemoveTaskFactory } from "@/features/task/delete"
 import { createTaskFactory } from "@/features/task/create"
 import { updateTaskFactory } from "@/features/task/update"
 
-import { $taskKv } from "@/entities/task/tasks"
+import { $$task } from "@/entities/task/tasks"
 export const $$deleteTask = createRemoveTaskFactory()
 
-export const $inboxTasks = $taskKv.map((tasks) =>
+export const $inboxTasks = $$task.$taskKv.map((tasks) =>
   Object.values(tasks).filter((task) => task.type == "inbox"),
 )
 export const $updateTask = updateTaskFactory()
@@ -16,7 +16,7 @@ export const $createTask = createTaskFactory({
   defaultDate: null,
 })
 export const $$taskDisclosure = disclosureTask({
-  tasks: $taskKv,
+  tasks: $$task.$taskKv,
   updateTaskModel: $updateTask,
   createTaskModel: $createTask,
 })

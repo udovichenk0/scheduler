@@ -2,8 +2,8 @@ import { createEvent, createStore, sample } from "effector"
 import { spread } from "patronum"
 import { z } from "zod"
 
-import { setSessionUserTriggered } from "@/entities/session"
-import { getTasksTriggered } from "@/entities/task/tasks"
+import { $$session } from "@/entities/session"
+import { $$task } from "@/entities/task/tasks"
 
 import { signinQuery } from "@/shared/api/auth"
 import { setTokenTriggered } from "@/shared/api/token"
@@ -61,14 +61,14 @@ sample({
   }),
   target: spread({
     targets: {
-      user: setSessionUserTriggered,
+      user: $$session.sessionSet,
       token: setTokenTriggered,
     },
   }),
 })
 sample({
   clock: signinQuery.finished.success,
-  target: getTasksTriggered,
+  target: $$task.getTasksTriggered,
 })
 
 sample({

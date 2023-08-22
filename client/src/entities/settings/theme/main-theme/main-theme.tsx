@@ -1,23 +1,25 @@
 import { useUnit } from "effector-react"
+import { useState } from "react"
 
 import { capitalizeLetter } from "@/shared/lib/capitalize-first-letter"
 import { Icon } from "@/shared/ui/icon"
 
-import { $theme, Theme, themeChanged } from "./main-theme.model"
+import { $$themeSettings, Theme } from "./main-theme.model"
 import style from "./styles.module.css"
-const themeBoxes = [
-  "space" as const,
-  "default" as const,
-  "dark" as const,
-  "light" as const,
-  "grey" as const,
-]
+const { themeChanged, $theme } = $$themeSettings
 
 export const MainThemeChanger = () => {
+  const [themes] = useState([
+    "space" as const,
+    "default" as const,
+    "dark" as const,
+    "light" as const,
+    "grey" as const,
+  ])
   const [activeTheme, changeTheme] = useUnit([$theme, themeChanged])
   return (
     <div className="mb-6 flex justify-around px-10">
-      {themeBoxes.map((theme) => {
+      {themes.map((theme) => {
         return (
           <ThemeBox
             key={theme}

@@ -2,7 +2,7 @@ import { useUnit } from "effector-react/compat"
 import { FormEvent } from "react"
 import { createEffect, sample } from "effector"
 
-import { $sessionUser } from "@/entities/session/session.model"
+import { $$session } from "@/entities/session"
 
 import { Typography } from "@/shared/ui/general/typography"
 
@@ -22,7 +22,7 @@ sample({
 })
 
 export const Logout = () => {
-  const [user, submit] = useUnit([$sessionUser, submitTriggered])
+  const [user, submit] = useUnit([$$session.$user, submitTriggered])
   return (
     <div className="text-cFont">
       <Typography.Heading size="base" className="mb-3 text-lg font-medium">

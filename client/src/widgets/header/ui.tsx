@@ -19,13 +19,11 @@ export const Header = ({
   iconName: IconName
   title: string
 }) => {
-  const [openPomodoroModal, openSettingsModal, isPomodoroRunning] = useUnit(
-    [
-      pomodoroModal.open,
-      settingsModal.open,
-      $isPomodoroRunning,
-    ],
-  )
+  const [openPomodoroModal, openSettingsModal, isPomodoroRunning] = useUnit([
+    pomodoroModal.open,
+    settingsModal.open,
+    $isPomodoroRunning,
+  ])
   return (
     <Container padding="xl" className="mb-4 text-primary">
       <div className="flex h-[40px] items-center justify-end">
@@ -41,11 +39,7 @@ export const Header = ({
         modal={pomodoroModal}
         leftSlot={
           <>
-            <Button
-              intent={"primary"}
-              size={"xs"}
-              onClick={openSettingsModal}
-            >
+            <Button intent={"primary"} size={"xs"} onClick={openSettingsModal}>
               <Icon
                 className="text-[24px] text-cIconDefault"
                 name="common/settings"

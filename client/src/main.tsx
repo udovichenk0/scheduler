@@ -7,10 +7,10 @@ import { not } from "patronum"
 
 import App from "./app/App"
 import "./app/index.css"
-import { $taskKv, Task, getTasksTriggered } from "./entities/task/tasks"
+import { $$task, Task } from "./entities/task/tasks"
 import { refreshQuery } from "./shared/api/token"
 import { appInitializer } from "./app/initializer"
-import { $sessionUser, User, $isAuthenticated } from "./entities/session"
+import { $$session, User } from "./entities/session"
 import { createManyTasksQuery } from "./shared/api/task"
 
 extend(isSameOrAfter)
@@ -42,15 +42,15 @@ sample({
 
 sample({
   clock: takeTasksFromlsFx.doneData,
-  source: $sessionUser,
+  source: $$session.$user,
   filter: (user: Nullable<User>, data: TaskPayload[]): user is User =>
     Boolean(user) && data.length === 0,
-  target: getTasksTriggered,
+  target: $$task.getTasksTriggered,
 })
 
 sample({
   clock: takeTasksFromlsFx.doneData,
-  source: $sessionUser,
+  source: $$session.$user,
   filter: (user: Nullable<User>, data: TaskPayload[]): user is User =>
     Boolean(user) && data.length > 0,
   fn: (user, data) => ({ body: { user_id: user.id, tasks: data } }),
@@ -58,14 +58,14 @@ sample({
 })
 sample({
   clock: createManyTasksQuery.finished.success,
-  target: [getTasksTriggered, deleteTasksFromlsFx],
+  target: [$$task.getTasksTriggered, deleteTasksFromlsFx],
 })
 
 sample({
   clock: takeTasksFromlsFx.doneData,
-  filter: not($isAuthenticated),
+  filter: not($$session.$isAuthenticated),
   fn: (tasks) => tasks.reduce((kv, task) => ({ ...kv, [task.id]: task }), {}),
-  target: $taskKv,
+  target: $$task.$taskKv,
 })
 init()
 createRoot(document.getElementById("root") as HTMLElement).render(<App />)

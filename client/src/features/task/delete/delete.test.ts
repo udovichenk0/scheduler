@@ -1,8 +1,8 @@
 import { fork, allSettled } from "effector"
 import { describe, expect, test, vi } from "vitest"
 
-import { $taskKv } from "@/entities/task/tasks"
-import { $isAuthenticated } from "@/entities/session"
+import { $$task } from "@/entities/task/tasks"
+import { $$session } from "@/entities/session"
 
 import { createRemoveTaskFactory } from "."
 const tasks = {
@@ -32,8 +32,8 @@ describe("delete task", () => {
     const mock = vi.fn(() => returnedTask)
     const scope = fork({
       values: [
-        [$isAuthenticated, true],
-        [$taskKv, tasks],
+        [$$session.$isAuthenticated, true],
+        [$$task.$taskKv, tasks],
       ],
       handlers: [[_.deleteTaskQuery.__.executeFx, mock]],
     })
@@ -46,15 +46,15 @@ describe("delete task", () => {
     expect(mock).toBeCalled()
     expect(mock).toBeCalledWith({ body: { id: "1" } })
     expect(mock).toReturnWith(returnedTask)
-    expect(scope.getState($taskKv)).toStrictEqual({})
+    expect(scope.getState($$task.$taskKv)).toStrictEqual({})
   })
   test("delete task from localstorage if user is not authenticated", async () => {
     const { taskDeleted, _ } = $$removeTask
     const mock = vi.fn(() => ({ result: returnedTask }))
     const scope = fork({
       values: [
-        [$isAuthenticated, false],
-        [$taskKv, tasks],
+        [$$session.$isAuthenticated, false],
+        [$$task.$taskKv, tasks],
       ],
       handlers: [[_.deleteTaskFromLsFx, mock]],
     })
@@ -67,7 +67,6 @@ describe("delete task", () => {
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toBeCalledWith({ id: "1" })
     expect(mock).toReturnWith({ result: returnedTask })
-    console.log(scope.getState($taskKv))
-    expect(scope.getState($taskKv)).toStrictEqual({})
+    expect(scope.getState($$task.$taskKv)).toStrictEqual({})
   })
 })

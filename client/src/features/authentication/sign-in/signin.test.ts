@@ -1,7 +1,7 @@
 import { allSettled, fork } from "effector"
 import { describe, test, expect, vi, afterEach } from "vitest"
 
-import { $sessionUser } from "@/entities/session/session.model"
+import { $$session } from "@/entities/session"
 
 import { signinQuery } from "@/shared/api/auth/auth.api"
 
@@ -28,7 +28,7 @@ describe("signin", () => {
     values: [
       [$password, ""],
       [$email, "myemail@gmail.com"],
-      [$sessionUser, null],
+      [$$session.$user, null],
     ],
     handlers: [[signinQuery.__.executeFx, mock]],
   })
@@ -41,7 +41,7 @@ describe("signin", () => {
     expect(scope.getState($password)).toBe("mypassword")
 
     await allSettled(submitTriggered, { scope })
-    expect(scope.getState($sessionUser)).toStrictEqual(sessionUser)
+    expect(scope.getState($$session.$user)).toStrictEqual(sessionUser)
   })
 
   test("check password validation", async () => {
