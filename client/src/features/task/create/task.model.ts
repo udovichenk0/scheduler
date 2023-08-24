@@ -1,6 +1,7 @@
 import { merge, sample, createEffect, createEvent } from "effector"
 import { not, and } from "patronum"
 import { v4 as uuidv4 } from "uuid"
+import { attachOperation } from "@farfetched/core"
 
 import { modifyTask } from "@/entities/task/modify"
 import { $$task, LocalStorageTask } from "@/entities/task/tasks"
@@ -23,6 +24,13 @@ export const createTaskFactory = ({
   defaultType: "inbox" | "unplaced"
   defaultDate: Nullable<Date>
 }) => {
+  const $$modifyTask = modifyTask({ defaultType, defaultDate })
+  const { $fields, $isAllowToSubmit, resetFieldsTriggered } = $$modifyTask
+
+  const createTaskTriggered = createEvent()
+
+  const attachCreateTaskQuery = attachOperation(createTaskQuery)
+
   const setTaskToLocalStorageFx = createEffect(
     ({ body }: { body: TaskCredentials }) => {
       const tasksFromLs = localStorage.getItem("tasks")
@@ -42,17 +50,17 @@ export const createTaskFactory = ({
       }
     },
   )
-  const $$modifyTask = modifyTask({ defaultType, defaultDate })
-  const { $fields, $isAllowToSubmit, resetFieldsTriggered } = $$modifyTask
-
-  const createTaskTriggered = createEvent()
+  const taskSuccessfullyCreated = merge([
+    setTaskToLocalStorageFx.doneData,
+    attachCreateTaskQuery.finished.success,
+  ])
 
   sample({
     clock: createTaskTriggered,
     source: $fields,
     filter: and($isAllowToSubmit, $$session.$isAuthenticated),
     fn: (fields) => ({ body: fields }),
-    target: createTaskQuery.start,
+    target: attachCreateTaskQuery.start,
   })
   sample({
     clock: createTaskTriggered,
@@ -62,27 +70,30 @@ export const createTaskFactory = ({
     target: setTaskToLocalStorageFx,
   })
   sample({
-    clock: [createTaskQuery.finished.success, setTaskToLocalStorageFx.doneData],
+    clock: [
+      attachCreateTaskQuery.finished.success,
+      setTaskToLocalStorageFx.doneData,
+    ],
     fn: ({ result }) => result,
     target: $$task.setTaskTriggered,
   })
 
   sample({
-    clock: [createTaskQuery.finished.success, setTaskToLocalStorageFx.done],
+    clock: [
+      attachCreateTaskQuery.finished.success,
+      setTaskToLocalStorageFx.done,
+    ],
     target: resetFieldsTriggered,
   })
-  const taskSuccessfullyCreated = merge([
-    setTaskToLocalStorageFx.done,
-    createTaskQuery.finished.success,
-  ])
 
   return {
     ...$$modifyTask,
     taskSuccessfullyCreated,
     createTaskTriggered,
+    $isCreating: createTaskQuery.$pending,
     _: {
       setTaskToLocalStorageFx,
-      createTaskQuery,
+      createTaskQuery: attachCreateTaskQuery,
     },
   }
 }

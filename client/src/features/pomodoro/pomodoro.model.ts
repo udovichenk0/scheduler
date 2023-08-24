@@ -12,7 +12,6 @@ import { $$pomodoroSettings } from "@/entities/settings/pomodoro"
 import sound from "./assets/timer.mp3"
 
 const DEFAULT_WORK_TIME = 1500 // 25mins
-export const DEFAULT_PROGRESS_BAR = 848 // if 848 then progress is 0% otherwise its 100%
 const LAST_STAGE = 4
 const MAX_STAGES_LENGTH = 12
 export const audio = new Audio(sound)

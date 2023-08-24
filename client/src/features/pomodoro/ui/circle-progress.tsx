@@ -2,17 +2,22 @@ import { clsx } from "clsx"
 
 import { normalizeSeconds } from "@/shared/lib/normalize-time"
 
+const DEFAULT_PROGRESS_BAR = 848 // if 848 then progress is 0% otherwise its 100%
+
 export const ProgressCircle = ({
   time,
   isWorkTime,
-  progress,
   stages,
+  staticTime,
 }: {
   time: number
   isWorkTime: boolean
-  progress: number
   stages: { fulfilled: boolean }[]
+  staticTime: number
 }) => {
+  const progress =
+    DEFAULT_PROGRESS_BAR -
+    ((staticTime - time) / staticTime) * DEFAULT_PROGRESS_BAR
   return (
     <div className="relative flex h-full w-full justify-center">
       <svg

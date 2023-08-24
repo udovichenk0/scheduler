@@ -44,7 +44,7 @@ export const Unplaced = () => {
       >
         <List
           $$updateTask={$$updateTask}
-          taskId={taskId?.id || null}
+          updatedTaskId={taskId?.id || null}
           tasks={tasks}
           openTask={updateTaskOpened}
           taskRef={taskRef}

@@ -21,8 +21,8 @@ export const Inbox = () => {
   const ref = useRef<HTMLDivElement>(null)
   const [
     tasks,
-    newTask,
-    taskId,
+    createdTask,
+    updatedTask,
     closeTaskTriggered,
     updateTaskOpened,
     createTaskOpened,
@@ -44,7 +44,7 @@ export const Inbox = () => {
       >
         <List
           $$updateTask={$updateTask}
-          taskId={taskId?.id || null}
+          updatedTaskId={updatedTask?.id || null}
           tasks={tasks}
           openTask={updateTaskOpened}
           dateModifier={false}
@@ -53,7 +53,7 @@ export const Inbox = () => {
           selectTask={selectTask}
         />
         <div className="mx-5">
-          {newTask && (
+          {createdTask && (
             <ExpandedTask
               modifyTaskModel={$createTask}
               dateModifier={false}

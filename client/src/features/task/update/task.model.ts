@@ -1,9 +1,16 @@
 import { attach, createEffect, createEvent, merge, sample } from "effector"
 import { spread, and, not } from "patronum"
+import { attachOperation } from "@farfetched/core"
 
 import { $$session } from "@/entities/session"
 import { modifyTaskFactory } from "@/entities/task/modify"
-import { $$task, Task, TaskStatus, TaskType } from "@/entities/task/tasks"
+import {
+  $$task,
+  LocalStorageTask,
+  Task,
+  TaskStatus,
+  TaskType,
+} from "@/entities/task/tasks"
 
 import {
   updateStatusQuery,
@@ -12,6 +19,26 @@ import {
 } from "@/shared/api/task"
 
 export const updateTaskFactory = () => {
+  const $$modifyTask = modifyTaskFactory({})
+  const {
+    resetFieldsTriggered,
+    $isAllowToSubmit,
+    $fields,
+    $title,
+    $description,
+    $type,
+    $startDate,
+    $status,
+    dateChangedAndUpdated,
+    statusChangedAndUpdated,
+  } = $$modifyTask
+
+  const setFieldsTriggered = createEvent<{ id: string }>()
+  const updateTaskTriggered = createEvent<{ id: string }>()
+
+  const attachUpdateStatusQuery = attachOperation(updateStatusQuery)
+  const attachUpdateTaskDate = attachOperation(updateTaskDate)
+  const attachUpdateTaskQuery = attachOperation(updateTaskQuery)
   const updateTaskDateFromLsFx = attach({
     source: $$task.$taskKv,
     effect: (kv, { date, id }) => {
@@ -30,6 +57,20 @@ export const updateTaskFactory = () => {
     },
   })
 
+  const updateStatusFromLocalStorageFx = createEffect(
+    ({ id, status }: { id: string; status: TaskStatus }) => {
+      const tasks = localStorage.getItem("tasks")
+      const updatedTasks = (JSON.parse(tasks!) as LocalStorageTask[]).map(
+        (task) => (task.id === id ? { ...task, status } : task),
+      )
+      localStorage.setItem("tasks", JSON.stringify(updatedTasks))
+      const updatedTask = updatedTasks.find((task) => task.id === id)
+      return {
+        result: updatedTask,
+      }
+    },
+  )
+
   type Cred = {
     id: string
     title: string
@@ -38,7 +79,6 @@ export const updateTaskFactory = () => {
     type: TaskType
     start_date: Nullable<Date>
   }
-
   const updateTaskFromLocalStorageFx = createEffect(async (cred: Cred) => {
     const tasksFromLs = localStorage.getItem("tasks")
     const parsedTasks = JSON.parse(tasksFromLs!)
@@ -53,23 +93,12 @@ export const updateTaskFactory = () => {
       },
     }
   })
+  const taskSuccessfullyUpdated = merge([
+    attachUpdateTaskQuery.finished.success,
+    updateTaskFromLocalStorageFx.done,
+  ])
 
-  const $$modifyTask = modifyTaskFactory({})
-  const {
-    resetFieldsTriggered,
-    $isAllowToSubmit,
-    $fields,
-    $title,
-    $description,
-    $type,
-    $startDate,
-    $status,
-    dateChangedAndUpdated,
-  } = $$modifyTask
-  const setFieldsTriggered = createEvent<{ id: string }>()
-  const updateTaskTriggered = createEvent<{ id: string }>()
-
-  //updatae task from localstorage or from the server
+  //updatae task date from localstorage or from the server
   sample({
     clock: dateChangedAndUpdated,
     filter: not($$session.$isAuthenticated),
@@ -79,7 +108,26 @@ export const updateTaskFactory = () => {
     clock: dateChangedAndUpdated,
     filter: $$session.$isAuthenticated,
     fn: ({ date, id }) => ({ body: { date, id } }),
-    target: updateTaskDate.start,
+    target: attachUpdateTaskDate.start,
+  })
+  //updatae task status from localstorage or from the server
+  sample({
+    clock: statusChangedAndUpdated,
+    filter: not($$session.$isAuthenticated),
+    fn: ({ id, status }) => {
+      const changedStatus = status === "INPROGRESS" ? "FINISHED" : "INPROGRESS"
+      return { id, status: changedStatus as TaskStatus }
+    },
+    target: updateStatusFromLocalStorageFx,
+  })
+  sample({
+    clock: statusChangedAndUpdated,
+    filter: $$session.$isAuthenticated,
+    fn: ({ id, status }) => {
+      const changedStatus = status === "INPROGRESS" ? "FINISHED" : "INPROGRESS"
+      return { body: { id, status: changedStatus as TaskStatus } }
+    },
+    target: attachUpdateStatusQuery.start,
   })
 
   // update task from localStorage or from the server
@@ -88,7 +136,7 @@ export const updateTaskFactory = () => {
     source: $fields,
     filter: and($isAllowToSubmit, $$session.$isAuthenticated),
     fn: (fields, { id }) => ({ body: { ...fields, id } }),
-    target: updateTaskQuery.start,
+    target: attachUpdateTaskQuery.start,
   })
   sample({
     clock: updateTaskTriggered,
@@ -114,32 +162,29 @@ export const updateTaskFactory = () => {
   // Update the client store after response and reset fields
   sample({
     clock: [
-      updateTaskQuery.finished.success,
-      updateStatusQuery.finished.success,
-      updateTaskDate.finished.success,
+      attachUpdateTaskQuery.finished.success,
+      attachUpdateStatusQuery.finished.success,
+      attachUpdateTaskDate.finished.success,
       updateTaskFromLocalStorageFx.doneData,
       updateTaskDateFromLsFx.doneData,
+      updateStatusFromLocalStorageFx.doneData,
     ],
     fn: ({ result }) => result,
     target: [$$task.setTaskTriggered, resetFieldsTriggered],
   })
-  const taskSuccessfullyUpdated = merge([
-    updateTaskQuery.finished.success,
-    updateTaskFromLocalStorageFx.done,
-  ])
   return {
     updateTaskTriggered,
-    dateChangedById: createEvent<{ date: Date; id: string }>(),
     taskSuccessfullyUpdated,
-    changeStatusTriggered: createEvent<string>(),
     setFieldsTriggered,
+    $isUpdating: updateTaskQuery.$pending,
     ...$$modifyTask,
     _: {
       updateTaskFromLocalStorageFx,
       updateTaskQuery,
       updateTaskDateFromLsFx,
       updateTaskDate,
-      updateStatusQuery,
+      updateStatusQuery: attachUpdateStatusQuery,
+      updateStatusFromLocalStorageFx,
     },
   }
 }

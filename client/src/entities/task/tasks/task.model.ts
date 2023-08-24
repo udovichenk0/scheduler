@@ -6,7 +6,6 @@ import { singleton } from "@/shared/lib/singleton"
 import { Task } from "./type"
 
 export const $$task = singleton(() => {
-
   const $taskKv = createStore<Record<string, Task>>({})
   const setTaskKvTriggered = createEvent<Task[]>()
   const setTaskTriggered = createEvent<Task>()

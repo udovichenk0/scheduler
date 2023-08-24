@@ -53,7 +53,7 @@ export function TasksSection({
       <List
         className="border-t-[1px] border-cBorder"
         $$updateTask={$$updateTask}
-        taskId={taskId?.id || null}
+        updatedTaskId={taskId?.id || null}
         tasks={tasks}
         openTask={updateTaskOpened}
         taskRef={taskRef}

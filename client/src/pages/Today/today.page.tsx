@@ -107,7 +107,7 @@ const OverdueTasks = ({
         <List
           className="border-b-2 border-cBorder"
           $$updateTask={$$updateTask}
-          taskId={taskId?.id || null}
+          updatedTaskId={taskId?.id || null}
           tasks={overdueTasks}
           dateLabel
           openTask={updateTaskOpened}
@@ -157,7 +157,7 @@ const TodayTasks = ({
       )}
       <List
         $$updateTask={$$updateTask}
-        taskId={taskId?.id || null}
+        updatedTaskId={taskId?.id || null}
         tasks={tasks}
         openTask={updateTaskOpened}
         taskRef={taskRef}

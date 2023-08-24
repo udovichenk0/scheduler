@@ -12,7 +12,7 @@ type ListProps = {
   $$updateTask: UpdateTaskType
   className?: string
   tasks: Task[]
-  taskId: Nullable<string>
+  updatedTaskId: Nullable<string>
   openTask: (task: Task) => void
   taskRef: RefObject<HTMLDivElement>
   dateModifier?: boolean
@@ -22,7 +22,7 @@ type ListProps = {
 }
 export const List = ({
   tasks,
-  taskId,
+  updatedTaskId,
   className,
   openTask,
   $$updateTask,
@@ -32,7 +32,10 @@ export const List = ({
   selectedTask,
   selectTask,
 }: ListProps) => {
-  const [toggleStatus] = useUnit([$$updateTask.changeStatusTriggered])
+  const [changeStatusAndUpdate, changeDateAndUpdate] = useUnit([
+    $$updateTask.statusChangedAndUpdated,
+    $$updateTask.dateChangedAndUpdated,
+  ])
   return (
     <>
       {!!tasks?.length && (
@@ -40,7 +43,7 @@ export const List = ({
           {tasks.map((task, id) => {
             return (
               <div className="first:pt-2 last:pb-2" key={id}>
-                {task.id === taskId ? (
+                {task.id === updatedTaskId ? (
                   <ExpandedTask
                     dateModifier={dateModifier}
                     modifyTaskModel={$$updateTask}
@@ -48,12 +51,12 @@ export const List = ({
                   />
                 ) : (
                   <TaskItem
-                    changeDate={$$updateTask.dateChangedById}
+                    onUpdateDate={changeDateAndUpdate}
+                    onUpdateStatus={changeStatusAndUpdate}
                     isTaskSelected={selectedTask?.id === task.id}
                     onClick={selectTask}
-                    date={dateLabel}
+                    dateLabel={dateLabel}
                     onDoubleClick={() => openTask(task)}
-                    onChangeCheckbox={() => toggleStatus(task.id)}
                     task={task}
                   />
                 )}
