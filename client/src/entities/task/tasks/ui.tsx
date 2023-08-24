@@ -7,30 +7,34 @@ import { Icon } from "@/shared/ui/icon"
 
 import { DateModal } from "../modify/ui/date-modal"
 
-import { Task } from "./type"
+import { Task, TaskStatus } from "./type"
 
 export const TaskItem = ({
   task,
-  onChangeCheckbox,
+  onUpdateStatus,
   onDoubleClick,
-  date = false,
+  dateLabel = false,
   onClick,
   isTaskSelected,
-  changeDate,
+  onUpdateDate,
 }: {
   task: Task
-  onChangeCheckbox: () => void
+  onUpdateDate: ({ date, id }: { date: Date; id: string }) => void
+  onUpdateStatus: ({ id, status }: { id: string; status: TaskStatus }) => void
   onDoubleClick: () => void
-  date?: boolean
+  dateLabel?: boolean
   onClick: (task: Nullable<Task>) => void
   isTaskSelected: boolean
-  changeDate: ({ date, id }: { date: Date; id: string }) => void
 }) => {
   const [isDatePickerOpened, setDatePickerOpen] = useState(false)
   const { title, status, start_date } = task
+
   const onChangeDate = (date: Date) => {
     setDatePickerOpen(false)
-    changeDate({ date, id: task.id })
+    onUpdateDate({ date, id: task.id })
+  }
+  const onChangeStatus = () => {
+    onUpdateStatus({ id: task.id, status })
   }
   useEffect(() => {
     return () => {
@@ -62,10 +66,10 @@ export const TaskItem = ({
       >
         <Checkbox
           iconClassName="fill-cTaskEditDefault"
-          onChange={onChangeCheckbox}
+          onChange={onChangeStatus}
           checked={status == "FINISHED"}
         />
-        {date && start_date && (
+        {dateLabel && start_date && (
           <span
             className={`ml-2 rounded-[5px] px-[5px] text-[12px] ${
               dayjs(start_date).isSameOrAfter(dayjs())

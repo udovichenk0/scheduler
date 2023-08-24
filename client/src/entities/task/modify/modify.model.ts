@@ -1,6 +1,8 @@
 import dayjs from "dayjs"
 import { combine, createEvent, createStore, sample } from "effector"
 
+import { TaskStatus } from "../tasks"
+
 export const modifyTask = ({
   defaultType = "inbox",
   defaultDate = null,
@@ -147,7 +149,10 @@ export const modifyTaskFactory = ({
   const typeChanged = createEvent<"inbox" | "unplaced">()
   const dateChanged = createEvent<Date>()
   const descriptionChanged = createEvent<string>()
-  const statusChangedAndUpdated = createEvent<{ id: string }>()
+  const statusChangedAndUpdated = createEvent<{
+    id: string
+    status: TaskStatus
+  }>()
   const dateChangedAndUpdated = createEvent<{ id: string; date: Date }>()
   const resetFieldsTriggered = createEvent()
 
@@ -183,7 +188,12 @@ export const modifyTaskFactory = ({
   })
   sample({
     clock: statusChanged,
-    fn: (value) => (value == "FINISHED" ? "INPROGRESS" : "FINISHED"),
+    fn: (value) => {
+      if (value == "FINISHED") {
+        return "INPROGRESS"
+      }
+      return "FINISHED"
+    },
     target: $status,
   })
   sample({

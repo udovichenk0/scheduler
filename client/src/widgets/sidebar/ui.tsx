@@ -24,7 +24,7 @@ export const Sidebar = () => {
   ])
   return (
     <aside className={`border-r-[1px] border-cBorder bg-brand text-primary`}>
-      <div className="flex h-full w-[250px] flex-col">
+      <div className="grid h-full w-[250px] grid-rows-[auto_1fr_auto] flex-col">
         <Container className="border-b-[1px] border-cBorder">
           <div className="mb-2 flex items-center justify-between px-2">
             <div className="flex items-center gap-1">
@@ -58,7 +58,8 @@ export const Sidebar = () => {
             />
           </div>
         </Container>
-        <Container className="h-full">
+
+        <Container>
           <Button size={"sm"} className="w-full text-start" intent={"primary"}>
             <Icon name="common/plus" className="mr-4 text-cOpacitySecondFont" />
             <span className="text-[12px] text-cOpacitySecondFont">
@@ -66,6 +67,7 @@ export const Sidebar = () => {
             </span>
           </Button>
         </Container>
+
         <Container className="flex gap-2 border-t-[1px] border-cBorder text-cIconDefault">
           <Button onClick={openSettingsModal} intent={"primary"} size={"xs"}>
             <Icon name="common/settings" className="text-[24px]" />
@@ -77,6 +79,7 @@ export const Sidebar = () => {
           >
             <Icon name="common/cross-arrows" className="text-[24px]" />
           </Button>
+
           <Settings modal={$$modal} defaultTab="general" />
         </Container>
       </div>

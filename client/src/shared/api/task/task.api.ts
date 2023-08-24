@@ -67,7 +67,7 @@ const updateStatusContract = zodContract(taskDtoSchema)
 
 type UpdateStatusParams = {
   id: string
-  status: "FINISHED" | "CANCELED" | "INPROGRESS"
+  status: "FINISHED" | "INPROGRESS"
 }
 
 export const updateStatusQuery = authQuery<

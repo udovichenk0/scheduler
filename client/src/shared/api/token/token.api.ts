@@ -21,7 +21,6 @@ export const refreshQuery = createQuery({
   mapData({ result }: { result: RefreshType }) {
     return {
       access_token: result.access_token,
-      refresh_token: result.refresh_token,
       user: result.userData,
     }
   },

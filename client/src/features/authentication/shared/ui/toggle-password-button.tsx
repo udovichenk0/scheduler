@@ -13,9 +13,9 @@ export const TogglePasswordButton = ({
       className="cursor-pointer stroke-grey hover:stroke-white"
     >
       {isPasswordVisible ? (
-        <Icon name="common/eye-closed" />
-      ) : (
         <Icon name="common/eye-opened" />
+      ) : (
+        <Icon name="common/eye-closed" />
       )}
     </div>
   )

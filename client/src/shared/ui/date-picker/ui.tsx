@@ -2,12 +2,11 @@ import dayjs from "dayjs"
 import { useState } from "react"
 
 import { generateCalendar } from "@/shared/lib/generate-calendar"
-import { months } from "@/shared/config/constants"
+import { addLeadingZero } from "@/shared/lib/add-leading-zero"
 
-import { Icon } from "../icon"
-import { Button } from "../buttons/main-button"
-
-const daysName = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
+import { Cell } from "./ui/calendar-cell"
+import { MonthSwitcher } from "./ui/month-swithcher"
+import { WeeksName } from "./ui/week-names"
 
 export function DatePicker({
   currentDate,
@@ -33,7 +32,7 @@ export function DatePicker({
       />
       <WeeksName />
       <div className="absolute left-[30%] top-[50%] -z-[10] flex h-[50px] items-center text-[90px] font-bold text-main opacity-10 invert">
-        {normilizeDate(currentSetMonth + 1)}
+        {addLeadingZero(currentSetMonth + 1)}
       </div>
       {dates.map((item, rowId) => {
         return (
@@ -42,9 +41,11 @@ export function DatePicker({
               const isTopDateBigger =
                 rowId != dates.length - 1 &&
                 dates[rowId][id].date > dates[rowId + 1][id].date
+
               const isLeftDateBigger =
                 id != item.length - 1 &&
                 dates[rowId][id].date > dates[rowId][id + 1].date
+
               return (
                 <div
                   className={`w-full border-cBorder py-[2px] ${
@@ -67,112 +68,4 @@ export function DatePicker({
       })}
     </div>
   )
-}
-
-const Cell = ({
-  onDateChange,
-  year,
-  month,
-  date,
-  currentDate,
-}: {
-  onDateChange: (date: Date) => void
-  year: number
-  month: number
-  date: number
-  currentDate: Date
-}) => {
-  const isToday = dayjs(new Date(year, month, date)).isSame(dayjs(), "date")
-  const isPast = dayjs(new Date(year, month, date)).isBefore(dayjs(), "date")
-
-  const isTaskDate = dayjs(new Date(year, month, date)).isSame(
-    currentDate,
-    "date",
-  )
-  return (
-    <button
-      onClick={() => onDateChange(new Date(year, month, date))}
-      disabled={isPast || isTaskDate}
-      className={`h-[35px] w-[35px] text-[13px] ${
-        !isTaskDate && !isPast && "hover:bg-cHover"
-      } 
-        flex items-center justify-center rounded-[5px] text-cCalendarFont 
-        ${isPast && "text-cSecondBorder"} 
-        ${isTaskDate && "bg-cFocus"}
-        `}
-    >
-      {isToday ? (
-        <Icon name="common/filled-star" className="text-accent" />
-      ) : (
-        <div>
-          {date === 1 || isTaskDate ? (
-            <div className="grid text-[9px] leading-[9px]">
-              <div>{date}</div>
-              <span>{months[month]}</span>
-            </div>
-          ) : (
-            <span>{date}</span>
-          )}
-        </div>
-      )}
-    </button>
-  )
-}
-
-const WeeksName = () => {
-  return (
-    <div className="flex justify-around border-b-[1px] border-cBorder text-primary">
-      {daysName.map((name) => {
-        return (
-          <span className="justify-self-center py-2 text-[12px]" key={name}>
-            {name}
-          </span>
-        )
-      })}
-    </div>
-  )
-}
-const MonthSwitcher = ({
-  changeMonth,
-  displayedMonth,
-}: {
-  changeMonth: (month: number) => void
-  displayedMonth: number
-}) => {
-  const isCurrentMonth = dayjs().month() === displayedMonth
-  return (
-    <div className="flex items-center justify-end gap-2">
-      <Button
-        disabled={isCurrentMonth}
-        intent={"primary"}
-        className="h-6 w-6"
-        onClick={() => changeMonth(displayedMonth - 1)}
-      >
-        <Icon
-          name="common/arrow"
-          className={`rotate-180 text-[8px] ${isCurrentMonth && "opacity-50"}`}
-        />
-      </Button>
-      <button
-        onClick={() => changeMonth(dayjs().month())}
-        disabled={isCurrentMonth}
-        className={`text-[11px] font-bold text-accent ${
-          isCurrentMonth && "opacity-80"
-        }`}
-      >
-        Today
-      </button>
-      <Button
-        intent={"primary"}
-        className="h-6 w-6"
-        onClick={() => changeMonth(displayedMonth + 1)}
-      >
-        <Icon name="common/arrow" className="translate-x-[1px] text-[8px]" />
-      </Button>
-    </div>
-  )
-}
-
-function normilizeDate(month: number) {
-  return month.toString().padStart(2, "0")
 }

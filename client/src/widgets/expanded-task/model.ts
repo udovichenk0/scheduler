@@ -1,4 +1,4 @@
-import { combine, createEvent, createStore, sample } from "effector"
+import { createEvent, createStore, sample } from "effector"
 import { spread, and, not, or } from "patronum"
 
 import { CreateTaskType } from "@/features/task/create"
@@ -21,30 +21,22 @@ export const disclosureTask = ({
   tasks: TaskKv
 }) => {
   const {
-    _: { updateTaskQuery, updateTaskFromLocalStorageFx },
     $title,
     $description,
     $status,
     $startDate,
     $type,
+    $isUpdating,
+    taskSuccessfullyUpdated,
+    updateTaskTriggered,
+    $isAllowToSubmit: $isAllowToUpdate,
   } = updateTaskModel
   const {
-    _: { createTaskQuery, setTaskToLocalStorageFx },
+    $isCreating,
+    taskSuccessfullyCreated,
+    createTaskTriggered,
+    $isAllowToSubmit: $isAllowToCreate,
   } = createTaskModel
-
-  const $isUpdating = combine(
-    updateTaskQuery.$pending,
-    updateTaskFromLocalStorageFx.pending,
-    (updatingFromServer, updatingFromLocalstorage) =>
-      updatingFromServer || updatingFromLocalstorage,
-  )
-
-  const $isCreating = combine(
-    createTaskQuery.$pending,
-    setTaskToLocalStorageFx.pending,
-    (creatingFromServer, creatingFromLocalstorage) =>
-      creatingFromServer || creatingFromLocalstorage,
-  )
 
   const closeTaskTriggered = createEvent()
   const updatedTaskOpened = createEvent<{ id: string }>()
@@ -62,10 +54,7 @@ export const disclosureTask = ({
   sample({
     clock: updatedTaskOpened,
     source: tasks,
-    fn: (tasks, { id }) => {
-      //@ts-ignore
-      return tasks[id]
-    },
+    fn: (tasks, { id }) => tasks[id],
     target: spread({
       targets: {
         title: $title,
@@ -90,7 +79,7 @@ export const disclosureTask = ({
   })
   sample({
     clock: createdTaskOpened,
-    filter: and(not(createTaskModel.$isAllowToSubmit), $createdTask),
+    filter: and(not($isAllowToCreate), $createdTask),
     target: closeTaskTriggered,
   })
 
@@ -105,22 +94,16 @@ export const disclosureTask = ({
   })
   sample({
     clock: updatedTaskOpened,
-    filter: and($updatedTask, not(updateTaskModel.$isAllowToSubmit)),
+    filter: and($updatedTask, not($isAllowToUpdate)),
     target: $updatedTask,
   })
 
   sample({
-    clock: [
-      updateTaskQuery.finished.success,
-      updateTaskFromLocalStorageFx.done,
-    ],
+    clock: taskSuccessfullyUpdated,
     target: $updatedTask.reinit!,
   })
   sample({
-    clock: [
-      updateTaskQuery.finished.success,
-      updateTaskFromLocalStorageFx.done,
-    ],
+    clock: taskSuccessfullyUpdated,
     filter: $isCreatedTaskTriggered,
     fn: () => true,
     target: $createdTask,
@@ -139,7 +122,7 @@ export const disclosureTask = ({
   })
   sample({
     clock: createdTaskOpened,
-    filter: and($updatedTask, not(updateTaskModel.$isAllowToSubmit)),
+    filter: and($updatedTask, not($isAllowToUpdate)),
     fn: () => true,
     target: [$createdTask, $updatedTask.reinit],
   })
@@ -147,8 +130,8 @@ export const disclosureTask = ({
   sample({
     clock: createdTaskOpened,
     filter: or(
-      and($updatedTask, updateTaskModel.$isAllowToSubmit),
-      and($createdTask, createTaskModel.$isAllowToSubmit),
+      and($updatedTask, $isAllowToUpdate),
+      and($createdTask, $isAllowToCreate),
     ),
     fn: () => true,
     target: $isCreatedTaskTriggered,
@@ -156,11 +139,11 @@ export const disclosureTask = ({
 
   sample({
     clock: closeTaskTriggered,
-    filter: and(createTaskModel.$isAllowToSubmit, not($isCreating)),
-    target: createTaskModel.createTaskTriggered,
+    filter: and($isAllowToCreate, not($isCreating)),
+    target: createTaskTriggered,
   })
   sample({
-    clock: [setTaskToLocalStorageFx.doneData, createTaskQuery.finished.success],
+    clock: taskSuccessfullyCreated,
     filter: not($isCreatedTaskTriggered),
     target: $createdTask.reinit!,
   })
@@ -179,40 +162,37 @@ export const disclosureTask = ({
     clock: [updatedTaskClosed, createdTaskOpened],
     source: {
       task: $updatedTask,
-      canUpdate: updateTaskModel.$isAllowToSubmit,
+      canUpdate: $isAllowToUpdate,
       isUpdating: $isUpdating,
     },
     filter: (value: P): value is P1 => {
       return Boolean(value.task) && value.canUpdate && !value.isUpdating
     },
     fn: ({ task }) => ({ id: task.id }),
-    target: updateTaskModel.updateTaskTriggered,
+    target: updateTaskTriggered,
   })
   sample({
     clock: createdTaskClosed,
-    filter: not(createTaskModel.$isAllowToSubmit),
+    filter: not($isAllowToCreate),
     target: $createdTask.reinit!,
   })
   sample({
     clock: createdTaskOpened,
-    filter: and(createTaskModel.$isAllowToSubmit, not($isCreating)),
-    target: createTaskModel.createTaskTriggered,
+    filter: and($isAllowToCreate, not($isCreating)),
+    target: createTaskTriggered,
   })
   sample({
-    clock: [setTaskToLocalStorageFx.doneData, createTaskQuery.finished.success],
+    clock: taskSuccessfullyCreated,
     target: $isCreatedTaskTriggered.reinit!,
   })
   sample({
-    clock: [
-      updateTaskQuery.finished.success,
-      updateTaskFromLocalStorageFx.done,
-    ],
+    clock: taskSuccessfullyUpdated,
     filter: $isCreatedTaskTriggered,
     target: $isCreatedTaskTriggered.reinit!,
   })
   sample({
     clock: updatedTaskClosed,
-    filter: not(updateTaskModel.$isAllowToSubmit),
+    filter: not($isAllowToUpdate),
     target: $updatedTask.reinit!,
   })
   return {
