@@ -10,12 +10,12 @@ const { themeChanged, $theme } = $$themeSettings
 
 export const MainThemeChanger = () => {
   const [themes] = useState([
-    "space" as const,
-    "default" as const,
-    "dark" as const,
-    "light" as const,
-    "grey" as const,
-  ])
+    "space" ,
+    "default" ,
+    "dark" ,
+    "light" ,
+    "grey" ,
+  ] as const)
   const [activeTheme, changeTheme] = useUnit([$theme, themeChanged])
   return (
     <div className="mb-6 flex justify-around px-10">

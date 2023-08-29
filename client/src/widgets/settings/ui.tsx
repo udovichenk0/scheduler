@@ -9,11 +9,11 @@ import { BaseModal } from "@/shared/ui/modals/base-modal"
 import { Root } from "@/shared/ui/tab"
 
 const tabsName = {
-  general: "general" as const,
-  synchronization: "synchronization" as const,
-  theme: "theme" as const,
-  pomodoro: "pomodoro" as const,
-}
+  general: "general",
+  synchronization: "synchronization",
+  theme: "theme",
+  pomodoro: "pomodoro",
+} as const
 export const Settings = ({
   defaultTab = tabsName.general,
   modal,
