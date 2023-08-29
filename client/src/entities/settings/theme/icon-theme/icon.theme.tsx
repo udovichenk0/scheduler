@@ -9,14 +9,14 @@ import style from "./style.module.css"
 const { accentChanged, $accent } = $$accentSettings
 export const AccentThemeChanger = () => {
   const [themes] = useState([
-    "blue" as const,
-    "yellow" as const,
-    "red" as const,
-    "orange" as const,
-    "green" as const,
-    "purple" as const,
-    "pink" as const,
-  ])
+    "blue",
+    "yellow",
+    "red" ,
+    "orange" ,
+    "green" ,
+    "purple" ,
+    "pink" ,
+  ] as const)
   return (
     <div className="flex justify-center gap-6">
       {themes.map((accent) => {
