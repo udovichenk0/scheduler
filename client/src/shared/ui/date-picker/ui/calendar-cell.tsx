@@ -33,7 +33,7 @@ export const Cell = ({
       } 
         flex items-center justify-center rounded-[5px] text-cCalendarFont 
         ${isPast && "text-cSecondBorder"} 
-        ${isTaskDate && "bg-cFocus"}
+        ${isTaskDate && "bg-accent/20"}
         `}
     >
       {isToday ? (

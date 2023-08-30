@@ -35,15 +35,14 @@ export const DateModal = ({
           >
             Cancel
           </Button>
-          <Button
+          <button
             onClick={() => {
               throw new Error("Not implemented")
             }}
-            intent={"filled"}
-            className="w-full p-[1px] text-[12px]"
+            className="w-full p-[1px] text-[12px] rounded-[5px] bg-accent/50 hover:bg-accent/40 duration-150"
           >
             OK
-          </Button>
+          </button>
         </div>
       </div>
     </div>,
