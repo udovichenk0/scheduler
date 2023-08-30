@@ -28,7 +28,6 @@ export const TaskItem = ({
 }) => {
   const [isDatePickerOpened, setDatePickerOpen] = useState(false)
   const { title, status, start_date } = task
-
   const onChangeDate = (date: Date) => {
     setDatePickerOpen(false)
     onUpdateDate({ date, id: task.id })
@@ -64,30 +63,33 @@ export const TaskItem = ({
           isTaskSelected && "bg-cFocus"
         } flex w-full select-none items-center px-2 py-2 text-sm`}
       >
-        <Checkbox
-          iconClassName="fill-cTaskEditDefault"
-          onChange={onChangeStatus}
-          checked={status == "FINISHED"}
-        />
-        {dateLabel && start_date && (
+        <div className="flex w-full select-none items-center">
+          <Checkbox
+            iconClassName="fill-cTaskEditDefault"
+            onChange={onChangeStatus}
+            checked={status == "FINISHED"}
+          />
+          {dateLabel && start_date && (
+            <span
+              className={`ml-2 rounded-[5px] px-[5px] text-[12px] ${
+                dayjs(start_date).isSameOrAfter(dayjs())
+                  ? "bg-cTimeInterval"
+                  : "bg-cTimeIntervalLow"
+              }`}
+            >
+              {normilizeDate(start_date)}
+            </span>
+          )}
+
           <span
-            className={`ml-2 rounded-[5px] px-[5px] text-[12px] ${
-              dayjs(start_date).isSameOrAfter(dayjs())
-                ? "bg-cTimeInterval"
-                : "bg-cTimeIntervalLow"
+            className={`ml-2 text-sm font-medium ${
+              status == "FINISHED" && "text-grey line-through"
             }`}
           >
-            {normilizeDate(start_date)}
+            {title}
           </span>
-        )}
-
-        <span
-          className={`ml-2 text-sm font-medium ${
-            status == "FINISHED" && "text-grey line-through"
-          }`}
-        >
-          {title}
-        </span>
+        </div>
+        <Icon name="common/note" className="text-accent" />
       </Button>
     </div>
   )

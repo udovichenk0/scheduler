@@ -10,6 +10,7 @@ export interface SpritesMap {
     | "filled-star"
     | "inbox"
     | "mail"
+    | "note"
     | "outlined-star"
     | "palette"
     | "plus"
@@ -32,6 +33,7 @@ export const SPRITES_META: { [K in keyof SpritesMap]: SpritesMap[K][] } = {
     "filled-star",
     "inbox",
     "mail",
+    "note",
     "outlined-star",
     "palette",
     "plus",

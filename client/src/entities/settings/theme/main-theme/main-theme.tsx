@@ -52,8 +52,7 @@ const ThemeBox = ({
         <div className="flex w-full items-end gap-[3px] p-[5px]">
           <div className="w-full">
             <div
-              data-color={theme}
-              className={`w-full ${style.topBox} h-[8px] rounded-[2px]`}
+              className={`w-full bg-accent h-[8px] rounded-[2px]`}
             />
             <div className="mt-[2px] flex w-full gap-[2px]">
               <div data-color={theme} className={style.leftBox} />
