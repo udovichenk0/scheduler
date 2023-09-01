@@ -26,7 +26,7 @@ export default {
         accentPurple: "rgb(var(--purple))",
         accentPink: "rgb(var(--pink))",
         primary: "var(--primary)",
-        cHover: 'rgba(var(--accent), 0.2)',
+        cHover: "rgba(var(--accent), 0.2)",
         brand: "var(--brand)",
         cFont: "var(--cFont)",
         cBorder: "var(--cBorder)",

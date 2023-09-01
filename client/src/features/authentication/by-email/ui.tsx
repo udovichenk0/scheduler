@@ -31,7 +31,7 @@ export const CheckEmailForm = ({ goBack }: { goBack: () => void }) => {
       >
         <Icon
           name="common/arrow"
-          className="text-4 rotate-180 text-cIconDefault"
+          className="text-4 -rotate-90 text-cIconDefault"
         />
       </Button>
       <Typography.Heading size="base" className="mb-3 font-medium">

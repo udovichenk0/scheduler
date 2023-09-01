@@ -1,4 +1,5 @@
 import { useUnit } from "effector-react"
+import { ReactNode } from "react"
 
 import { Settings } from "@/widgets/settings"
 
@@ -17,7 +18,7 @@ export const Header = ({
   title,
 }: {
   iconName: IconName
-  title: string
+  title: string | ReactNode
 }) => {
   const [openPomodoroModal, openSettingsModal, isPomodoroRunning] = useUnit([
     pomodoroModal.open,

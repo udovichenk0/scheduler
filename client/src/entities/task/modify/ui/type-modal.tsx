@@ -5,8 +5,8 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 
 const types = [
-  { type: "inbox" , iconName: "common/inbox" },
-  { type: "unplaced" , iconName: "common/inbox" },
+  { type: "inbox", iconName: "common/inbox" },
+  { type: "unplaced", iconName: "common/inbox" },
 ] as const
 
 export const TypeModal = ({

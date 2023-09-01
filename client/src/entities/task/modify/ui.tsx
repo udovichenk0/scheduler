@@ -74,7 +74,7 @@ export const ModifyTaskForm = ({
         checked={status == "FINISHED"}
         onChange={() => changeStatus(status)}
       />
-      <div className="flex w-full flex-col gap-3">
+      <div className="ml-1 flex w-full flex-col gap-3">
         <input
           onChange={(e) => changeTitle(e.target.value)}
           value={title}

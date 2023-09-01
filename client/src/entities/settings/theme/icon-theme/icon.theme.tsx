@@ -11,11 +11,11 @@ export const AccentThemeChanger = () => {
   const [themes] = useState([
     "blue",
     "yellow",
-    "red" ,
-    "orange" ,
-    "green" ,
-    "purple" ,
-    "pink" ,
+    "red",
+    "orange",
+    "green",
+    "purple",
+    "pink",
   ] as const)
   return (
     <div className="flex justify-center gap-6">

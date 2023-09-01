@@ -80,16 +80,20 @@ const Cell = ({
     <div
       ref={ref}
       onClick={clickOnCell}
-      className={`w-full border-b border-r border-cBorder p-2 text-cCalendarFont`}
+      className={`w-full border-b ${
+        isToday && "border-t border-t-accent"
+      } border-r border-cBorder p-2 text-cCalendarFont`}
     >
-      <div
-        className={`relative ${isPast && "opacity-30"} mb-1 text-end ${
-          isToday &&
-          'after:absolute after:-right-[6px] after:-top-[3px] after:z-0 after:h-7 after:w-7 after:rounded-full after:bg-cHover after:content-[""]'
-        }`}
-      >
-        {isFirstDate && <span className="pr-2">{months[month]}</span>}
-        <span className="relative z-[1]">{date}</span>
+      <div className="mb-1 flex items-center justify-end gap-1 ">
+        {isFirstDate && <span className="text-sm">{months[month]}</span>}
+        <div
+          className={`${isPast && "opacity-30"} text-end ${
+            isToday &&
+            "flex h-6 w-6 items-center justify-center rounded-full bg-cFocus p-2"
+          }`}
+        >
+          <span>{date}</span>
+        </div>
       </div>
       <div className="flex flex-col gap-y-1">
         {tasks?.map((task) => {
@@ -113,7 +117,7 @@ const Cell = ({
                 className="absolute -top-12 left-1/2 hidden max-w-[150px] -translate-x-1/2 text-ellipsis rounded-[5px] bg-cCalendarTooltip px-3 py-1 after:absolute
                 after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:translate-y-full after:border-x-[7px] after:border-t-[7px] after:border-x-transparent after:border-t-cCalendarTooltip group-hover:block"
               >
-                <div className="truncate">{task.title}</div>
+                <div className="truncate text-primary">{task.title}</div>
               </div>
 
               <div className="truncate">{task.title}</div>

@@ -29,20 +29,23 @@ export const baseQuery = createEffect(
   },
 )
 
-export function setUrlParams(url: UrlFuncTypeWithParams | string, params?: Record<string, unknown>){
-  if(typeof url == 'string'){
+export function setUrlParams(
+  url: UrlFuncTypeWithParams | string,
+  params?: Record<string, unknown>,
+) {
+  if (typeof url == "string") {
     return new URL(`${import.meta.env.VITE_ORIGIN_URL}${url}`)
   }
-  if(typeof url === 'function' && params){
-      const urlWithParams = url(params)
-      return new URL(`${import.meta.env.VITE_ORIGIN_URL}${urlWithParams}`)
+  if (typeof url === "function" && params) {
+    const urlWithParams = url(params)
+    return new URL(`${import.meta.env.VITE_ORIGIN_URL}${urlWithParams}`)
   }
-   return new URL(`${import.meta.env.VITE_ORIGIN_URL}${url({})}`)
+  return new URL(`${import.meta.env.VITE_ORIGIN_URL}${url({})}`)
 }
 
-export function setQuery(url: URL, query?: Record<string, string | number>){
+export function setQuery(url: URL, query?: Record<string, string | number>) {
   const urlWithQuery = new URL(url)
-  if(query){
+  if (query) {
     for (const [key, value] of Object.entries(query)) {
       urlWithQuery.searchParams.set(key, value.toString())
     }
