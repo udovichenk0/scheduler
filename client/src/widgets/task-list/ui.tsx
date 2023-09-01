@@ -19,6 +19,7 @@ type ListProps = {
   dateLabel?: boolean
   selectedTask: Nullable<{ id: string }>
   selectTask: (task: Nullable<{ id: string }>) => void
+  typeLabel?: boolean
 }
 export const List = ({
   tasks,
@@ -31,6 +32,7 @@ export const List = ({
   dateLabel = false,
   selectedTask,
   selectTask,
+  typeLabel = false,
 }: ListProps) => {
   const [changeStatusAndUpdate, changeDateAndUpdate] = useUnit([
     $$updateTask.statusChangedAndUpdated,
@@ -55,6 +57,7 @@ export const List = ({
                     onUpdateStatus={changeStatusAndUpdate}
                     isTaskSelected={selectedTask?.id === task.id}
                     onClick={selectTask}
+                    typeLabel={typeLabel}
                     dateLabel={dateLabel}
                     onDoubleClick={() => openTask(task)}
                     task={task}

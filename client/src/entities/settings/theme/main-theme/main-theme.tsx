@@ -10,11 +10,11 @@ const { themeChanged, $theme } = $$themeSettings
 
 export const MainThemeChanger = () => {
   const [themes] = useState([
-    "space" ,
-    "default" ,
-    "dark" ,
-    "light" ,
-    "grey" ,
+    "space",
+    "default",
+    "dark",
+    "light",
+    "grey",
   ] as const)
   const [activeTheme, changeTheme] = useUnit([$theme, themeChanged])
   return (
@@ -51,9 +51,7 @@ const ThemeBox = ({
       <div data-color={theme} data-active={isActive} className={style.mainBg}>
         <div className="flex w-full items-end gap-[3px] p-[5px]">
           <div className="w-full">
-            <div
-              className={`w-full bg-accent h-[8px] rounded-[2px]`}
-            />
+            <div className={`h-[8px] w-full rounded-[2px] bg-accent`} />
             <div className="mt-[2px] flex w-full gap-[2px]">
               <div data-color={theme} className={style.leftBox} />
               <div data-color={theme} className={style.rightBox} />

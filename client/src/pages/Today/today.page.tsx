@@ -79,7 +79,9 @@ const OverdueTasks = ({
     $overdueTasks,
   ])
   return (
-    <section className={`${overdueTasks.length > 0 ? "block" : "hidden"}`}>
+    <section
+      className={`h-full ${overdueTasks.length > 0 ? "block" : "hidden"}`}
+    >
       <div className="flex items-center gap-1 border-b-2 border-t-2 border-cBorder px-5 py-2">
         <Icon
           name="common/outlined-star"
@@ -98,7 +100,9 @@ const OverdueTasks = ({
             </span>
             <Icon
               name="common/arrow"
-              className={`w-[6px] ${isOverdueTasksOpened ? "rotate-90" : ""}`}
+              className={`text-[12px] ${
+                isOverdueTasksOpened ? "rotate-180" : "rotate-90"
+              }`}
             />
           </span>
         </Button>
@@ -109,11 +113,11 @@ const OverdueTasks = ({
           $$updateTask={$$updateTask}
           updatedTaskId={taskId?.id || null}
           tasks={overdueTasks}
-          dateLabel
           openTask={updateTaskOpened}
           taskRef={taskRef}
           selectedTask={selectedTask}
           selectTask={selectTask}
+          dateLabel
         />
       )}
     </section>
@@ -137,7 +141,7 @@ const TodayTasks = ({
     $overdueTasks,
   ])
   return (
-    <section>
+    <section className="">
       {!!overdueTasks.length && !!tasks.length && (
         <div
           className={`flex items-center gap-1 border-b-2 border-cBorder px-5 py-2 text-primary `}
@@ -163,6 +167,7 @@ const TodayTasks = ({
         taskRef={taskRef}
         selectedTask={selectedTask}
         selectTask={selectTask}
+        typeLabel
       />
       <div className="mx-5">
         {newTask && (

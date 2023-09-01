@@ -205,6 +205,6 @@ input {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--cHover);
+  background: rgba(var(--accent), 0.1);
   border-radius: 15px;
 }

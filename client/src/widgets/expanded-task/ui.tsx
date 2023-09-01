@@ -59,7 +59,7 @@ export const ExpandedTask = ({
         <Icon
           onClick={() => setDatePickerOpen(true)}
           name="common/upcoming"
-          className="invisible translate-y-2 text-lg text-accent group-hover:visible"
+          className="invisible translate-y-1 text-lg text-accent group-hover:visible"
         />
       )}
       {isDatePickerOpened && (

@@ -21,7 +21,7 @@ export const MonthSwitcher = ({
       >
         <Icon
           name="common/arrow"
-          className={`rotate-180 text-[8px] ${isCurrentMonth && "opacity-50"}`}
+          className={`-rotate-90 text-[10px] ${isCurrentMonth && "opacity-50"}`}
         />
       </Button>
       <button
@@ -38,7 +38,7 @@ export const MonthSwitcher = ({
         className="h-6 w-6"
         onClick={() => changeMonth(displayedMonth + 1)}
       >
-        <Icon name="common/arrow" className="translate-x-[1px] text-[8px]" />
+        <Icon name="common/arrow" className="rotate-90 text-[10px]" />
       </Button>
     </div>
   )

@@ -1,5 +1,6 @@
-import { createEvent, createStore, sample } from "effector"
+import { combine, createEvent, createStore, sample } from "effector"
 import { not } from "patronum"
+import dayjs, { Dayjs } from "dayjs"
 
 import { disclosureTask } from "@/widgets/expanded-task/model"
 
@@ -22,6 +23,22 @@ export const $$deleteTask = createRemoveTaskFactory()
 export const $nextDate = createStore(new Date())
 export const $selectedDate = createStore<Date>(new Date())
 export const currentDateSelected = createEvent<Date>()
+
+export const variantSelected = createEvent<"upcoming" | Dayjs>()
+export const $variant = createStore<"upcoming" | Dayjs>("upcoming").on(
+  variantSelected,
+  (_, variant) => variant,
+)
+
+export const $tasksByDate = combine($$task.$taskKv, $variant, (kv, variant) => {
+  return Object.values(kv).filter(({ start_date }) => {
+    return (
+      variant != "upcoming" &&
+      dayjs(start_date).startOf("date").isSame(variant.startOf("date"))
+    )
+  })
+})
+
 sample({
   clock: currentDateSelected,
   filter: not($$createTask.$isAllowToSubmit),

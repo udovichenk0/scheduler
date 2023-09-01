@@ -39,7 +39,7 @@ export const DateModal = ({
             onClick={() => {
               throw new Error("Not implemented")
             }}
-            className="w-full p-[1px] text-[12px] rounded-[5px] bg-accent/50 hover:bg-accent/40 duration-150"
+            className="w-full rounded-[5px] bg-accent/50 p-[1px] text-[12px] duration-150 hover:bg-accent/40"
           >
             OK
           </button>

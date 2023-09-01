@@ -28,12 +28,10 @@ export function TasksSection({
   selectTask: (task: Nullable<{ id: string }>) => void
   selectedTask: Nullable<{ id: string }>
 }) {
-  const [taskId, updateTaskOpened, newTask] = useUnit([
+  const [taskId, updateTaskOpened, createdTask] = useUnit([
     $$taskDisclosure.$updatedTask,
     $$taskDisclosure.updatedTaskOpened,
     $$taskDisclosure.$createdTask,
-    $$createTask.$startDate,
-    $$createTask.dateChanged,
   ])
   return (
     <div className="select-none border-t-[1px] border-cBorder text-primary">
@@ -59,10 +57,11 @@ export function TasksSection({
         taskRef={taskRef}
         selectedTask={selectedTask}
         dateLabel
+        typeLabel
         selectTask={selectTask}
       />
       <div className="px-5">
-        {newTask && isSelected && (
+        {createdTask && isSelected && (
           <ExpandedTask
             dateModifier={true}
             modifyTaskModel={$$createTask}
