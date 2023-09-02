@@ -7,6 +7,7 @@ import { ExpandedTask } from "@/widgets/expanded-task"
 import { List } from "@/widgets/task-list"
 
 import { onClickOutside } from "@/shared/lib/on-click-outside"
+import { NoTasks } from "@/shared/ui/no-tasks"
 
 import {
   $$createTask,
@@ -51,6 +52,7 @@ export const Unplaced = () => {
           selectedTask={selectedTask}
           selectTask={selectTask}
         />
+        <NoTasks isTaskListEmpty={!tasks?.length} />
         <div className="mx-5">
           {newTask && (
             <ExpandedTask

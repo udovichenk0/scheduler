@@ -7,6 +7,8 @@ import { List } from "@/widgets/task-list"
 
 import { Task } from "@/entities/task/tasks"
 
+import { NoTasks } from "@/shared/ui/no-tasks"
+
 import {
   $$taskDisclosure,
   $$updateTask,
@@ -26,6 +28,7 @@ export const TasksByDate = ({
   tasks: Task[]
   date: Dayjs
 }) => {
+  console.log(tasks?.length === 0)
   const [
     createdTask,
     updatedTask,
@@ -44,7 +47,7 @@ export const TasksByDate = ({
     changeCreatedDate(date.toDate())
   }, [date])
   return (
-    <section>
+    <section className="h-full">
       <List
         $$updateTask={$$updateTask}
         updatedTaskId={updatedTask?.id || null}
@@ -55,6 +58,7 @@ export const TasksByDate = ({
         selectTask={selectTask}
         typeLabel
       />
+      <NoTasks isTaskListEmpty={!tasks?.length} />
       <div className="mx-5">
         {createdTask && (
           <ExpandedTask

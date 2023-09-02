@@ -7,6 +7,7 @@ import { ExpandedTask } from "@/widgets/expanded-task"
 import { List } from "@/widgets/task-list"
 
 import { onClickOutside } from "@/shared/lib/on-click-outside"
+import { NoTasks } from "@/shared/ui/no-tasks"
 
 import {
   $$deleteTask,
@@ -40,6 +41,7 @@ export const Inbox = () => {
     <Layout>
       <Layout.Header iconName="common/inbox" title="Inbox" />
       <Layout.Content
+        className="flex flex-col"
         onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)}
       >
         <List
@@ -61,6 +63,7 @@ export const Inbox = () => {
             />
           )}
         </div>
+        <NoTasks isTaskListEmpty={!tasks?.length} />
       </Layout.Content>
 
       <Layout.Footer

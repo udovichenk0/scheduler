@@ -55,6 +55,7 @@ export const Upcoming = () => {
         title={<Title variant={variant} />}
       />
       <Layout.Content
+        className="flex flex-col"
         onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)}
       >
         <UpcomingVariantChanger
