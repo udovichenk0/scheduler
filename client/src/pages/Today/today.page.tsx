@@ -28,12 +28,14 @@ export const Today = () => {
   const [
     closeTaskTriggered,
     createTaskOpened,
+    createdTask,
     deleteTask,
     overdueTasks,
     todayTasks,
   ] = useUnit([
     $$taskDisclosure.closeTaskTriggered,
     $$taskDisclosure.createdTaskOpened,
+    $$taskDisclosure.$createdTask,
     $$deleteTask.taskDeleted,
     $overdueTasks,
     $todayTasks,
@@ -55,7 +57,7 @@ export const Today = () => {
           selectTask={selectTask}
           selectedTask={selectedTask}
         />
-        <NoTasks isTaskListEmpty={!todayTasks.length && !overdueTasks.length} />
+        <NoTasks isTaskListEmpty={!todayTasks.length && !overdueTasks.length && !createdTask} />
       </Layout.Content>
       <Layout.Footer
         action={() => createTaskOpened()}

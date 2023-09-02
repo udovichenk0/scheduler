@@ -58,7 +58,7 @@ export const TasksByDate = ({
         selectTask={selectTask}
         typeLabel
       />
-      <NoTasks isTaskListEmpty={!tasks?.length} />
+      <NoTasks isTaskListEmpty={!tasks?.length && !createdTask} />
       <div className="mx-5">
         {createdTask && (
           <ExpandedTask
