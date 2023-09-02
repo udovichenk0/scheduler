@@ -63,7 +63,7 @@ export const Inbox = () => {
             />
           )}
         </div>
-        <NoTasks isTaskListEmpty={!tasks?.length} />
+        <NoTasks isTaskListEmpty={!tasks?.length && !createdTask} />
       </Layout.Content>
 
       <Layout.Footer

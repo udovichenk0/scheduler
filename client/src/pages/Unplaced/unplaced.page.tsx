@@ -22,8 +22,8 @@ export const Unplaced = () => {
   const taskRef = useRef<HTMLDivElement>(null)
   const [
     tasks,
-    newTask,
-    taskId,
+    createdTask,
+    updatedTask,
     closeTaskTriggered,
     updateTaskOpened,
     createTaskOpened,
@@ -45,16 +45,16 @@ export const Unplaced = () => {
       >
         <List
           $$updateTask={$$updateTask}
-          updatedTaskId={taskId?.id || null}
+          updatedTaskId={updatedTask?.id || null}
           tasks={tasks}
           openTask={updateTaskOpened}
           taskRef={taskRef}
           selectedTask={selectedTask}
           selectTask={selectTask}
         />
-        <NoTasks isTaskListEmpty={!tasks?.length} />
+        <NoTasks isTaskListEmpty={!tasks?.length && !createdTask} />
         <div className="mx-5">
-          {newTask && (
+          {createdTask && (
             <ExpandedTask
               modifyTaskModel={$$createTask}
               dateModifier={false}
