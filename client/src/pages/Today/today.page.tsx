@@ -9,6 +9,7 @@ import { List } from "@/widgets/task-list"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
+import { NoTasks } from "@/shared/ui/no-tasks"
 
 import {
   $$deleteTask,
@@ -24,10 +25,18 @@ import {
 export const Today = () => {
   const [selectedTask, selectTask] = useState<Nullable<{ id: string }>>(null)
   const taskRef = useRef<HTMLDivElement>(null)
-  const [closeTaskTriggered, createTaskOpened, deleteTask] = useUnit([
+  const [
+    closeTaskTriggered,
+    createTaskOpened,
+    deleteTask,
+    overdueTasks,
+    todayTasks,
+  ] = useUnit([
     $$taskDisclosure.closeTaskTriggered,
     $$taskDisclosure.createdTaskOpened,
     $$deleteTask.taskDeleted,
+    $overdueTasks,
+    $todayTasks,
   ])
 
   return (
@@ -46,6 +55,7 @@ export const Today = () => {
           selectTask={selectTask}
           selectedTask={selectedTask}
         />
+        <NoTasks isTaskListEmpty={!todayTasks.length && !overdueTasks.length} />
       </Layout.Content>
       <Layout.Footer
         action={() => createTaskOpened()}
