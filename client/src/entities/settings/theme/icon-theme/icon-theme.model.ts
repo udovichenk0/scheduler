@@ -1,7 +1,7 @@
 import { createEvent, createStore, sample, createEffect } from "effector"
 import { z } from "zod"
 
-import { cookiePersist } from "@/shared/lib/cookie-persist"
+import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
 import { singleton } from "@/shared/lib/singleton"
 const AccentSchema = z.enum([
   "blue",

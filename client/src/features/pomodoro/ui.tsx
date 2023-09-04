@@ -6,7 +6,7 @@ import { $$pomodoroSettings } from "@/entities/settings/pomodoro"
 import { ModalType } from "@/shared/lib/modal"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
-import { BaseModal } from "@/shared/ui/modals/base-modal"
+import { MainModal } from "@/shared/ui/modals/main"
 import { Container } from "@/shared/ui/general/container"
 
 import {
@@ -67,7 +67,7 @@ export const Pomodoro = ({
     $currentStaticTime,
   ])
   return (
-    <BaseModal modal={modal} className="w-[320px]" title="Pomodoro">
+    <MainModal modal={modal} className="w-[320px]" title="Pomodoro">
       <div className="px-4">
         <PomodoroDurations />
         {taskTitle && (
@@ -103,7 +103,7 @@ export const Pomodoro = ({
           </Button>
         </div>
       </div>
-    </BaseModal>
+    </MainModal>
   )
 }
 const PomodoroDurations = () => {

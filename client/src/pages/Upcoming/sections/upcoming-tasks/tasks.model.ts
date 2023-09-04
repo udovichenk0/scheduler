@@ -94,7 +94,6 @@ function groupTasksByYear(array: Task[]) {
     {} as Record<string, Task[]>,
   )
 }
-// console.log(dayjs(new Date('2023-01-15')).isSameOrAfter(dayjs(new Date('2023-01-14')), "day"))
 function isSameDateOrBetween({
   date,
   firstDate,
@@ -104,8 +103,6 @@ function isSameDateOrBetween({
   firstDate: Dayjs
   lastDate: Dayjs
 }) {
-  // console.log(dayjs(new Date('2023-01-15')).day())
-  // console.log(dayjs(new Date('2023-01-02')).day())
   const isSameDateOrBetween =
     dayjs(date).isSameOrAfter(firstDate, "date") &&
     dayjs(date).isSameOrBefore(lastDate, "date")

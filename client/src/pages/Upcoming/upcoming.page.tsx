@@ -125,7 +125,7 @@ function UpcomingVariantChanger({
   }
 
   return (
-    <div className="flex w-full">
+    <div className="sticky top-0 z-10 flex w-full bg-main">
       <div className="mb-2 flex w-full border-b border-accent/50 px-9 text-cIconDefault">
         <div className="flex">
           <button

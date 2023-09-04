@@ -12,7 +12,7 @@ export const MonthSwitcher = ({
 }) => {
   const isCurrentMonth = dayjs().month() === displayedMonth
   return (
-    <div className="mb-2 flex items-center justify-end gap-4">
+    <div className="sticky top-0 z-50 mb-2 flex items-center justify-end gap-4 bg-main">
       <Button
         disabled={isCurrentMonth}
         intent={"primary"}

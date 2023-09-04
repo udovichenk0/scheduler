@@ -1,6 +1,6 @@
 import { Event as EffectorEvent, Store } from "effector"
 import { useUnit } from "effector-react"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 
 import { capitalizeLetter } from "@/shared/lib/capitalize-first-letter"
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
@@ -58,7 +58,10 @@ export const ModifyTaskForm = ({
   const [isTypeOpened, setTypeOpen] = useState(false)
   const [isDatePickerOpened, setDatePickerOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
-
+  const titleInputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    titleInputRef.current!.focus()
+  }, [])
   const onChangeType = (payload: "inbox" | "unplaced") => {
     setTypeOpen(false)
     changeType(payload)
@@ -67,6 +70,7 @@ export const ModifyTaskForm = ({
     setDatePickerOpen(false)
     changeDate(payload)
   }
+
   return (
     <div className="flex w-full gap-2 rounded-[5px] text-cTaskEditDefault">
       <Checkbox
@@ -78,6 +82,7 @@ export const ModifyTaskForm = ({
         <input
           onChange={(e) => changeTitle(e.target.value)}
           value={title}
+          ref={titleInputRef}
           placeholder={title ? "" : "New Task"}
           className="w-full bg-transparent text-sm font-medium text-cFont outline-none dark:text-gray-300"
         />

@@ -2,7 +2,7 @@ import { createEvent, createStore, sample } from "effector"
 import { createEffect } from "effector/effector.umd"
 import { z } from "zod"
 
-import { cookiePersist } from "@/shared/lib/cookie-persist"
+import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
 import { singleton } from "@/shared/lib/singleton"
 const ThemeContract = z.enum(["space", "default", "dark", "light", "grey"])
 
