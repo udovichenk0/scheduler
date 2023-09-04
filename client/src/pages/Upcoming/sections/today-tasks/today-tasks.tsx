@@ -28,7 +28,6 @@ export const TasksByDate = ({
   tasks: Task[]
   date: Dayjs
 }) => {
-  console.log(tasks?.length === 0)
   const [
     createdTask,
     updatedTask,

@@ -57,7 +57,11 @@ export const Today = () => {
           selectTask={selectTask}
           selectedTask={selectedTask}
         />
-        <NoTasks isTaskListEmpty={!todayTasks.length && !overdueTasks.length && !createdTask} />
+        <NoTasks
+          isTaskListEmpty={
+            !todayTasks.length && !overdueTasks.length && !createdTask
+          }
+        />
       </Layout.Content>
       <Layout.Footer
         action={() => createTaskOpened()}
@@ -91,9 +95,7 @@ const OverdueTasks = ({
     $overdueTasks,
   ])
   return (
-    <section
-      className={`h-full ${overdueTasks.length > 0 ? "block" : "hidden"}`}
-    >
+    <section className={`${overdueTasks.length > 0 ? "block" : "hidden"}`}>
       <div className="flex items-center gap-1 border-b-2 border-t-2 border-cBorder px-5 py-2">
         <Icon
           name="common/outlined-star"

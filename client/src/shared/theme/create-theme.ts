@@ -1,6 +1,6 @@
 import { createEvent, createEffect, sample } from "effector"
 
-import { parseCookieValue } from "../lib/parse-cookie-value"
+import { parseCookieValue } from "../lib/storage/parse-cookie-value"
 
 export const createTheme = () => {
   const init = createEvent()

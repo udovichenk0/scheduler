@@ -11,7 +11,7 @@ interface ModalProps {
   className?: string
 }
 
-export const BaseModal = ({
+export const MainModal = ({
   children,
   modal,
   title,

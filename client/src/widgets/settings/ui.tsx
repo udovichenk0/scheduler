@@ -5,7 +5,7 @@ import { ThemeChanger } from "@/entities/settings/theme"
 
 import { ModalType } from "@/shared/lib/modal"
 import { Icon } from "@/shared/ui/icon"
-import { BaseModal } from "@/shared/ui/modals/base-modal"
+import { MainModal } from "@/shared/ui/modals/main"
 import { Root } from "@/shared/ui/tab"
 
 const tabsName = {
@@ -22,7 +22,7 @@ export const Settings = ({
   modal: ModalType
 }) => {
   return (
-    <BaseModal title="Settings" className="w-[600px]" modal={modal}>
+    <MainModal title="Settings" className="w-[600px]" modal={modal}>
       <Root defaultValue={defaultTab} className="text-sm">
         <Root.List className="flex gap-5 border-b-[1px] border-cBorder px-6 pb-4">
           <Root.Trigger
@@ -70,6 +70,6 @@ export const Settings = ({
           <PomodoroSettings />
         </Root.Content>
       </Root>
-    </BaseModal>
+    </MainModal>
   )
 }

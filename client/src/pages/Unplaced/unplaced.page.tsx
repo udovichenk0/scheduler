@@ -49,6 +49,7 @@ export const Unplaced = () => {
           tasks={tasks}
           openTask={updateTaskOpened}
           taskRef={taskRef}
+          dateLabel
           selectedTask={selectedTask}
           selectTask={selectTask}
         />

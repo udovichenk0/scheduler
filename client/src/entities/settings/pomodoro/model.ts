@@ -1,6 +1,6 @@
 import { createEvent, createStore, sample } from "effector"
 
-import { cookiePersist } from "@/shared/lib/cookie-persist"
+import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
 import { singleton } from "@/shared/lib/singleton"
 export const $$pomodoroSettings = singleton(() => {
   const DEFAULT_WORK_DURATION = 10
