@@ -129,6 +129,7 @@ function UpcomingVariantChanger({
       <div className="mb-2 flex w-full border-b border-accent/50 px-9 text-cIconDefault">
         <div className="flex">
           <button
+            title="Upcoming"
             className={clsx(style.active, "px-2 pb-2")}
             onClick={() => setUpcomingVariant("upcoming")}
             data-active={variant === "upcoming"}
@@ -136,6 +137,7 @@ function UpcomingVariantChanger({
             <Icon name="common/upcoming" className="text-[21px]" />
           </button>
           <button
+            title="Today"
             className={clsx(style.active, "px-2 pb-2")}
             onClick={() => setUpcomingVariant(dayjs().startOf("day"))}
             data-active={dayjs(variant).isToday()}
@@ -168,6 +170,7 @@ function UpcomingVariantChanger({
           onClick={() => changeWeek(week - 1)}
           className="h-7 w-7"
           intent={"primary"}
+          title="Previous Week"
         >
           <Icon
             name="common/arrow"
@@ -180,6 +183,7 @@ function UpcomingVariantChanger({
           onClick={() => changeWeek(week + 1)}
           className="h-7 w-7"
           intent={"primary"}
+          title="Next Week"
         >
           <Icon
             name="common/arrow"

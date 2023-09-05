@@ -31,7 +31,12 @@ export const Header = ({
         {isPomodoroRunning ? (
           <PomodoroProgressBar onClick={openPomodoroModal} />
         ) : (
-          <Button intent={"primary"} size={"xs"} onClick={openPomodoroModal}>
+          <Button
+            title="Pomodoro"
+            intent={"primary"}
+            size={"xs"}
+            onClick={openPomodoroModal}
+          >
             <Icon className="text-2xl text-cIconDefault" name="common/timer" />
           </Button>
         )}

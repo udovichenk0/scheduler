@@ -22,6 +22,7 @@ export const Footer = ({
         New Task
       </Button>
       <Button
+        title="Delete"
         disabled={!isTaskSelected}
         onClick={deleteTask}
         intent={"primary"}

@@ -14,23 +14,19 @@ export function Checkbox({
   iconClassName?: string
 }) {
   return (
-    <label className="relative flex">
+    <label className="group relative flex">
       <input
-        tabIndex={-1}
-        onChange={() => onChange()}
-        checked={checked}
+        onChange={onChange}
         type="checkbox"
-        id="checkbox"
-        className={clsx(
-          `h-5 w-5  appearance-none rounded-[2px] border-[3px] border-cTaskEditDefault`,
-          className,
-        )}
+        className="checkbox_input appearance-none"
       />
       <span
-        id="check"
-        className="pointer-events-none absolute left-[5px] top-[5px] hidden"
+        className={clsx(
+          className,
+          "checkbox flex h-5 w-5 items-center justify-center rounded-[3px] border-[2px] border-cTaskEditDefault",
+        )}
       >
-        <DoneSvg className={iconClassName} />
+        {checked && <DoneSvg className={clsx(iconClassName, "checker")} />}
       </span>
     </label>
   )
