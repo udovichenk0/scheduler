@@ -1,5 +1,4 @@
 import { useUnit } from "effector-react"
-import { useState } from "react"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 
@@ -48,40 +47,38 @@ const SettingsWithInputs = () => {
     settingsApplied,
   ])
 
-  const [pomodoroData] = useState([
-    {
-      label: "Work duration:",
-      value: workDuration,
-      rightText: "minutes",
-      onChange: changeWorkDuration,
-    },
-    {
-      label: "Short break:",
-      value: shortBreak,
-      rightText: "minutes",
-      onChange: changeShortBreak,
-    },
-    {
-      label: "Long break:",
-      value: longBreak,
-      rightText: "minutes",
-      onChange: changeLongBreak,
-    },
-  ])
   return (
     <div className="mb-6 space-y-3">
-      {pomodoroData.map((item, index) => (
-        <div className="flex items-center justify-end" key={index}>
-          <span>{item.label}</span>
+        <div className="flex items-center justify-end">
+          <span>Work duration:</span>
           <PomodoroInput
             onSubmit={applySettings}
-            onChange={item.onChange}
+            onChange={changeWorkDuration}
             className="ml-1 mr-2"
-            value={item.value}
+            value={workDuration}
           />
-          <span>{item.rightText}</span>
+          <span>minutes</span>
         </div>
-      ))}
+        <div className="flex items-center justify-end">
+          <span>Short break:</span>
+          <PomodoroInput
+            onSubmit={applySettings}
+            onChange={changeShortBreak}
+            className="ml-1 mr-2"
+            value={shortBreak}
+          />
+          <span>minutes</span>
+        </div>
+        <div className="flex items-center justify-end">
+          <span>Long break:</span>
+          <PomodoroInput
+            onSubmit={applySettings}
+            onChange={changeLongBreak}
+            className="ml-1 mr-2"
+            value={longBreak}
+          />
+          <span>minutes</span>
+        </div>
     </div>
   )
 }

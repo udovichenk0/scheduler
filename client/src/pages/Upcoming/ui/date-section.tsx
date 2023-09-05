@@ -60,15 +60,15 @@ export function TasksSection({
         typeLabel
         selectTask={selectTask}
       />
-      <div className="px-5">
         {createdTask && isSelected && (
+      <div className="px-5 mb-2">
           <ExpandedTask
             dateModifier={true}
             modifyTaskModel={$$createTask}
             taskRef={taskRef}
           />
-        )}
       </div>
+        )}
     </div>
   )
 }

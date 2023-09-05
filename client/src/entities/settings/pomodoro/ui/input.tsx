@@ -8,7 +8,7 @@ export const PomodoroInput = ({
   onSubmit,
 }: {
   value: number
-  onChange: (value: number) => void
+  onChange: (value: string) => void
   className?: string
   onSubmit: (val: string) => void
 }) => {
@@ -20,8 +20,8 @@ export const PomodoroInput = ({
         "w-16 appearance-none rounded-[5px] border-2 border-cSecondBorder bg-transparent text-center",
         className,
       )}
-      type="number"
-      onChange={(e) => onChange(+e.target.value)}
+      maxLength={3}
+      onChange={(e) => onChange(e.target.value)}
       value={value}
     />
   )

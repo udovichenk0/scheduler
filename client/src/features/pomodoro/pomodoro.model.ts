@@ -127,13 +127,14 @@ sample({
 })
 sample({
   clock: timeSelected,
-  fn: (time) => time / 60,
+  fn: (time) => (time / 60).toString(),
   target: workDurationChanged,
 })
 
 sample({
   clock: workDurationChanged,
-  fn: (duration) => duration * 60,
+  filter: (duration) => !!Number(duration),
+  fn: (duration) => +duration * 60,
   target: [$currentStaticTime, $passingTime],
 })
 
