@@ -1,7 +1,8 @@
-import { createEvent, createStore, sample } from "effector"
+import { createEvent, createStore, sample, Event } from "effector"
 
 import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
 import { singleton } from "@/shared/lib/singleton"
+
 export const $$pomodoroSettings = singleton(() => {
   const DEFAULT_WORK_DURATION = 10
   const MAX_WORK_DURATION = 120
@@ -15,40 +16,58 @@ export const $$pomodoroSettings = singleton(() => {
   const MAX_LONG_BREAK = 120
   const MIN_LONG_BREAK = 1
 
-  const workDurationChanged = createEvent<number>()
-  const shortBreakDurationChanged = createEvent<number>()
-  const longBreakDurationChanged = createEvent<number>()
+  const workDurationChanged = createEvent<string>()
+  const shortBreakDurationChanged = createEvent<string>()
+  const longBreakDurationChanged = createEvent<string>()
   const longBreakFrequencyChanged = createEvent<number>()
   const settingsApplied = createEvent()
   const customDurationChanged = createEvent<number>()
   const automaticTimerStartEnabled = createEvent()
   const notificationSoundEnabled = createEvent()
+
   const $customDuration = createStore(DEFAULT_WORK_DURATION).on(
     customDurationChanged,
     (_, value) => value,
   )
 
-  const $workDuration = createStore(DEFAULT_WORK_DURATION).on(
-    workDurationChanged,
-    (_, value) => value,
-  )
-  const $shortBreakDuration = createStore(DEFAULT_SHORT_BREAK).on(
-    shortBreakDurationChanged,
-    (_, value) => value,
-  )
-  const $longBreakDuration = createStore(DEFAULT_LONG_BREAK).on(
-    longBreakDurationChanged,
-    (_, value) => value,
-  )
+  const $workDuration = createStore(DEFAULT_WORK_DURATION)
+
+  
+  const $shortBreakDuration = createStore(DEFAULT_SHORT_BREAK)
+  const $longBreakDuration = createStore(DEFAULT_LONG_BREAK)
+  
   const $isEnabledAutomaticStart = createStore(false).on(
     automaticTimerStartEnabled,
     (value) => !value,
-  )
+    )
   const $isEnabledNotificationSound = createStore(false).on(
     notificationSoundEnabled,
     (value) => !value,
   )
 
+  function convertToNum(event: Event<string>){
+    return sample({
+      clock: event,
+      filter: (value) => !!Number(value) || value === '',
+      fn: Number
+    })
+  }
+  // change input value on onChange
+  sample({
+    clock: convertToNum(workDurationChanged),
+    target: $workDuration
+  })
+  sample({
+    clock: convertToNum(shortBreakDurationChanged),
+    target: $shortBreakDuration
+  })
+  
+  sample({
+    clock: convertToNum(longBreakDurationChanged),
+    target: $longBreakDuration
+  })
+
+  // change input value on onBlur
   sample({
     clock: settingsApplied,
     source: $workDuration,

@@ -19,7 +19,6 @@ export const Cell = ({
 }) => {
   const isToday = dayjs(new Date(year, month, date)).isSame(dayjs(), "date")
   const isPast = dayjs(new Date(year, month, date)).isBefore(dayjs(), "date")
-  console.log(dayjs(new Date(year, month, date)).isSame(dayjs(), "date"))
   const isTaskDate = dayjs(new Date(year, month, date)).isSame(
     currentDate,
     "date",
