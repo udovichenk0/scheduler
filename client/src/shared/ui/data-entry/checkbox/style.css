@@ -1,3 +1,6 @@
-#checkbox:checked ~ #check {
-  display: block;
+.checkbox_input:focus + .checkbox {
+  @apply border-accent;
+}
+.checkbox_input:focus + .checkbox > .checker {
+  @apply fill-accent;
 }

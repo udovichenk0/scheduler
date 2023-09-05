@@ -45,7 +45,7 @@ export const TypeModal = ({
               <Icon
                 name={iconName}
                 className={`mr-4 h-5 w-5 text-accent ${
-                  active && "text-cFocusSecond"
+                  active && "text-cHover"
                 }`}
               />
               {type}

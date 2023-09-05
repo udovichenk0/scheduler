@@ -73,11 +73,13 @@ export const ModifyTaskForm = ({
 
   return (
     <div className="flex w-full gap-2 rounded-[5px] text-cTaskEditDefault">
-      <Checkbox
-        iconClassName="fill-cTaskEditDefault"
-        checked={status == "FINISHED"}
-        onChange={() => changeStatus(status)}
-      />
+      <span>
+        <Checkbox
+          iconClassName="fill-cTaskEditDefault"
+          checked={status == "FINISHED"}
+          onChange={() => changeStatus(status)}
+        />
+      </span>
       <div className="ml-1 flex w-full flex-col gap-3">
         <input
           onChange={(e) => changeTitle(e.target.value)}
@@ -92,40 +94,37 @@ export const ModifyTaskForm = ({
           value={description || ""}
           onChange={(e) => changeDescription(e.target.value)}
         />
-        <div className="flex flex-col gap-1">
-          <div>
+        <div className="space-y-1">
+          <Button
+            onClick={() => setTypeOpen((prev) => !prev)}
+            size={"sm"}
+            intent={"primary"}
+            className="flex gap-4"
+          >
+            <Icon
+              name={"common/inbox"}
+              className="h-[18px] w-[18px] text-accent"
+            />
+            <span>{capitalizeLetter(taskType)}</span>
+          </Button>
+
+          {dateModifier && (
             <Button
-              onClick={() => setTypeOpen((prev) => !prev)}
+              onClick={() => setDatePickerOpen((prev) => !prev)}
               size={"sm"}
               intent={"primary"}
-              className="flex gap-4"
+              className="flex"
             >
               <Icon
-                name={"common/inbox"}
-                className="h-[18px] w-[18px] text-accent"
+                name={"common/upcoming"}
+                className="mr-4 h-[18px] w-[18px] text-cTaskEditDefault"
               />
-              <span>{capitalizeLetter(taskType)}</span>
+              <span>Date</span>
+              <span className="ml-2 text-accent">
+                {taskDate && normalizeDate(taskDate)}
+              </span>
             </Button>
-          </div>
-          <div className="flex">
-            {dateModifier && (
-              <Button
-                onClick={() => setDatePickerOpen((prev) => !prev)}
-                size={"sm"}
-                intent={"primary"}
-                className="flex"
-              >
-                <Icon
-                  name={"common/upcoming"}
-                  className="mr-4 h-[18px] w-[18px] text-cTaskEditDefault"
-                />
-                <span>Date</span>
-                <span className="ml-2 text-accent">
-                  {taskDate && normalizeDate(taskDate)}
-                </span>
-              </Button>
-            )}
-          </div>
+          )}
         </div>
         {isTypeOpened && (
           <TypeModal

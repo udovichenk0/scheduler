@@ -58,21 +58,24 @@ export const Sidebar = () => {
             />
           </div>
         </Container>
-
         <Container>
           <Button size={"sm"} className="w-full text-start" intent={"primary"}>
             <Icon name="common/plus" className="mr-4 text-cOpacitySecondFont" />
-            <span className="text-[12px] text-cOpacitySecondFont">
-              New Project
-            </span>
+            <span className="text-[12px] text-primary">New Project</span>
           </Button>
         </Container>
 
         <Container className="flex gap-2 border-t-[1px] border-cBorder text-cIconDefault">
-          <Button onClick={openSettingsModal} intent={"primary"} size={"xs"}>
+          <Button
+            title="Settings"
+            onClick={openSettingsModal}
+            intent={"primary"}
+            size={"xs"}
+          >
             <Icon name="common/settings" className="text-[24px]" />
           </Button>
           <Button
+            title="Unplaced"
             onClick={() => navigate(routes.unplaced)}
             intent={"primary"}
             size={"xs"}
