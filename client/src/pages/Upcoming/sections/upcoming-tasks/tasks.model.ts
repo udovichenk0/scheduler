@@ -11,8 +11,8 @@ export const $upcomingTasks = $$task.$taskKv.map((kv) => {
   )
   return groupTasksByYear(mappedTasks)
 })
-
 export const $upcomingYears = $upcomingTasks.map((tasks) => {
+  // for example if today is a day before a new year we don't want to show upcoming year as a year section
   const futureYear = dayjs()
     .add(MIN_DATES_LENGTH, "day")
     .add(MIN_MONTHS_LENGTH, "month")
@@ -21,7 +21,6 @@ export const $upcomingYears = $upcomingTasks.map((tasks) => {
     Object.entries(tasks).filter(([year]) => futureYear != year),
   )
 })
-
 export const $remainingDays = $upcomingTasks.map((tasks) => {
   const currentYear = dayjs().format("YYYY")
   const firstDayOfRemainingDays = dayjs()
