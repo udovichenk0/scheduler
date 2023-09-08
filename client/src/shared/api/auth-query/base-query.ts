@@ -34,6 +34,7 @@ export function setUrlParams(
   params?: Record<string, unknown>,
 ) {
   if (typeof url == "string") {
+    console.log(new URL(`${import.meta.env.VITE_ORIGIN_URL}${url}`))
     return new URL(`${import.meta.env.VITE_ORIGIN_URL}${url}`)
   }
   if (typeof url === "function" && params) {
