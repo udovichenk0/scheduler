@@ -4,6 +4,8 @@ on:
   push:
     branches: [ "develop" ]
 
+env:
+  VITE_ORIGIN_URL: http://localhost:3000/
 jobs:
   build:
 
