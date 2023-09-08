@@ -20,6 +20,7 @@ import {
   $tasksByDate,
   $variant,
   variantSelected,
+  newTaskByDate,
 } from "./upcoming.model"
 import { TasksByDate } from "./sections/today-tasks"
 import { months, weekDays } from "./config"
@@ -119,11 +120,11 @@ function UpcomingVariantChanger({
   const [week, setWeek] = useState(0)
   const [dayList, sestDayList] = useState(generateDays(week))
   const isWeekSameOrAfter = dayjs(dayList[0]).add(-7, "day").isBefore(dayjs())
+  const [tasksByDate] = useUnit([newTaskByDate])
   const changeWeek = (week: number) => {
     setWeek(week)
     sestDayList(generateDays(week))
   }
-
   return (
     <div className="sticky top-0 z-10 flex w-full bg-main">
       <div className="mb-2 flex w-full border-b border-accent/50 px-9 text-cIconDefault">
@@ -147,6 +148,7 @@ function UpcomingVariantChanger({
         </div>
         <div className="flex w-full justify-around text-sm">
           {dayList.map((date, id) => {
+          const isAnyTask = !!tasksByDate[date.format('YYYY-MM-DD')]
             return (
               <button
                 key={id}
@@ -154,11 +156,14 @@ function UpcomingVariantChanger({
                 data-active={date.isSame(variant)}
                 className={clsx(
                   style.active,
-                  "w-full pb-2 text-sm text-cIconDefault",
+                  "w-full py-2 text-sm text-cIconDefault relative",
                 )}
               >
                 <span>{weekDays[date.day()].slice(0, 2)}. </span>
-                <span className="font-bold">{date.date()}</span>
+                <span className="font-bold mr-1">{date.date()}</span>
+                {isAnyTask && (
+                  <span className="after:content-[''] after:w-[5px] after:h-[5px] after:bg-cIconDefault after:absolute after:top-1/2 after:-translate-y-1/2 after:rounded-full"></span>
+                )}
               </button>
             )
           })}
@@ -198,7 +203,9 @@ function UpcomingVariantChanger({
 function generateDays(int = 0) {
   const date: Dayjs[] = []
   const days = Array.from({ length: 7 })
+  // + 1 because we don't want to include the current day
   let count = int * 7 + 1
+
   days.forEach(() => {
     date.push(dayjs().add(count, "day"))
     count += 1
@@ -206,4 +213,3 @@ function generateDays(int = 0) {
 
   return date
 }
-generateDays()
