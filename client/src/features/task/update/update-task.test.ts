@@ -2,7 +2,7 @@ import { fork, allSettled } from "effector"
 import { test, expect, vi, describe } from "vitest"
 
 import { $$session } from "@/entities/session"
-import { $$task } from "@/entities/task/tasks"
+import { $$task } from "@/entities/task/task-item"
 
 import { updateTaskQuery } from "@/shared/api/task"
 
@@ -53,7 +53,7 @@ describe("update task", () => {
       $title,
       $type,
       $startDate,
-      updateTaskTriggered,
+      updateTaskTriggeredById,
     } = updateTaskModel
     const scope = fork({
       values: [
@@ -68,7 +68,7 @@ describe("update task", () => {
       ],
       handlers: [[updateTaskQuery.__.executeFx, mock]],
     })
-    await allSettled(updateTaskTriggered, { scope, params: { id: "5" } })
+    await allSettled(updateTaskTriggeredById, { scope, params: "5" })
 
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toReturnWith(returnedValue)
@@ -88,7 +88,7 @@ describe("update task", () => {
       $title,
       $type,
       $startDate,
-      updateTaskTriggered,
+      updateTaskTriggeredById,
       _,
     } = updateTaskModel
     const scope = fork({
@@ -104,7 +104,7 @@ describe("update task", () => {
       ],
       handlers: [[_.updateTaskFromLocalStorageFx, mock]],
     })
-    await allSettled(updateTaskTriggered, { scope, params: { id: "1" } })
+    await allSettled(updateTaskTriggeredById, { scope, params: "1" })
 
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toReturnWith({ result: returnedValue })

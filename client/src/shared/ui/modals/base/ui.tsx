@@ -3,8 +3,6 @@ import { ReactNode, useRef, MouseEvent } from "react"
 import { createPortal } from "react-dom"
 import { clsx } from "clsx"
 
-import { saved } from "@/pages/Calendar/calendar.model"
-
 import { ModalType } from "@/shared/lib/modal"
 
 export const BaseModal = ({
@@ -16,7 +14,10 @@ export const BaseModal = ({
   children: ReactNode
   className?: string
 }) => {
-  const [clickOutsideTriggered, isOpened] = useUnit([saved, modal.$isOpened])
+  const [clickOutsideTriggered, isOpened] = useUnit([
+    modal.clickOutsideTriggered,
+    modal.$isOpened,
+  ])
   const ref = useRef<HTMLDivElement>(null)
   if (!isOpened) {
     return null

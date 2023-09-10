@@ -2,7 +2,7 @@ import { sample } from "effector"
 import { createEvent } from "effector/compat"
 
 import { $$session } from "@/entities/session"
-import { $$task } from "@/entities/task/tasks"
+import { $$task } from "@/entities/task/task-item"
 
 import { logoutQuery } from "@/shared/api/auth"
 import { resetToken } from "@/shared/api/token"

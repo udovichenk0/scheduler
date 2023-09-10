@@ -2,9 +2,11 @@ import { createEvent, createStore, sample } from "effector"
 
 import { tasksQuery } from "@/shared/api/task"
 import { singleton } from "@/shared/lib/singleton"
+import { createModal } from "@/shared/lib/modal"
 
 import { Task } from "./type"
 
+export const $$dateModal = createModal({})
 export const $$task = singleton(() => {
   const $taskKv = createStore<Record<string, Task>>({})
   const setTaskKvTriggered = createEvent<Task[]>()

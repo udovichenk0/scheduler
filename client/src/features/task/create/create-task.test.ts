@@ -2,7 +2,7 @@ import { allSettled, fork } from "effector"
 import { test, expect, vi, describe } from "vitest"
 
 import { $$session } from "@/entities/session"
-import { $$task } from "@/entities/task/tasks"
+import { $$task } from "@/entities/task/task-item"
 
 import { createTaskQuery } from "@/shared/api/task"
 

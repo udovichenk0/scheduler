@@ -32,39 +32,38 @@ export const $$pomodoroSettings = singleton(() => {
 
   const $workDuration = createStore(DEFAULT_WORK_DURATION)
 
-  
   const $shortBreakDuration = createStore(DEFAULT_SHORT_BREAK)
   const $longBreakDuration = createStore(DEFAULT_LONG_BREAK)
-  
+
   const $isEnabledAutomaticStart = createStore(false).on(
     automaticTimerStartEnabled,
     (value) => !value,
-    )
+  )
   const $isEnabledNotificationSound = createStore(false).on(
     notificationSoundEnabled,
     (value) => !value,
   )
 
-  function convertToNum(event: Event<string>){
+  function convertToNum(event: Event<string>) {
     return sample({
       clock: event,
-      filter: (value) => !!Number(value) || value === '',
-      fn: Number
+      filter: (value) => !!Number(value) || value === "",
+      fn: Number,
     })
   }
   // change input value on onChange
   sample({
     clock: convertToNum(workDurationChanged),
-    target: $workDuration
+    target: $workDuration,
   })
   sample({
     clock: convertToNum(shortBreakDurationChanged),
-    target: $shortBreakDuration
+    target: $shortBreakDuration,
   })
-  
+
   sample({
     clock: convertToNum(longBreakDurationChanged),
-    target: $longBreakDuration
+    target: $longBreakDuration,
   })
 
   // change input value on onBlur

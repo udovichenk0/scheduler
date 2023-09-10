@@ -3,7 +3,7 @@ import { spread } from "patronum"
 import { z } from "zod"
 
 import { $$session } from "@/entities/session"
-import { $$task } from "@/entities/task/tasks"
+import { $$task } from "@/entities/task/task-item"
 
 import { signinQuery } from "@/shared/api/auth"
 import { setTokenTriggered } from "@/shared/api/token"

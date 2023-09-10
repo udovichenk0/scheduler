@@ -1,14 +1,16 @@
 import { useUnit } from "effector-react"
-import { ReactNode, RefObject, useState } from "react"
+import { ReactNode, RefObject } from "react"
 import { Store, Event } from "effector"
 
 import { Pomodoro } from "@/features/pomodoro"
 
-import { DateModal } from "@/entities/task/modify/ui/date-modal"
-import { ModifyTaskForm } from "@/entities/task/modify"
+import { ModifyTaskForm } from "@/entities/task/task-form"
+import { $$dateModal } from "@/entities/task/task-item"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
+import { BaseModal } from "@/shared/ui/modals/base"
+import { DatePicker } from "@/shared/ui/date-picker"
 
 import { Settings } from "../settings"
 
@@ -29,49 +31,58 @@ type ModifyTaskFormType = {
 
 export const ExpandedTask = ({
   taskRef,
-  dateModifier,
+  dateModifier = false,
   modifyTaskModel,
   sideDatePicker = true,
   rightPanelSlot,
 }: {
   taskRef?: RefObject<HTMLDivElement>
-  dateModifier: boolean
+  dateModifier?: boolean
   modifyTaskModel: ModifyTaskFormType
   sideDatePicker?: boolean
   rightPanelSlot?: ReactNode
 }) => {
-  const [isDatePickerOpened, setDatePickerOpen] = useState(false)
-  const [openPomodoroModal, openSettingsModal, startDate, changeDate, title] =
-    useUnit([
-      pomodoroModal.open,
-      settingsModal.open,
-      modifyTaskModel.$startDate,
-      modifyTaskModel.dateChanged,
-      modifyTaskModel.$title,
-    ])
+  const [
+    openPomodoroModal,
+    openSettingsModal,
+    startDate,
+    changeDate,
+    title,
+    openDateModal,
+    closeDateModal,
+  ] = useUnit([
+    pomodoroModal.open,
+    settingsModal.open,
+    modifyTaskModel.$startDate,
+    modifyTaskModel.dateChanged,
+    modifyTaskModel.$title,
+    $$dateModal.open,
+    $$dateModal.close,
+  ])
   const onChangeDate = (date: Date) => {
-    setDatePickerOpen(false)
+    closeDateModal()
     changeDate(date)
   }
   return (
     <div ref={taskRef} className="group flex gap-2">
       {sideDatePicker && (
         <Icon
-          onClick={() => setDatePickerOpen(true)}
+          onClick={openDateModal}
           name="common/upcoming"
           className="invisible translate-y-1 text-lg text-accent group-hover:visible"
         />
       )}
-      {isDatePickerOpened && (
-        <DateModal
-          taskDate={startDate || new Date()}
-          changeDate={onChangeDate}
-          closeDatePicker={() => setDatePickerOpen(false)}
+      <BaseModal modal={$$dateModal}>
+        <DatePicker
+          currentDate={startDate || new Date()}
+          onDateChange={onChangeDate}
+          onCancel={() => console.log("cancel")}
+          onSave={() => console.log("cancel")}
         />
-      )}
+      </BaseModal>
       <div
         className={
-          "flex w-full flex-col rounded-[5px] bg-cTaskEdit p-2 pb-2 text-sm"
+          "flex w-full flex-col rounded-[5px] bg-cTaskEdit p-2 text-sm"
         }
       >
         <ModifyTaskForm
@@ -85,11 +96,7 @@ export const ExpandedTask = ({
               className="text-[24px] text-cIconDefault"
             />
           </Button>
-          <Button
-            onClick={() => setDatePickerOpen(true)}
-            intent={"primary"}
-            size={"xs"}
-          >
+          <Button onClick={openDateModal} intent={"primary"} size={"xs"}>
             <Icon
               name="common/upcoming"
               className="p-[3px] text-[19px] text-cIconDefault"

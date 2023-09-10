@@ -8,7 +8,6 @@
   &[data-padding="xl"] {
     @apply p-4;
   }
-
   &[data-rounded="base"] {
     @apply rounded-[5px];
   }

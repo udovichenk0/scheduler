@@ -3,15 +3,15 @@ import { not } from "patronum"
 import { attachOperation } from "@farfetched/core"
 
 import { $$session } from "@/entities/session"
-import { $$task, LocalStorageTask } from "@/entities/task/tasks"
+import { $$task, LocalStorageTask } from "@/entities/task/task-item"
 
 import { deleteTaskQuery } from "@/shared/api/task"
 export const createRemoveTaskFactory = () => {
-  const taskDeleted = createEvent<{ id: string }>()
+  const taskDeletedById = createEvent<string>()
 
   const attachDeleteTaskQuery = attachOperation(deleteTaskQuery)
 
-  const deleteTaskFromLsFx = createEffect(({ id }: { id: string }) => {
+  const deleteTaskFromLsFx = createEffect((id: string) => {
     const tasksFromLs = localStorage.getItem("tasks")
     const parsedTasks = JSON.parse(tasksFromLs!) as LocalStorageTask[]
 
@@ -31,13 +31,13 @@ export const createRemoveTaskFactory = () => {
   ])
 
   sample({
-    clock: taskDeleted,
+    clock: taskDeletedById,
     filter: $$session.$isAuthenticated,
-    fn: ({ id }) => ({ body: { id } }),
+    fn: (id) => ({ body: { id } }),
     target: attachDeleteTaskQuery.start,
   })
   sample({
-    clock: taskDeleted,
+    clock: taskDeletedById,
     filter: not($$session.$isAuthenticated),
     target: deleteTaskFromLsFx,
   })
@@ -50,7 +50,7 @@ export const createRemoveTaskFactory = () => {
     target: $$task.taskDeleted,
   })
   return {
-    taskDeleted,
+    taskDeletedById,
     taskSuccessfullyDeleted,
     _: {
       deleteTaskFromLsFx,

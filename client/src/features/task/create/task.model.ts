@@ -3,8 +3,8 @@ import { not, and } from "patronum"
 import { v4 as uuidv4 } from "uuid"
 import { attachOperation } from "@farfetched/core"
 
-import { modifyTask } from "@/entities/task/modify"
-import { $$task, LocalStorageTask } from "@/entities/task/tasks"
+import { modifyTaskFactory } from "@/entities/task/task-form"
+import { $$task, LocalStorageTask } from "@/entities/task/task-item"
 import { $$session } from "@/entities/session"
 
 import { createTaskQuery } from "@/shared/api/task"
@@ -24,7 +24,7 @@ export const createTaskFactory = ({
   defaultType: "inbox" | "unplaced"
   defaultDate: Nullable<Date>
 }) => {
-  const $$modifyTask = modifyTask({ defaultType, defaultDate })
+  const $$modifyTask = modifyTaskFactory({ defaultType, defaultDate })
   const { $fields, $isAllowToSubmit, resetFieldsTriggered } = $$modifyTask
 
   const createTaskTriggered = createEvent()

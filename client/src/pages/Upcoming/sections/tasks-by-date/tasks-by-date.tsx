@@ -3,9 +3,8 @@ import { RefObject, useEffect } from "react"
 import { Dayjs } from "dayjs"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
-import { List } from "@/widgets/task-list"
 
-import { Task } from "@/entities/task/tasks"
+import { TaskItem, Task } from "@/entities/task/task-item"
 
 import { NoTasks } from "@/shared/ui/no-tasks"
 
@@ -30,16 +29,20 @@ export const TasksByDate = ({
 }) => {
   const [
     createdTask,
-    updatedTask,
-    updatedTaskOpened,
+    updatedTaskId,
+    openUpdatedTaskById,
     changeUpdatedDate,
     changeCreatedDate,
+    changeStatusAndUpdate,
+    changeDateAndUpdate,
   ] = useUnit([
     $$taskDisclosure.$createdTask,
-    $$taskDisclosure.$updatedTask,
-    $$taskDisclosure.updatedTaskOpened,
+    $$taskDisclosure.$updatedTaskId,
+    $$taskDisclosure.updatedTaskOpenedById,
     $$updateTask.dateChanged,
     $$createTask.dateChanged,
+    $$updateTask.statusChangedAndUpdated,
+    $$updateTask.dateChangedAndUpdated,
   ])
   useEffect(() => {
     changeUpdatedDate(date.toDate())
@@ -47,18 +50,26 @@ export const TasksByDate = ({
   }, [date])
   return (
     <section className="h-full">
-      <List
-        $$updateTask={$$updateTask}
-        updatedTaskId={updatedTask?.id || null}
-        tasks={tasks}
-        openTask={updatedTaskOpened}
-        taskRef={taskRef}
-        selectedTask={selectedTask}
-        selectTask={selectTask}
-        typeLabel
-      />
+      {tasks?.map((task, id) => {
+        return (
+          <div className="mb-1 px-3 first:pt-2 last:pb-2" key={id}>
+            {task.id === updatedTaskId ? (
+              <ExpandedTask modifyTaskModel={$$updateTask} taskRef={taskRef} />
+            ) : (
+              <TaskItem
+                onUpdateDate={changeDateAndUpdate}
+                onUpdateStatus={changeStatusAndUpdate}
+                isTaskSelected={selectedTask?.id === task.id}
+                onClick={selectTask}
+                onDoubleClick={() => openUpdatedTaskById(task.id)}
+                task={task}
+              />
+            )}
+          </div>
+        )
+      })}
       <NoTasks isTaskListEmpty={!tasks?.length && !createdTask} />
-      <div className="mx-5">
+      <div className="mx-3">
         {createdTask && (
           <ExpandedTask
             modifyTaskModel={$$createTask}

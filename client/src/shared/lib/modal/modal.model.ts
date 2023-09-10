@@ -14,8 +14,7 @@ export const createModal = ({
   if (closeOnClickOutside) {
     sample({
       clock: clickOutsideTriggered,
-      fn: () => false,
-      target: $isOpened,
+      target: close,
     })
   }
 

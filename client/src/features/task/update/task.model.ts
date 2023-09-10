@@ -3,14 +3,14 @@ import { spread, and, not } from "patronum"
 import { attachOperation } from "@farfetched/core"
 
 import { $$session } from "@/entities/session"
-import { modifyTaskFactory } from "@/entities/task/modify"
 import {
   $$task,
   LocalStorageTask,
   Task,
   TaskStatus,
   TaskType,
-} from "@/entities/task/tasks"
+} from "@/entities/task/task-item"
+import { modifyTaskFactory } from "@/entities/task/task-form"
 
 import {
   updateStatusQuery,
@@ -33,8 +33,8 @@ export const updateTaskFactory = () => {
     statusChangedAndUpdated,
   } = $$modifyTask
 
-  const setFieldsTriggered = createEvent<{ id: string }>()
-  const updateTaskTriggered = createEvent<{ id: string }>()
+  const setFieldsTriggeredById = createEvent<{ id: string }>()
+  const updateTaskTriggeredById = createEvent<string>()
 
   const attachUpdateStatusQuery = attachOperation(updateStatusQuery)
   const attachUpdateTaskDate = attachOperation(updateTaskDate)
@@ -132,21 +132,21 @@ export const updateTaskFactory = () => {
 
   // update task from localStorage or from the server
   sample({
-    clock: updateTaskTriggered,
+    clock: updateTaskTriggeredById,
     source: $fields,
     filter: and($isAllowToSubmit, $$session.$isAuthenticated),
-    fn: (fields, { id }) => ({ body: { ...fields, id } }),
+    fn: (fields, id) => ({ body: { ...fields, id } }),
     target: attachUpdateTaskQuery.start,
   })
   sample({
-    clock: updateTaskTriggered,
+    clock: updateTaskTriggeredById,
     source: $fields,
     filter: and($isAllowToSubmit, not($$session.$isAuthenticated)),
-    fn: (fields, { id }) => ({ ...fields, id }),
+    fn: (fields, id) => ({ ...fields, id }),
     target: updateTaskFromLocalStorageFx,
   })
   sample({
-    clock: setFieldsTriggered,
+    clock: setFieldsTriggeredById,
     source: $$task.$taskKv,
     fn: (tasks, { id }) => tasks[id],
     target: spread({
@@ -173,9 +173,9 @@ export const updateTaskFactory = () => {
     target: [$$task.setTaskTriggered, resetFieldsTriggered],
   })
   return {
-    updateTaskTriggered,
+    updateTaskTriggeredById,
     taskSuccessfullyUpdated,
-    setFieldsTriggered,
+    setFieldsTriggeredById,
     $isUpdating: updateTaskQuery.$pending,
     ...$$modifyTask,
     _: {
