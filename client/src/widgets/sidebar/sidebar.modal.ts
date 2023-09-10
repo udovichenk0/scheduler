@@ -2,7 +2,7 @@ import { RouteInstance, RouteParams } from "atomic-router"
 import dayjs from "dayjs"
 import { createEffect, createEvent, sample } from "effector"
 
-import { $$task } from "@/entities/task/tasks"
+import { $$task } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
 

@@ -4,7 +4,7 @@ import { createRemoveTaskFactory } from "@/features/task/delete"
 import { createTaskFactory } from "@/features/task/create"
 import { updateTaskFactory } from "@/features/task/update"
 
-import { $$task } from "@/entities/task/tasks"
+import { $$task } from "@/entities/task/task-item"
 export const $$deleteTask = createRemoveTaskFactory()
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({

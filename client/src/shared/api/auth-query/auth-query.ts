@@ -5,13 +5,13 @@ import {
   $accessToken,
   refreshFx,
   setTokenTriggered,
-  RefreshType,
+  TokenDto,
 } from "@/shared/api/token"
 
 import { baseQuery } from "./base-query"
 import { Request, Response, HttpRequestType } from "./type"
 
-let refreshPromiseQueue: Nullable<Promise<RefreshType>> = null
+let refreshPromiseQueue: Nullable<Promise<TokenDto>> = null
 
 export const authQuery = <Resp, Params extends HttpRequestType | void>({
   request,

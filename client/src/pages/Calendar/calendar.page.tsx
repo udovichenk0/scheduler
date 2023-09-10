@@ -6,7 +6,6 @@ import { Layout } from "@/templates/main"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
 
-import { generateCalendar } from "@/shared/lib/generate-calendar"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base"
@@ -15,6 +14,7 @@ import {
   $$createTask,
   $$deleteTask,
   $$modal,
+  $$moreTasksModal,
   $$updateTask,
   $createdTask,
   $mappedTasks,
@@ -24,32 +24,11 @@ import {
   saved,
   updateTaskModalOpened,
 } from "./calendar.model"
-import { MonthSwitcher } from "./ui/month-switcher"
-import { WeekNames } from "./ui/week-names"
-import { CalendarTable } from "./ui/calendar-table/calendar-table"
+import { Calendar } from "./ui/calendar-table"
 
-const fullNameMonths = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-]
-export const Calendar = () => {
-  const [calendar, setCalendar] = useState(generateCalendar())
+export const CalendarPage = () => {
   const [date, setDate] = useState(dayjs())
-  const changeMonth = (month: number) => {
-    setDate(dayjs().month(month))
-    setCalendar(generateCalendar(month))
-  }
-  const [tasks, openTaskCreating, openTaskUpdating, updatedTask, createdTask] =
+  const [tasks, openCreatedTask, openUpdatedTask, updatedTaskId, createdTask] =
     useUnit([
       $mappedTasks,
       createTaskModalOpened,
@@ -63,27 +42,24 @@ export const Calendar = () => {
     <Layout>
       <Layout.Header
         iconName="common/calendar"
-        title={`Calendar, ${fullNameMonths[displayedMonth]} ${displayedYear}`}
+        title={`Calendar, ${[displayedMonth]} ${displayedYear}`}
       />
       <Layout.Content className="flex h-full flex-col">
-        <MonthSwitcher
-          displayedMonth={date.month()}
-          changeMonth={changeMonth}
-        />
-        <WeekNames />
-        <CalendarTable
-          updateTaskOpened={openTaskUpdating}
-          createTaskOpened={openTaskCreating}
-          calendar={calendar}
+        <Calendar
+          openUpdatedTask={openUpdatedTask}
+          openCreatedTask={openCreatedTask}
+          modal={$$moreTasksModal}
+          date={date}
+          setDate={setDate}
           tasks={tasks}
         />
         <BaseModal className="w-[600px]" modal={$$modal}>
-          {updatedTask?.id && (
+          {updatedTaskId && (
             <ExpandedTask
               modifyTaskModel={$$updateTask}
               dateModifier={true}
               sideDatePicker={false}
-              rightPanelSlot={<UpdateActionsButtons taskId={updatedTask?.id} />}
+              rightPanelSlot={<UpdateActionsButtons taskId={updatedTaskId} />}
             />
           )}
           {createdTask && (
@@ -101,11 +77,11 @@ export const Calendar = () => {
 }
 
 const UpdateActionsButtons = ({ taskId }: { taskId: string }) => {
-  const deleteTask = useUnit($$deleteTask.taskDeleted)
+  const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
   return (
     <div className="flex items-center">
       <Button
-        onClick={() => deleteTask({ id: taskId })}
+        onClick={() => deleteTaskById(taskId)}
         size={"xs"}
         className="mr-2"
         intent={"primary"}

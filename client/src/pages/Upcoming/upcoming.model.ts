@@ -8,7 +8,7 @@ import { createRemoveTaskFactory } from "@/features/task/delete"
 import { createTaskFactory } from "@/features/task/create"
 import { updateTaskFactory } from "@/features/task/update"
 
-import { $$task, Task } from "@/entities/task/tasks"
+import { $$task, Task } from "@/entities/task/task-item"
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
   defaultType: "unplaced",
@@ -40,17 +40,20 @@ export const $tasksByDate = combine($$task.$taskKv, $variant, (kv, variant) => {
 })
 
 export const newTaskByDate = combine($$task.$taskKv, (kv) => {
-  return Object.values(kv).reduce((acc, item) => {
-    const date = dayjs(item.start_date).format('YYYY-MM-DD')
-    if(!item.start_date) {
+  return Object.values(kv).reduce(
+    (acc, item) => {
+      const date = dayjs(item.start_date).format("YYYY-MM-DD")
+      if (!item.start_date) {
+        return acc
+      }
+      if (!acc[date]) {
+        acc[date] = []
+      }
+      acc[date].push(item)
       return acc
-    }
-    if(!acc[date]) {
-      acc[date] = []
-    }
-    acc[date].push(item)
-    return acc
-  }, {} as unknown as Record<string, Task[]>)
+    },
+    {} as unknown as Record<string, Task[]>,
+  )
 })
 
 sample({

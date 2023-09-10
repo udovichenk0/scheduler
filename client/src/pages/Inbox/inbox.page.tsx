@@ -4,7 +4,8 @@ import { useRef, useState } from "react"
 import { Layout } from "@/templates/main"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
-import { List } from "@/widgets/task-list"
+
+import { TaskItem } from "@/entities/task/task-item"
 
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { NoTasks } from "@/shared/ui/no-tasks"
@@ -23,38 +24,54 @@ export const Inbox = () => {
   const [
     tasks,
     createdTask,
-    updatedTask,
-    closeTaskTriggered,
-    updateTaskOpened,
-    createTaskOpened,
-    deleteTask,
+    updatedTaskId,
+    closeTask,
+    openUpdatedTaskById,
+    openCreatedTask,
+    deleteTaskById,
+    changeStatusAndUpdate,
+    changeDateAndUpdate,
   ] = useUnit([
     $inboxTasks,
     $$taskDisclosure.$createdTask,
-    $$taskDisclosure.$updatedTask,
+    $$taskDisclosure.$updatedTaskId,
     $$taskDisclosure.closeTaskTriggered,
-    $$taskDisclosure.updatedTaskOpened,
+    $$taskDisclosure.updatedTaskOpenedById,
     $$taskDisclosure.createdTaskOpened,
-    $$deleteTask.taskDeleted,
+    $$deleteTask.taskDeletedById,
+    $updateTask.statusChangedAndUpdated,
+    $updateTask.dateChangedAndUpdated,
   ])
   return (
     <Layout>
       <Layout.Header iconName="common/inbox" title="Inbox" />
       <Layout.Content
         className="flex flex-col"
-        onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)}
+        onClick={(e) => onClickOutside(ref, e, closeTask)}
       >
-        <List
-          $$updateTask={$updateTask}
-          updatedTaskId={updatedTask?.id || null}
-          tasks={tasks}
-          openTask={updateTaskOpened}
-          dateModifier={false}
-          taskRef={ref}
-          selectedTask={selectedTask}
-          selectTask={selectTask}
-        />
-        <div className="mx-5">
+        {tasks?.map((task, id) => {
+          return (
+            <div className="px-3 pb-1 first:pt-2 last:pb-2" key={id}>
+              {task.id === updatedTaskId ? (
+                <ExpandedTask
+                  dateModifier={false}
+                  modifyTaskModel={$updateTask}
+                  taskRef={ref}
+                />
+              ) : (
+                <TaskItem
+                  onUpdateDate={changeDateAndUpdate}
+                  onUpdateStatus={changeStatusAndUpdate}
+                  isTaskSelected={selectedTask?.id === task.id}
+                  onClick={selectTask}
+                  onDoubleClick={() => openUpdatedTaskById(task.id)}
+                  task={task}
+                />
+              )}
+            </div>
+          )
+        })}
+        <div className="mx-3">
           {createdTask && (
             <ExpandedTask
               modifyTaskModel={$createTask}
@@ -68,8 +85,8 @@ export const Inbox = () => {
 
       <Layout.Footer
         isTaskSelected={!!selectedTask}
-        deleteTask={() => selectedTask && deleteTask({ id: selectedTask.id })}
-        action={() => createTaskOpened()}
+        deleteTask={() => selectedTask && deleteTaskById(selectedTask.id)}
+        action={() => openCreatedTask()}
       />
     </Layout>
   )

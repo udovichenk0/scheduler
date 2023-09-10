@@ -1,6 +1,6 @@
 import dayjs, { Dayjs } from "dayjs"
 
-import { $$task, Task } from "@/entities/task/tasks"
+import { $$task, Task } from "@/entities/task/task-item"
 
 import { MIN_DATES_LENGTH, MIN_MONTHS_LENGTH } from "../../config"
 

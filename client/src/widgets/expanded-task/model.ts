@@ -4,12 +4,13 @@ import { spread, and, not, or } from "patronum"
 import { CreateTaskType } from "@/features/task/create"
 import { UpdateTaskType } from "@/features/task/update"
 
-import { TaskKv } from "@/entities/task/tasks"
+import { TaskKv } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
 
-export const pomodoroModal = createModal({ closeOnClickOutside: true })
-export const settingsModal = createModal({ closeOnClickOutside: true })
+export const pomodoroModal = createModal({})
+export const settingsModal = createModal({})
+export const dateModal = createModal({})
 
 export const disclosureTask = ({
   updateTaskModel,
@@ -28,7 +29,7 @@ export const disclosureTask = ({
     $type,
     $isUpdating,
     taskSuccessfullyUpdated,
-    updateTaskTriggered,
+    updateTaskTriggeredById,
     $isAllowToSubmit: $isAllowToUpdate,
   } = updateTaskModel
   const {
@@ -39,22 +40,22 @@ export const disclosureTask = ({
   } = createTaskModel
 
   const closeTaskTriggered = createEvent()
-  const updatedTaskOpened = createEvent<{ id: string }>()
+  const updatedTaskOpenedById = createEvent<string>()
   const createdTaskOpened = createEvent()
 
   const updatedTaskClosed = createEvent()
   const createdTaskClosed = createEvent()
 
-  const $updatedTask = createStore<Nullable<{ id: string }>>(null)
+  const $updatedTaskId = createStore<Nullable<string>>(null)
   const $createdTask = createStore(false)
 
   const $isUpdatedTaskTriggered = createStore<Nullable<{ id: string }>>(null)
   const $isCreatedTaskTriggered = createStore(false)
 
   sample({
-    clock: updatedTaskOpened,
+    clock: updatedTaskOpenedById,
     source: tasks,
-    fn: (tasks, { id }) => tasks[id],
+    fn: (tasks, id) => tasks[id],
     target: spread({
       targets: {
         title: $title,
@@ -73,7 +74,7 @@ export const disclosureTask = ({
   })
   sample({
     clock: closeTaskTriggered,
-    source: $updatedTask,
+    source: $updatedTaskId,
     filter: Boolean,
     target: updatedTaskClosed,
   })
@@ -84,23 +85,23 @@ export const disclosureTask = ({
   })
 
   sample({
-    clock: updatedTaskOpened,
+    clock: updatedTaskOpenedById,
     filter: and(
-      not($updatedTask),
+      not($updatedTaskId),
       not($createdTask),
       not($isUpdatedTaskTriggered),
     ),
-    target: $updatedTask,
+    target: $updatedTaskId,
   })
   sample({
-    clock: updatedTaskOpened,
-    filter: and($updatedTask, not($isAllowToUpdate)),
-    target: $updatedTask,
+    clock: updatedTaskOpenedById,
+    filter: and($updatedTaskId, not($isAllowToUpdate)),
+    target: $updatedTaskId,
   })
 
   sample({
     clock: taskSuccessfullyUpdated,
-    target: $updatedTask.reinit!,
+    target: $updatedTaskId.reinit!,
   })
   sample({
     clock: taskSuccessfullyUpdated,
@@ -113,7 +114,7 @@ export const disclosureTask = ({
   sample({
     clock: createdTaskOpened,
     filter: and(
-      not($updatedTask),
+      not($updatedTaskId),
       not($createdTask),
       not($isCreatedTaskTriggered),
     ),
@@ -122,15 +123,15 @@ export const disclosureTask = ({
   })
   sample({
     clock: createdTaskOpened,
-    filter: and($updatedTask, not($isAllowToUpdate)),
+    filter: and($updatedTaskId, not($isAllowToUpdate)),
     fn: () => true,
-    target: [$createdTask, $updatedTask.reinit],
+    target: [$createdTask, $updatedTaskId.reinit],
   })
   // set flag to open create task later, if you are allowed can update task or create
   sample({
     clock: createdTaskOpened,
     filter: or(
-      and($updatedTask, $isAllowToUpdate),
+      and($updatedTaskId, $isAllowToUpdate),
       and($createdTask, $isAllowToCreate),
     ),
     fn: () => true,
@@ -148,28 +149,18 @@ export const disclosureTask = ({
     target: $createdTask.reinit!,
   })
   // Click on opened created task, if updated task if opened and can be updated then update
-  type P = {
-    task: { id: string } | null
-    canUpdate: boolean
-    isUpdating: boolean
-  }
-  type P1 = {
-    task: { id: string }
-    canUpdate: boolean
-    isUpdating: boolean
-  }
   sample({
     clock: [updatedTaskClosed, createdTaskOpened],
     source: {
-      task: $updatedTask,
+      updatedTaskId: $updatedTaskId,
       canUpdate: $isAllowToUpdate,
       isUpdating: $isUpdating,
     },
-    filter: (value: P): value is P1 => {
-      return Boolean(value.task) && value.canUpdate && !value.isUpdating
+    filter: ({ updatedTaskId, canUpdate, isUpdating }) => {
+      return Boolean(updatedTaskId) && canUpdate && !isUpdating
     },
-    fn: ({ task }) => ({ id: task.id }),
-    target: updateTaskTriggered,
+    fn: ({ updatedTaskId }) => updatedTaskId!,
+    target: updateTaskTriggeredById,
   })
   sample({
     clock: createdTaskClosed,
@@ -193,13 +184,13 @@ export const disclosureTask = ({
   sample({
     clock: updatedTaskClosed,
     filter: not($isAllowToUpdate),
-    target: $updatedTask.reinit!,
+    target: $updatedTaskId.reinit!,
   })
   return {
     closeTaskTriggered,
     $createdTask,
-    $updatedTask,
-    updatedTaskOpened,
+    $updatedTaskId,
+    updatedTaskOpenedById,
     createdTaskOpened,
   }
 }

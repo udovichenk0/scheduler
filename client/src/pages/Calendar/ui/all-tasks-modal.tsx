@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom"
 
-import { Task } from "@/entities/task/tasks"
+import { Task } from "@/entities/task/task-item"
 
 export const AllTasksModal = ({
   isOpen,

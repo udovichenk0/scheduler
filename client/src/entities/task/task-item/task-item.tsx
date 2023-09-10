@@ -1,15 +1,18 @@
 import dayjs from "dayjs"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { Link } from "atomic-router-react"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { routes } from "@/shared/routing"
-
-import { DateModal } from "../modify/ui/date-modal"
+import { BaseModal } from "@/shared/ui/modals/base"
+import { DatePicker } from "@/shared/ui/date-picker"
+import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 
 import { Task, TaskStatus } from "./type"
+
+import { $$dateModal } from "."
 
 export const TaskItem = ({
   task,
@@ -30,10 +33,9 @@ export const TaskItem = ({
   isTaskSelected: boolean
   typeLabel?: boolean
 }) => {
-  const [isDatePickerOpened, setDatePickerOpen] = useState(false)
   const { title, status, start_date } = task
   const onChangeDate = (date: Date) => {
-    setDatePickerOpen(false)
+    $$dateModal.close()
     onUpdateDate({ date, id: task.id })
   }
   const onChangeStatus = () => {
@@ -47,17 +49,18 @@ export const TaskItem = ({
   return (
     <div className="group flex gap-2">
       <Icon
-        onClick={() => setDatePickerOpen(true)}
+        onClick={() => $$dateModal.open()}
         name="common/upcoming"
         className="invisible translate-y-1 text-lg text-accent group-hover:visible"
       />
-      {isDatePickerOpened && (
-        <DateModal
-          taskDate={task.start_date || new Date()}
-          changeDate={onChangeDate}
-          closeDatePicker={() => setDatePickerOpen(false)}
+      <BaseModal modal={$$dateModal}>
+        <DatePicker
+          currentDate={task.start_date || new Date()}
+          onDateChange={onChangeDate}
+          onCancel={() => console.log("cancel")}
+          onSave={() => console.log("cancel")}
         />
-      )}
+      </BaseModal>
       <Button
         intent={"primary"}
         onDoubleClick={onDoubleClick}
@@ -65,7 +68,7 @@ export const TaskItem = ({
         onBlur={() => onClick(null)}
         className={`${
           isTaskSelected && "bg-cFocus"
-        } flex w-full select-none items-center px-2 py-2 text-sm`}
+        } flex w-full select-none items-center p-2 text-sm`}
       >
         <div className="flex w-full select-none gap-3">
           <Checkbox
@@ -124,28 +127,14 @@ export const TaskItem = ({
     </div>
   )
 }
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-]
 
 function normilizeDate(date: Date) {
   const dayjsDate = dayjs(date)
   if (dayjsDate.year() == dayjs().year()) {
-    return `${months[dayjsDate.month()]} ${dayjsDate.date()}`
+    return `${LONG_MONTHS_NAMES[dayjsDate.month()]} ${dayjsDate.date()}`
   } else {
     return `${dayjsDate.year()} ${
-      months[dayjsDate.month()]
+      LONG_MONTHS_NAMES[dayjsDate.month()]
     } ${dayjsDate.date()}`
   }
 }

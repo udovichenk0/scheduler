@@ -5,4 +5,4 @@ export const tokenSchema = z.object({
   access_token: z.string(),
   userData: userSchema,
 })
-export type RefreshType = z.infer<typeof tokenSchema>
+export type TokenDto = z.infer<typeof tokenSchema>

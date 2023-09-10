@@ -1,10 +1,10 @@
 import dayjs from "dayjs"
 import { useRef, useState, useEffect, MouseEvent } from "react"
 
-import { Task } from "@/entities/task/tasks"
+import { Task } from "@/entities/task/task-item"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
-import { months } from "@/shared/config/constants"
+import { SHORT_MONTHS_NAMES } from "@/shared/config/constants"
 
 import { AllTasksModal } from "./all-tasks-modal"
 
@@ -71,7 +71,9 @@ export const Cell = ({
       } border-r border-cBorder p-2 text-cCalendarFont`}
     >
       <div className="mb-1 flex items-center justify-end gap-1">
-        {isFirstDate && <span className="text-sm">{months[month]}</span>}
+        {isFirstDate && (
+          <span className="text-sm">{SHORT_MONTHS_NAMES[month]}</span>
+        )}
         <div
           className={`${isPast && "opacity-30"} text-end ${
             isToday &&

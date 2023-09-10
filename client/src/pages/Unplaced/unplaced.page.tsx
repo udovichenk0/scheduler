@@ -4,7 +4,8 @@ import { useRef, useState } from "react"
 import { Layout } from "@/templates/main"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
-import { List } from "@/widgets/task-list"
+
+import { TaskItem } from "@/entities/task/task-item"
 
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { NoTasks } from "@/shared/ui/no-tasks"
@@ -21,40 +22,54 @@ export const Unplaced = () => {
   const [selectedTask, selectTask] = useState<Nullable<{ id: string }>>(null)
   const taskRef = useRef<HTMLDivElement>(null)
   const [
-    tasks,
+    unplacedTasks,
     createdTask,
-    updatedTask,
-    closeTaskTriggered,
-    updateTaskOpened,
-    createTaskOpened,
-    deleteTask,
+    updatedTaskId,
+    closeTask,
+    openUpdatedTaskById,
+    openCreatedTask,
+    deleteTaskById,
+    changeStatusAndUpdate,
+    changeDateAndUpdate,
   ] = useUnit([
     $unplacedTasks,
     $$taskDisclosure.$createdTask,
-    $$taskDisclosure.$updatedTask,
+    $$taskDisclosure.$updatedTaskId,
     $$taskDisclosure.closeTaskTriggered,
-    $$taskDisclosure.updatedTaskOpened,
+    $$taskDisclosure.updatedTaskOpenedById,
     $$taskDisclosure.createdTaskOpened,
-    $$deleteTask.taskDeleted,
+    $$deleteTask.taskDeletedById,
+    $$updateTask.statusChangedAndUpdated,
+    $$updateTask.dateChangedAndUpdated,
   ])
   return (
     <Layout>
       <Layout.Header iconName="common/cross-arrows" title="Unplaced" />
-      <Layout.Content
-        onClick={(e) => onClickOutside(taskRef, e, closeTaskTriggered)}
-      >
-        <List
-          $$updateTask={$$updateTask}
-          updatedTaskId={updatedTask?.id || null}
-          tasks={tasks}
-          openTask={updateTaskOpened}
-          taskRef={taskRef}
-          dateLabel
-          selectedTask={selectedTask}
-          selectTask={selectTask}
-        />
-        <NoTasks isTaskListEmpty={!tasks?.length && !createdTask} />
-        <div className="mx-5">
+      <Layout.Content onClick={(e) => onClickOutside(taskRef, e, closeTask)}>
+        {unplacedTasks?.map((task, id) => {
+          return (
+            <div className="px-3 pb-1" key={id}>
+              {task.id === updatedTaskId ? (
+                <ExpandedTask
+                  modifyTaskModel={$$updateTask}
+                  taskRef={taskRef}
+                />
+              ) : (
+                <TaskItem
+                  dateLabel
+                  onUpdateDate={changeDateAndUpdate}
+                  onUpdateStatus={changeStatusAndUpdate}
+                  isTaskSelected={selectedTask?.id === task.id}
+                  onClick={selectTask}
+                  onDoubleClick={() => openUpdatedTaskById(task.id)}
+                  task={task}
+                />
+              )}
+            </div>
+          )
+        })}
+        <NoTasks isTaskListEmpty={!unplacedTasks?.length && !createdTask} />
+        <div className="mx-3">
           {createdTask && (
             <ExpandedTask
               modifyTaskModel={$$createTask}
@@ -66,8 +81,8 @@ export const Unplaced = () => {
       </Layout.Content>
       <Layout.Footer
         isTaskSelected={!!selectedTask}
-        deleteTask={() => selectedTask && deleteTask({ id: selectedTask.id })}
-        action={() => createTaskOpened()}
+        deleteTask={() => selectedTask && deleteTaskById(selectedTask.id)}
+        action={() => openCreatedTask()}
       />
     </Layout>
   )

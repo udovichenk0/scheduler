@@ -1,13 +1,15 @@
 import { extend } from "dayjs"
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter"
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore"
+import isTomorrow from "dayjs/plugin/isTomorrow"
+import isToday from "dayjs/plugin/isToday"
 import { createEffect, sample } from "effector"
 import { createRoot } from "react-dom/client"
 import { not } from "patronum"
 
 import App from "./app/App"
 import "./app/index.css"
-import { $$task, LocalStorageTask } from "./entities/task/tasks"
+import { $$task, LocalStorageTask } from "./entities/task/task-item"
 import { refreshQuery } from "./shared/api/token"
 import { appInitializer } from "./app/initializer"
 import { $$session, User } from "./entities/session"
@@ -15,6 +17,8 @@ import { createManyTasksQuery } from "./shared/api/task"
 
 extend(isSameOrAfter)
 extend(isSameOrBefore)
+extend(isTomorrow)
+extend(isToday)
 
 const { init } = appInitializer()
 

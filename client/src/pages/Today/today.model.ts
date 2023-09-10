@@ -7,7 +7,7 @@ import { createRemoveTaskFactory } from "@/features/task/delete"
 import { createTaskFactory } from "@/features/task/create"
 import { updateTaskFactory } from "@/features/task/update"
 
-import { $$task } from "@/entities/task/tasks"
+import { $$task } from "@/entities/task/task-item"
 
 import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
 export const $$deleteTask = createRemoveTaskFactory()

@@ -2,10 +2,10 @@ import dayjs from "dayjs"
 import { useUnit } from "effector-react"
 import { RefObject } from "react"
 
+import { LONG_MONTHS_NAMES, LONG_WEEKS_NAMES } from "@/shared/config/constants"
+
 import {
   generateRemainingDaysOfMonth,
-  weekDays,
-  months,
   generateRemainingMonthsOfYear,
 } from "../../config"
 import { TasksSection } from "../../ui/date-section"
@@ -15,7 +15,7 @@ import {
   $upcomingYears,
   $remainingDays,
   $remainingMonths,
-} from "./tasks.model"
+} from "./upcoming-tasks.model"
 
 export const AllUpcomingTasks = ({
   selectedDate,
@@ -114,7 +114,9 @@ const DateSectionTaskList = ({
             title={
               <span className="space-x-1">
                 <span>{date.date()}</span>
-                <span>{!isCurrentMonth && months[dayjs(date).month()]}</span>
+                {!isCurrentMonth && (
+                  <span>LONG_MONTHS_NAMES[dayjs(date).month()]</span>
+                )}
                 <span>
                   {date.isToday()
                     ? "Today"
@@ -122,7 +124,7 @@ const DateSectionTaskList = ({
                     ? "Tomorrow"
                     : ""}
                 </span>
-                <span>{weekDays[date.day()]}</span>
+                <span>{LONG_WEEKS_NAMES[date.day()]}</span>
               </span>
             }
             tasks={tasks}
@@ -158,11 +160,13 @@ const RestDateSectionTasklist = ({
           {remainingDays.isLastDate ? (
             <>
               <span className="mr-1">{remainingDays.date.date()}</span>
-              <span>{weekDays[remainingDays.date.day()]}</span>
+              <span>{LONG_WEEKS_NAMES[remainingDays.date.day()]}</span>
             </>
           ) : (
             <>
-              <span className="mr-1">{months[remainingDays.date.month()]}</span>
+              <span className="mr-1">
+                {LONG_MONTHS_NAMES[remainingDays.date.month()]}
+              </span>
               <span>
                 {remainingDays.firstDay}
                 {"\u2013"}
@@ -209,7 +213,7 @@ const MonthSectionTaskList = ({
             key={date.month()}
             action={() => changeDate(new Date(date.toISOString()))}
             isSelected={date.isSame(selectedDate, "day")}
-            title={<span>{months[date.month()]}</span>}
+            title={<span>{LONG_MONTHS_NAMES[date.month()]}</span>}
             taskRef={taskRef}
             tasks={tasks}
           />
@@ -239,10 +243,10 @@ const RestMonthSectionTasklist = ({
       selectTask={selectTask}
       title={
         remainingMonths.isLastMonth ? (
-          <span>{months[remainingMonths.startDate]}</span>
+          <span>{LONG_MONTHS_NAMES[remainingMonths.startDate]}</span>
         ) : (
-          <span>{`${months[remainingMonths.startDate]}\u2013${
-            months[remainingMonths.endDate]
+          <span>{`${LONG_MONTHS_NAMES[remainingMonths.startDate]}\u2013${
+            LONG_MONTHS_NAMES[remainingMonths.endDate]
           }`}</span>
         )
       }

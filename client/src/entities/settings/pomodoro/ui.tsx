@@ -49,36 +49,36 @@ const SettingsWithInputs = () => {
 
   return (
     <div className="mb-6 space-y-3">
-        <div className="flex items-center justify-end">
-          <span>Work duration:</span>
-          <PomodoroInput
-            onSubmit={applySettings}
-            onChange={changeWorkDuration}
-            className="ml-1 mr-2"
-            value={workDuration}
-          />
-          <span>minutes</span>
-        </div>
-        <div className="flex items-center justify-end">
-          <span>Short break:</span>
-          <PomodoroInput
-            onSubmit={applySettings}
-            onChange={changeShortBreak}
-            className="ml-1 mr-2"
-            value={shortBreak}
-          />
-          <span>minutes</span>
-        </div>
-        <div className="flex items-center justify-end">
-          <span>Long break:</span>
-          <PomodoroInput
-            onSubmit={applySettings}
-            onChange={changeLongBreak}
-            className="ml-1 mr-2"
-            value={longBreak}
-          />
-          <span>minutes</span>
-        </div>
+      <div className="flex items-center justify-end">
+        <span>Work duration:</span>
+        <PomodoroInput
+          onSubmit={applySettings}
+          onChange={changeWorkDuration}
+          className="ml-1 mr-2"
+          value={workDuration}
+        />
+        <span>minutes</span>
+      </div>
+      <div className="flex items-center justify-end">
+        <span>Short break:</span>
+        <PomodoroInput
+          onSubmit={applySettings}
+          onChange={changeShortBreak}
+          className="ml-1 mr-2"
+          value={shortBreak}
+        />
+        <span>minutes</span>
+      </div>
+      <div className="flex items-center justify-end">
+        <span>Long break:</span>
+        <PomodoroInput
+          onSubmit={applySettings}
+          onChange={changeLongBreak}
+          className="ml-1 mr-2"
+          value={longBreak}
+        />
+        <span>minutes</span>
+      </div>
     </div>
   )
 }

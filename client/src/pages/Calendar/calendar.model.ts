@@ -6,7 +6,7 @@ import { createRemoveTaskFactory } from "@/features/task/delete"
 import { createTaskFactory } from "@/features/task/create"
 import { updateTaskFactory } from "@/features/task/update"
 
-import { $$task, Task } from "@/entities/task/tasks"
+import { $$task, Task } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
 
@@ -17,7 +17,10 @@ export const $$createTask = createTaskFactory({
   defaultType: "unplaced",
   defaultDate: new Date(),
 })
-export const $$modal = createModal({ closeOnClickOutside: true })
+
+export const $$modal = createModal({})
+export const $$moreTasksModal = createModal({})
+
 export const $mappedTasks = $$task.$taskKv.map((tasks) => {
   return Object.values(tasks).reduce(
     (acc, task) => {
@@ -36,7 +39,7 @@ export const $mappedTasks = $$task.$taskKv.map((tasks) => {
 })
 export const canceled = createEvent()
 export const saved = createEvent()
-export const $updatedTask = createStore<{ id: string } | null>(null)
+export const $updatedTask = createStore<string | null>(null)
 export const $createdTask = createStore(false)
 
 export const createTaskModalOpened = createEvent<Date>()
@@ -53,7 +56,7 @@ sample({
 
 sample({
   clock: updateTaskModalOpened,
-  target: [$$updateTask.setFieldsTriggered, $updatedTask],
+  target: [$$updateTask.setFieldsTriggeredById, $updatedTask],
 })
 
 sample({
@@ -83,24 +86,15 @@ sample({
   target: $$createTask.createTaskTriggered,
 })
 
-type P = {
-  updatedTask: { id: string } | null
-  canUpdate: boolean
-}
-type P1 = {
-  updatedTask: { id: string }
-  canUpdate: boolean
-}
 sample({
   clock: saved,
   source: {
-    updatedTask: $updatedTask,
+    updatedTaskId: $updatedTask,
     canUpdate: $$updateTask.$isAllowToSubmit,
   },
-  filter: (payload: P): payload is P1 =>
-    payload.canUpdate && Boolean(payload.updatedTask),
-  fn: ({ updatedTask }) => ({ id: updatedTask.id }),
-  target: $$updateTask.updateTaskTriggered,
+  filter: ({ canUpdate, updatedTaskId }) => canUpdate && Boolean(updatedTaskId),
+  fn: ({ updatedTaskId }) => updatedTaskId!,
+  target: $$updateTask.updateTaskTriggeredById,
 })
 
 //reset fields after modal is closed

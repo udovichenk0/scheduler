@@ -1,8 +1,8 @@
 import { routes } from "@/shared/routing"
 
-import { Calendar } from "./calendar.page"
+import { CalendarPage } from "./calendar.page"
 
 export const CalendarRoute = {
-  view: Calendar,
+  view: CalendarPage,
   route: routes.calendar,
 }

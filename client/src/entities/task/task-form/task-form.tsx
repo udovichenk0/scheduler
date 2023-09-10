@@ -1,15 +1,17 @@
 import { Event as EffectorEvent, Store } from "effector"
 import { useUnit } from "effector-react"
-import { useState, useRef, useEffect } from "react"
+import { useRef, useEffect } from "react"
 
 import { capitalizeLetter } from "@/shared/lib/capitalize-first-letter"
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
+import { BaseModal } from "@/shared/ui/modals/base"
+import { DatePicker } from "@/shared/ui/date-picker"
 
-import { normalizeDate } from "./lib/normalize-date"
-import { DateModal } from "./ui/date-modal"
-import { TypeModal } from "./ui/type-modal"
+import { $$dateModal, $$typeModal } from "./modify.model"
+import { formatTaskDate } from "./lib/normalize-date"
+import { TypePickerModal } from "./ui/type-modal"
 
 type ModifyTaskFormType = {
   $title: Store<string>
@@ -42,6 +44,9 @@ export const ModifyTaskForm = ({
     changeTitle,
     changeType,
     changeDate,
+    openDateModal,
+    closeDateModal,
+    openTypeModal,
   ] = useUnit([
     modifyTaskModel.$title,
     modifyTaskModel.$description,
@@ -53,23 +58,15 @@ export const ModifyTaskForm = ({
     modifyTaskModel.titleChanged,
     modifyTaskModel.typeChanged,
     modifyTaskModel.dateChanged,
+    $$dateModal.open,
+    $$dateModal.close,
+    $$typeModal.open,
   ])
-
-  const [isTypeOpened, setTypeOpen] = useState(false)
-  const [isDatePickerOpened, setDatePickerOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
   const titleInputRef = useRef<HTMLInputElement>(null)
+
   useEffect(() => {
     titleInputRef.current!.focus()
   }, [])
-  const onChangeType = (payload: "inbox" | "unplaced") => {
-    setTypeOpen(false)
-    changeType(payload)
-  }
-  const onChangeDate = (payload: Date) => {
-    setDatePickerOpen(false)
-    changeDate(payload)
-  }
 
   return (
     <div className="flex w-full gap-2 rounded-[5px] text-cTaskEditDefault">
@@ -96,7 +93,7 @@ export const ModifyTaskForm = ({
         />
         <div className="space-y-1">
           <Button
-            onClick={() => setTypeOpen((prev) => !prev)}
+            onClick={openTypeModal}
             size={"sm"}
             intent={"primary"}
             className="flex gap-4"
@@ -110,7 +107,7 @@ export const ModifyTaskForm = ({
 
           {dateModifier && (
             <Button
-              onClick={() => setDatePickerOpen((prev) => !prev)}
+              onClick={openDateModal}
               size={"sm"}
               intent={"primary"}
               className="flex"
@@ -121,26 +118,22 @@ export const ModifyTaskForm = ({
               />
               <span>Date</span>
               <span className="ml-2 text-accent">
-                {taskDate && normalizeDate(taskDate)}
+                {taskDate && formatTaskDate(taskDate)}
               </span>
             </Button>
           )}
         </div>
-        {isTypeOpened && (
-          <TypeModal
-            outRef={ref}
-            currentType={taskType}
-            changeType={onChangeType}
-            closeTypeModal={() => setTypeOpen(false)}
+        <TypePickerModal currentType={taskType} changeType={changeType} />
+        <BaseModal modal={$$dateModal}>
+          <DatePicker
+            currentDate={taskDate || new Date()}
+            onDateChange={changeDate}
+            onCancel={closeDateModal}
+            onSave={() => {
+              throw new Error("Not implemented")
+            }}
           />
-        )}
-        {isDatePickerOpened && (
-          <DateModal
-            taskDate={taskDate || new Date()}
-            changeDate={onChangeDate}
-            closeDatePicker={() => setDatePickerOpen(false)}
-          />
-        )}
+        </BaseModal>
       </div>
     </div>
   )

@@ -1,15 +1,10 @@
 import { useUnit } from "effector-react"
 import { useRef, useState } from "react"
-import dayjs, { Dayjs } from "dayjs"
-import { clsx } from "clsx"
 
 import { Layout } from "@/templates/main"
 
 import { onClickOutside } from "@/shared/lib/on-click-outside"
-import { Icon } from "@/shared/ui/icon"
-import { Button } from "@/shared/ui/buttons/main-button"
 
-import style from "./style.module.css"
 import { AllUpcomingTasks } from "./sections/upcoming-tasks"
 import {
   $$deleteTask,
@@ -20,20 +15,20 @@ import {
   $tasksByDate,
   $variant,
   variantSelected,
-  newTaskByDate,
 } from "./upcoming.model"
-import { TasksByDate } from "./sections/today-tasks"
-import { months, weekDays } from "./config"
+import { TasksByDate } from "./sections/tasks-by-date"
+import { HeaderTitle } from "./ui/header-title"
+import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer"
 
 export const Upcoming = () => {
   const ref = useRef<HTMLDivElement>(null)
   const [selectedTask, selectTask] = useState<Nullable<{ id: string }>>(null)
   const [
-    closeTaskTriggered,
-    createTaskOpened,
+    closeTask,
+    openCreatedTask,
     selectedDate,
     changeDate,
-    deleteTask,
+    deleteTaskById,
     nextDate,
     tasks,
     variant,
@@ -43,7 +38,7 @@ export const Upcoming = () => {
     $$taskDisclosure.createdTaskOpened,
     $selectedDate,
     currentDateSelected,
-    $$deleteTask.taskDeleted,
+    $$deleteTask.taskDeletedById,
     $nextDate,
     $tasksByDate,
     $variant,
@@ -53,12 +48,9 @@ export const Upcoming = () => {
     <Layout>
       <Layout.Header
         iconName="common/upcoming"
-        title={<Title variant={variant} />}
+        title={<HeaderTitle variant={variant} />}
       />
-      <Layout.Content
-        className="flex flex-col"
-        onClick={(e) => onClickOutside(ref, e, closeTaskTriggered)}
-      >
+      <Layout.Content onClick={(e) => onClickOutside(ref, e, closeTask)}>
         <UpcomingVariantChanger
           setUpcomingVariant={selectVariant}
           variant={variant}
@@ -84,132 +76,9 @@ export const Upcoming = () => {
       </Layout.Content>
       <Layout.Footer
         isTaskSelected={!!selectedTask}
-        deleteTask={() => selectedTask && deleteTask({ id: selectedTask.id })}
-        action={() => createTaskOpened()}
+        deleteTask={() => selectedTask && deleteTaskById(selectedTask.id)}
+        action={() => openCreatedTask()}
       />
     </Layout>
   )
-}
-const Title = ({ variant }: { variant: "upcoming" | Dayjs }) => {
-  return (
-    <div>
-      {variant == "upcoming" ? (
-        <span>Upcoming</span>
-      ) : (
-        <div>
-          <span className="text-cIconDefault">{weekDays[variant.day()]}, </span>
-          <span></span>
-          <span>
-            {variant.date()}{" "}
-            {months[variant.month()].slice(0, 1).toLowerCase() +
-              months[variant.month()].slice(1)}{" "}
-          </span>
-          <span className="text-cIconDefault">{variant.year()}</span>
-        </div>
-      )}
-    </div>
-  )
-}
-function UpcomingVariantChanger({
-  setUpcomingVariant,
-  variant,
-}: {
-  setUpcomingVariant: (variant: "upcoming" | Dayjs) => void
-  variant: "upcoming" | Dayjs
-}) {
-  const [week, setWeek] = useState(0)
-  const [dayList, sestDayList] = useState(generateDays(week))
-  const isWeekSameOrAfter = dayjs(dayList[0]).add(-7, "day").isBefore(dayjs())
-  const [tasksByDate] = useUnit([newTaskByDate])
-  const changeWeek = (week: number) => {
-    setWeek(week)
-    sestDayList(generateDays(week))
-  }
-  return (
-    <div className="sticky top-0 z-10 flex w-full bg-main">
-      <div className="mb-2 flex w-full border-b border-accent/50 px-9 text-cIconDefault">
-        <div className="flex">
-          <button
-            title="Upcoming"
-            className={clsx(style.active, "px-2 pb-2")}
-            onClick={() => setUpcomingVariant("upcoming")}
-            data-active={variant === "upcoming"}
-          >
-            <Icon name="common/upcoming" className="text-[21px]" />
-          </button>
-          <button
-            title="Today"
-            className={clsx(style.active, "px-2 pb-2")}
-            onClick={() => setUpcomingVariant(dayjs().startOf("day"))}
-            data-active={dayjs(variant).isToday()}
-          >
-            <Icon name="common/outlined-star" className="text-[21px]" />
-          </button>
-        </div>
-        <div className="flex w-full justify-around text-sm">
-          {dayList.map((date, id) => {
-          const isAnyTask = !!tasksByDate[date.format('YYYY-MM-DD')]
-            return (
-              <button
-                key={id}
-                onClick={() => setUpcomingVariant(date)}
-                data-active={date.isSame(variant)}
-                className={clsx(
-                  style.active,
-                  "w-full py-2 text-sm text-cIconDefault relative",
-                )}
-              >
-                <span>{weekDays[date.day()].slice(0, 2)}. </span>
-                <span className="font-bold mr-1">{date.date()}</span>
-                {isAnyTask && (
-                  <span className="after:content-[''] after:w-[5px] after:h-[5px] after:bg-cIconDefault after:absolute after:top-1/2 after:-translate-y-1/2 after:rounded-full"></span>
-                )}
-              </button>
-            )
-          })}
-        </div>
-      </div>
-      <div className="flex gap-2">
-        <Button
-          disabled={isWeekSameOrAfter}
-          onClick={() => changeWeek(week - 1)}
-          className="h-7 w-7"
-          intent={"primary"}
-          title="Previous Week"
-        >
-          <Icon
-            name="common/arrow"
-            className={`${
-              isWeekSameOrAfter ? "text-cIconDefault" : "text-accent"
-            } -rotate-90 text-[12px]`}
-          />
-        </Button>
-        <Button
-          onClick={() => changeWeek(week + 1)}
-          className="h-7 w-7"
-          intent={"primary"}
-          title="Next Week"
-        >
-          <Icon
-            name="common/arrow"
-            className="rotate-90 text-[12px] text-accent"
-          />
-        </Button>
-      </div>
-    </div>
-  )
-}
-
-function generateDays(int = 0) {
-  const date: Dayjs[] = []
-  const days = Array.from({ length: 7 })
-  // + 1 because we don't want to include the current day
-  let count = int * 7 + 1
-
-  days.forEach(() => {
-    date.push(dayjs().add(count, "day"))
-    count += 1
-  })
-
-  return date
 }

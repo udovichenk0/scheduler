@@ -4,9 +4,9 @@ import { z } from "zod"
 
 import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
 import { singleton } from "@/shared/lib/singleton"
-const ThemeContract = z.enum(["space", "default", "dark", "light", "grey"])
+const themeSchema = z.enum(["space", "default", "dark", "light", "grey"])
 
-export type Theme = z.infer<typeof ThemeContract>
+export type Theme = z.infer<typeof themeSchema>
 export const $$themeSettings = singleton(() => {
   const themeChanged = createEvent<Theme>()
 

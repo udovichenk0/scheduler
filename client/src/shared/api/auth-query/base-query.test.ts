@@ -2,10 +2,8 @@ import { describe, expect, test } from "vitest"
 
 import { setQuery, setUrlParams } from "./base-query"
 
-
-
 describe("base-query test", () => {
-  const baseUrl = 'http://localhost:3000/'
+  const baseUrl = "http://localhost:3000/"
   test("add params to url", () => {
     const urlAsString = "user"
     const urlAsFuncWithoutParams = () => `user`

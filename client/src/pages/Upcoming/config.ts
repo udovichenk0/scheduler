@@ -1,28 +1,5 @@
-import dayjs from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 
-export const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-]
-export const weekDays = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-]
 export const MIN_DATES_LENGTH = 14
 export const MIN_MONTHS_LENGTH = 3
 export function generateRemainingDaysOfMonth() {
@@ -42,4 +19,17 @@ export function generateRemainingMonthsOfYear() {
     monthCounter += 1
     return date
   })
+}
+export function generateDaysOfWeek(int = 0) {
+  const date: Dayjs[] = []
+  const days = Array.from({ length: 7 })
+  // + 1 because we don't want to include the current day
+  let count = int * 7 + 1
+
+  days.forEach(() => {
+    date.push(dayjs().add(count, "day"))
+    count += 1
+  })
+
+  return date
 }

@@ -1,6 +1,6 @@
 import dayjs from "dayjs"
 
-import { months } from "@/shared/config/constants"
+import { SHORT_MONTHS_NAMES } from "@/shared/config/constants"
 
 import { Icon } from "../../icon"
 
@@ -42,7 +42,7 @@ export const Cell = ({
           {date === 1 || isTaskDate ? (
             <div className="grid text-[9px] leading-[9px]">
               <div>{date}</div>
-              <span>{months[month]}</span>
+              <span>{SHORT_MONTHS_NAMES[month]}</span>
             </div>
           ) : (
             <span>{date}</span>

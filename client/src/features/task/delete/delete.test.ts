@@ -1,7 +1,7 @@
 import { fork, allSettled } from "effector"
 import { describe, expect, test, vi } from "vitest"
 
-import { $$task } from "@/entities/task/tasks"
+import { $$task } from "@/entities/task/task-item"
 import { $$session } from "@/entities/session"
 
 import { createRemoveTaskFactory } from "."
@@ -28,7 +28,7 @@ const returnedTask = {
 const $$removeTask = createRemoveTaskFactory()
 describe("delete task", () => {
   test("delete task from database if user is authenticated", async () => {
-    const { taskDeleted, _ } = $$removeTask
+    const { taskDeletedById, _ } = $$removeTask
     const mock = vi.fn(() => returnedTask)
     const scope = fork({
       values: [
@@ -37,11 +37,9 @@ describe("delete task", () => {
       ],
       handlers: [[_.deleteTaskQuery.__.executeFx, mock]],
     })
-    await allSettled(taskDeleted, {
+    await allSettled(taskDeletedById, {
       scope,
-      params: {
-        id: "1",
-      },
+      params: "1",
     })
     expect(mock).toBeCalled()
     expect(mock).toBeCalledWith({ body: { id: "1" } })
@@ -49,7 +47,7 @@ describe("delete task", () => {
     expect(scope.getState($$task.$taskKv)).toStrictEqual({})
   })
   test("delete task from localstorage if user is not authenticated", async () => {
-    const { taskDeleted, _ } = $$removeTask
+    const { taskDeletedById, _ } = $$removeTask
     const mock = vi.fn(() => ({ result: returnedTask }))
     const scope = fork({
       values: [
@@ -58,14 +56,12 @@ describe("delete task", () => {
       ],
       handlers: [[_.deleteTaskFromLsFx, mock]],
     })
-    await allSettled(taskDeleted, {
+    await allSettled(taskDeletedById, {
       scope,
-      params: {
-        id: "1",
-      },
+      params: "1",
     })
     expect(mock).toHaveBeenCalledOnce()
-    expect(mock).toBeCalledWith({ id: "1" })
+    expect(mock).toBeCalledWith("1")
     expect(mock).toReturnWith({ result: returnedTask })
     expect(scope.getState($$task.$taskKv)).toStrictEqual({})
   })
