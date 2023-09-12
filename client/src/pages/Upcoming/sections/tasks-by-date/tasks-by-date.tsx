@@ -7,6 +7,7 @@ import { ExpandedTask } from "@/widgets/expanded-task"
 import { TaskItem, Task } from "@/entities/task/task-item"
 
 import { NoTasks } from "@/shared/ui/no-tasks"
+import { TaskId } from "@/shared/api/task"
 
 import {
   $$taskDisclosure,
@@ -16,14 +17,14 @@ import {
 
 export const TasksByDate = ({
   taskRef,
-  selectTask,
-  selectedTask,
+  selectTaskId,
+  selectedTaskId,
   tasks,
   date,
 }: {
   taskRef: RefObject<HTMLDivElement>
-  selectTask: (task: Nullable<{ id: string }>) => void
-  selectedTask: Nullable<{ id: string }>
+  selectTaskId: (task: Nullable<TaskId>) => void
+  selectedTaskId: Nullable<TaskId>
   tasks: Task[]
   date: Dayjs
 }) => {
@@ -59,8 +60,8 @@ export const TasksByDate = ({
               <TaskItem
                 onUpdateDate={changeDateAndUpdate}
                 onUpdateStatus={changeStatusAndUpdate}
-                isTaskSelected={selectedTask?.id === task.id}
-                onClick={selectTask}
+                isTaskSelected={selectedTaskId === task.id}
+                onClick={selectTaskId}
                 onDoubleClick={() => openUpdatedTaskById(task.id)}
                 task={task}
               />

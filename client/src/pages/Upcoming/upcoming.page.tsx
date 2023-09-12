@@ -4,6 +4,7 @@ import { useRef, useState } from "react"
 import { Layout } from "@/templates/main"
 
 import { onClickOutside } from "@/shared/lib/on-click-outside"
+import { TaskId } from "@/shared/api/task"
 
 import { AllUpcomingTasks } from "./sections/upcoming-tasks"
 import {
@@ -22,7 +23,7 @@ import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer"
 
 export const Upcoming = () => {
   const ref = useRef<HTMLDivElement>(null)
-  const [selectedTask, selectTask] = useState<Nullable<{ id: string }>>(null)
+  const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const [
     closeTask,
     openCreatedTask,
@@ -58,8 +59,8 @@ export const Upcoming = () => {
         {variant === "upcoming" ? (
           <AllUpcomingTasks
             nextDate={nextDate}
-            selectTask={selectTask}
-            selectedTask={selectedTask}
+            selectTaskId={selectTaskId}
+            selectedTaskId={selectedTaskId}
             changeDate={changeDate}
             selectedDate={selectedDate}
             taskRef={ref}
@@ -69,14 +70,14 @@ export const Upcoming = () => {
             date={variant}
             tasks={tasks}
             taskRef={ref}
-            selectTask={selectTask}
-            selectedTask={selectedTask}
+            selectTaskId={selectTaskId}
+            selectedTaskId={selectedTaskId}
           />
         )}
       </Layout.Content>
       <Layout.Footer
-        isTaskSelected={!!selectedTask}
-        deleteTask={() => selectedTask && deleteTaskById(selectedTask.id)}
+        isTaskSelected={!!selectedTaskId}
+        deleteTask={() => selectedTaskId && deleteTaskById(selectedTaskId)}
         action={() => openCreatedTask()}
       />
     </Layout>

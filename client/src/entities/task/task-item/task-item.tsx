@@ -9,7 +9,7 @@ import { routes } from "@/shared/routing"
 import { BaseModal } from "@/shared/ui/modals/base"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
-import { TaskStatus } from "@/shared/api/task"
+import { TaskId, TaskStatus } from "@/shared/api/task"
 
 import { Task } from "./type"
 
@@ -26,11 +26,11 @@ export const TaskItem = ({
   typeLabel = false,
 }: {
   task: Task
-  onUpdateDate: ({ date, id }: { date: Date; id: string }) => void
-  onUpdateStatus: ({ id, status }: { status: TaskStatus; id: string }) => void
+  onUpdateDate: ({ date, id }: { date: Date; id: TaskId }) => void
+  onUpdateStatus: ({ id, status }: { status: TaskStatus; id: TaskId }) => void
   onDoubleClick: () => void
   dateLabel?: boolean
-  onClick: (task: Nullable<Task>) => void
+  onClick: (task: Nullable<TaskId>) => void
   isTaskSelected: boolean
   typeLabel?: boolean
 }) => {
@@ -65,7 +65,7 @@ export const TaskItem = ({
       <Button
         intent={"primary"}
         onDoubleClick={onDoubleClick}
-        onClick={() => onClick(task)}
+        onClick={() => onClick(task.id)}
         onBlur={() => onClick(null)}
         className={`${
           isTaskSelected && "bg-cFocus"

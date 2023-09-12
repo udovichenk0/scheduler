@@ -9,6 +9,7 @@ import { TaskItem } from "@/entities/task/task-item"
 
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { NoTasks } from "@/shared/ui/no-tasks"
+import { TaskId } from "@/shared/api/task"
 
 import {
   $$createTask,
@@ -19,7 +20,7 @@ import {
 } from "./unplaced.model"
 
 export const Unplaced = () => {
-  const [selectedTask, selectTask] = useState<Nullable<{ id: string }>>(null)
+  const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const taskRef = useRef<HTMLDivElement>(null)
   const [
     unplacedTasks,
@@ -59,8 +60,8 @@ export const Unplaced = () => {
                   dateLabel
                   onUpdateDate={changeDateAndUpdate}
                   onUpdateStatus={changeStatusAndUpdate}
-                  isTaskSelected={selectedTask?.id === task.id}
-                  onClick={selectTask}
+                  isTaskSelected={selectedTaskId === task.id}
+                  onClick={selectTaskId}
                   onDoubleClick={() => openUpdatedTaskById(task.id)}
                   task={task}
                 />
@@ -80,8 +81,8 @@ export const Unplaced = () => {
         </div>
       </Layout.Content>
       <Layout.Footer
-        isTaskSelected={!!selectedTask}
-        deleteTask={() => selectedTask && deleteTaskById(selectedTask.id)}
+        isTaskSelected={!!selectedTaskId}
+        deleteTask={() => selectedTaskId && deleteTaskById(selectedTaskId)}
         action={() => openCreatedTask()}
       />
     </Layout>

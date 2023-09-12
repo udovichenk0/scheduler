@@ -9,6 +9,7 @@ import { TaskItem } from "@/entities/task/task-item"
 
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { NoTasks } from "@/shared/ui/no-tasks"
+import { TaskId } from "@/shared/api/task"
 
 import {
   $$deleteTask,
@@ -19,7 +20,7 @@ import {
 } from "./inbox.model"
 
 export const Inbox = () => {
-  const [selectedTask, selectTask] = useState<Nullable<{ id: string }>>(null)
+  const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const ref = useRef<HTMLDivElement>(null)
   const [
     tasks,
@@ -62,8 +63,8 @@ export const Inbox = () => {
                 <TaskItem
                   onUpdateDate={changeDateAndUpdate}
                   onUpdateStatus={changeStatusAndUpdate}
-                  isTaskSelected={selectedTask?.id === task.id}
-                  onClick={selectTask}
+                  isTaskSelected={selectedTaskId === task.id}
+                  onClick={selectTaskId}
                   onDoubleClick={() => openUpdatedTaskById(task.id)}
                   task={task}
                 />
@@ -84,8 +85,8 @@ export const Inbox = () => {
       </Layout.Content>
 
       <Layout.Footer
-        isTaskSelected={!!selectedTask}
-        deleteTask={() => selectedTask && deleteTaskById(selectedTask.id)}
+        isTaskSelected={!!selectedTaskId}
+        deleteTask={() => selectedTaskId && deleteTaskById(selectedTaskId)}
         action={() => openCreatedTask()}
       />
     </Layout>

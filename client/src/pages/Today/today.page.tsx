@@ -11,6 +11,7 @@ import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { NoTasks } from "@/shared/ui/no-tasks"
+import { TaskId } from "@/shared/api/task"
 
 import {
   $$deleteTask,
@@ -24,7 +25,7 @@ import {
 } from "./today.model"
 
 export const Today = () => {
-  const [selectedTaskId, selectTask] = useState<Nullable<{ id: string }>>(null)
+  const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const taskRef = useRef<HTMLDivElement>(null)
   const [
     closeTask,
@@ -48,13 +49,13 @@ export const Today = () => {
       <Layout.Content onClick={(e) => onClickOutside(taskRef, e, closeTask)}>
         <OverdueTasks
           taskRef={taskRef}
-          selectTask={selectTask}
-          selectedTask={selectedTaskId}
+          selectTaskId={selectTaskId}
+          selectedTaskId={selectedTaskId}
         />
         <TodayTasks
           taskRef={taskRef}
-          selectTask={selectTask}
-          selectedTask={selectedTaskId}
+          selectTaskId={selectTaskId}
+          selectedTaskId={selectedTaskId}
         />
         <NoTasks
           isTaskListEmpty={
@@ -65,19 +66,19 @@ export const Today = () => {
       <Layout.Footer
         action={() => openCreatedTask()}
         isTaskSelected={!!selectedTaskId}
-        deleteTask={() => selectedTaskId && deleteTaskById(selectedTaskId.id)}
+        deleteTask={() => selectedTaskId && deleteTaskById(selectedTaskId)}
       />
     </Layout>
   )
 }
 
 const OverdueTasks = ({
-  selectTask,
-  selectedTask,
+  selectTaskId,
+  selectedTaskId,
   taskRef,
 }: {
-  selectTask: (task: Nullable<{ id: string }>) => void
-  selectedTask: Nullable<{ id: string }>
+  selectTaskId: (task: Nullable<TaskId>) => void
+  selectedTaskId: Nullable<TaskId>
   taskRef: RefObject<HTMLDivElement>
 }) => {
   const [
@@ -143,8 +144,8 @@ const OverdueTasks = ({
                     typeLabel
                     onUpdateDate={changeDateAndUpdate}
                     onUpdateStatus={changeStatusAndUpdate}
-                    isTaskSelected={selectedTask?.id === task.id}
-                    onClick={selectTask}
+                    isTaskSelected={selectedTaskId === task.id}
+                    onClick={selectTaskId}
                     onDoubleClick={() => openUpdatedTaskById(task.id)}
                     task={task}
                   />
@@ -158,13 +159,13 @@ const OverdueTasks = ({
 }
 
 const TodayTasks = ({
-  selectedTask,
-  selectTask,
+  selectedTaskId,
+  selectTaskId,
   taskRef,
 }: {
   taskRef: RefObject<HTMLDivElement>
-  selectedTask: Nullable<{ id: string }>
-  selectTask: (task: Nullable<{ id: string }>) => void
+  selectedTaskId: Nullable<TaskId>
+  selectTaskId: (task: Nullable<TaskId>) => void
 }) => {
   const [
     todayTasks,
@@ -217,8 +218,8 @@ const TodayTasks = ({
                   typeLabel
                   onUpdateDate={changeDateAndUpdate}
                   onUpdateStatus={changeStatusAndUpdate}
-                  isTaskSelected={selectedTask?.id === task.id}
-                  onClick={selectTask}
+                  isTaskSelected={selectedTaskId === task.id}
+                  onClick={selectTaskId}
                   onDoubleClick={() => openUpdatedTaskById(task.id)}
                   task={task}
                 />

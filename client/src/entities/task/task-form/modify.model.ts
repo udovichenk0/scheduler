@@ -2,7 +2,7 @@ import dayjs from "dayjs"
 import { combine, createEvent, createStore, sample } from "effector"
 
 import { createModal } from "@/shared/lib/modal"
-import { TaskStatus, TaskType } from "@/shared/api/task"
+import { TaskId, TaskStatus, TaskType } from "@/shared/api/task"
 
 export const $$dateModal = createModal({})
 export const $$typeModal = createModal({})
@@ -20,10 +20,10 @@ export const modifyTaskFactory = ({
   const dateChanged = createEvent<Date>()
   const descriptionChanged = createEvent<string>()
   const statusChangedAndUpdated = createEvent<{
-    id: string
+    id: TaskId
     status: TaskStatus
   }>()
-  const dateChangedAndUpdated = createEvent<{ id: string; date: Date }>()
+  const dateChangedAndUpdated = createEvent<{ id: TaskId; date: Date }>()
   const resetFieldsTriggered = createEvent()
 
   const $title = createStore("")
@@ -51,7 +51,6 @@ export const modifyTaskFactory = ({
       start_date,
     }),
   )
-
   sample({
     clock: titleChanged,
     target: $title,
