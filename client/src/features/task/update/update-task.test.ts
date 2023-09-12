@@ -105,9 +105,18 @@ describe("update task", () => {
       handlers: [[_.updateTaskFromLocalStorageFx, mock]],
     })
     await allSettled(updateTaskTriggeredById, { scope, params: "1" })
-
+    
+    const fields = {
+      title: "title",
+      description: "my description",
+      type: "inbox",
+      status: "FINISHED",
+      start_date: null,
+      id: '1'
+    }
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toReturnWith({ result: returnedValue })
+    expect(mock).toBeCalledWith(null, fields)
     expect(scope.getState($$task.$taskKv)).toStrictEqual(updatedTasks)
     expect(scope.getState($isAllowToSubmit)).toBeFalsy()
     expect(scope.getState($title)).toBe("")

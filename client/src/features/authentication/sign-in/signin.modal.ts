@@ -1,4 +1,4 @@
-import { createEvent, createStore, sample } from "effector"
+import { attach, createEvent, createStore, sample } from "effector"
 import { spread } from "patronum"
 import { z } from "zod"
 
@@ -7,6 +7,7 @@ import { $$task } from "@/entities/task/task-item"
 
 import { signinQuery } from "@/shared/api/auth"
 import { setTokenTriggered } from "@/shared/api/token"
+import { createManyTasksQuery, getTasksFromLsFx } from "@/shared/api/task"
 
 import { $email } from "../by-email"
 
@@ -66,9 +67,26 @@ sample({
     },
   }),
 })
+const getTasksFromLsFxAttached = attach({
+  effect: getTasksFromLsFx,
+})
 sample({
   clock: signinQuery.finished.success,
+  target: getTasksFromLsFxAttached,
+})
+
+sample({
+  clock: getTasksFromLsFxAttached.doneData,
+  filter: (result) => !result.length,
   target: $$task.getTasksTriggered,
+})
+// use condition
+sample({
+  clock: getTasksFromLsFxAttached.doneData,
+  source: $$session.$user,
+  filter: (user, data) => Boolean(user) && data.length > 0,
+  fn: (user, data) => ({ body: { user_id: user!.id, tasks: data } }),
+  target: createManyTasksQuery.start,
 })
 
 sample({

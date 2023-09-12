@@ -1,32 +1,21 @@
-import { createEffect, createEvent, sample, merge } from "effector"
+import { createEvent, sample, merge, attach } from "effector"
 import { not } from "patronum"
 import { attachOperation } from "@farfetched/core"
 
 import { $$session } from "@/entities/session"
-import { $$task, LocalStorageTask } from "@/entities/task/task-item"
+import { $$task } from "@/entities/task/task-item"
 
-import { deleteTaskQuery } from "@/shared/api/task"
+import { deleteTaskFromLsFx, deleteTaskQuery } from "@/shared/api/task"
 export const createRemoveTaskFactory = () => {
   const taskDeletedById = createEvent<string>()
 
   const attachDeleteTaskQuery = attachOperation(deleteTaskQuery)
 
-  const deleteTaskFromLsFx = createEffect((id: string) => {
-    const tasksFromLs = localStorage.getItem("tasks")
-    const parsedTasks = JSON.parse(tasksFromLs!) as LocalStorageTask[]
-
-    const filteredTasks = parsedTasks.filter((task) => task.id !== id)
-
-    localStorage.setItem("tasks", JSON.stringify(filteredTasks))
-    const deletedTask = parsedTasks.find((task) => task.id === id)
-
-    return {
-      result: deletedTask!,
-    }
-  })
+  // const attachDeleteTaskFromLsFx = attach({ effect: deleteTaskFromLsFx })
+  const attachDeleteTaskFromLsFx = attach({ effect: deleteTaskFromLsFx })
 
   const taskSuccessfullyDeleted = merge([
-    deleteTaskFromLsFx.done,
+    attachDeleteTaskFromLsFx.done,
     attachDeleteTaskQuery.finished.success,
   ])
 
@@ -39,12 +28,13 @@ export const createRemoveTaskFactory = () => {
   sample({
     clock: taskDeletedById,
     filter: not($$session.$isAuthenticated),
-    target: deleteTaskFromLsFx,
+    // fn: (id) => console.log({body: { id }})
+    target: attachDeleteTaskFromLsFx,
   })
   sample({
     clock: [
       attachDeleteTaskQuery.finished.success,
-      deleteTaskFromLsFx.doneData,
+      attachDeleteTaskFromLsFx.doneData,
     ],
     fn: ({ result }) => result,
     target: $$task.taskDeleted,
@@ -53,7 +43,7 @@ export const createRemoveTaskFactory = () => {
     taskDeletedById,
     taskSuccessfullyDeleted,
     _: {
-      deleteTaskFromLsFx,
+      deleteTaskFromLsFx: attachDeleteTaskFromLsFx,
       deleteTaskQuery: attachDeleteTaskQuery,
     },
   }

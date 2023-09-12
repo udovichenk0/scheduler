@@ -1,6 +1,14 @@
 import { createEvent, createStore, sample } from "effector"
+import { not } from "patronum"
 
-import { tasksQuery } from "@/shared/api/task"
+import { $$session } from "@/entities/session"
+
+import {
+  createManyTasksQuery,
+  deleteTasksFromlsFx,
+  getTasksFromLsFx,
+  tasksQuery,
+} from "@/shared/api/task"
 import { singleton } from "@/shared/lib/singleton"
 import { createModal } from "@/shared/lib/modal"
 
@@ -30,6 +38,16 @@ export const $$task = singleton(() => {
     source: $taskKv,
     fn: (kv, task) => ({ ...kv, [task.id]: task }),
     target: $taskKv,
+  })
+  sample({
+    clock: createManyTasksQuery.finished.success,
+    target: [getTasksTriggered, deleteTasksFromlsFx],
+  })
+
+  sample({
+    clock: getTasksFromLsFx.doneData,
+    filter: not($$session.$isAuthenticated),
+    target: setTaskKvTriggered,
   })
   sample({
     clock: taskDeleted,

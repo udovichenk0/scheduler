@@ -1,21 +1,12 @@
-import { merge, sample, createEffect, createEvent } from "effector"
+import { merge, sample, createEvent, attach } from "effector"
 import { not, and } from "patronum"
-import { v4 as uuidv4 } from "uuid"
 import { attachOperation } from "@farfetched/core"
 
 import { modifyTaskFactory } from "@/entities/task/task-form"
-import { $$task, LocalStorageTask } from "@/entities/task/task-item"
+import { $$task } from "@/entities/task/task-item"
 import { $$session } from "@/entities/session"
 
-import { createTaskQuery } from "@/shared/api/task"
-
-type TaskCredentials = {
-  description: string
-  title: string
-  type: "unplaced" | "inbox"
-  status: "INPROGRESS" | "FINISHED"
-  start_date: Nullable<Date>
-}
+import { createTaskQuery, setTaskToLocalStorageFx } from "@/shared/api/task"
 
 export const createTaskFactory = ({
   defaultType,
@@ -30,28 +21,11 @@ export const createTaskFactory = ({
   const createTaskTriggered = createEvent()
 
   const attachCreateTaskQuery = attachOperation(createTaskQuery)
-
-  const setTaskToLocalStorageFx = createEffect(
-    ({ body }: { body: TaskCredentials }) => {
-      const tasksFromLs = localStorage.getItem("tasks")
-      if (tasksFromLs) {
-        const tasks = JSON.parse(tasksFromLs)
-        const task = { ...body, id: uuidv4(), user_id: null }
-        localStorage.setItem("tasks", JSON.stringify([...tasks, task]))
-        return {
-          result: task as LocalStorageTask,
-        }
-      } else {
-        const task = { ...body, id: uuidv4() }
-        localStorage.setItem("tasks", JSON.stringify([task]))
-        return {
-          result: task as LocalStorageTask,
-        }
-      }
-    },
-  )
+  const attachSetTaskToLocalStorage = attach({
+    effect: setTaskToLocalStorageFx,
+  })
   const taskSuccessfullyCreated = merge([
-    setTaskToLocalStorageFx.doneData,
+    attachSetTaskToLocalStorage.doneData,
     attachCreateTaskQuery.finished.success,
   ])
 
@@ -67,21 +41,24 @@ export const createTaskFactory = ({
     source: $fields,
     filter: and($isAllowToSubmit, not($$session.$isAuthenticated)),
     fn: (fields) => ({ body: fields }),
-    target: setTaskToLocalStorageFx,
+    target: attachSetTaskToLocalStorage,
   })
   sample({
     clock: [
       attachCreateTaskQuery.finished.success,
-      setTaskToLocalStorageFx.doneData,
+      attachSetTaskToLocalStorage.doneData,
     ],
     fn: ({ result }) => result,
     target: $$task.setTaskTriggered,
   })
-
+  sample({
+    clock: attachSetTaskToLocalStorage.done,
+    fn: () => console.log("task created"),
+  })
   sample({
     clock: [
       attachCreateTaskQuery.finished.success,
-      setTaskToLocalStorageFx.done,
+      attachSetTaskToLocalStorage.done,
     ],
     target: resetFieldsTriggered,
   })
@@ -92,7 +69,7 @@ export const createTaskFactory = ({
     createTaskTriggered,
     $isCreating: createTaskQuery.$pending,
     _: {
-      setTaskToLocalStorageFx,
+      setTaskToLocalStorageFx: attachSetTaskToLocalStorage,
       createTaskQuery: attachCreateTaskQuery,
     },
   }
