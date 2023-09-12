@@ -5,14 +5,16 @@ import { attachOperation } from "@farfetched/core"
 import { $$session } from "@/entities/session"
 import { $$task } from "@/entities/task/task-item"
 
-import { deleteTaskFromLsFx, deleteTaskQuery } from "@/shared/api/task"
+import { taskApi } from "@/shared/api/task"
 export const createRemoveTaskFactory = () => {
   const taskDeletedById = createEvent<string>()
 
-  const attachDeleteTaskQuery = attachOperation(deleteTaskQuery)
+  const attachDeleteTaskQuery = attachOperation(taskApi.deleteTask)
 
   // const attachDeleteTaskFromLsFx = attach({ effect: deleteTaskFromLsFx })
-  const attachDeleteTaskFromLsFx = attach({ effect: deleteTaskFromLsFx })
+  const attachDeleteTaskFromLsFx = attach({
+    effect: taskApi.deleteTaskFromLocalStorageFx,
+  })
 
   const taskSuccessfullyDeleted = merge([
     attachDeleteTaskFromLsFx.done,

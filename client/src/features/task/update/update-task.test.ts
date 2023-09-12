@@ -4,7 +4,7 @@ import { test, expect, vi, describe } from "vitest"
 import { $$session } from "@/entities/session"
 import { $$task } from "@/entities/task/task-item"
 
-import { updateTaskQuery } from "@/shared/api/task"
+import { taskApi } from "@/shared/api/task"
 
 import { updateTaskFactory } from "."
 
@@ -66,7 +66,7 @@ describe("update task", () => {
         [$$session.$isAuthenticated, true],
         [$isAllowToSubmit, true],
       ],
-      handlers: [[updateTaskQuery.__.executeFx, mock]],
+      handlers: [[taskApi.updateTask.__.executeFx, mock]],
     })
     await allSettled(updateTaskTriggeredById, { scope, params: "5" })
 
@@ -105,14 +105,16 @@ describe("update task", () => {
       handlers: [[_.updateTaskFromLocalStorageFx, mock]],
     })
     await allSettled(updateTaskTriggeredById, { scope, params: "1" })
-    
+
     const fields = {
-      title: "title",
-      description: "my description",
-      type: "inbox",
-      status: "FINISHED",
-      start_date: null,
-      id: '1'
+      data: {
+        title: "title",
+        description: "my description",
+        type: "inbox",
+        status: "FINISHED",
+        start_date: null,
+      },
+      id: "1",
     }
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toReturnWith({ result: returnedValue })

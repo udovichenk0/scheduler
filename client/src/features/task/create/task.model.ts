@@ -6,7 +6,7 @@ import { modifyTaskFactory } from "@/entities/task/task-form"
 import { $$task } from "@/entities/task/task-item"
 import { $$session } from "@/entities/session"
 
-import { createTaskQuery, setTaskToLocalStorageFx } from "@/shared/api/task"
+import { taskApi } from "@/shared/api/task"
 
 export const createTaskFactory = ({
   defaultType,
@@ -20,9 +20,9 @@ export const createTaskFactory = ({
 
   const createTaskTriggered = createEvent()
 
-  const attachCreateTaskQuery = attachOperation(createTaskQuery)
+  const attachCreateTaskQuery = attachOperation(taskApi.createTask)
   const attachSetTaskToLocalStorage = attach({
-    effect: setTaskToLocalStorageFx,
+    effect: taskApi.setTaskToLocalStorageFx,
   })
   const taskSuccessfullyCreated = merge([
     attachSetTaskToLocalStorage.doneData,
@@ -67,7 +67,7 @@ export const createTaskFactory = ({
     ...$$modifyTask,
     taskSuccessfullyCreated,
     createTaskTriggered,
-    $isCreating: createTaskQuery.$pending,
+    $isCreating: taskApi.createTask.$pending,
     _: {
       setTaskToLocalStorageFx: attachSetTaskToLocalStorage,
       createTaskQuery: attachCreateTaskQuery,

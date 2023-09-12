@@ -3,7 +3,7 @@ import { describe, test, expect, vi, beforeEach } from "vitest"
 
 import { $$session } from "@/entities/session/session.model"
 
-import { signupQuery } from "@/shared/api/auth"
+import { authApi } from "@/shared/api/auth"
 
 import { $email } from "../by-email"
 
@@ -17,7 +17,7 @@ describe("signup", () => {
       [$$session.$user, null],
       [$passwordError, null],
     ],
-    handlers: [[signupQuery.__.executeFx, mock]],
+    handlers: [[authApi.signupQuery.__.executeFx, mock]],
   })
   beforeEach(() => mock.mockClear())
   test("signup and set user to the store", async () => {

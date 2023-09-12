@@ -2,12 +2,13 @@ import { createQuery } from "@farfetched/core"
 import { zodContract } from "@farfetched/zod"
 import { createEffect } from "effector"
 
-import { userSchema } from "../user/user.dto"
+import { UserSchema } from "../user/user.dto"
 
-import { AuthDto, authSchema } from "./auth.dto"
+import { AuthDto, AuthSchema } from "./auth.dto"
 
-const authContract = zodContract(authSchema)
-const userContract = zodContract(userSchema)
+const AuthContract = zodContract(AuthSchema)
+const UserContract = zodContract(UserSchema)
+
 const signinFx = createEffect(
   async (body: { email: string; password: string }) => {
     const data = await fetch("http://localhost:3000/auth/sign-in", {
@@ -24,7 +25,7 @@ const signinFx = createEffect(
 )
 export const signinQuery = createQuery({
   effect: signinFx,
-  contract: authContract,
+  contract: AuthContract,
 })
 
 export const signupFx = createEffect(
@@ -43,7 +44,7 @@ export const signupFx = createEffect(
 )
 export const signupQuery = createQuery({
   effect: signupFx,
-  contract: userContract,
+  contract: UserContract,
 })
 
 export const logoutQuery = createQuery({
@@ -71,5 +72,5 @@ export const verifyQuery = createQuery({
       return result.json()
     },
   ),
-  contract: authContract,
+  contract: AuthContract,
 })

@@ -4,9 +4,9 @@ import { not } from "patronum"
 
 import { $$session } from "@/entities/session"
 
-import { logoutQuery, signupQuery } from "@/shared/api/auth"
-import { setTokenTriggered } from "@/shared/api/token"
-import { getUserQuery } from "@/shared/api/user"
+import { authApi } from "@/shared/api/auth"
+import { tokenService } from "@/shared/api/token"
+import { userApi } from "@/shared/api/user"
 
 import { resetEmailTriggered } from "./by-email"
 import { resetSigninPasswordTriggered } from "./sign-in"
@@ -39,32 +39,32 @@ sample({
 })
 
 sample({
-  clock: getUserQuery.finished.success,
+  clock: userApi.getUserQuery.finished.success,
   filter: ({ result }) => !result.id,
   fn: () => Flow.register,
   target: $flow,
 })
 
 sample({
-  clock: getUserQuery.finished.success,
+  clock: userApi.getUserQuery.finished.success,
   filter: ({ result }) => Boolean(result.id),
   fn: () => Flow.login,
   target: $flow,
 })
 
 sample({
-  clock: logoutQuery.finished.success,
+  clock: authApi.logoutQuery.finished.success,
   fiilter: Boolean,
   fn: () => Flow.email,
   target: $flow,
 })
 sample({
-  clock: signupQuery.finished.success,
+  clock: authApi.signupQuery.finished.success,
   fn: () => Flow.verify,
   target: $flow,
 })
 sample({
-  clock: setTokenTriggered,
+  clock: tokenService.setTokenTriggered,
   fn: () => Flow.logout,
   target: $flow,
 })

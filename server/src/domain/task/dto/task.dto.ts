@@ -10,8 +10,9 @@ const TaskContract = z.object({
 
 export class CreateTaskCredentialDto extends createZodDto(TaskContract) {}
 
-const UpdateTaskContract = TaskContract.extend({
+const UpdateTaskContract = z.object({
   id: z.string(),
+  task: TaskContract,
 });
 
 export class UpdateTaskCredentialDto extends createZodDto(UpdateTaskContract) {}
@@ -33,12 +34,7 @@ export class UpdateStatusCredentialDto extends createZodDto(
   updateStatusCredentialsDto,
 ) {}
 
-const CreateManyTasksCredentials = z.object({
-  tasks: TaskContract.extend({
-    id: z.string(),
-  }).array(),
-  user_id: z.string(),
-});
+const CreateManyTasksCredentials = z.object({ tasks: TaskContract.array() });
 export class CreateManyTasksCredentialDto extends createZodDto(
   CreateManyTasksCredentials,
 ) {}

@@ -43,7 +43,7 @@ export const $updatedTask = createStore<string | null>(null)
 export const $createdTask = createStore(false)
 
 export const createTaskModalOpened = createEvent<Date>()
-export const updateTaskModalOpened = createEvent<Task>()
+export const updateTaskModalOpened = createEvent<string>()
 sample({
   clock: createTaskModalOpened,
   target: $$createTask.$startDate,

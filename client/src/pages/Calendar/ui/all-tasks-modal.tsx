@@ -2,6 +2,8 @@ import { createPortal } from "react-dom"
 
 import { Task } from "@/entities/task/task-item"
 
+import { TaskId } from "@/shared/api/task"
+
 export const AllTasksModal = ({
   isOpen,
   onCloseModal,
@@ -11,7 +13,7 @@ export const AllTasksModal = ({
   isOpen: boolean
   onCloseModal: () => void
   tasks?: Task[]
-  onTaskUpdate: (task: Task) => void
+  onTaskUpdate: (taskId: TaskId) => void
 }) => {
   if (!isOpen) return null
   return createPortal(
@@ -25,7 +27,7 @@ export const AllTasksModal = ({
           {tasks?.map((task) => {
             return (
               <div
-                onClick={() => onTaskUpdate(task)}
+                onClick={() => onTaskUpdate(task.id)}
                 key={task.id}
                 className={`
                 relative cursor-pointer

@@ -3,12 +3,7 @@ import { not } from "patronum"
 
 import { $$session } from "@/entities/session"
 
-import {
-  createManyTasksQuery,
-  deleteTasksFromlsFx,
-  getTasksFromLsFx,
-  tasksQuery,
-} from "@/shared/api/task"
+import { taskApi } from "@/shared/api/task"
 import { singleton } from "@/shared/lib/singleton"
 import { createModal } from "@/shared/lib/modal"
 
@@ -23,7 +18,7 @@ export const $$task = singleton(() => {
   const taskDeleted = createEvent<Task>()
   const reset = createEvent()
   sample({
-    clock: tasksQuery.finished.success,
+    clock: taskApi.getTasks.finished.success,
     fn: ({ result }) =>
       result.reduce((kv, task) => ({ ...kv, [task.id]: task }), {}),
     target: $taskKv,
@@ -40,12 +35,12 @@ export const $$task = singleton(() => {
     target: $taskKv,
   })
   sample({
-    clock: createManyTasksQuery.finished.success,
-    target: [getTasksTriggered, deleteTasksFromlsFx],
+    clock: taskApi.createTasks.finished.success,
+    target: [getTasksTriggered, taskApi.deleteTasksFromLocalStorageFx],
   })
 
   sample({
-    clock: getTasksFromLsFx.doneData,
+    clock: taskApi.getTasksFromLocalStorageFx.doneData,
     filter: not($$session.$isAuthenticated),
     target: setTaskKvTriggered,
   })
@@ -60,7 +55,7 @@ export const $$task = singleton(() => {
   })
   sample({
     clock: getTasksTriggered,
-    target: tasksQuery.start,
+    target: taskApi.getTasks.start,
   })
 
   sample({

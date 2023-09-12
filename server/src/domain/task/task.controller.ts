@@ -55,14 +55,14 @@ export class TaskController {
   @Post('update')
   @UsePipes(new ZodValidationPipe(UpdateTaskCredentialDto))
   async updateTask(@Body() taskCredentials: UpdateTaskCredentialDto) {
-    const { id, ...credentials } = taskCredentials;
-    const task = await this.taskService.updateOne({
-      data: credentials,
+    const { id, task } = taskCredentials;
+    const updatedTask = await this.taskService.updateOne({
+      data: task,
       where: {
         id,
       },
     });
-    return TaskDto.create(task);
+    return TaskDto.create(updatedTask);
   }
   @Post('update-status')
   @UsePipes(new ZodValidationPipe(UpdateStatusCredentialDto))
@@ -102,10 +102,14 @@ export class TaskController {
     return task;
   }
   @Post('create-many')
-  async createMany(@Body() taskCredentials: CreateManyTasksCredentialDto) {
-    const { user_id, tasks } = taskCredentials;
+  async createMany(
+    @Body() data: CreateManyTasksCredentialDto,
+    @Req() req: Request,
+  ) {
+    const user = req.session['user'] as UserDto;
+    const tasks = data.tasks;
     const response = await this.taskService.createMany({
-      user_id,
+      user_id: user.id,
       data: tasks,
     });
     return response;

@@ -9,6 +9,7 @@ import { ExpandedTask } from "@/widgets/expanded-task"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base"
+import { TaskId } from "@/shared/api/task"
 
 import {
   $$createTask,
@@ -76,7 +77,7 @@ export const CalendarPage = () => {
   )
 }
 
-const UpdateActionsButtons = ({ taskId }: { taskId: string }) => {
+const UpdateActionsButtons = ({ taskId }: { taskId: TaskId }) => {
   const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
   return (
     <div className="flex items-center">

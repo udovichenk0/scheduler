@@ -5,9 +5,9 @@ import { z } from "zod"
 import { $$session } from "@/entities/session"
 import { $$task } from "@/entities/task/task-item"
 
-import { signinQuery } from "@/shared/api/auth"
-import { setTokenTriggered } from "@/shared/api/token"
-import { createManyTasksQuery, getTasksFromLsFx } from "@/shared/api/task"
+import { authApi } from "@/shared/api/auth"
+import { tokenService } from "@/shared/api/token"
+import { taskApi } from "@/shared/api/task"
 
 import { $email } from "../by-email"
 
@@ -35,7 +35,7 @@ sample({
   clock: submitTriggered,
   source: { email: $email, password: $password },
   filter: ({ password }) => signinSchema.safeParse(password).success,
-  target: signinQuery.start,
+  target: authApi.signinQuery.start,
 })
 
 sample({
@@ -51,11 +51,11 @@ sample({
   target: [$passwordError.reinit, $password.reinit],
 })
 sample({
-  clock: signinQuery.finished.success,
+  clock: authApi.signinQuery.finished.success,
   fn: () => console.log("success"),
 })
 sample({
-  clock: signinQuery.finished.success,
+  clock: authApi.signinQuery.finished.success,
   fn: ({ result }) => ({
     user: result.user,
     token: result.access_token,
@@ -63,15 +63,15 @@ sample({
   target: spread({
     targets: {
       user: $$session.sessionSet,
-      token: setTokenTriggered,
+      token: tokenService.setTokenTriggered,
     },
   }),
 })
 const getTasksFromLsFxAttached = attach({
-  effect: getTasksFromLsFx,
+  effect: taskApi.getTasksFromLocalStorageFx,
 })
 sample({
-  clock: signinQuery.finished.success,
+  clock: authApi.signinQuery.finished.success,
   target: getTasksFromLsFxAttached,
 })
 
@@ -86,11 +86,11 @@ sample({
   source: $$session.$user,
   filter: (user, data) => Boolean(user) && data.length > 0,
   fn: (user, data) => ({ body: { user_id: user!.id, tasks: data } }),
-  target: createManyTasksQuery.start,
+  target: taskApi.createTasks.start,
 })
 
 sample({
-  clock: signinQuery.finished.failure,
+  clock: authApi.signinQuery.finished.failure,
   fn: () => NOT_VALID_MESSAGE,
   target: $passwordError,
 })

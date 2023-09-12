@@ -2,10 +2,10 @@ import { createQuery } from "@farfetched/core"
 import { zodContract } from "@farfetched/zod"
 import { createEffect, sample } from "effector"
 
-import { TokenDto, tokenSchema } from "./token.dto"
+import { TokenDto, TokenSchema } from "./token.dto"
 import { setTokenTriggered } from "./token.model"
 
-const refreshContract = zodContract(tokenSchema)
+const RefreshContract = zodContract(TokenSchema)
 
 export const refreshFx = createEffect<void, TokenDto>(async () => {
   const data = await fetch("http://localhost:3000/refresh", {
@@ -15,9 +15,10 @@ export const refreshFx = createEffect<void, TokenDto>(async () => {
   const res = await data.json()
   return res
 })
+
 export const refreshQuery = createQuery({
   effect: refreshFx,
-  contract: refreshContract,
+  contract: RefreshContract,
   mapData({ result }: { result: TokenDto }) {
     return {
       access_token: result.access_token,

@@ -4,7 +4,7 @@ import { test, expect, vi, describe } from "vitest"
 import { $$session } from "@/entities/session"
 import { $$task } from "@/entities/task/task-item"
 
-import { createTaskQuery } from "@/shared/api/task"
+import { taskApi } from "@/shared/api/task"
 
 import { createTaskFactory } from "."
 const createTaskModel = createTaskFactory({
@@ -76,7 +76,7 @@ describe("create task", () => {
         [$isAllowToSubmit, true],
         [$$task._.$taskKv, tasks],
       ],
-      handlers: [[createTaskQuery.__.executeFx, mock]],
+      handlers: [[taskApi.createTask.__.executeFx, mock]],
     })
     await allSettled(createTaskTriggered, { scope })
     expect(mock).toHaveBeenCalledOnce()

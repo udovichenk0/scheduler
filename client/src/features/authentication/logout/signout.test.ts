@@ -4,7 +4,7 @@ import { expect, test, vi } from "vitest"
 import { $$session } from "@/entities/session"
 import { $$task } from "@/entities/task/task-item"
 
-import { logoutQuery } from "@/shared/api/auth"
+import { authApi } from "@/shared/api/auth"
 
 import { submitTriggered } from "./logout.model"
 
@@ -23,7 +23,7 @@ test("logout", async () => {
   const mock = vi.fn()
   const scope = fork({
     values: [[$$task._.$taskKv, tasks]],
-    handlers: [[logoutQuery.__.executeFx, mock]],
+    handlers: [[authApi.logoutQuery.__.executeFx, mock]],
   })
   await allSettled(submitTriggered, { scope })
   expect(mock).toHaveBeenCalled()

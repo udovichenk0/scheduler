@@ -6,13 +6,14 @@ import { Task } from "@/entities/task/task-item"
 import { generateCalendar } from "@/shared/lib/generate-calendar"
 import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
 import { ModalType } from "@/shared/lib/modal"
+import { TaskId } from "@/shared/api/task"
 
 import { MonthSwitcher } from "./month-switcher"
 import { Cell } from "./cell"
 
 type CalendarProps = {
   tasks: Record<string, Task[]>
-  openUpdatedTask: (task: Task) => void
+  openUpdatedTask: (taskId: TaskId) => void
   openCreatedTask: (date: Date) => void
   setDate: (date: Dayjs) => void
   date: Dayjs

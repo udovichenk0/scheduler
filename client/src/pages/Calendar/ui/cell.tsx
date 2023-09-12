@@ -5,6 +5,7 @@ import { Task } from "@/entities/task/task-item"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { SHORT_MONTHS_NAMES } from "@/shared/config/constants"
+import { TaskId } from "@/shared/api/task"
 
 import { AllTasksModal } from "./all-tasks-modal"
 
@@ -21,7 +22,7 @@ export const Cell = ({
 }: {
   cell: CellProps
   tasks?: Task[]
-  updateTaskOpened: (task: Task) => void
+  updateTaskOpened: (taskId: TaskId) => void
   createTaskOpened: (date: Date) => void
 }) => {
   const taskContainerRef = useRef<HTMLDivElement>(null)
@@ -90,7 +91,7 @@ export const Cell = ({
         {tasks?.map((task) => {
           return (
             <div
-              onClick={() => updateTaskOpened(task)}
+              onClick={() => updateTaskOpened(task.id)}
               key={task.id}
               className={`
               group relative w-full cursor-pointer
