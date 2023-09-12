@@ -54,12 +54,12 @@ export const CodeInput = forwardRef(
       if (value.length > 1) {
         event.target.value = value.charAt(0)
         if (nextElementSibling) {
-          (nextElementSibling as HTMLInputElement).focus()
+          ;(nextElementSibling as HTMLInputElement).focus()
         }
       } else {
         if (value.match("[0-9]{1}")) {
           if (nextElementSibling) {
-            (nextElementSibling as HTMLInputElement).focus()
+            ;(nextElementSibling as HTMLInputElement).focus()
           }
         } else {
           event.target.value = ""

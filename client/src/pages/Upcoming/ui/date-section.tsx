@@ -5,6 +5,8 @@ import { ExpandedTask } from "@/widgets/expanded-task"
 
 import { Task, TaskItem } from "@/entities/task/task-item"
 
+import { TaskId } from "@/shared/api/task"
+
 import { $$updateTask, $$taskDisclosure, $$createTask } from "../upcoming.model"
 export const TasksSection = ({
   taskRef,
@@ -13,8 +15,8 @@ export const TasksSection = ({
   isSelected,
   isNextSelectedTask,
   action,
-  selectTask,
-  selectedTask,
+  selectTaskId,
+  selectedTaskId,
 }: {
   taskRef: RefObject<HTMLDivElement>
   tasks: Task[]
@@ -22,8 +24,8 @@ export const TasksSection = ({
   isSelected: boolean
   isNextSelectedTask?: boolean
   action: () => void
-  selectTask: (taskId: Nullable<{ id: string }>) => void
-  selectedTask: Nullable<{ id: string }>
+  selectTaskId: (taskId: Nullable<TaskId>) => void
+  selectedTaskId: Nullable<TaskId>
 }) => {
   const [
     updatedTaskId,
@@ -69,8 +71,8 @@ export const TasksSection = ({
                   dateLabel
                   onUpdateDate={changeDateAndUpdate}
                   onUpdateStatus={changeStatusAndUpdate}
-                  isTaskSelected={selectedTask?.id === task.id}
-                  onClick={selectTask}
+                  isTaskSelected={selectedTaskId === task.id}
+                  onClick={selectTaskId}
                   onDoubleClick={() => openUpdatedTaskById(task.id)}
                   task={task}
                 />

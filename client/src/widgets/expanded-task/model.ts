@@ -7,6 +7,7 @@ import { UpdateTaskType } from "@/features/task/update"
 import { TaskKv } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
+import { TaskId } from "@/shared/api/task"
 
 export const pomodoroModal = createModal({})
 export const settingsModal = createModal({})
@@ -49,7 +50,7 @@ export const disclosureTask = ({
   const $updatedTaskId = createStore<Nullable<string>>(null)
   const $createdTask = createStore(false)
 
-  const $isUpdatedTaskTriggered = createStore<Nullable<{ id: string }>>(null)
+  const $isUpdatedTaskTriggered = createStore<Nullable<TaskId>>(null)
   const $isCreatedTaskTriggered = createStore(false)
 
   sample({

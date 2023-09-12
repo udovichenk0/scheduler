@@ -172,7 +172,7 @@ export const updateDateInLocalStorageFx = createEffect(
   },
 )
 export const updateStatusInLocalStorageFx = createEffect(
-  ({ id, status }: { id: string; status: TaskStatus }) => {
+  ({ id, status }: { id: TaskId; status: TaskStatus }) => {
     const tasks = localStorage.getItem("tasks")
     const updatedTasks = (JSON.parse(tasks!) as LocalStorageTaskDto[]).map(
       (task) => (task.id === id ? { ...task, status } : task),
