@@ -47,11 +47,12 @@ export class TaskService {
     data,
   }: {
     user_id: string;
-    data: Omit<Prisma.taskCreateManyInput, 'user_id'>[];
+    data: Omit<Prisma.taskCreateManyInput, 'user_id' | 'id'>[];
   }) {
     const tasks = this.prismaService.task.createMany({
       data: data.map((task) => ({
         ...task,
+        id: uuidv4(),
         user_id,
       })),
     });

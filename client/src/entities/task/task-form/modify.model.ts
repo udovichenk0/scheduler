@@ -2,8 +2,7 @@ import dayjs from "dayjs"
 import { combine, createEvent, createStore, sample } from "effector"
 
 import { createModal } from "@/shared/lib/modal"
-
-import { TaskStatus } from "../task-item"
+import { TaskStatus, TaskType } from "@/shared/api/task"
 
 export const $$dateModal = createModal({})
 export const $$typeModal = createModal({})
@@ -15,9 +14,9 @@ export const modifyTaskFactory = ({
   defaultType?: "inbox" | "unplaced"
   defaultDate?: Nullable<Date>
 }) => {
-  const statusChanged = createEvent<"FINISHED" | "INPROGRESS">()
+  const statusChanged = createEvent<TaskStatus>()
   const titleChanged = createEvent<string>()
-  const typeChanged = createEvent<"inbox" | "unplaced">()
+  const typeChanged = createEvent<TaskType>()
   const dateChanged = createEvent<Date>()
   const descriptionChanged = createEvent<string>()
   const statusChangedAndUpdated = createEvent<{

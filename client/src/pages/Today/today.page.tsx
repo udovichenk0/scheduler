@@ -24,7 +24,7 @@ import {
 } from "./today.model"
 
 export const Today = () => {
-  const [selectedTask, selectTask] = useState<Nullable<{ id: string }>>(null)
+  const [selectedTaskId, selectTask] = useState<Nullable<{ id: string }>>(null)
   const taskRef = useRef<HTMLDivElement>(null)
   const [
     closeTask,
@@ -49,12 +49,12 @@ export const Today = () => {
         <OverdueTasks
           taskRef={taskRef}
           selectTask={selectTask}
-          selectedTask={selectedTask}
+          selectedTask={selectedTaskId}
         />
         <TodayTasks
           taskRef={taskRef}
           selectTask={selectTask}
-          selectedTask={selectedTask}
+          selectedTask={selectedTaskId}
         />
         <NoTasks
           isTaskListEmpty={
@@ -64,8 +64,8 @@ export const Today = () => {
       </Layout.Content>
       <Layout.Footer
         action={() => openCreatedTask()}
-        isTaskSelected={!!selectedTask}
-        deleteTask={() => selectedTask && deleteTaskById(selectedTask.id)}
+        isTaskSelected={!!selectedTaskId}
+        deleteTask={() => selectedTaskId && deleteTaskById(selectedTaskId.id)}
       />
     </Layout>
   )

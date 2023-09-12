@@ -9,8 +9,9 @@ import { routes } from "@/shared/routing"
 import { BaseModal } from "@/shared/ui/modals/base"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
+import { TaskStatus } from "@/shared/api/task"
 
-import { Task, TaskStatus } from "./type"
+import { Task } from "./type"
 
 import { $$dateModal } from "."
 
@@ -26,7 +27,7 @@ export const TaskItem = ({
 }: {
   task: Task
   onUpdateDate: ({ date, id }: { date: Date; id: string }) => void
-  onUpdateStatus: ({ id, status }: { id: string; status: TaskStatus }) => void
+  onUpdateStatus: ({ id, status }: { status: TaskStatus; id: string }) => void
   onDoubleClick: () => void
   dateLabel?: boolean
   onClick: (task: Nullable<Task>) => void

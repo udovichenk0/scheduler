@@ -1,8 +1,8 @@
 import { z } from "zod"
 
-import { userSchema } from "../user/user.dto"
-export const tokenSchema = z.object({
+import { UserSchema } from "../user/user.dto"
+export const TokenSchema = z.object({
   access_token: z.string(),
-  userData: userSchema,
+  userData: UserSchema,
 })
-export type TokenDto = z.infer<typeof tokenSchema>
+export type TokenDto = z.infer<typeof TokenSchema>

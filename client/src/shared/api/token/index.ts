@@ -1,3 +1,3 @@
-export * from "./token.api"
-export * from "./token.model"
-export * from "./token.dto"
+export * as tokenApi from "./token.api"
+export * as tokenService from "./token.model"
+export type { TokenDto } from "./token.dto"

@@ -8,9 +8,9 @@ import { createRoot } from "react-dom/client"
 
 import App from "./app/App"
 import "./app/index.css"
-import { refreshQuery } from "./shared/api/token"
+import { tokenApi } from "./shared/api/token"
 import { appInitializer } from "./app/initializer"
-import { getTasksFromLsFx, tasksQuery } from "./shared/api/task"
+import { taskApi } from "./shared/api/task"
 extend(isSameOrAfter)
 extend(isSameOrBefore)
 extend(isTomorrow)
@@ -20,16 +20,16 @@ const { init } = appInitializer()
 
 sample({
   clock: init,
-  target: refreshQuery.start,
+  target: tokenApi.refreshQuery.start,
 })
 
 sample({
-  clock: refreshQuery.finished.failure,
-  target: getTasksFromLsFx,
+  clock: tokenApi.refreshQuery.finished.failure,
+  target: taskApi.getTasksFromLocalStorageFx,
 })
 sample({
-  clock: refreshQuery.finished.success,
-  target: tasksQuery.start,
+  clock: tokenApi.refreshQuery.finished.success,
+  target: taskApi.getTasks.start,
 })
 init()
 createRoot(document.getElementById("root") as HTMLElement).render(<App />)

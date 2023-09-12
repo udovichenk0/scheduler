@@ -3,7 +3,7 @@ import { expect, test, vi } from "vitest"
 
 import { $$session } from "@/entities/session/session.model"
 
-import { verifyQuery } from "@/shared/api/auth"
+import { authApi } from "@/shared/api/auth"
 
 import { $email } from "../by-email"
 
@@ -25,7 +25,7 @@ test("verify email", async () => {
       [$$session.$user, null],
       [$email, "myemail@gmail.com"],
     ],
-    handlers: [[verifyQuery.__.executeFx, mock]],
+    handlers: [[authApi.verifyQuery.__.executeFx, mock]],
   })
   await allSettled(codeChanged, {
     scope,

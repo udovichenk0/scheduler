@@ -1,7 +1,7 @@
 import { createEvent, createStore, sample } from "effector"
 import { z } from "zod"
 
-import { getUserQuery } from "@/shared/api/user"
+import { userApi } from "@/shared/api/user"
 
 import {
   MAX_LENGTH,
@@ -29,7 +29,7 @@ sample({
   source: $email,
   filter: (email) => emailSchema.safeParse(email).success,
   fn: (email) => ({ email }),
-  target: getUserQuery.start,
+  target: userApi.getUserQuery.start,
 })
 
 sample({

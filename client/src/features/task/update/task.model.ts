@@ -3,17 +3,10 @@ import { spread, and, not } from "patronum"
 import { attachOperation } from "@farfetched/core"
 
 import { $$session } from "@/entities/session"
-import { $$task, TaskStatus } from "@/entities/task/task-item"
+import { $$task } from "@/entities/task/task-item"
 import { modifyTaskFactory } from "@/entities/task/task-form"
 
-import {
-  updateStatusQuery,
-  updateTaskDate,
-  updateTaskQuery,
-  updateTaskDateFromLsFx,
-  updateStatusFromLocalStorageFx,
-  updateTaskFromLocalStorageFx,
-} from "@/shared/api/task"
+import { taskApi, TaskStatus } from "@/shared/api/task"
 
 export const updateTaskFactory = () => {
   const $$modifyTask = modifyTaskFactory({})
@@ -30,20 +23,20 @@ export const updateTaskFactory = () => {
     statusChangedAndUpdated,
   } = $$modifyTask
 
-  const setFieldsTriggeredById = createEvent<{ id: string }>()
+  const setFieldsTriggeredById = createEvent<string>()
   const updateTaskTriggeredById = createEvent<string>()
 
-  const attachUpdateStatusQuery = attachOperation(updateStatusQuery)
-  const attachUpdateTaskDate = attachOperation(updateTaskDate)
-  const attachUpdateTaskQuery = attachOperation(updateTaskQuery)
+  const attachUpdateStatusQuery = attachOperation(taskApi.updateStatus)
+  const attachUpdateTaskDate = attachOperation(taskApi.updateDate)
+  const attachUpdateTaskQuery = attachOperation(taskApi.updateTask)
   const attachUpdateTaskDateFromLsFx = attach({
-    effect: updateTaskDateFromLsFx,
+    effect: taskApi.updateDateInLocalStorageFx,
   })
   const attachUpdateStatusFromLocalStorageFx = attach({
-    effect: updateStatusFromLocalStorageFx,
+    effect: taskApi.updateStatusInLocalStorageFx,
   })
   const attachUpdateTaskFromLocalStorageFx = attach({
-    effect: updateTaskFromLocalStorageFx,
+    effect: taskApi.updateTaskFromLocalStorageFx,
   })
 
   const taskSuccessfullyUpdated = merge([
@@ -88,20 +81,20 @@ export const updateTaskFactory = () => {
     clock: updateTaskTriggeredById,
     source: $fields,
     filter: and($isAllowToSubmit, $$session.$isAuthenticated),
-    fn: (fields, id) => ({ body: { ...fields, id } }),
+    fn: (fields, id) => ({ body: { task: fields, id } }),
     target: attachUpdateTaskQuery.start,
   })
   sample({
     clock: updateTaskTriggeredById,
     source: $fields,
     filter: and($isAllowToSubmit, not($$session.$isAuthenticated)),
-    fn: (fields, id) => ({ ...fields, id }),
+    fn: (fields, id) => ({ data: fields, id }),
     target: attachUpdateTaskFromLocalStorageFx,
   })
   sample({
     clock: setFieldsTriggeredById,
     source: $$task.$taskKv,
-    fn: (tasks, { id }) => tasks[id],
+    fn: (tasks, id) => tasks[id],
     target: spread({
       targets: {
         title: $title,
@@ -120,7 +113,7 @@ export const updateTaskFactory = () => {
       attachUpdateTaskDate.finished.success,
       attachUpdateTaskFromLocalStorageFx.doneData,
       attachUpdateTaskDateFromLsFx.doneData,
-      attachUpdateStatusFromLocalStorageFx.doneData,
+      // attachUpdateStatusFromLocalStorageFx.doneData,
     ],
     fn: ({ result }) => result,
     target: [$$task.setTaskTriggered, resetFieldsTriggered],
@@ -129,13 +122,13 @@ export const updateTaskFactory = () => {
     updateTaskTriggeredById,
     taskSuccessfullyUpdated,
     setFieldsTriggeredById,
-    $isUpdating: updateTaskQuery.$pending,
+    $isUpdating: taskApi.updateTask.$pending,
     ...$$modifyTask,
     _: {
       updateTaskFromLocalStorageFx: attachUpdateTaskFromLocalStorageFx,
-      updateTaskQuery,
+      updateTaskQuery: taskApi.updateTask,
       updateTaskDateFromLsFx: attachUpdateTaskDateFromLsFx,
-      updateTaskDate,
+      updateTaskDate: taskApi.updateDate,
       updateStatusQuery: attachUpdateStatusQuery,
       updateStatusFromLocalStorageFx: attachUpdateStatusFromLocalStorageFx,
     },

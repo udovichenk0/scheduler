@@ -8,118 +8,79 @@ import { authQuery } from "@/shared/api/auth-query"
 import {
   TaskDto,
   TaskStatus,
-  TaskType,
-  taskDtoSchema,
-  tasksDtoSchema,
+  TaskSchemaDto,
+  TasksSchemaDto,
+  CreateTaskDto,
+  UpdateTaskDto,
+  UpdateStatusDto,
+  TaskId,
+  LocalStorageTaskDto,
 } from "./task.dto"
 
-const createTaskContract = zodContract(taskDtoSchema)
-
-type CreateTaskParamsType = {
-  title: string
-  description: Nullable<string>
-  status: "FINISHED" | "CANCELED" | "INPROGRESS"
-  type: "inbox" | "unplaced"
-  start_date: Nullable<Date>
-}
-
-export const createTaskQuery = authQuery<
-  TaskDto,
-  { body: CreateTaskParamsType }
->({
+const TaskContract = zodContract(TaskSchemaDto)
+export const createTask = authQuery<TaskDto, { body: CreateTaskDto }>({
   request: {
     url: "tasks/create",
     method: "POST",
   },
   response: {
-    contract: createTaskContract,
+    contract: TaskContract,
     mapData: (data) => data.result,
   },
 })
 
-const tasksQueryContract = zodContract(tasksDtoSchema)
-
-export const tasksQuery = authQuery<TaskDto[], void>({
+const GetTasksContract = zodContract(TasksSchemaDto)
+export const getTasks = authQuery<TaskDto[], void>({
   request: {
     url: "tasks/get",
     method: "GET",
   },
   response: {
-    contract: tasksQueryContract,
+    contract: GetTasksContract,
     mapData: (data) => data.result,
   },
 })
 
-const updateTaskContract = zodContract(taskDtoSchema)
-type UpdateTaskParams = {
-  id: string
-  title: string
-  description: Nullable<string>
-  status: "FINISHED" | "INPROGRESS"
-  type: "inbox" | "unplaced"
-  start_date: Nullable<Date>
-}
-
-export const updateTaskQuery = authQuery<TaskDto, { body: UpdateTaskParams }>({
+export const updateTask = authQuery<TaskDto, { body: UpdateTaskDto }>({
   request: {
     url: "tasks/update",
     method: "POST",
   },
   response: {
-    contract: updateTaskContract,
+    contract: TaskContract,
     mapData: (data) => data.result,
   },
 })
 
-const updateStatusContract = zodContract(taskDtoSchema)
-
-type UpdateStatusParams = {
-  id: string
-  status: "FINISHED" | "INPROGRESS"
-}
-
-export const updateStatusQuery = authQuery<
-  TaskDto,
-  { body: UpdateStatusParams }
->({
+export const updateStatus = authQuery<TaskDto, { body: UpdateStatusDto }>({
   request: {
     url: "tasks/update-status",
     method: "POST",
   },
   response: {
-    contract: updateStatusContract,
+    contract: TaskContract,
     mapData: (data) => data.result,
   },
 })
 
-export const deleteTaskQuery = authQuery<TaskDto, { body: { id: string } }>({
+export const deleteTask = authQuery<TaskDto, { body: { id: TaskId } }>({
   request: {
     url: "tasks/delete",
     method: "POST",
   },
   response: {
-    contract: updateStatusContract,
+    contract: TaskContract,
     mapData: (data) => data.result,
   },
 })
-type CreateManyTasks = {
-  tasks: {
-    id: string
-    title: string
-    description: string
-    status: "FINISHED" | "INPROGRESS"
-    type: "inbox" | "unplaced"
-    start_date: Nullable<Date>
-  }[]
-  user_id: string
-}
-const CreateManyTasksContract = z.object({
+
+const CreateManyTasksSchemaDto = z.object({
   count: z.number(),
 })
-const CreateManyTasksZodContract = zodContract(CreateManyTasksContract)
-export const createManyTasksQuery = authQuery<
+const CreateManyTasksZodContract = zodContract(CreateManyTasksSchemaDto)
+export const createTasks = authQuery<
   { count: number },
-  { body: CreateManyTasks }
+  { body: { tasks: CreateTaskDto[] } }
 >({
   request: {
     url: "tasks/create-many",
@@ -131,87 +92,90 @@ export const createManyTasksQuery = authQuery<
   },
 })
 
-export const updateTaskDate = authQuery<
+export const updateDate = authQuery<
   TaskDto,
-  { body: { id: string; date: Date } }
+  { body: { id: TaskId; date: Date } }
 >({
   request: {
     url: "tasks/update-date",
     method: "PATCH",
   },
   response: {
-    contract: updateStatusContract,
+    contract: TaskContract,
     mapData: (data) => data.result,
   },
 })
 
-type TasksFromLS = {
-  id: string
-  title: string
-  description: string
-  status: "FINISHED" | "INPROGRESS"
-  type: "inbox" | "unplaced"
-  start_date: Date | null
-  user_id: null
-}
-export const getTasksFromLsFx = createEffect(() => {
+export const getTasksFromLocalStorageFx = createEffect(() => {
   const tasks = localStorage.getItem("tasks")
   if (tasks) {
-    const result = JSON.parse(tasks) as TasksFromLS[]
+    const result = JSON.parse(tasks) as LocalStorageTaskDto[]
     return result
   }
   return []
 })
-export const deleteTasksFromlsFx = createEffect(() => {
+export const deleteTasksFromLocalStorageFx = createEffect(() => {
   localStorage.removeItem("tasks")
 })
 
-type TaskCredentials = {
-  description: string
-  title: string
-  type: "unplaced" | "inbox"
-  status: "INPROGRESS" | "FINISHED"
-  start_date: Nullable<Date>
-}
 export const setTaskToLocalStorageFx = createEffect(
-  ({ body }: { body: TaskCredentials }) => {
+  ({ body }: { body: CreateTaskDto }) => {
     const tasksFromLs = localStorage.getItem("tasks")
     if (tasksFromLs) {
       const tasks = JSON.parse(tasksFromLs)
       const task = { ...body, id: uuidv4(), user_id: null }
       localStorage.setItem("tasks", JSON.stringify([...tasks, task]))
       return {
-        result: task as TasksFromLS,
+        result: task as LocalStorageTaskDto,
       }
     } else {
       const task = { ...body, id: uuidv4() }
       localStorage.setItem("tasks", JSON.stringify([task]))
       return {
-        result: task as TasksFromLS,
+        result: task as LocalStorageTaskDto,
       }
     }
   },
 )
-
-export const updateTaskDateFromLsFx = createEffect(
-  ({ date, id }: { date: Date; id: string }) => {
+export const updateTaskFromLocalStorageFx = createEffect(
+  async ({ id, data }: { id: TaskId; data: CreateTaskDto }) => {
     const tasksFromLs = localStorage.getItem("tasks")
-    const parsedTasks = JSON.parse(tasksFromLs!) as TasksFromLS[]
-    const updatedTasks = parsedTasks.map((task: TasksFromLS) =>
+    const parsedTasks = JSON.parse(tasksFromLs!)
+
+    const updatedTasks = parsedTasks.map((task: LocalStorageTaskDto) =>
+      task.id === id ? { id, ...data } : task,
+    )
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks))
+
+    return {
+      result: {
+        ...data,
+        id,
+        user_id: null,
+      },
+    }
+  },
+)
+
+export const updateDateInLocalStorageFx = createEffect(
+  ({ date, id }: { date: Date; id: TaskId }) => {
+    const tasksFromLs = localStorage.getItem("tasks")
+    const parsedTasks = JSON.parse(tasksFromLs!) as LocalStorageTaskDto[]
+    const updatedTasks = parsedTasks.map((task: LocalStorageTaskDto) =>
       task.id === id ? { ...task, start_date: date } : task,
     )
     const updatedTask = updatedTasks.find((task) => task.id === id)
     localStorage.setItem("tasks", JSON.stringify(updatedTasks))
     return {
-      result: updatedTask,
+      result: updatedTask!,
     }
   },
 )
-export const updateStatusFromLocalStorageFx = createEffect(
+export const updateStatusInLocalStorageFx = createEffect(
   ({ id, status }: { id: string; status: TaskStatus }) => {
     const tasks = localStorage.getItem("tasks")
-    const updatedTasks = (JSON.parse(tasks!) as TasksFromLS[]).map((task) =>
-      task.id === id ? { ...task, status } : task,
+    const updatedTasks = (JSON.parse(tasks!) as LocalStorageTaskDto[]).map(
+      (task) => (task.id === id ? { ...task, status } : task),
     )
     localStorage.setItem("tasks", JSON.stringify(updatedTasks))
     const updatedTask = updatedTasks.find((task) => task.id === id)
@@ -220,32 +184,10 @@ export const updateStatusFromLocalStorageFx = createEffect(
     }
   },
 )
-type Cred = {
-  id: string
-  title: string
-  description: string
-  status: TaskStatus
-  type: TaskType
-  start_date: Nullable<Date>
-}
-export const updateTaskFromLocalStorageFx = createEffect(async (cred: Cred) => {
-  const tasksFromLs = localStorage.getItem("tasks")
-  const parsedTasks = JSON.parse(tasksFromLs!)
-  const updatedTasks = parsedTasks.map((task: TasksFromLS) =>
-    task.id === cred.id ? cred : task,
-  )
-  localStorage.setItem("tasks", JSON.stringify(updatedTasks))
-  return {
-    result: {
-      ...cred,
-      user_id: null,
-    },
-  }
-})
 
-export const deleteTaskFromLsFx = createEffect((id: string) => {
+export const deleteTaskFromLocalStorageFx = createEffect((id: TaskId) => {
   const tasksFromLs = localStorage.getItem("tasks")
-  const parsedTasks = JSON.parse(tasksFromLs!) as TasksFromLS[]
+  const parsedTasks = JSON.parse(tasksFromLs!) as LocalStorageTaskDto[]
 
   const filteredTasks = parsedTasks.filter((task) => task.id !== id)
 

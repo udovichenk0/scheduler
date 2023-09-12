@@ -3,8 +3,8 @@ import { spread } from "patronum"
 
 import { $$session } from "@/entities/session"
 
-import { verifyQuery } from "@/shared/api/auth"
-import { setTokenTriggered } from "@/shared/api/token"
+import { authApi } from "@/shared/api/auth"
+import { tokenService } from "@/shared/api/token"
 
 import { $email } from "../by-email"
 export const CODE_LENGTH = 6
@@ -28,10 +28,10 @@ sample({
   clock: submitTriggered,
   source: { code: $code, email: $email },
   fn: ({ code, email }) => ({ code, email }),
-  target: verifyQuery.start,
+  target: authApi.verifyQuery.start,
 })
 sample({
-  clock: verifyQuery.finished.success,
+  clock: authApi.verifyQuery.finished.success,
   fn: ({ result }) => ({
     user: result.user,
     token: result.access_token,
@@ -39,7 +39,7 @@ sample({
   target: spread({
     targets: {
       user: $$session.sessionSet,
-      token: setTokenTriggered,
+      token: tokenService.setTokenTriggered,
     },
   }),
 })

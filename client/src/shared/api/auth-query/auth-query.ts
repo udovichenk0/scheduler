@@ -1,12 +1,7 @@
 import { createHeadlessQuery } from "@farfetched/core"
 import { attach, createEffect } from "effector"
 
-import {
-  $accessToken,
-  refreshFx,
-  setTokenTriggered,
-  TokenDto,
-} from "@/shared/api/token"
+import { tokenService, tokenApi, TokenDto } from "@/shared/api/token"
 
 import { baseQuery } from "./base-query"
 import { Request, Response, HttpRequestType } from "./type"
@@ -21,7 +16,7 @@ export const authQuery = <Resp, Params extends HttpRequestType | void>({
   response: Response<Resp, Params>
 }) => {
   const queryFx = attach({
-    source: $accessToken,
+    source: tokenService.$accessToken,
     mapParams: ({ body, params, query }, token) => {
       return {
         token,
@@ -48,7 +43,7 @@ export const authQuery = <Resp, Params extends HttpRequestType | void>({
         })
         if (response.statusCode == 401) {
           if (!refreshPromiseQueue) {
-            refreshPromiseQueue = refreshFx()
+            refreshPromiseQueue = tokenApi.refreshFx()
             const { access_token } = await refreshPromiseQueue
             if (access_token) {
               return retrySetTokenAndResetQueue(
@@ -89,7 +84,7 @@ function retrySetTokenAndResetQueue(
   access_token: string,
 ) {
   refreshPromiseQueue = null
-  setTokenTriggered(access_token)
+  tokenService.setTokenTriggered(access_token)
   return baseQuery({
     request: request,
     token: access_token,
