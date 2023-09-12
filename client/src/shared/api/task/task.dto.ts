@@ -12,3 +12,6 @@ export const taskDtoSchema = z.object({
 export const tasksDtoSchema = z.array(taskDtoSchema)
 
 export type TaskDto = z.infer<typeof taskDtoSchema>
+
+export type TaskStatus = z.infer<typeof taskDtoSchema.shape.status>
+export type TaskType = z.infer<typeof taskDtoSchema.shape.type>

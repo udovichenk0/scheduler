@@ -123,7 +123,7 @@ describe("create task", () => {
     })
     await allSettled(createTaskTriggered, { scope })
     expect(mock).toHaveBeenCalledOnce()
-    expect(mock).toBeCalledWith({
+    expect(mock).toBeCalledWith(null, {
       body: {
         title: "sixth",
         description: "my note",

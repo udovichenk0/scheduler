@@ -60,8 +60,9 @@ describe("delete task", () => {
       scope,
       params: "1",
     })
+    console.log(mock.mock.calls)
     expect(mock).toHaveBeenCalledOnce()
-    expect(mock).toBeCalledWith("1")
+    expect(mock).toBeCalledWith(null, "1")
     expect(mock).toReturnWith({ result: returnedTask })
     expect(scope.getState($$task.$taskKv)).toStrictEqual({})
   })
