@@ -12,8 +12,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@farfetched/core": "^0.8.11",
-    "@farfetched/zod": "^0.8.12",
+    "@farfetched/core": "^0.10.0",
+    "@farfetched/zod": "^0.10.0",
     "atomic-router": "^0.8.0",
     "atomic-router-react": "^0.8.3",
     "class-variance-authority": "^0.6.0",
