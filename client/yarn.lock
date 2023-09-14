@@ -385,15 +385,15 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.40.0.tgz#3ba73359e11f5a7bd3e407f70b3528abfae69cec"
   integrity sha512-ElyB54bJIhXQYVKjDSvCkPO1iU1tSAeVQJbllWJq1XQSmmA4dgFk8CbiBGpiOPxleE48vDogxCtmMYku4HSVLA==
 
-"@farfetched/core@^0.8.11":
-  version "0.8.11"
-  resolved "https://registry.yarnpkg.com/@farfetched/core/-/core-0.8.11.tgz#661115409db9c8d8c89b90f5bfb97cce273b04b6"
-  integrity sha512-aFXorJu9X3bUNVHxBRKJvk76FyokkgAJjnejsyNSaRjCtHGWRyAwrYyhCl0vwlE23DUpew6BXMJwtrg0NKt0bw==
+"@farfetched/core@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@farfetched/core/-/core-0.10.0.tgz#84cc24f0938934ab8eda1888d82685fa7deddfe6"
+  integrity sha512-8oHMBPEvpMG3dBCUGfjlWeQwn32erQM57OAnnVVHH8zeVk0VRnjXvsS7GhOgS0J9CFnXPBz9LU+2e/VWk4g2Gw==
 
-"@farfetched/zod@^0.8.12":
-  version "0.8.12"
-  resolved "https://registry.yarnpkg.com/@farfetched/zod/-/zod-0.8.12.tgz#9b227b930b5a8f600f1db745ba955efac73e2fd4"
-  integrity sha512-OsxDaBU3H5SVQhT9+2XpI8Pod1yvfTHnAO5IDOcbL5uaYgQxHVIRMjRq/NoVxcYbtCTDhS6OxFiGs9QK5ldq5Q==
+"@farfetched/zod@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@farfetched/zod/-/zod-0.10.0.tgz#dd5affe1eeeb5a42571f8ab7e58b3fef6fdaf059"
+  integrity sha512-yEZ2qVxPfiXqSTQDG8/dXDKn0WyEuKsZr3sgCrvyuJUpVZfnM6Lk2oLvyPj5NaLYga3ZLf2xvowCvitd3Q+P+A==
 
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.8"
