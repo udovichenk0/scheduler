@@ -8,6 +8,7 @@ import { TaskKv } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
 import { TaskId } from "@/shared/api/task"
+import { bridge } from "@/shared/lib/bridge"
 
 export const pomodoroModal = createModal({})
 export const settingsModal = createModal({})
@@ -67,22 +68,24 @@ export const disclosureTask = ({
       },
     }),
   })
-  sample({
-    clock: closeTaskTriggered,
-    source: $createdTask,
-    filter: Boolean,
-    target: createdTaskClosed,
-  })
-  sample({
-    clock: closeTaskTriggered,
-    source: $updatedTaskId,
-    filter: Boolean,
-    target: updatedTaskClosed,
-  })
-  sample({
-    clock: createdTaskOpened,
-    filter: and(not($isAllowToCreate), $createdTask),
-    target: closeTaskTriggered,
+  bridge(() => {
+    sample({
+      clock: closeTaskTriggered,
+      source: $createdTask,
+      filter: Boolean,
+      target: createdTaskClosed,
+    })
+    sample({
+      clock: closeTaskTriggered,
+      source: $updatedTaskId,
+      filter: Boolean,
+      target: updatedTaskClosed,
+    })
+    sample({
+      clock: closeTaskTriggered,
+      filter: and($isAllowToCreate, not($isCreating)),
+      target: createTaskTriggered,
+    })
   })
 
   sample({
@@ -110,45 +113,41 @@ export const disclosureTask = ({
     fn: () => true,
     target: $createdTask,
   })
+  bridge(() => {
+    sample({
+      clock: createdTaskOpened,
+      filter: and(not($isAllowToCreate), $createdTask),
+      target: closeTaskTriggered,
+    })
+    // open task if updated/created task isn't opened, and createdTaskTriggered false
+    sample({
+      clock: createdTaskOpened,
+      filter: and(
+        not($updatedTaskId),
+        not($createdTask),
+        not($isCreatedTaskTriggered),
+      ),
+      fn: () => true,
+      target: $createdTask,
+    })
+    sample({
+      clock: createdTaskOpened,
+      filter: and($updatedTaskId, not($isAllowToUpdate)),
+      fn: () => true,
+      target: [$createdTask, $updatedTaskId.reinit],
+    })
+    // set flag to open create task later, if you are allowed can update task or create
+    sample({
+      clock: createdTaskOpened,
+      filter: or(
+        and($updatedTaskId, $isAllowToUpdate),
+        and($createdTask, $isAllowToCreate),
+      ),
+      fn: () => true,
+      target: $isCreatedTaskTriggered,
+    })
+  })
 
-  // open task if updated, created task isn't opened, and createdTaskTriggered false
-  sample({
-    clock: createdTaskOpened,
-    filter: and(
-      not($updatedTaskId),
-      not($createdTask),
-      not($isCreatedTaskTriggered),
-    ),
-    fn: () => true,
-    target: $createdTask,
-  })
-  sample({
-    clock: createdTaskOpened,
-    filter: and($updatedTaskId, not($isAllowToUpdate)),
-    fn: () => true,
-    target: [$createdTask, $updatedTaskId.reinit],
-  })
-  // set flag to open create task later, if you are allowed can update task or create
-  sample({
-    clock: createdTaskOpened,
-    filter: or(
-      and($updatedTaskId, $isAllowToUpdate),
-      and($createdTask, $isAllowToCreate),
-    ),
-    fn: () => true,
-    target: $isCreatedTaskTriggered,
-  })
-
-  sample({
-    clock: closeTaskTriggered,
-    filter: and($isAllowToCreate, not($isCreating)),
-    target: createTaskTriggered,
-  })
-  sample({
-    clock: taskSuccessfullyCreated,
-    filter: not($isCreatedTaskTriggered),
-    target: $createdTask.reinit!,
-  })
   // Click on opened created task, if updated task if opened and can be updated then update
   sample({
     clock: [updatedTaskClosed, createdTaskOpened],
@@ -158,34 +157,42 @@ export const disclosureTask = ({
       isUpdating: $isUpdating,
     },
     filter: ({ updatedTaskId, canUpdate, isUpdating }) => {
-      return Boolean(updatedTaskId) && canUpdate && !isUpdating
+      return !!updatedTaskId && canUpdate && !isUpdating
     },
     fn: ({ updatedTaskId }) => updatedTaskId!,
     target: updateTaskTriggeredById,
   })
-  sample({
-    clock: createdTaskClosed,
-    filter: not($isAllowToCreate),
-    target: $createdTask.reinit!,
-  })
+
   sample({
     clock: createdTaskOpened,
     filter: and($isAllowToCreate, not($isCreating)),
     target: createTaskTriggered,
   })
-  sample({
-    clock: taskSuccessfullyCreated,
-    target: $isCreatedTaskTriggered.reinit!,
-  })
-  sample({
-    clock: taskSuccessfullyUpdated,
-    filter: $isCreatedTaskTriggered,
-    target: $isCreatedTaskTriggered.reinit!,
-  })
-  sample({
-    clock: updatedTaskClosed,
-    filter: not($isAllowToUpdate),
-    target: $updatedTaskId.reinit!,
+  bridge(() => {
+    sample({
+      clock: taskSuccessfullyCreated,
+      filter: not($isCreatedTaskTriggered),
+      target: $createdTask.reinit!,
+    })
+    sample({
+      clock: createdTaskClosed,
+      filter: not($isAllowToCreate),
+      target: $createdTask.reinit!,
+    })
+    sample({
+      clock: taskSuccessfullyCreated,
+      target: $isCreatedTaskTriggered.reinit!,
+    })
+    sample({
+      clock: taskSuccessfullyUpdated,
+      filter: $isCreatedTaskTriggered,
+      target: $isCreatedTaskTriggered.reinit!,
+    })
+    sample({
+      clock: updatedTaskClosed,
+      filter: not($isAllowToUpdate),
+      target: $updatedTaskId.reinit!,
+    })
   })
   return {
     closeTaskTriggered,

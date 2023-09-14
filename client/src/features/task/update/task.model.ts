@@ -7,6 +7,7 @@ import { $$task } from "@/entities/task/task-item"
 import { modifyTaskFactory } from "@/entities/task/task-form"
 
 import { taskApi, TaskStatus } from "@/shared/api/task"
+import { bridge } from "@/shared/lib/bridge"
 
 export const updateTaskFactory = () => {
   const $$modifyTask = modifyTaskFactory({})
@@ -45,52 +46,61 @@ export const updateTaskFactory = () => {
   ])
 
   //updatae task date from localstorage or from the server
-  sample({
-    clock: dateChangedAndUpdated,
-    filter: not($$session.$isAuthenticated),
-    target: attachUpdateTaskDateFromLsFx,
-  })
-  sample({
-    clock: dateChangedAndUpdated,
-    filter: $$session.$isAuthenticated,
-    fn: ({ date, id }) => ({ body: { date, id } }),
-    target: attachUpdateTaskDate.start,
+  bridge(() => {
+    sample({
+      clock: dateChangedAndUpdated,
+      filter: not($$session.$isAuthenticated),
+      target: attachUpdateTaskDateFromLsFx,
+    })
+    sample({
+      clock: dateChangedAndUpdated,
+      filter: $$session.$isAuthenticated,
+      fn: ({ date, id }) => ({ body: { date, id } }),
+      target: attachUpdateTaskDate.start,
+    })
   })
   //updatae task status from localstorage or from the server
-  sample({
-    clock: statusChangedAndUpdated,
-    filter: not($$session.$isAuthenticated),
-    fn: ({ id, status }) => {
-      const changedStatus = status === "INPROGRESS" ? "FINISHED" : "INPROGRESS"
-      return { id, status: changedStatus as TaskStatus }
-    },
-    target: attachUpdateStatusFromLocalStorageFx,
-  })
-  sample({
-    clock: statusChangedAndUpdated,
-    filter: $$session.$isAuthenticated,
-    fn: ({ id, status }) => {
-      const changedStatus = status === "INPROGRESS" ? "FINISHED" : "INPROGRESS"
-      return { body: { id, status: changedStatus as TaskStatus } }
-    },
-    target: attachUpdateStatusQuery.start,
+  bridge(() => {
+    sample({
+      clock: statusChangedAndUpdated,
+      filter: not($$session.$isAuthenticated),
+      fn: ({ id, status }) => {
+        const changedStatus =
+          status === "INPROGRESS" ? "FINISHED" : "INPROGRESS"
+        return { id, status: changedStatus as TaskStatus }
+      },
+      target: attachUpdateStatusFromLocalStorageFx,
+    })
+    sample({
+      clock: statusChangedAndUpdated,
+      filter: $$session.$isAuthenticated,
+      fn: ({ id, status }) => {
+        const changedStatus =
+          status === "INPROGRESS" ? "FINISHED" : "INPROGRESS"
+        return { body: { id, status: changedStatus as TaskStatus } }
+      },
+      target: attachUpdateStatusQuery.start,
+    })
   })
 
   // update task from localStorage or from the server
-  sample({
-    clock: updateTaskTriggeredById,
-    source: $fields,
-    filter: and($isAllowToSubmit, $$session.$isAuthenticated),
-    fn: (fields, id) => ({ body: { task: fields, id } }),
-    target: attachUpdateTaskQuery.start,
+  bridge(() => {
+    sample({
+      clock: updateTaskTriggeredById,
+      source: $fields,
+      filter: and($isAllowToSubmit, $$session.$isAuthenticated),
+      fn: (fields, id) => ({ body: { task: fields, id } }),
+      target: attachUpdateTaskQuery.start,
+    })
+    sample({
+      clock: updateTaskTriggeredById,
+      source: $fields,
+      filter: and($isAllowToSubmit, not($$session.$isAuthenticated)),
+      fn: (fields, id) => ({ data: fields, id }),
+      target: attachUpdateTaskFromLocalStorageFx,
+    })
   })
-  sample({
-    clock: updateTaskTriggeredById,
-    source: $fields,
-    filter: and($isAllowToSubmit, not($$session.$isAuthenticated)),
-    fn: (fields, id) => ({ data: fields, id }),
-    target: attachUpdateTaskFromLocalStorageFx,
-  })
+
   sample({
     clock: setFieldsTriggeredById,
     source: $$task.$taskKv,
@@ -113,7 +123,7 @@ export const updateTaskFactory = () => {
       attachUpdateTaskDate.finished.success,
       attachUpdateTaskFromLocalStorageFx.doneData,
       attachUpdateTaskDateFromLsFx.doneData,
-      // attachUpdateStatusFromLocalStorageFx.doneData,
+      attachUpdateStatusFromLocalStorageFx.doneData,
     ],
     fn: ({ result }) => result,
     target: [$$task.setTaskTriggered, resetFieldsTriggered],

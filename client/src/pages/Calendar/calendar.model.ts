@@ -9,6 +9,7 @@ import { updateTaskFactory } from "@/features/task/update"
 import { $$task, Task } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
+import { bridge } from "@/shared/lib/bridge"
 
 export const $$deleteTask = createRemoveTaskFactory()
 
@@ -48,63 +49,71 @@ sample({
   clock: createTaskModalOpened,
   target: $$createTask.$startDate,
 })
-sample({
-  clock: createTaskModalOpened,
-  fn: () => true,
-  target: $createdTask,
-})
+bridge(() => {
+  sample({
+    clock: createTaskModalOpened,
+    fn: () => true,
+    target: $createdTask,
+  })
 
-sample({
-  clock: updateTaskModalOpened,
-  target: [$$updateTask.setFieldsTriggeredById, $updatedTask],
+  sample({
+    clock: updateTaskModalOpened,
+    target: [$$updateTask.setFieldsTriggeredById, $updatedTask],
+  })
 })
 
 sample({
   clock: [updateTaskModalOpened, createTaskModalOpened],
   target: $$modal.open,
 })
-sample({
-  clock: [
-    $$createTask.taskSuccessfullyCreated,
-    $$updateTask.taskSuccessfullyUpdated,
-    $$deleteTask.taskSuccessfullyDeleted,
-    canceled,
-  ],
-  target: $$modal.close,
-})
-sample({
-  clock: saved,
-  filter: and(
-    not($$updateTask.$isAllowToSubmit),
-    not($$createTask.$isAllowToSubmit),
-  ),
-  target: $$modal.close,
-})
-sample({
-  clock: saved,
-  filter: $$createTask.$isAllowToSubmit,
-  target: $$createTask.createTaskTriggered,
+
+bridge(() => {
+  sample({
+    clock: saved,
+    filter: and(
+      not($$updateTask.$isAllowToSubmit),
+      not($$createTask.$isAllowToSubmit),
+    ),
+    target: $$modal.close,
+  })
+  sample({
+    clock: saved,
+    filter: $$createTask.$isAllowToSubmit,
+    target: $$createTask.createTaskTriggered,
+  })
+
+  sample({
+    clock: saved,
+    source: {
+      updatedTaskId: $updatedTask,
+      canUpdate: $$updateTask.$isAllowToSubmit,
+    },
+    filter: ({ canUpdate, updatedTaskId }) =>
+      canUpdate && Boolean(updatedTaskId),
+    fn: ({ updatedTaskId }) => updatedTaskId!,
+    target: $$updateTask.updateTaskTriggeredById,
+  })
 })
 
-sample({
-  clock: saved,
-  source: {
-    updatedTaskId: $updatedTask,
-    canUpdate: $$updateTask.$isAllowToSubmit,
-  },
-  filter: ({ canUpdate, updatedTaskId }) => canUpdate && Boolean(updatedTaskId),
-  fn: ({ updatedTaskId }) => updatedTaskId!,
-  target: $$updateTask.updateTaskTriggeredById,
-})
-
-//reset fields after modal is closed
-sample({
-  clock: [$$modal.close, canceled],
-  filter: $createdTask,
-  target: [$createdTask.reinit, $$createTask.resetFieldsTriggered],
-})
-sample({
-  clock: [$$modal.close, canceled],
-  filter: and($updatedTask),
-  target: [$updatedTask.reinit, $$updateTask.resetFieldsTriggered],
+bridge(() => {
+  sample({
+    clock: [
+      $$createTask.taskSuccessfullyCreated,
+      $$updateTask.taskSuccessfullyUpdated,
+      $$deleteTask.taskSuccessfullyDeleted,
+      canceled,
+    ],
+    target: $$modal.close,
+  })
+  //reset fields after modal is closed
+  sample({
+    clock: [$$modal.close, canceled],
+    filter: $createdTask,
+    target: [$createdTask.reinit, $$createTask.resetFieldsTriggered],
+  })
+  sample({
+    clock: [$$modal.close, canceled],
+    filter: and($updatedTask),
+    target: [$updatedTask.reinit, $$updateTask.resetFieldsTriggered],
+  })
 })

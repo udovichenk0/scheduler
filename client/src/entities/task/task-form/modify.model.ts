@@ -3,6 +3,7 @@ import { combine, createEvent, createStore, sample } from "effector"
 
 import { createModal } from "@/shared/lib/modal"
 import { TaskId, TaskStatus, TaskType } from "@/shared/api/task"
+import { bridge } from "@/shared/lib/bridge"
 
 export const $$dateModal = createModal({})
 export const $$typeModal = createModal({})
@@ -55,6 +56,7 @@ export const modifyTaskFactory = ({
     clock: titleChanged,
     target: $title,
   })
+  //!Change implementation
   sample({
     clock: statusChanged,
     fn: (value) => {
@@ -69,49 +71,55 @@ export const modifyTaskFactory = ({
     clock: descriptionChanged,
     target: $description,
   })
-  sample({
-    clock: dateChanged,
-    target: [$startDate, $$dateModal.close],
-  })
-  sample({
-    clock: dateChanged,
-    source: $type,
-    filter: (type, date) => type == "inbox" && Boolean(date),
-    fn: () => "unplaced" as const,
-    target: $type,
+
+  bridge(() => {
+    sample({
+      clock: dateChanged,
+      target: [$startDate, $$dateModal.close],
+    })
+    sample({
+      clock: dateChanged,
+      source: $type,
+      filter: (type, date) => type == "inbox" && Boolean(date),
+      fn: () => "unplaced" as const,
+      target: $type,
+    })
+
+    sample({
+      clock: dateChanged,
+      source: $type,
+      filter: (type, date) => type == "unplaced" && !date,
+      fn: () => "inbox" as const,
+      target: $type,
+    })
   })
 
-  sample({
-    clock: dateChanged,
-    source: $type,
-    filter: (type, date) => type == "unplaced" && !date,
-    fn: () => "inbox" as const,
-    target: $type,
+  bridge(() => {
+    sample({
+      clock: typeChanged,
+      target: $$typeModal.close,
+    })
+    sample({
+      clock: typeChanged,
+      source: $type,
+      filter: (currentType, type) => currentType != type,
+      fn: (_, type) => type,
+      target: $type,
+    })
+    sample({
+      clock: typeChanged,
+      filter: (type) => type == "inbox",
+      fn: () => null,
+      target: $startDate,
+    })
+    sample({
+      clock: typeChanged,
+      filter: (type) => type == "unplaced",
+      fn: () => dayjs().startOf("day").toDate(),
+      target: $startDate,
+    })
   })
 
-  sample({
-    clock: typeChanged,
-    target: $$typeModal.close,
-  })
-  sample({
-    clock: typeChanged,
-    source: $type,
-    filter: (currentType, type) => currentType != type,
-    fn: (_, type) => type,
-    target: $type,
-  })
-  sample({
-    clock: typeChanged,
-    filter: (type) => type == "inbox",
-    fn: () => null,
-    target: $startDate,
-  })
-  sample({
-    clock: typeChanged,
-    filter: (type) => type == "unplaced",
-    fn: () => dayjs().startOf("day").toDate(),
-    target: $startDate,
-  })
   sample({
     clock: [
       titleChanged,

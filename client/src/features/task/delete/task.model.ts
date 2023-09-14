@@ -11,7 +11,6 @@ export const createRemoveTaskFactory = () => {
 
   const attachDeleteTaskQuery = attachOperation(taskApi.deleteTask)
 
-  // const attachDeleteTaskFromLsFx = attach({ effect: deleteTaskFromLsFx })
   const attachDeleteTaskFromLsFx = attach({
     effect: taskApi.deleteTaskFromLocalStorageFx,
   })
@@ -30,7 +29,6 @@ export const createRemoveTaskFactory = () => {
   sample({
     clock: taskDeletedById,
     filter: not($$session.$isAuthenticated),
-    // fn: (id) => console.log({body: { id }})
     target: attachDeleteTaskFromLsFx,
   })
   sample({

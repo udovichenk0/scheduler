@@ -10,7 +10,7 @@ import { MainModal } from "@/shared/ui/modals/main"
 import { Container } from "@/shared/ui/general/container"
 
 import {
-  $passingTime,
+  $tickingTime,
   $isPomodoroRunning,
   startTimerTriggered,
   stopTimerTriggered,
@@ -58,7 +58,7 @@ export const Pomodoro = ({
     currentStaticTime,
   ] = useUnit([
     startTimerTriggered,
-    $passingTime,
+    $tickingTime,
     $isPomodoroRunning,
     stopTimerTriggered,
     resetTimerTriggered,
