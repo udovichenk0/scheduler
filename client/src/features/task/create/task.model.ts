@@ -7,6 +7,7 @@ import { $$task } from "@/entities/task/task-item"
 import { $$session } from "@/entities/session"
 
 import { taskApi } from "@/shared/api/task"
+import { bridge } from "@/shared/lib/bridge"
 
 export const createTaskFactory = ({
   defaultType,
@@ -29,19 +30,21 @@ export const createTaskFactory = ({
     attachCreateTaskQuery.finished.success,
   ])
 
-  sample({
-    clock: createTaskTriggered,
-    source: $fields,
-    filter: and($isAllowToSubmit, $$session.$isAuthenticated),
-    fn: (fields) => ({ body: fields }),
-    target: attachCreateTaskQuery.start,
-  })
-  sample({
-    clock: createTaskTriggered,
-    source: $fields,
-    filter: and($isAllowToSubmit, not($$session.$isAuthenticated)),
-    fn: (fields) => ({ body: fields }),
-    target: attachSetTaskToLocalStorage,
+  bridge(() => {
+    sample({
+      clock: createTaskTriggered,
+      source: $fields,
+      filter: and($isAllowToSubmit, $$session.$isAuthenticated),
+      fn: (fields) => ({ body: fields }),
+      target: attachCreateTaskQuery.start,
+    })
+    sample({
+      clock: createTaskTriggered,
+      source: $fields,
+      filter: and($isAllowToSubmit, not($$session.$isAuthenticated)),
+      fn: (fields) => ({ body: fields }),
+      target: attachSetTaskToLocalStorage,
+    })
   })
   sample({
     clock: [
@@ -49,18 +52,7 @@ export const createTaskFactory = ({
       attachSetTaskToLocalStorage.doneData,
     ],
     fn: ({ result }) => result,
-    target: $$task.setTaskTriggered,
-  })
-  sample({
-    clock: attachSetTaskToLocalStorage.done,
-    fn: () => console.log("task created"),
-  })
-  sample({
-    clock: [
-      attachCreateTaskQuery.finished.success,
-      attachSetTaskToLocalStorage.done,
-    ],
-    target: resetFieldsTriggered,
+    target: [$$task.setTaskTriggered, resetFieldsTriggered],
   })
 
   return {

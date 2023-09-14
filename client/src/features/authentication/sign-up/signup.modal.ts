@@ -5,6 +5,7 @@ import { $$session } from "@/entities/session"
 
 import { authApi } from "@/shared/api/auth"
 import { taskApi } from "@/shared/api/task"
+import { bridge } from "@/shared/lib/bridge"
 
 import { $email } from "../by-email"
 
@@ -20,32 +21,35 @@ export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()
 export const resetSignupPasswordTriggered = createEvent()
 
-export const $password = createStore("")
+export const $password = createStore("").on(
+  passwordChanged,
+  (_, password) => password,
+)
+
 export const $passwordError = createStore<Nullable<string>>(null)
 
 const signupSchema = z.string().min(8).max(50).trim()
+
 const getTasksFromLsAttached = attach({
   effect: taskApi.getTasksFromLocalStorageFx,
 })
-sample({
-  clock: submitTriggered,
-  source: { email: $email, password: $password },
-  filter: ({ password }) => signupSchema.safeParse(password).success,
-  target: authApi.signupQuery.start,
+bridge(() => {
+  sample({
+    clock: submitTriggered,
+    source: { email: $email, password: $password },
+    filter: ({ password }) => signupSchema.safeParse(password).success,
+    target: authApi.signupQuery.start,
+  })
+
+  sample({
+    clock: submitTriggered,
+    source: $password,
+    filter: (password) => !signupSchema.safeParse(password).success,
+    fn: checkError,
+    target: $passwordError,
+  })
 })
 
-sample({
-  clock: submitTriggered,
-  source: $password,
-  filter: (password) => !signupSchema.safeParse(password).success,
-  fn: checkError,
-  target: $passwordError,
-})
-
-sample({
-  clock: passwordChanged,
-  target: $password,
-})
 sample({
   clock: authApi.signupQuery.finished.success,
   target: getTasksFromLsAttached,
@@ -57,6 +61,7 @@ sample({
   fn: (user, data) => ({ body: { user_id: user!.id, tasks: data } }),
   target: taskApi.createTasks.start,
 })
+
 sample({
   clock: resetSignupPasswordTriggered,
   target: [$passwordError.reinit, $password.reinit],
