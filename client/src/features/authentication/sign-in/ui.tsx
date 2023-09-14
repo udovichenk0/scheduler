@@ -48,16 +48,14 @@ export const Signin = ({ goBack }: { goBack: () => void }) => {
           />
         }
       />
-      <span>
-        <Button
-          className={`${!password && "pointer-events-none bg-[#1f4964]"}`}
-          disabled={!password}
-          size={"m"}
-          intent={"filled"}
-        >
-          Resume
-        </Button>
-      </span>
+      <Button
+        className={`${!password && "pointer-events-none bg-[#1f4964]"}`}
+        disabled={!password}
+        size={"m"}
+        intent={"filled"}
+      >
+        Resume
+      </Button>
     </AuthTemplate>
   )
 }
