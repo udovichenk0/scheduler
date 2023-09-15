@@ -1,0 +1,11 @@
+{
+  "task": {
+    "inbox": "Inbox",
+    "today": "Today",
+    "upcoming": "Upcoming",
+    "calendar": "Calendar"
+  },
+  "sidebar": {
+    "project": "New project"
+  }
+}

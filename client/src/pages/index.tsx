@@ -14,4 +14,9 @@ const routes = [
   CalendarRoute,
 ]
 
-export const RoutesView = createRoutesView({ routes })
+export const RoutesView = createRoutesView({
+  routes,
+  otherwise() {
+    return <div className="text-white">Page not found!</div>
+  },
+})
