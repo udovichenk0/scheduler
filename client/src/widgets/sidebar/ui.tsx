@@ -1,4 +1,5 @@
 import { useUnit } from "effector-react"
+import { useTranslation } from "react-i18next"
 
 import { Settings } from "@/widgets/settings"
 
@@ -17,6 +18,7 @@ import { Logo } from "./ui/logo"
 import { SideLink } from "./ui/side-link"
 
 export const Sidebar = () => {
+  const { t } = useTranslation()
   const [inboxTasksCount, todayTasksCount, openSettingsModal] = useUnit([
     $inboxTasksCount,
     $todayTasksCount,
@@ -36,24 +38,24 @@ export const Sidebar = () => {
           <div className="space-y-2">
             <SideLink
               route={routes.inbox}
-              title="Inbox"
+              title={t("task.inbox")}
               rightCount={inboxTasksCount}
               iconName="common/inbox"
             />
             <SideLink
               route={routes.home}
-              title="Today"
+              title={t("task.today")}
               rightCount={todayTasksCount}
               iconName="common/outlined-star"
             />
             <SideLink
               route={routes.upcoming}
-              title="Upcoming"
+              title={t("task.upcoming")}
               iconName="common/upcoming"
             />
             <SideLink
               route={routes.calendar}
-              title="Calendar"
+              title={t("task.calendar")}
               iconName="common/calendar"
             />
           </div>
@@ -61,7 +63,9 @@ export const Sidebar = () => {
         <Container>
           <Button size={"sm"} className="w-full text-start" intent={"primary"}>
             <Icon name="common/plus" className="mr-4 text-cOpacitySecondFont" />
-            <span className="text-[12px] text-primary">New Project</span>
+            <span className="text-[12px] text-primary">
+              {t("sidebar.project")}
+            </span>
           </Button>
         </Container>
 

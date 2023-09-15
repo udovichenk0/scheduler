@@ -56,8 +56,8 @@ export const Input = forwardRef<InputRef, InputProps>(
           disabled={disabled}
           aria-invalid={!!error}
           value={value}
-          className="aria-[invalid=true]:text-error flex w-full items-center text-sm outline-none hover:border-cHover focus:border-cHover
-          border-b-[1px] border-cSecondBorder bg-transparent py-1 pr-8"
+          className="flex w-full items-center border-b-[1px] border-cSecondBorder bg-transparent py-1 pr-8
+          text-sm outline-none hover:border-cHover focus:border-cHover aria-[invalid=true]:text-error"
         />
         {icon && <span className="absolute bottom-1 right-0">{icon}</span>}
         {error && (
