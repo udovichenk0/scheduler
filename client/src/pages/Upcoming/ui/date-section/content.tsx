@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { RefObject, ReactNode } from "react"
+import { RefObject, ReactNode, useContext } from "react"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
 
@@ -7,26 +7,24 @@ import { Task, TaskItem } from "@/entities/task/task-item"
 
 import { TaskId } from "@/shared/api/task"
 
-import { $$updateTask, $$taskDisclosure, $$createTask } from "../upcoming.model"
-export const TasksSection = ({
+import { FactoriesContext } from "../../upcoming.model"
+
+export const Content = ({
   taskRef,
   tasks,
-  title,
   isSelected,
-  isNextSelectedTask,
-  action,
   selectTaskId,
   selectedTaskId,
 }: {
   taskRef: RefObject<HTMLDivElement>
   tasks: Task[]
-  title: ReactNode
+  title?: ReactNode
   isSelected: boolean
-  isNextSelectedTask?: boolean
-  action: () => void
   selectTaskId: (taskId: Nullable<TaskId>) => void
   selectedTaskId: Nullable<TaskId>
 }) => {
+
+  const {$$createTask, $$updateTask, $$taskDisclosure} = useContext(FactoriesContext)
   const [
     updatedTaskId,
     openUpdatedTaskById,
@@ -42,17 +40,6 @@ export const TasksSection = ({
   ])
   return (
     <div className="select-none border-cBorder text-primary">
-      <div className="border-b border-cBorder p-2 px-3 pl-9">
-        <button
-          disabled={isNextSelectedTask}
-          onClick={action}
-          className={`${
-            isNextSelectedTask && "cursor-pointer bg-cFocus"
-          } flex w-full items-center gap-2 rounded-[5px] px-3 text-lg enabled:hover:bg-cHover `}
-        >
-          {title}
-        </button>
-      </div>
       <div>
         {tasks?.map((task, id) => {
           return (

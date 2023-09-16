@@ -1,6 +1,7 @@
 import { combine, createEvent, createStore, sample } from "effector"
 import { not } from "patronum"
 import dayjs, { Dayjs } from "dayjs"
+import { createContext } from "react"
 
 import { disclosureTask } from "@/widgets/expanded-task/model"
 
@@ -19,7 +20,14 @@ export const $$taskDisclosure = disclosureTask({
   updateTaskModel: $$updateTask,
   createTaskModel: $$createTask,
 })
+
 export const $$deleteTask = createRemoveTaskFactory()
+export const FactoriesContext = createContext({
+  $$updateTask,
+  $$createTask,
+  $$taskDisclosure,
+})
+
 export const $nextDate = createStore(new Date())
 export const $selectedDate = createStore<Date>(new Date())
 export const currentDateSelected = createEvent<Date>()
@@ -39,7 +47,7 @@ export const $tasksByDate = combine($$task.$taskKv, $variant, (kv, variant) => {
   })
 })
 
-export const newTaskByDate = combine($$task.$taskKv, (kv) => {
+export const $tasksByDateKv = combine($$task.$taskKv, (kv) => {
   return Object.values(kv).reduce(
     (acc, item) => {
       const date = dayjs(item.start_date).format("YYYY-MM-DD")
