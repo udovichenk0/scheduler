@@ -8,7 +8,7 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { LONG_WEEKS_NAMES } from "@/shared/config/constants"
 
 import { generateDaysOfWeek } from "../../config"
-import { newTaskByDate } from "../../upcoming.model"
+import { $tasksByDateKv } from "../../upcoming.model"
 
 import style from "./style.module.css"
 
@@ -22,7 +22,7 @@ export function UpcomingVariantChanger({
   const [week, setWeek] = useState(0)
   const [dayList, setDayList] = useState(generateDaysOfWeek(week))
   const isWeekSameOrAfter = dayjs(dayList[0]).add(-7, "day").isBefore(dayjs())
-  const [tasksByDate] = useUnit([newTaskByDate])
+  const [tasksByDate] = useUnit([$tasksByDateKv])
   const changeWeek = (week: number) => {
     setWeek(week)
     setDayList(generateDaysOfWeek(week))
