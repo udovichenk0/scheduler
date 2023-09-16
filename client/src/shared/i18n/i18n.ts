@@ -5,7 +5,7 @@ import LanguageDetector from "i18next-browser-languagedetector"
 import { RouteInstance } from "atomic-router"
 
 import { singleton } from "../lib/singleton"
-import { router } from "../routing"
+import { router, routes } from "../routing"
 
 import ukLocale from "./locales/uk.json"
 import enLocale from "./locales/en.json"
@@ -53,22 +53,37 @@ export const $$i18n = singleton(() => {
     clock: init,
     target: setupI18nFx,
   })
-
+  //mega costul`
   sample({
     clock: init,
     source: router.$activeRoutes,
-    target: createEffect((routes: RouteInstance<any>[]) => {
-      const curRoute = routes[0]
-      const pathname = window.location.pathname.split("/")[1]
-      if (pathname == (i18n.options.fallbackLng as string[])[0]) {
+    target: createEffect((activeRoutes: RouteInstance<any>[]) => {
+      const curRoute = activeRoutes[0]
+      const lngFromUrl = window.location.pathname.split("/")[1]
+      const isTrailingSlashAfterLocale = window.location.pathname.split('/')[2]
+      //if its home route and locale doesn't have trailing slash then set it
+      if(
+        (i18n.options.supportedLngs as string[]).includes(lngFromUrl) &&
+        i18n.language !== (i18n.options.fallbackLng as string[])[0] &&
+        !isTrailingSlashAfterLocale
+      ){
+        routes.home.navigate({
+          params: { lang: 'uk' },
+          query: {},
+          replace: true,
+        })
+      }
+      // if fallback language remove locale from url
+      if (lngFromUrl == (i18n.options.fallbackLng as string[])[0]) {
         curRoute.navigate({
           params: { lang: undefined },
           query: {},
           replace: true,
         })
       }
+      // if no locale in url and its not fallback one, set from localstorage to url
       if (
-        !(i18n.options.supportedLngs as string[]).includes(pathname) &&
+        !(i18n.options.supportedLngs as string[]).includes(lngFromUrl) &&
         i18n.language !== (i18n.options.fallbackLng as string[])[0]
       ) {
         curRoute.navigate({
