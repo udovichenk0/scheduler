@@ -9,7 +9,8 @@ import {
   generateRemainingDaysOfMonth,
   generateRemainingMonthsOfYear,
 } from "../../config"
-import { TasksSection } from "../../ui/date-section"
+import { Content } from "../../ui/date-section/content"
+import { SectionRoot } from "../../ui/date-section/root"
 
 import {
   $upcomingTasks,
@@ -33,6 +34,8 @@ export const AllUpcomingTasks = ({
   selectedTaskId: Nullable<TaskId>
   nextDate: Date
 }) => {
+
+
   return (
     <>
       <DateSectionTaskList
@@ -47,6 +50,7 @@ export const AllUpcomingTasks = ({
         selectedDate={selectedDate}
         changeDate={changeDate}
         taskRef={taskRef}
+        nextDate={nextDate}
         selectedTaskId={selectedTaskId}
         selectTaskId={selectTaskId}
       />
@@ -54,6 +58,7 @@ export const AllUpcomingTasks = ({
         selectedDate={selectedDate}
         changeDate={changeDate}
         taskRef={taskRef}
+        nextDate={nextDate}
         selectedTaskId={selectedTaskId}
         selectTaskId={selectTaskId}
       />
@@ -61,6 +66,7 @@ export const AllUpcomingTasks = ({
         selectedDate={selectedDate}
         changeDate={changeDate}
         taskRef={taskRef}
+        nextDate={nextDate}
         selectedTaskId={selectedTaskId}
         selectTaskId={selectTaskId}
       />
@@ -69,6 +75,7 @@ export const AllUpcomingTasks = ({
         selectedDate={selectedDate}
         changeDate={changeDate}
         taskRef={taskRef}
+        nextDate={nextDate}
         selectedTaskId={selectedTaskId}
         selectTaskId={selectTaskId}
       />
@@ -104,15 +111,11 @@ const DateSectionTaskList = ({
         })
         const isCurrentMonth = dayjs(date).month() == dayjs().month()
         return (
-          <TasksSection
-            key={date.date()}
-            selectedTaskId={selectedTaskId}
-            isNextSelectedTask={date.isSame(nextDate, "day")}
-            selectTaskId={selectTaskId}
-            taskRef={taskRef}
-            action={() => changeDate(new Date(date.toISOString()))}
-            isSelected={date.isSame(selectedDate, "day")}
-            title={
+          <SectionRoot key={date.date()}>
+            <SectionRoot.Header 
+              action={() => changeDate(new Date(date.toISOString()))}
+              isNextSelectedTask={date.isSame(nextDate, 'day')}
+              >
               <span className="space-x-1">
                 <span>{date.date()}</span>
                 {!isCurrentMonth && (
@@ -127,9 +130,15 @@ const DateSectionTaskList = ({
                 </span>
                 <span>{LONG_WEEKS_NAMES[date.day()]}</span>
               </span>
-            }
-            tasks={tasks}
-          />
+            </SectionRoot.Header>
+            <SectionRoot.Content
+              selectedTaskId={selectedTaskId}
+              selectTaskId={selectTaskId}
+              taskRef={taskRef}
+              isSelected={date.isSame(selectedDate, "day")}
+              tasks={tasks}
+            />
+          </SectionRoot>
         )
       })}
     </>
@@ -140,23 +149,24 @@ const RestDateSectionTasklist = ({
   selectedTaskId,
   selectTaskId,
   taskRef,
+  nextDate,
   selectedDate,
   changeDate,
 }: {
   selectedTaskId: Nullable<TaskId>
   selectTaskId: (task: Nullable<TaskId>) => void
   taskRef: RefObject<HTMLDivElement>
+  nextDate: Date
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void
 }) => {
   const remainingDays = useUnit($remainingDays)
   return (
-    <TasksSection
-      selectedTaskId={selectedTaskId}
-      selectTaskId={selectTaskId}
-      action={() => changeDate(new Date(remainingDays.date.toISOString()))}
-      isSelected={remainingDays.date.isSame(selectedDate, "day")}
-      title={
+    <SectionRoot>
+      <SectionRoot.Header
+        action={() => changeDate(new Date(remainingDays.date.toISOString()))}
+        isNextSelectedTask={remainingDays.date.isSame(nextDate, "day")}
+      >
         <span>
           {remainingDays.isLastDate ? (
             <>
@@ -176,10 +186,15 @@ const RestDateSectionTasklist = ({
             </>
           )}
         </span>
-      }
-      taskRef={taskRef}
-      tasks={remainingDays.restTasks}
-    />
+      </SectionRoot.Header>
+      <SectionRoot.Content
+        selectedTaskId={selectedTaskId}
+        selectTaskId={selectTaskId}
+        isSelected={remainingDays.date.isSame(selectedDate, "day")}
+        taskRef={taskRef}
+        tasks={remainingDays.restTasks}
+      />
+    </SectionRoot>
   )
 }
 
@@ -187,12 +202,14 @@ const MonthSectionTaskList = ({
   selectedTaskId,
   selectTaskId,
   taskRef,
+  nextDate,
   selectedDate,
   changeDate,
 }: {
   selectedTaskId: Nullable<TaskId>
   selectTaskId: (task: Nullable<TaskId>) => void
   taskRef: RefObject<HTMLDivElement>
+  nextDate: Date
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void
 }) => {
@@ -207,17 +224,24 @@ const MonthSectionTaskList = ({
             dayjs(start_date).isSame(date, "year")
           )
         })
+        const isNextDateSelected = date.isSame(nextDate, "day")
         return (
-          <TasksSection
-            selectedTaskId={selectedTaskId}
-            selectTaskId={selectTaskId}
-            key={date.month()}
-            action={() => changeDate(new Date(date.toISOString()))}
-            isSelected={date.isSame(selectedDate, "day")}
-            title={<span>{LONG_MONTHS_NAMES[date.month()]}</span>}
-            taskRef={taskRef}
-            tasks={tasks}
-          />
+          <SectionRoot key={date.month()}>
+            <SectionRoot.Header 
+              action={() => changeDate(new Date(date.toISOString()))}
+              isNextSelectedTask={isNextDateSelected}
+            >
+              <span>{LONG_MONTHS_NAMES[date.month()]}</span>
+            </SectionRoot.Header>
+            <SectionRoot.Content
+              selectedTaskId={selectedTaskId}
+              selectTaskId={selectTaskId}
+              isSelected={date.isSame(selectedDate, "day")}
+              title={<span>{LONG_MONTHS_NAMES[date.month()]}</span>}
+              taskRef={taskRef}
+              tasks={tasks}
+            />
+          </SectionRoot>
         )
       })}
     </>
@@ -228,34 +252,43 @@ const RestMonthSectionTasklist = ({
   selectedTaskId,
   selectTaskId,
   taskRef,
+  nextDate,
   selectedDate,
   changeDate,
 }: {
   selectedTaskId: Nullable<TaskId>
   selectTaskId: (task: Nullable<TaskId>) => void
   taskRef: RefObject<HTMLDivElement>
+  nextDate: Date
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void
 }) => {
   const remainingMonths = useUnit($remainingMonths)
+  const isNextDateSelected = remainingMonths.date.isSame(nextDate, "day")
   return (
-    <TasksSection
-      selectedTaskId={selectedTaskId}
-      selectTaskId={selectTaskId}
-      title={
-        remainingMonths.isLastMonth ? (
-          <span>{LONG_MONTHS_NAMES[remainingMonths.startDate]}</span>
-        ) : (
-          <span>{`${LONG_MONTHS_NAMES[remainingMonths.startDate]}\u2013${
-            LONG_MONTHS_NAMES[remainingMonths.endDate]
-          }`}</span>
-        )
-      }
-      action={() => changeDate(new Date(remainingMonths.date.toISOString()))}
-      taskRef={taskRef}
-      isSelected={remainingMonths.date.isSame(selectedDate, "day")}
-      tasks={remainingMonths.restTasks}
-    />
+    <SectionRoot key={remainingMonths.date.date()}>
+      <SectionRoot.Header
+        action={() => changeDate(new Date(remainingMonths.date.toISOString()))}
+        isNextSelectedTask={isNextDateSelected}
+      >
+        {
+          remainingMonths.isLastMonth ? (
+            <span>{LONG_MONTHS_NAMES[remainingMonths.startDate]}</span>
+          ) : (
+            <span>{`${LONG_MONTHS_NAMES[remainingMonths.startDate]}\u2013${
+              LONG_MONTHS_NAMES[remainingMonths.endDate]
+            }`}</span>
+          )
+        }
+      </SectionRoot.Header>
+      <SectionRoot.Content
+        selectedTaskId={selectedTaskId}
+        selectTaskId={selectTaskId}
+        taskRef={taskRef}
+        isSelected={remainingMonths.date.isSame(selectedDate, "day")}
+        tasks={remainingMonths.restTasks}
+      />
+    </SectionRoot>
   )
 }
 
@@ -263,12 +296,14 @@ const YearSectionTaskList = ({
   selectedTaskId,
   selectTaskId,
   taskRef,
+  nextDate,
   selectedDate,
   changeDate,
 }: {
   selectedTaskId: Nullable<TaskId>
   selectTaskId: (task: Nullable<TaskId>) => void
   taskRef: RefObject<HTMLDivElement>
+  nextDate: Date
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void
 }) => {
@@ -277,25 +312,31 @@ const YearSectionTaskList = ({
     <>
       {Object.entries(upcomingYears).map(([year, tasks]) => {
         return (
-          <TasksSection
-            selectedTaskId={selectedTaskId}
-            selectTaskId={selectTaskId}
-            key={year}
-            title={<span>{year}</span>}
-            action={() =>
-              changeDate(
-                new Date(dayjs().year(+year).startOf("year").toISOString()),
-              )
-            }
-            isSelected={dayjs()
-              .year(+year)
-              .startOf("year")
-              .isSame(selectedDate, "day")}
-            taskRef={taskRef}
-            tasks={tasks}
-          />
+          <SectionRoot key={year}>
+            <SectionRoot.Header
+              isNextSelectedTask={dayjs().year(+year).isSame(nextDate, "year")}
+              action={() =>
+                changeDate(
+                  new Date(dayjs().year(+year).startOf("year").toISOString()),
+                )}
+            >
+              <span>{year}</span>
+            </SectionRoot.Header>
+            <Content
+              selectedTaskId={selectedTaskId}
+              selectTaskId={selectTaskId}
+              isSelected={dayjs()
+                .year(+year)
+                .startOf("year")
+                .isSame(selectedDate, "day")}
+              taskRef={taskRef}
+              tasks={tasks}
+            />
+          </SectionRoot>
         )
       })}
     </>
   )
 }
+
+//! do something with isNextDateSelected(???)
