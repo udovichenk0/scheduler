@@ -18,7 +18,7 @@ export const router = createHistoryRouter({
   routes: [
     {
       route: [routes.home],
-      path: "/today",
+      path: "/",
     },
     {
       route: [routes.inbox],
