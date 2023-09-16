@@ -202,3 +202,4 @@ export const disclosureTask = ({
     createdTaskOpened,
   }
 }
+export type DisclosureTaskType = ReturnType<typeof disclosureTask>

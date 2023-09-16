@@ -16,6 +16,9 @@ import {
   $tasksByDate,
   $variant,
   variantSelected,
+  FactoriesContext,
+  $$createTask,
+  $$updateTask,
 } from "./upcoming.model"
 import { TasksByDate } from "./sections/tasks-by-date"
 import { HeaderTitle } from "./ui/header-title"
@@ -56,24 +59,30 @@ export const Upcoming = () => {
           setUpcomingVariant={selectVariant}
           variant={variant}
         />
+        <FactoriesContext.Provider value={{
+          $$createTask,
+          $$updateTask,
+          $$taskDisclosure
+        }}>
         {variant === "upcoming" ? (
-          <AllUpcomingTasks
-            nextDate={nextDate}
-            selectTaskId={selectTaskId}
-            selectedTaskId={selectedTaskId}
-            changeDate={changeDate}
-            selectedDate={selectedDate}
-            taskRef={ref}
-          />
-        ) : (
-          <TasksByDate
-            date={variant}
-            tasks={tasks}
-            taskRef={ref}
-            selectTaskId={selectTaskId}
-            selectedTaskId={selectedTaskId}
-          />
-        )}
+            <AllUpcomingTasks
+              nextDate={nextDate}
+              selectTaskId={selectTaskId}
+              selectedTaskId={selectedTaskId}
+              changeDate={changeDate}
+              selectedDate={selectedDate}
+              taskRef={ref}
+            />
+            ) : (
+            <TasksByDate
+              date={variant}
+              tasks={tasks}
+              taskRef={ref}
+              selectTaskId={selectTaskId}
+              selectedTaskId={selectedTaskId}
+              />
+            )}
+        </FactoriesContext.Provider>
       </Layout.Content>
       <Layout.Footer
         isTaskSelected={!!selectedTaskId}

@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { RefObject, useEffect } from "react"
+import { RefObject, useContext, useEffect } from "react"
 import { Dayjs } from "dayjs"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
@@ -9,11 +9,7 @@ import { TaskItem, Task } from "@/entities/task/task-item"
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { TaskId } from "@/shared/api/task"
 
-import {
-  $$taskDisclosure,
-  $$updateTask,
-  $$createTask,
-} from "../../upcoming.model"
+import { FactoriesContext } from "../../upcoming.model"
 
 export const TasksByDate = ({
   taskRef,
@@ -28,6 +24,7 @@ export const TasksByDate = ({
   tasks: Task[]
   date: Dayjs
 }) => {
+  const { $$taskDisclosure, $$updateTask, $$createTask } = useContext(FactoriesContext)
   const [
     createdTask,
     updatedTaskId,
