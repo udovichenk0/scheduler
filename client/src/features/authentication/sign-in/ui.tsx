@@ -1,5 +1,6 @@
 import { useUnit } from "effector-react"
 import { useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Input } from "@/shared/ui/data-entry/main-input"
@@ -16,6 +17,8 @@ import {
 } from "./signin.modal"
 
 export const Signin = ({ goBack }: { goBack: () => void }) => {
+  const { t } = useTranslation()
+
   const [password, error, email, changePassword, onSubmit] = useUnit([
     $password,
     $passwordError,
@@ -28,18 +31,18 @@ export const Signin = ({ goBack }: { goBack: () => void }) => {
   return (
     <AuthTemplate
       onSubmit={onSubmit}
-      title="Sign in"
-      subtitle={`Login in to your account using the address ${email}`}
+      title={t("setting.synchronization.signin.title")}
+      subtitle={t("setting.synchronization.signin.description", { email })}
       onArrowClick={goBack}
     >
       <Input
         onChange={(e) => changePassword(e.target.value)}
-        error={error}
+        error={error? t(error) : null}
         ref={ref}
         className="mb-10"
         value={password}
         autoFocus
-        label="Password"
+        label={t("setting.synchronization.signin.label")}
         type={isPasswordShown ? "text" : "password"}
         icon={
           <TogglePasswordButton
@@ -54,7 +57,7 @@ export const Signin = ({ goBack }: { goBack: () => void }) => {
         size={"m"}
         intent={"filled"}
       >
-        Resume
+        {t("setting.synchronization.signin.resumeButtonTitle")}
       </Button>
     </AuthTemplate>
   )

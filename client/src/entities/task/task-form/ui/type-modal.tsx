@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next"
+
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base"
@@ -16,6 +18,7 @@ export const TypePickerModal = ({
   currentType: "inbox" | "unplaced"
   changeType: (payload: "inbox" | "unplaced") => void
 }) => {
+  const { t } = useTranslation()
   return (
     <BaseModal modal={$$typeModal}>
       <div className="flex w-[280px] cursor-pointer flex-col gap-y-1 rounded-[5px] bg-main p-3">
@@ -37,7 +40,7 @@ export const TypePickerModal = ({
                   active && "text-cHover"
                 }`}
               />
-              {type}
+              {t(`task.${type}`)}
             </Button>
           )
         })}

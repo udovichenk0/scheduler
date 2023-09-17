@@ -1,7 +1,7 @@
 import { useUnit } from "effector-react"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
-import { capitalizeLetter } from "@/shared/lib/capitalize-first-letter"
 import { Icon } from "@/shared/ui/icon"
 
 import { $$themeSettings, Theme } from "./main-theme.model"
@@ -17,13 +17,14 @@ export const MainThemeChanger = () => {
     "grey",
   ] as const)
   const [activeTheme, changeTheme] = useUnit([$theme, themeChanged])
+  const { t } = useTranslation()
   return (
     <div className="mb-6 flex justify-around px-10">
       {themes.map((theme) => {
         return (
           <ThemeBox
             key={theme}
-            title={capitalizeLetter(theme)}
+            title={t(`setting.theme.${theme}`)}
             theme={theme}
             activeTheme={activeTheme}
             changeTheme={changeTheme}
@@ -47,7 +48,11 @@ const ThemeBox = ({
 }) => {
   const isActive = activeTheme == theme
   return (
-    <button key={title} onClick={() => changeTheme(theme)}>
+    <button
+      className="flex max-w-[50px] flex-col items-center"
+      key={title}
+      onClick={() => changeTheme(theme)}
+    >
       <div data-color={theme} data-active={isActive} className={style.mainBg}>
         <div className="flex w-full items-end gap-[3px] p-[5px]">
           <div className="w-full">
@@ -62,14 +67,14 @@ const ThemeBox = ({
           </span>
         </div>
       </div>
-      <div className="flex -translate-x-[7px] justify-center gap-[3px] text-[12px] text-cFont">
+      <div className="flex -translate-x-[7px] items-center justify-start gap-x-1 text-[12px] text-cFont">
         <div className="w-[10px]">
           <Icon
             name="common/done"
-            className={`pr-3 text-[10px] ${!isActive && "hidden"}`}
+            className={`text-[10px] ${!isActive && "hidden"}`}
           />
         </div>
-        <span>{title}</span>
+        <div>{title}</div>
       </div>
     </button>
   )

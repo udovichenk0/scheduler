@@ -13,6 +13,7 @@ interface CodeInputProps {
   length: number
   onChange: (value: string) => void
   value: string
+  label?: string
   autoFocus?: boolean
   containerStyle?: string
   inputStyle?: string
@@ -20,7 +21,14 @@ interface CodeInputProps {
 
 export const CodeInput = forwardRef(
   (
-    { autoFocus, onChange, containerStyle, inputStyle, length }: CodeInputProps,
+    {
+      autoFocus,
+      onChange,
+      containerStyle,
+      inputStyle,
+      length,
+      label,
+    }: CodeInputProps,
     ref,
   ) => {
     const inputRefs = useRef<HTMLInputElement[]>([])
@@ -96,25 +104,28 @@ export const CodeInput = forwardRef(
 
     const inputs = Array.from({ length })
     return (
-      <div className={clsx("flex", containerStyle)}>
-        {inputs.map((_, i) => {
-          return (
-            <input
-              className={clsx("text-center outline-none", inputStyle)}
-              type="tel"
-              onKeyDown={onKeyDown}
-              onPaste={onPaste}
-              key={i}
-              inputMode="numeric"
-              disabled={false}
-              ref={(element) => {
-                inputRefs.current[i] = element as HTMLInputElement
-              }}
-              onChange={onChangeValue}
-            />
-          )
-        })}
-      </div>
+      <label className={"text-start"}>
+        <label className="text-[12px] text-grey">{label}</label>
+        <div className={clsx("flex", containerStyle)}>
+          {inputs.map((_, i) => {
+            return (
+              <input
+                className={clsx("text-center outline-none", inputStyle)}
+                type="tel"
+                onKeyDown={onKeyDown}
+                onPaste={onPaste}
+                key={i}
+                inputMode="numeric"
+                disabled={false}
+                ref={(element) => {
+                  inputRefs.current[i] = element as HTMLInputElement
+                }}
+                onChange={onChangeValue}
+              />
+            )
+          })}
+        </div>
+      </label>
     )
   },
 )

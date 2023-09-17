@@ -3,9 +3,163 @@
     "inbox": "Вхідні",
     "today": "Сьогодні",
     "upcoming": "Плани",
-    "calendar": "Календар"
+    "calendar": "Календар",
+    "unplaced": "Без проекту"
+  },
+  "taskForm": {
+    "newTask": "Нова Задача",
+    "note": "Примітка",
+    "date": "Дата"
+  },
+  "today": {
+    "overdueTasks": "Просрочені задачі"
   },
   "sidebar": {
-    "project": "Новий проєкт"
+    "project": "Новий проект"
+  },
+  "footer": {
+    "newTask": "Нова задача"
+  },
+  "calendar": {
+    "cancel": "Скасувати",
+    "ok": "ОК",
+    "today": "Сьогодні",
+    "save": "Зберегти",
+    "showAll": "Показати всі"
+  },
+  "pomodoro": {
+    "title": "Помодорро"
+  },
+  "date": {
+    "fullNameWeek": {
+      "monday": "Понеділок",
+      "tuesday": "Вівторок",
+      "wednesday": "Середа",
+      "thursday": "Четвер",
+      "friday": "П'ятниця",
+      "saturday": "Субота",
+      "sunday": "Неділя"
+    },
+    "shortNameWeek": {
+      "monday": "Пн",
+      "tuesday": "Вт",
+      "wednesday": "Ср",
+      "thursday": "Чт",
+      "friday": "Пт",
+      "saturday": "Сб",
+      "sunday": "Нд"
+    },
+    "fullNameMonthPlural": {
+      "january": "Січня",
+      "february": "Лютого",
+      "march": "Березня",
+      "april": "Квітня",
+      "may": "Травня",
+      "june": "Червня",
+      "july": "Липня",
+      "august": "Серпня",
+      "september": "Вересня",
+      "october": "Жовтня",
+      "november": "Листопада",
+      "december": "Грудня"
+    },
+    "fullNameMonth": {
+      "january": "Січень",
+      "february": "Лютий",
+      "march": "Березень",
+      "april": "Квітень",
+      "may": "Травень",
+      "june": "Червень",
+      "july": "Липень",
+      "august": "Серпень",
+      "september": "Вересень",
+      "october": "Жовтень",
+      "november": "Листопад",
+      "december": "Грудень"
+    },
+    "shortNameMonth": {
+      "january": "Січ",
+      "february": "Лют",
+      "march": "Бер",
+      "april": "Кві",
+      "may": "Тра",
+      "june": "Чер",
+      "july": "Лип",
+      "august": "Сер",
+      "september": "Вер",
+      "october": "Жов",
+      "november": "Лис",
+      "december": "Гру"
+    },
+    "tomorrow": "Завтра",
+    "today": "Сьогодні"
+  },
+  "setting": {
+    "modalTitle": "Налаштування",
+    "tab": {
+      "general": "Загальні",
+      "synchronization": "Синхронізація",
+      "theme": "Теми",
+      "pomodoro": "Помодорро"
+    },
+    "synchronization": {
+      "main": {
+        "title": "Ласкаво просимо до Scheduler App",
+        "description": "Увійдіть, щоб отримати доступ до свого облікового запису та синхронізувати дані між пристроями",
+        "withEmailButtonTitle": "Продовжити з електронною поштою"
+      },
+      "byEmail": {
+        "title": "Увійдіть по електронній пошті",
+        "description": "Вкажіть адресу для входу в обліковий запис або реєстрації",
+        "continueButtonTitle": "Продовжити",
+        "label": "Пошта"
+      },
+      "signin": {
+        "title": "Увійти",
+        "description": "Увійдіть у свій обліковий запис, використовуючи адресу {{ email }}",
+        "label": "Пароль",
+        "resumeButtonTitle": "Продовжити"
+      },
+      "signup": {
+        "title": "Зареєструватися",
+        "description": "Створення аккаунту, використовуючи адресу {{ email }}",
+        "label": "Пароль",
+        "resumeButtonTitle": "Продовжити"
+      },
+      "verify": {
+        "title": "Підтвердження",
+        "description": "Введіть код підтвердження для автентифікації свого облікового запису",
+        "label": "Код"
+      },
+      "validationError": {
+        "longPassword": "Пароль має складатися з 50 або менше символів",
+        "shortPassword": "Пароль повинен складатися з 8 або більше символів",
+        "invalidPassword": "Неправильний логін або пароль",
+        "longEmail": "Введена електронна адреса задовга",
+        "shortEmail": "Введена електронна адреса занадто коротка",
+        "invalidEmail": "Введена адреса електронної пошти недійсна"
+      }
+    },
+    "theme": {
+      "themeTitle": "Вибрати кольорову тему",
+      "accentTitle": "Вибрати акцентний колір",
+      "space": "Космос",
+      "default": "Звичайна",
+      "dark": "Темна",
+      "light": "Світла",
+      "grey": "Сіра"
+    },
+    "pomodoro": {
+      "workDuration": "Період роботи",
+      "shortBreakDuration": "Коротка перерва",
+      "longBreakDuration": "Довга перерва",
+      "minutes": "хвилин",
+      "startAutomatically": "Автоматично починати наступний період",
+      "notifySound": "Звукове сповіщення про завершення періоду"
+    }
+  },
+  "noTasks": {
+    "title": "Нічого немає",
+    "description": "Натисніть значок +, щоб створити нове завдання"
   }
 }

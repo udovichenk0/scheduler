@@ -1,9 +1,11 @@
 import dayjs from "dayjs"
 import { useUnit } from "effector-react"
 import { RefObject } from "react"
+import { useTranslation } from "react-i18next"
 
 import { LONG_MONTHS_NAMES, LONG_WEEKS_NAMES } from "@/shared/config/constants"
 import { TaskId } from "@/shared/api/task"
+import { lowerCase } from "@/shared/lib/lower-case"
 
 import {
   generateRemainingDaysOfMonth,
@@ -34,8 +36,6 @@ export const AllUpcomingTasks = ({
   selectedTaskId: Nullable<TaskId>
   nextDate: Date
 }) => {
-
-
   return (
     <>
       <DateSectionTaskList
@@ -99,6 +99,7 @@ const DateSectionTaskList = ({
   changeDate: (date: Date) => void
 }) => {
   const upcomingTasks = useUnit($upcomingTasks)
+  const { t } = useTranslation()
   return (
     <>
       {generateRemainingDaysOfMonth().map((date) => {
@@ -112,23 +113,25 @@ const DateSectionTaskList = ({
         const isCurrentMonth = dayjs(date).month() == dayjs().month()
         return (
           <SectionRoot key={date.date()}>
-            <SectionRoot.Header 
+            <SectionRoot.Header
               action={() => changeDate(new Date(date.toISOString()))}
-              isNextSelectedTask={date.isSame(nextDate, 'day')}
-              >
+              isNextSelectedTask={date.isSame(nextDate, "day")}
+            >
               <span className="space-x-1">
                 <span>{date.date()}</span>
-                {!isCurrentMonth && (
-                  <span>LONG_MONTHS_NAMES[dayjs(date).month()]</span>
-                )}
                 <span>
                   {date.isToday()
-                    ? "Today"
+                    ? lowerCase(t("date.today")) + ","
                     : date.isTomorrow()
-                    ? "Tomorrow"
+                    ? lowerCase(t("date.tomorrow")) + ","
                     : ""}
                 </span>
-                <span>{LONG_WEEKS_NAMES[date.day()]}</span>
+                {!isCurrentMonth && (
+                  <span>
+                    {lowerCase(t(LONG_MONTHS_NAMES[dayjs(date).month()]))}
+                  </span>
+                )}
+                <span>{lowerCase(t(LONG_WEEKS_NAMES[date.day()]))}</span>
               </span>
             </SectionRoot.Header>
             <SectionRoot.Content
@@ -160,6 +163,7 @@ const RestDateSectionTasklist = ({
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void
 }) => {
+  const { t } = useTranslation()
   const remainingDays = useUnit($remainingDays)
   return (
     <SectionRoot>
@@ -171,12 +175,14 @@ const RestDateSectionTasklist = ({
           {remainingDays.isLastDate ? (
             <>
               <span className="mr-1">{remainingDays.date.date()}</span>
-              <span>{LONG_WEEKS_NAMES[remainingDays.date.day()]}</span>
+              <span>
+                {lowerCase(t(LONG_WEEKS_NAMES[remainingDays.date.day()]))}
+              </span>
             </>
           ) : (
             <>
               <span className="mr-1">
-                {LONG_MONTHS_NAMES[remainingDays.date.month()]}
+                {lowerCase(t(LONG_MONTHS_NAMES[remainingDays.date.month()]))}
               </span>
               <span>
                 {remainingDays.firstDay}
@@ -213,6 +219,7 @@ const MonthSectionTaskList = ({
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void
 }) => {
+  const { t } = useTranslation()
   const upcomingTasks = useUnit($upcomingTasks)
   return (
     <>
@@ -227,17 +234,16 @@ const MonthSectionTaskList = ({
         const isNextDateSelected = date.isSame(nextDate, "day")
         return (
           <SectionRoot key={date.month()}>
-            <SectionRoot.Header 
+            <SectionRoot.Header
               action={() => changeDate(new Date(date.toISOString()))}
               isNextSelectedTask={isNextDateSelected}
             >
-              <span>{LONG_MONTHS_NAMES[date.month()]}</span>
+              <span>{lowerCase(t(LONG_MONTHS_NAMES[date.month()]))}</span>
             </SectionRoot.Header>
             <SectionRoot.Content
               selectedTaskId={selectedTaskId}
               selectTaskId={selectTaskId}
               isSelected={date.isSame(selectedDate, "day")}
-              title={<span>{LONG_MONTHS_NAMES[date.month()]}</span>}
               taskRef={taskRef}
               tasks={tasks}
             />
@@ -263,6 +269,7 @@ const RestMonthSectionTasklist = ({
   selectedDate: Nullable<Date>
   changeDate: (date: Date) => void
 }) => {
+  const { t } = useTranslation()
   const remainingMonths = useUnit($remainingMonths)
   const isNextDateSelected = remainingMonths.date.isSame(nextDate, "day")
   return (
@@ -271,15 +278,17 @@ const RestMonthSectionTasklist = ({
         action={() => changeDate(new Date(remainingMonths.date.toISOString()))}
         isNextSelectedTask={isNextDateSelected}
       >
-        {
-          remainingMonths.isLastMonth ? (
-            <span>{LONG_MONTHS_NAMES[remainingMonths.startDate]}</span>
-          ) : (
-            <span>{`${LONG_MONTHS_NAMES[remainingMonths.startDate]}\u2013${
-              LONG_MONTHS_NAMES[remainingMonths.endDate]
-            }`}</span>
-          )
-        }
+        {remainingMonths.isLastMonth ? (
+          <span>
+            {lowerCase(t(LONG_MONTHS_NAMES[remainingMonths.startDate]))}
+          </span>
+        ) : (
+          <span>{`${lowerCase(
+            t(LONG_MONTHS_NAMES[remainingMonths.startDate]),
+          )}\u2013${lowerCase(
+            t(LONG_MONTHS_NAMES[remainingMonths.endDate]),
+          )}`}</span>
+        )}
       </SectionRoot.Header>
       <SectionRoot.Content
         selectedTaskId={selectedTaskId}
@@ -311,6 +320,7 @@ const YearSectionTaskList = ({
   return (
     <>
       {Object.entries(upcomingYears).map(([year, tasks]) => {
+        console.log(upcomingYears)
         return (
           <SectionRoot key={year}>
             <SectionRoot.Header
@@ -318,7 +328,8 @@ const YearSectionTaskList = ({
               action={() =>
                 changeDate(
                   new Date(dayjs().year(+year).startOf("year").toISOString()),
-                )}
+                )
+              }
             >
               <span>{year}</span>
             </SectionRoot.Header>

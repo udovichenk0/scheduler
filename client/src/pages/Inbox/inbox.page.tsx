@@ -1,5 +1,6 @@
 import { useUnit } from "effector-react"
 import { useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { Layout } from "@/templates/main"
 
@@ -20,6 +21,8 @@ import {
 } from "./inbox.model"
 
 export const Inbox = () => {
+  const { t } = useTranslation()
+
   const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const ref = useRef<HTMLDivElement>(null)
   const [
@@ -45,7 +48,7 @@ export const Inbox = () => {
   ])
   return (
     <Layout>
-      <Layout.Header iconName="common/inbox" title="Inbox" />
+      <Layout.Header iconName="common/inbox" title={t("task.inbox")} />
       <Layout.Content
         className="flex flex-col"
         onClick={(e) => onClickOutside(ref, e, closeTask)}

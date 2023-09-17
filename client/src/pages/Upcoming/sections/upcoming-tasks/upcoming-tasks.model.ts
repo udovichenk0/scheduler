@@ -17,8 +17,11 @@ export const $upcomingYears = $upcomingTasks.map((tasks) => {
     .add(MIN_DATES_LENGTH, "day")
     .add(MIN_MONTHS_LENGTH, "month")
     .format("YYYY")
+  const currentYear = dayjs().format("YYYY")
   return Object.fromEntries(
-    Object.entries(tasks).filter(([year]) => futureYear != year),
+    Object.entries(tasks).filter(
+      ([year]) => currentYear != year && futureYear != year,
+    ),
   )
 })
 export const $remainingDays = $upcomingTasks.map((tasks) => {

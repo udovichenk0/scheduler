@@ -24,7 +24,8 @@ export const TasksByDate = ({
   tasks: Task[]
   date: Dayjs
 }) => {
-  const { $$taskDisclosure, $$updateTask, $$createTask } = useContext(FactoriesContext)
+  const { $$taskDisclosure, $$updateTask, $$createTask } =
+    useContext(FactoriesContext)
   const [
     createdTask,
     updatedTaskId,

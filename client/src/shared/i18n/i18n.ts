@@ -9,7 +9,7 @@ import { router, routes } from "../routing"
 
 import ukLocale from "./locales/uk.json"
 import enLocale from "./locales/en.json"
-export const $$i18n = singleton(() => {
+const $$i18n = singleton(() => {
   const init = createEvent()
   const setupI18nFx = createEffect(() => {
     i18n
@@ -60,15 +60,15 @@ export const $$i18n = singleton(() => {
     target: createEffect((activeRoutes: RouteInstance<any>[]) => {
       const curRoute = activeRoutes[0]
       const lngFromUrl = window.location.pathname.split("/")[1]
-      const isTrailingSlashAfterLocale = window.location.pathname.split('/')[2]
+      const isTrailingSlashAfterLocale = window.location.pathname.split("/")[2]
       //if its home route and locale doesn't have trailing slash then set it
-      if(
+      if (
         (i18n.options.supportedLngs as string[]).includes(lngFromUrl) &&
         i18n.language !== (i18n.options.fallbackLng as string[])[0] &&
         !isTrailingSlashAfterLocale
-      ){
+      ) {
         routes.home.navigate({
-          params: { lang: 'uk' },
+          params: { lang: "uk" },
           query: {},
           replace: true,
         })
@@ -100,3 +100,5 @@ export const $$i18n = singleton(() => {
     changeLanguageFx,
   }
 })
+
+export { $$i18n, i18n }

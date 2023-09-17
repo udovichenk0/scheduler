@@ -1,5 +1,6 @@
 import { createEvent, createStore, sample } from "effector"
 import { z } from "zod"
+import { t } from "i18next"
 
 import { userApi } from "@/shared/api/user"
 
@@ -47,11 +48,11 @@ sample({
 
 function checkError(value: string) {
   if (value.length < MIN_LENGTH) {
-    return TOO_SHORT_MESSAGE
+    return t(TOO_SHORT_MESSAGE)
   }
   if (value.length > MAX_LENGTH) {
-    return TOO_LONG_MESSAGE
+    return t(TOO_LONG_MESSAGE)
   } else {
-    return NOT_VALID_MESSAGE
+    return t(NOT_VALID_MESSAGE)
   }
 }

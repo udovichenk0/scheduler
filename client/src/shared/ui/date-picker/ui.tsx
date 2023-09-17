@@ -1,5 +1,6 @@
 import dayjs from "dayjs"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { generateCalendar } from "@/shared/lib/generate-calendar"
 import { addLeadingZero } from "@/shared/lib/add-leading-zero"
@@ -22,6 +23,7 @@ export function DatePicker({
   onSave: () => void
 }) {
   const [dates, setDate] = useState(generateCalendar())
+  const { t } = useTranslation()
   const [displayedMonth, setDisplayedMonth] = useState(dayjs().month())
   const currentSetMonth = dayjs().month(displayedMonth).month()
   const changeMonth = (month: number) => {
@@ -55,7 +57,7 @@ export function DatePicker({
 
                 return (
                   <div
-                    className={`w-full border-cBorder py-[2px] ${
+                    className={`h-[40px] w-full border-cBorder py-[2px] ${
                       isTopDateBigger && "border-b-[1px]"
                     } ${isLeftDateBigger && "border-b-[1px] border-r-[1px]"}`}
                     key={`${date}/${month}/${year}`}
@@ -76,13 +78,13 @@ export function DatePicker({
       </div>
       <div className="flex gap-3 text-primary">
         <Button onClick={onCancel} className="w-full p-[1px] text-[12px]">
-          Cancel
+          {t("calendar.cancel")}
         </Button>
         <button
           onClick={onSave}
           className="w-full rounded-[5px] bg-accent/50 p-[1px] text-[12px] duration-150 hover:bg-accent/40"
         >
-          OK
+          {t("calendar.ok")}
         </button>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { useUnit } from "effector-react"
 import { RefObject, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { Layout } from "@/templates/main"
 
@@ -26,6 +27,7 @@ import {
 
 export const Today = () => {
   const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
+  const { t } = useTranslation()
   const taskRef = useRef<HTMLDivElement>(null)
   const [
     closeTask,
@@ -45,7 +47,7 @@ export const Today = () => {
 
   return (
     <Layout>
-      <Layout.Header iconName="common/outlined-star" title="Today" />
+      <Layout.Header iconName="common/outlined-star" title={t("task.today")} />
       <Layout.Content onClick={(e) => onClickOutside(taskRef, e, closeTask)}>
         <OverdueTasks
           taskRef={taskRef}
@@ -81,6 +83,7 @@ const OverdueTasks = ({
   selectedTaskId: Nullable<TaskId>
   taskRef: RefObject<HTMLDivElement>
 }) => {
+  const { t } = useTranslation()
   const [
     updatedTask,
     openUpdatedTaskById,
@@ -111,7 +114,7 @@ const OverdueTasks = ({
           onClick={toggleOverdueTasks}
           className="flex w-full items-center justify-between px-3"
         >
-          <span className="text-[18px]">Overdue tasks</span>
+          <span className="text-[18px]">{t("today.overdueTasks")}</span>
           <span>
             <span className="mr-3 text-[12px]">
               {!isOverdueTasksOpened && overdueTasks.length}
@@ -137,6 +140,7 @@ const OverdueTasks = ({
                   <ExpandedTask
                     modifyTaskModel={$$updateTask}
                     taskRef={taskRef}
+                    dateModifier
                   />
                 ) : (
                   <TaskItem
@@ -167,6 +171,7 @@ const TodayTasks = ({
   selectedTaskId: Nullable<TaskId>
   selectTaskId: (task: Nullable<TaskId>) => void
 }) => {
+  const { t } = useTranslation()
   const [
     todayTasks,
     createdTask,
@@ -199,7 +204,7 @@ const TodayTasks = ({
             size={"sm"}
             className="flex w-full items-center text-start"
           >
-            <span className="text-[18px]">Today</span>
+            <span className="text-[18px]">{t("task.today")}</span>
           </Button>
         </div>
       )}
@@ -211,7 +216,6 @@ const TodayTasks = ({
                 <ExpandedTask
                   modifyTaskModel={$$updateTask}
                   taskRef={taskRef}
-                  dateModifier
                 />
               ) : (
                 <TaskItem

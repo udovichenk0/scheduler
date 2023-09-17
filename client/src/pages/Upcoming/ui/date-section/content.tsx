@@ -23,8 +23,8 @@ export const Content = ({
   selectTaskId: (taskId: Nullable<TaskId>) => void
   selectedTaskId: Nullable<TaskId>
 }) => {
-
-  const {$$createTask, $$updateTask, $$taskDisclosure} = useContext(FactoriesContext)
+  const { $$createTask, $$updateTask, $$taskDisclosure } =
+    useContext(FactoriesContext)
   const [
     updatedTaskId,
     openUpdatedTaskById,

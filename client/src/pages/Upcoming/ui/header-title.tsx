@@ -1,25 +1,27 @@
 import { Dayjs } from "dayjs"
+import { useTranslation } from "react-i18next"
 
-import { LONG_MONTHS_NAMES, LONG_WEEKS_NAMES } from "@/shared/config/constants"
+import {
+  LONG_MONTHS_NAMES_PLURAL,
+  LONG_WEEKS_NAMES,
+} from "@/shared/config/constants"
+import { lowerCase } from "@/shared/lib/lower-case"
 
 export const HeaderTitle = ({ variant }: { variant: "upcoming" | Dayjs }) => {
+  const { t } = useTranslation()
   if (variant == "upcoming") {
-    return <span>Upcoming</span>
+    return <span>{t("task.upcoming")}</span>
   }
   return (
     <>
       <span className="text-cIconDefault">
-        {LONG_WEEKS_NAMES[variant.day()]}&nbsp;
+        {t(LONG_WEEKS_NAMES[variant.day()])}&nbsp;
       </span>
       <span>
         {variant.date()}&nbsp;
-        {lowerCase(LONG_MONTHS_NAMES[variant.month()])}&nbsp;
+        {lowerCase(t(LONG_MONTHS_NAMES_PLURAL[variant.month()]))}&nbsp;
       </span>
       <span className="text-cIconDefault">{variant.year()}</span>
     </>
   )
-}
-
-function lowerCase(word: string) {
-  return word.slice(0, 1).toLowerCase() + word.slice(1)
 }

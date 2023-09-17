@@ -3,9 +3,163 @@
     "inbox": "Inbox",
     "today": "Today",
     "upcoming": "Upcoming",
-    "calendar": "Calendar"
+    "calendar": "Calendar",
+    "unplaced": "Unplaced"
+  },
+  "taskForm": {
+    "newTask": "New Task",
+    "note": "Note",
+    "date": "Date"
+  },
+  "today": {
+    "overdueTasks": "Overdue tasks"
   },
   "sidebar": {
     "project": "New project"
+  },
+  "footer": {
+    "newTask": "New Task"
+  },
+  "calendar": {
+    "cancel": "Cancel",
+    "ok": "OK",
+    "today": "Today",
+    "save": "Save",
+    "showAll": "Show all"
+  },
+  "pomodoro": {
+    "title": "Pomodoro"
+  },
+  "date": {
+    "fullNameWeek": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "shortNameWeek": {
+      "monday": "Mo",
+      "tuesday": "Tu",
+      "wednesday": "We",
+      "thursday": "Th",
+      "friday": "Fr",
+      "saturday": "Sa",
+      "sunday": "Su"
+    },
+    "fullNameMonthPlural": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "fullNameMonth": {
+      "january": "Січень",
+      "february": "Лютий",
+      "march": "Березень",
+      "april": "Квітень",
+      "may": "Травень",
+      "june": "Червень",
+      "july": "Липень",
+      "august": "Серпень",
+      "september": "Вересень",
+      "october": "Жовтень",
+      "november": "Листопад",
+      "december": "Грудень"
+    },
+    "shortNameMonth": {
+      "january": "Jan",
+      "february": "Feb",
+      "march": "Mar",
+      "april": "Apr",
+      "may": "May",
+      "june": "Jun",
+      "july": "Jul",
+      "august": "Aug",
+      "september": "Sep",
+      "october": "Oct",
+      "november": "Nov",
+      "december": "Dec"
+    },
+    "tomorrow": "Tomorrow",
+    "today": "Today"
+  },
+  "setting": {
+    "modalTitle": "Settings",
+    "tab": {
+      "general": "General",
+      "synchronization": "Synchronization",
+      "theme": "Theme",
+      "pomodoro": "Pomodoro"
+    },
+    "synchronization": {
+      "main": {
+        "title": "Welcome to Scheduler App",
+        "description": "Log in to access your your account and sync the data between devices",
+        "withEmailButtonTitle": "Continue With Email"
+      },
+      "byEmail": {
+        "title": "Log in by email",
+        "description": "Specify the address to log in to your account or register",
+        "continueButtonTitle": "Continue",
+        "label": "Email"
+      },
+      "signin": {
+        "title": "Sign in",
+        "description": "Login in to your account using the address {{ email }}",
+        "label": "Password",
+        "resumeButtonTitle": "Resume"
+      },
+      "signup": {
+        "title": "Sign up",
+        "description": "Creating an account using the address {{ email }}",
+        "label": "Password",
+        "resumeButtonTitle": "Resume"
+      },
+      "verify": {
+        "title": "Verification",
+        "description": "Enter the verification code to authenticate your account",
+        "label": "Code"
+      },
+      "validationError": {
+        "longPassword": "Password should consist of 50 or less symbols",
+        "shortPassword": "Password should consist of 8 or more symbols",
+        "invalidPassword": "Incorrect login or password",
+        "longEmail": "Entered email is too long",
+        "shortEmail": "Entered email is too short",
+        "invalidEmail": "Entered email is not valid"
+      }
+    },
+    "theme": {
+      "themeTitle": "Select color theme",
+      "accentTitle": "Select an accent color",
+      "space": "Space",
+      "default": "Default",
+      "dark": "Dark",
+      "light": "Light",
+      "grey": "Grey"
+    },
+    "pomodoro": {
+      "workDuration": "Work duration",
+      "shortBreakDuration": "Short break",
+      "longBreakDuration": "Long break",
+      "minutes": "minutes",
+      "startAutomatically": "Start the next period automatically",
+      "notifySound": "Notification sound in the end of each period"
+    }
+  },
+  "noTasks": {
+    "title": "There is nothing here",
+    "description": "Press + icon to create a new task"
   }
 }
