@@ -1,16 +1,9 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { RefreshService } from './refreshToken/refresh.service';
 import { UserDto } from '../user/dto/user.dto';
 import { JWTService } from './jwtToken/jwt.service';
-import {
-  tokenNotFound,
-  userNotAuthorized,
-} from './constant/tokenErrorMessages';
+import { userNotAuthorized } from './constant/tokenErrorMessages';
 import { UserService } from '../user/user.service';
 @Injectable()
 export class TokenService {
@@ -30,12 +23,13 @@ export class TokenService {
       refresh_token,
     };
   }
-  async refresh(refreshToken: string) {
+  async refresh(refreshToken: string, session: Record<string, any>) {
     if (!refreshToken) {
       return null;
     }
     const userData = await this.refreshService.verifyRefresh(refreshToken);
     if (!userData) {
+      session['refresh_token'] = null;
       throw new UnauthorizedException(userNotAuthorized);
     }
     const user = await this.userService.findOne({ id: userData.id });

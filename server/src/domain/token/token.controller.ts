@@ -1,4 +1,4 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get, Req, Session } from '@nestjs/common';
 import { TokenService } from './token.service';
 import { Request } from 'express';
 
@@ -6,8 +6,8 @@ import { Request } from 'express';
 export class TokenController {
   constructor(private tokenService: TokenService) {}
   @Get('refresh')
-  async refresh(@Req() req: Request) {
+  async refresh(@Req() req: Request, @Session() session: Record<string, any>) {
     const refreshToken = req.session['refresh_token'];
-    return await this.tokenService.refresh(refreshToken);
+    return await this.tokenService.refresh(refreshToken, session);
   }
 }
