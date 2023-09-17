@@ -1,4 +1,5 @@
 import dayjs from "dayjs"
+import { useTranslation } from "react-i18next"
 
 import { Button } from "../../buttons/main-button"
 import { Icon } from "../../icon"
@@ -10,6 +11,7 @@ export const MonthSwitcher = ({
   changeMonth: (month: number) => void
   displayedMonth: number
 }) => {
+  const { t } = useTranslation()
   const isCurrentMonth = dayjs().month() === displayedMonth
   return (
     <div className="flex items-center justify-end gap-2">
@@ -31,7 +33,7 @@ export const MonthSwitcher = ({
           isCurrentMonth && "opacity-80"
         }`}
       >
-        Today
+        {t("calendar.today")}
       </button>
       <Button
         intent={"primary"}

@@ -1,4 +1,5 @@
 import { useUnit } from "effector-react"
+import { useTranslation } from "react-i18next"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 
@@ -29,6 +30,7 @@ export const PomodoroSettings = () => {
 }
 
 const SettingsWithInputs = () => {
+  const { t } = useTranslation()
   const [
     changeWorkDuration,
     changeShortBreak,
@@ -50,40 +52,41 @@ const SettingsWithInputs = () => {
   return (
     <div className="mb-6 space-y-3">
       <div className="flex items-center justify-end">
-        <span>Work duration:</span>
+        <span>{t("setting.pomodoro.workDuration")}:</span>
         <PomodoroInput
           onSubmit={applySettings}
           onChange={changeWorkDuration}
           className="ml-1 mr-2"
           value={workDuration}
         />
-        <span>minutes</span>
+        <span>{t("setting.pomodoro.minutes")}</span>
       </div>
       <div className="flex items-center justify-end">
-        <span>Short break:</span>
+        <span>{t("setting.pomodoro.shortBreakDuration")}:</span>
         <PomodoroInput
           onSubmit={applySettings}
           onChange={changeShortBreak}
           className="ml-1 mr-2"
           value={shortBreak}
         />
-        <span>minutes</span>
+        <span>{t("setting.pomodoro.minutes")}</span>
       </div>
       <div className="flex items-center justify-end">
-        <span>Long break:</span>
+        <span>{t("setting.pomodoro.longBreakDuration")}:</span>
         <PomodoroInput
           onSubmit={applySettings}
           onChange={changeLongBreak}
           className="ml-1 mr-2"
           value={longBreak}
         />
-        <span>minutes</span>
+        <span>{t("setting.pomodoro.minutes")}</span>
       </div>
     </div>
   )
 }
 
 const SettingsWithCheckboxes = () => {
+  const { t } = useTranslation()
   const [
     enableAutomaticTimerStart,
     startAutomatically,
@@ -103,7 +106,7 @@ const SettingsWithCheckboxes = () => {
           checked={startAutomatically}
           onChange={enableAutomaticTimerStart}
         />
-        <span>Start the next period automatically</span>
+        <span>{t("setting.pomodoro.startAutomatically")}</span>
       </div>
 
       <div className="flex gap-3">
@@ -111,7 +114,7 @@ const SettingsWithCheckboxes = () => {
           checked={isEnabledNotificationSound}
           onChange={setSoundInTheEndTriggered}
         />
-        <span>Notification sound in the end of each period</span>
+        <span>{t("setting.pomodoro.notifySound")}</span>
       </div>
     </div>
   )

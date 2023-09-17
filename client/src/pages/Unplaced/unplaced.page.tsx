@@ -1,5 +1,6 @@
 import { useUnit } from "effector-react"
 import { useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { Layout } from "@/templates/main"
 
@@ -20,6 +21,7 @@ import {
 } from "./unplaced.model"
 
 export const Unplaced = () => {
+  const { t } = useTranslation()
   const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const taskRef = useRef<HTMLDivElement>(null)
   const [
@@ -45,7 +47,10 @@ export const Unplaced = () => {
   ])
   return (
     <Layout>
-      <Layout.Header iconName="common/cross-arrows" title="Unplaced" />
+      <Layout.Header
+        iconName="common/cross-arrows"
+        title={t("task.unplaced")}
+      />
       <Layout.Content onClick={(e) => onClickOutside(taskRef, e, closeTask)}>
         {unplacedTasks?.map((task, id) => {
           return (

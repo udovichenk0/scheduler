@@ -1,9 +1,9 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren } from "react"
 
-import { Header } from "./header";
-import { Content } from "./content";
+import { Header } from "./header"
+import { Content } from "./content"
 
-export const SectionRoot = ({children}: PropsWithChildren) => {
+export const SectionRoot = ({ children }: PropsWithChildren) => {
   return <>{children}</>
 }
 

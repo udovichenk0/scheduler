@@ -1,5 +1,6 @@
 import { useUnit } from "effector-react"
 import { ReactNode } from "react"
+import { useTranslation } from "react-i18next"
 
 import { $$pomodoroSettings } from "@/entities/settings/pomodoro"
 
@@ -47,6 +48,7 @@ export const Pomodoro = ({
   taskTitle?: string
   modal: ModalType
 }) => {
+  const { t } = useTranslation()
   const [
     startTimer,
     passingTime,
@@ -67,7 +69,7 @@ export const Pomodoro = ({
     $currentStaticTime,
   ])
   return (
-    <MainModal modal={modal} className="w-[320px]" title="Pomodoro">
+    <MainModal modal={modal} className="w-[320px]" title={t("pomodoro.title")}>
       <div className="px-4">
         <PomodoroDurations />
         {taskTitle && (

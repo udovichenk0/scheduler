@@ -54,17 +54,22 @@ export const Upcoming = () => {
         iconName="common/upcoming"
         title={<HeaderTitle variant={variant} />}
       />
-      <Layout.Content onClick={(e) => onClickOutside(ref, e, closeTask)}>
+      <Layout.Content
+        className="flex flex-col"
+        onClick={(e) => onClickOutside(ref, e, closeTask)}
+      >
         <UpcomingVariantChanger
           setUpcomingVariant={selectVariant}
           variant={variant}
         />
-        <FactoriesContext.Provider value={{
-          $$createTask,
-          $$updateTask,
-          $$taskDisclosure
-        }}>
-        {variant === "upcoming" ? (
+        <FactoriesContext.Provider
+          value={{
+            $$createTask,
+            $$updateTask,
+            $$taskDisclosure,
+          }}
+        >
+          {variant === "upcoming" ? (
             <AllUpcomingTasks
               nextDate={nextDate}
               selectTaskId={selectTaskId}
@@ -73,15 +78,15 @@ export const Upcoming = () => {
               selectedDate={selectedDate}
               taskRef={ref}
             />
-            ) : (
+          ) : (
             <TasksByDate
               date={variant}
               tasks={tasks}
               taskRef={ref}
               selectTaskId={selectTaskId}
               selectedTaskId={selectedTaskId}
-              />
-            )}
+            />
+          )}
         </FactoriesContext.Provider>
       </Layout.Content>
       <Layout.Footer

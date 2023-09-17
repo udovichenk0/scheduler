@@ -1,4 +1,5 @@
 import dayjs from "dayjs"
+import { useTranslation } from "react-i18next"
 
 import { SHORT_MONTHS_NAMES } from "@/shared/config/constants"
 
@@ -23,6 +24,7 @@ export const Cell = ({
     currentDate,
     "date",
   )
+  const { t } = useTranslation()
   return (
     <button
       onClick={() => onDateChange(new Date(year, month, date))}
@@ -42,7 +44,7 @@ export const Cell = ({
           {date === 1 || isTaskDate ? (
             <div className="grid text-[9px] leading-[9px]">
               <div>{date}</div>
-              <span>{SHORT_MONTHS_NAMES[month]}</span>
+              <span>{t(SHORT_MONTHS_NAMES[month])}</span>
             </div>
           ) : (
             <span>{date}</span>

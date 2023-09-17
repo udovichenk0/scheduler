@@ -1,14 +1,14 @@
 import { ReactNode } from "react"
 
 type SectionHeaderProps = {
-  isNextSelectedTask?: boolean,
-  action: () => void,
+  isNextSelectedTask?: boolean
+  action: () => void
   children: ReactNode
 }
 export const Header = ({
   children,
   action,
-  isNextSelectedTask
+  isNextSelectedTask,
 }: SectionHeaderProps) => {
   return (
     <div className="border-b border-cBorder p-2 px-3 pl-9 text-primary">
@@ -21,6 +21,6 @@ export const Header = ({
       >
         {children}
       </button>
-    </div> 
+    </div>
   )
 }

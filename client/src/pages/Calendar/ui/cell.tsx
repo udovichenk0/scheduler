@@ -1,5 +1,6 @@
 import dayjs from "dayjs"
 import { useRef, useState, useEffect, MouseEvent } from "react"
+import { useTranslation } from "react-i18next"
 
 import { Task } from "@/entities/task/task-item"
 
@@ -41,7 +42,7 @@ export const Cell = ({
   const isToday = dayjs(new Date(year, month, date)).isSame(dayjs(), "date")
   const isPast = dayjs(new Date(year, month, date)).isBefore(dayjs(), "date")
   const isFirstDate = cell.date === 1
-
+  const { t } = useTranslation()
   function shouldShowMore() {
     const taskHeight = 24
     const tasksLength =
@@ -73,7 +74,7 @@ export const Cell = ({
     >
       <div className="mb-1 flex items-center justify-end gap-1">
         {isFirstDate && (
-          <span className="text-sm">{SHORT_MONTHS_NAMES[month]}</span>
+          <span className="text-sm">{t(SHORT_MONTHS_NAMES[month])}</span>
         )}
         <div
           className={`${isPast && "opacity-30"} text-end ${
@@ -122,7 +123,7 @@ export const Cell = ({
           onClick={() => setModalState(true)}
           className="w-full text-start text-cIconDefault hover:text-primary"
         >
-          show all
+          {t("calendar.showAll")}
         </button>
       )}
       <AllTasksModal

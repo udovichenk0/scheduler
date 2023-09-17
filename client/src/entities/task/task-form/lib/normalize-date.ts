@@ -1,16 +1,17 @@
 import dayjs from "dayjs"
+import { t } from "i18next"
 
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 
 export function formatTaskDate(date: Date) {
   if (dayjs(date).isSame(dayjs(), "day")) {
-    return "Today"
+    return t("date.today")
   } else if (dayjs(date).isTomorrow()) {
-    return "Tomorrow"
+    return t("date.tomorrow")
   } else if (dayjs(date).isSame(dayjs(), "year")) {
-    return `${LONG_MONTHS_NAMES[dayjs(date).month()]} ${dayjs(date).date()}`
+    return `${t(LONG_MONTHS_NAMES[dayjs(date).month()])} ${dayjs(date).date()}`
   } else {
-    return `${LONG_MONTHS_NAMES[dayjs(date).month()]} ${dayjs(
+    return `${t(LONG_MONTHS_NAMES[dayjs(date).month()])} ${dayjs(
       date,
     ).date()} ${dayjs(date).year()}`
   }

@@ -1,6 +1,7 @@
 import { useState } from "react"
-import dayjs from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import { useUnit } from "effector-react"
+import { useTranslation } from "react-i18next"
 
 import { Layout } from "@/templates/main"
 
@@ -8,16 +9,16 @@ import { ExpandedTask } from "@/widgets/expanded-task"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
-import { BaseModal } from "@/shared/ui/modals/base"
 import { TaskId } from "@/shared/api/task"
+import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 
 import {
   $$createTask,
   $$deleteTask,
-  $$modal,
   $$moreTasksModal,
   $$updateTask,
   $createdTask,
+  $isTaskFormModalOpened,
   $mappedTasks,
   $updatedTask,
   canceled,
@@ -26,6 +27,7 @@ import {
   updateTaskModalOpened,
 } from "./calendar.model"
 import { Calendar } from "./ui/calendar-table"
+import { TaskFormModal } from "./ui/form-modal"
 
 export const CalendarPage = () => {
   const [date, setDate] = useState(dayjs())
@@ -37,14 +39,9 @@ export const CalendarPage = () => {
       $updatedTask,
       $createdTask,
     ])
-  const displayedMonth = date.month()
-  const displayedYear = date.year()
   return (
     <Layout>
-      <Layout.Header
-        iconName="common/calendar"
-        title={`Calendar, ${[displayedMonth]} ${displayedYear}`}
-      />
+      <Layout.Header iconName="common/calendar" title={<Title date={date} />} />
       <Layout.Content className="flex h-full flex-col">
         <Calendar
           openUpdatedTask={openUpdatedTask}
@@ -54,7 +51,11 @@ export const CalendarPage = () => {
           setDate={setDate}
           tasks={tasks}
         />
-        <BaseModal className="w-[600px]" modal={$$modal}>
+        <TaskFormModal
+          className="w-[600px]"
+          $isOpened={$isTaskFormModalOpened}
+          onClose={saved}
+        >
           {updatedTaskId && (
             <ExpandedTask
               modifyTaskModel={$$updateTask}
@@ -71,12 +72,24 @@ export const CalendarPage = () => {
               rightPanelSlot={<ActionsButton />}
             />
           )}
-        </BaseModal>
+        </TaskFormModal>
       </Layout.Content>
     </Layout>
   )
 }
+const Title = ({ date }: { date: Dayjs }) => {
+  const { t } = useTranslation()
+  const displayedMonth = date.month()
+  const displayedYear = date.year()
 
+  return (
+    <span>
+      {t("task.calendar")},&nbsp;
+      {t(LONG_MONTHS_NAMES[displayedMonth])}&nbsp;
+      {displayedYear}
+    </span>
+  )
+}
 const UpdateActionsButtons = ({ taskId }: { taskId: TaskId }) => {
   const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
   return (

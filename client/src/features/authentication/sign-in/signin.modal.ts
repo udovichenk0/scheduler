@@ -1,6 +1,7 @@
 import { attach, createEvent, createStore, sample } from "effector"
 import { spread } from "patronum"
 import { z } from "zod"
+import { t } from "i18next"
 
 import { $$session } from "@/entities/session"
 import { $$task } from "@/entities/task/task-item"
@@ -12,7 +13,13 @@ import { bridge } from "@/shared/lib/bridge"
 
 import { $email } from "../by-email"
 
-import { MAX_LENGTH, NOT_VALID_MESSAGE, TOO_LONG_MESSAGE } from "./constants"
+import {
+  MAX_LENGTH,
+  MIN_LENGTH,
+  NOT_VALID_MESSAGE,
+  TOO_LONG_MESSAGE,
+  TOO_SHORT_MESSAGE,
+} from "./constants"
 
 export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()
@@ -24,7 +31,7 @@ export const $password = createStore("").on(
 )
 export const $passwordError = createStore<Nullable<string>>(null)
 
-const signinSchema = z.string().trim().max(50)
+const signinSchema = z.string().trim().min(MIN_LENGTH).max(MAX_LENGTH)
 
 const getTasksFromLsFxAttached = attach({
   effect: taskApi.getTasksFromLocalStorageFx,
@@ -37,7 +44,13 @@ bridge(() => {
     filter: ({ password }) => signinSchema.safeParse(password).success,
     target: authApi.signinQuery.start,
   })
-
+  sample({
+    clock: submitTriggered,
+    source: $password,
+    filter: (password) => !signinSchema.safeParse(password).success,
+    fn: checkError,
+    target: $passwordError,
+  })
   sample({
     clock: submitTriggered,
     source: $password,
@@ -63,7 +76,7 @@ bridge(() => {
   })
   sample({
     clock: authApi.signinQuery.finished.failure,
-    fn: () => NOT_VALID_MESSAGE,
+    fn: () => t(NOT_VALID_MESSAGE),
     target: $passwordError,
   })
 
@@ -96,6 +109,9 @@ sample({
 function checkError(value: string) {
   if (value.length > MAX_LENGTH) {
     return TOO_LONG_MESSAGE
+  }
+  if (value.length < MIN_LENGTH) {
+    return TOO_SHORT_MESSAGE
   }
   return NOT_VALID_MESSAGE
 }

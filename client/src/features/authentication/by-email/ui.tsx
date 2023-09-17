@@ -1,5 +1,6 @@
 import { useUnit } from "effector-react"
 import { FormEvent, useRef } from "react"
+import { useTranslation } from "react-i18next"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
@@ -14,6 +15,7 @@ const onSubmit = (e: FormEvent, submit: () => void) => {
 }
 
 export const CheckEmailForm = ({ goBack }: { goBack: () => void }) => {
+  const { t } = useTranslation()
   const ref = useRef<HTMLInputElement>(null)
   const [email, error, changeEmail, submit] = useUnit([
     $email,
@@ -35,10 +37,10 @@ export const CheckEmailForm = ({ goBack }: { goBack: () => void }) => {
         />
       </Button>
       <Typography.Heading size="base" className="mb-3 font-medium">
-        Log in by email
+        {t("setting.synchronization.byEmail.title")}
       </Typography.Heading>
       <Typography.Paragraph size="sm" className="mb-7">
-        Specify the address to log in to your account or register
+        {t("setting.synchronization.main.description")}
       </Typography.Paragraph>
       <form
         className="flex w-full flex-col"
@@ -51,11 +53,11 @@ export const CheckEmailForm = ({ goBack }: { goBack: () => void }) => {
           className="mb-10"
           ref={ref}
           value={email}
-          label="Email"
+          label={t("setting.synchronization.byEmail.label")}
         />
         <span>
           <Button intent={"filled"} size={"m"} disabled={!email}>
-            Continue
+            {t("setting.synchronization.byEmail.continueButtonTitle")}
           </Button>
         </span>
       </form>

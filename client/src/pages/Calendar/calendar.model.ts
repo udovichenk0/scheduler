@@ -19,8 +19,13 @@ export const $$createTask = createTaskFactory({
   defaultDate: new Date(),
 })
 
-export const $$modal = createModal({})
 export const $$moreTasksModal = createModal({})
+
+export const taskFormModalOpened = createEvent()
+export const taskFormModalClosed = createEvent()
+export const $isTaskFormModalOpened = createStore(false)
+  .on(taskFormModalOpened, () => true)
+  .on(taskFormModalClosed, () => false)
 
 export const $mappedTasks = $$task.$taskKv.map((tasks) => {
   return Object.values(tasks).reduce(
@@ -45,11 +50,12 @@ export const $createdTask = createStore(false)
 
 export const createTaskModalOpened = createEvent<Date>()
 export const updateTaskModalOpened = createEvent<string>()
-sample({
-  clock: createTaskModalOpened,
-  target: $$createTask.$startDate,
-})
+
 bridge(() => {
+  sample({
+    clock: createTaskModalOpened,
+    target: $$createTask.$startDate,
+  })
   sample({
     clock: createTaskModalOpened,
     fn: () => true,
@@ -60,11 +66,10 @@ bridge(() => {
     clock: updateTaskModalOpened,
     target: [$$updateTask.setFieldsTriggeredById, $updatedTask],
   })
-})
-
-sample({
-  clock: [updateTaskModalOpened, createTaskModalOpened],
-  target: $$modal.open,
+  sample({
+    clock: [updateTaskModalOpened, createTaskModalOpened],
+    target: taskFormModalOpened,
+  })
 })
 
 bridge(() => {
@@ -74,7 +79,7 @@ bridge(() => {
       not($$updateTask.$isAllowToSubmit),
       not($$createTask.$isAllowToSubmit),
     ),
-    target: $$modal.close,
+    target: taskFormModalClosed,
   })
   sample({
     clock: saved,
@@ -103,16 +108,16 @@ bridge(() => {
       $$deleteTask.taskSuccessfullyDeleted,
       canceled,
     ],
-    target: $$modal.close,
+    target: taskFormModalClosed,
   })
   //reset fields after modal is closed
   sample({
-    clock: [$$modal.close, canceled],
+    clock: [taskFormModalClosed, canceled],
     filter: $createdTask,
     target: [$createdTask.reinit, $$createTask.resetFieldsTriggered],
   })
   sample({
-    clock: [$$modal.close, canceled],
+    clock: [taskFormModalClosed, canceled],
     filter: and($updatedTask),
     target: [$updatedTask.reinit, $$updateTask.resetFieldsTriggered],
   })

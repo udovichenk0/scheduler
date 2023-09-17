@@ -1,5 +1,6 @@
 import { useUnit } from "effector-react"
 import { useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Input } from "@/shared/ui/data-entry/main-input"
@@ -15,6 +16,7 @@ import {
   submitTriggered,
 } from "./signup.modal"
 export const Signup = ({ goBack }: { goBack: () => void }) => {
+  const { t } = useTranslation()
   const [password, error, email, changePassword, onSubmit] = useUnit([
     $password,
     $passwordError,
@@ -26,16 +28,16 @@ export const Signup = ({ goBack }: { goBack: () => void }) => {
   const ref = useRef<HTMLInputElement>(null)
   return (
     <AuthTemplate
-      title="Registration"
-      subtitle={`Creating an account using the address ${email}`}
+      title={t("setting.synchronization.signup.title")}
+      subtitle={t("setting.synchronization.signup.description", { email })}
       onArrowClick={goBack}
       onSubmit={onSubmit}
     >
       <Input
         onChange={(e) => changePassword(e.target.value)}
-        error={error}
+        error={error? t(error) : null}
         value={password}
-        label="Password"
+        label={t("setting.synchronization.signup.label")}
         className="mb-10"
         autoFocus
         ref={ref}
@@ -53,7 +55,7 @@ export const Signup = ({ goBack }: { goBack: () => void }) => {
         size={"m"}
         intent={"filled"}
       >
-        Resume
+        {t("setting.synchronization.signup.resumeButtonTitle")}
       </Button>
     </AuthTemplate>
   )

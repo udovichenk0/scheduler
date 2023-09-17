@@ -24,7 +24,6 @@ export const $$task = singleton(() => {
     fn: ({ result }) => transformTasksToKv(result),
     target: $taskKv,
   })
-
   sample({
     clock: setTaskTriggered,
     source: $taskKv,
@@ -37,7 +36,11 @@ export const $$task = singleton(() => {
     fn: (kv, task) => removeTaskFromKv(kv, task.id),
     target: $taskKv,
   })
-
+  sample({
+    clock: setTaskKvTriggered,
+    fn: transformTasksToKv,
+    target: $taskKv,
+  })
   sample({
     clock: taskApi.createTasks.finished.success,
     target: [getTasksTriggered, taskApi.deleteTasksFromLocalStorageFx],

@@ -1,5 +1,6 @@
 import dayjs, { Dayjs } from "dayjs"
 import { memo, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { Task } from "@/entities/task/task-item"
 
@@ -73,10 +74,11 @@ export const Calendar = memo(
 )
 
 export const WeekNames = () => {
+  const { t } = useTranslation()
   return (
     <div className="flex justify-around border-y border-r border-cBorder font-bold text-primary">
       {SHORT_WEEKS_NAMES.map((week) => {
-        return <span key={week}>{week}</span>
+        return <span key={week}>{t(week)}</span>
       })}
     </div>
   )

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next"
+
 import { Authentication } from "@/features/authentication"
 
 import { PomodoroSettings } from "@/entities/settings/pomodoro"
@@ -7,7 +9,6 @@ import { ModalType } from "@/shared/lib/modal"
 import { Icon } from "@/shared/ui/icon"
 import { MainModal } from "@/shared/ui/modals/main"
 import { Root } from "@/shared/ui/tab"
-
 const tabsName = {
   general: "general",
   synchronization: "synchronization",
@@ -21,8 +22,13 @@ export const Settings = ({
   defaultTab: Keys<typeof tabsName>
   modal: ModalType
 }) => {
+  const { t } = useTranslation()
   return (
-    <MainModal title="Settings" className="w-[600px]" modal={modal}>
+    <MainModal
+      title={t("setting.modalTitle")}
+      className="w-[600px]"
+      modal={modal}
+    >
       <Root defaultValue={defaultTab} className="text-sm">
         <Root.List className="flex gap-5 border-b-[1px] border-cBorder px-6 pb-4">
           <Root.Trigger
@@ -31,7 +37,7 @@ export const Settings = ({
             className={`flex flex-col items-center gap-3 text-[#76899b] hover:text-primary`}
           >
             <Icon name="common/settings" className="h-8 w-8" />
-            <span className="text-inherit">Settings</span>
+            <span className="text-inherit">{t("setting.tab.general")}</span>
           </Root.Trigger>
           <Root.Trigger
             value={tabsName.synchronization}
@@ -39,7 +45,9 @@ export const Settings = ({
             className={`flex flex-col items-center gap-3 text-[#76899b] hover:text-primary`}
           >
             <Icon name="common/cloud" className="h-8 w-8" />
-            <span className="text-inherit">Synchronization</span>
+            <span className="text-inherit">
+              {t("setting.tab.synchronization")}
+            </span>
           </Root.Trigger>
 
           <Root.Trigger
@@ -48,7 +56,7 @@ export const Settings = ({
             className={`flex flex-col items-center gap-3 text-[#76899b] hover:text-primary`}
           >
             <Icon name="common/palette" className="h-8 w-8" />
-            <span className="text-inherit">Theme</span>
+            <span className="text-inherit">{t("setting.tab.theme")}</span>
           </Root.Trigger>
           <Root.Trigger
             value={tabsName.pomodoro}
@@ -56,7 +64,7 @@ export const Settings = ({
             className={`flex flex-col items-center gap-3 text-[#76899b] hover:text-primary`}
           >
             <Icon name="common/timer" className="h-8 w-8" />
-            <span className="text-inherit">Pomodoro</span>
+            <span className="text-inherit">{t("setting.tab.pomodoro")}</span>
           </Root.Trigger>
         </Root.List>
         <Root.Content label={tabsName.general}>generalTab</Root.Content>

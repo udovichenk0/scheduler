@@ -1,6 +1,7 @@
 import dayjs from "dayjs"
 import { useEffect } from "react"
 import { Link } from "atomic-router-react"
+import { t } from "i18next"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
@@ -114,7 +115,7 @@ export const TaskItem = ({
                     className="text-[12px] leading-3 text-grey hover:underline"
                     to={routes.unplaced}
                   >
-                    Unplaced
+                    {t("task.unplaced")}
                   </Link>
                 </div>
               )}
@@ -132,10 +133,10 @@ export const TaskItem = ({
 function normilizeDate(date: Date) {
   const dayjsDate = dayjs(date)
   if (dayjsDate.year() == dayjs().year()) {
-    return `${LONG_MONTHS_NAMES[dayjsDate.month()]} ${dayjsDate.date()}`
+    return `${t(LONG_MONTHS_NAMES[dayjsDate.month()])} ${dayjsDate.date()}`
   } else {
-    return `${dayjsDate.year()} ${
-      LONG_MONTHS_NAMES[dayjsDate.month()]
-    } ${dayjsDate.date()}`
+    return `${dayjsDate.year()} ${t(
+      LONG_MONTHS_NAMES[dayjsDate.month()],
+    )} ${dayjsDate.date()}`
   }
 }

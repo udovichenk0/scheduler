@@ -2,10 +2,11 @@ import { clsx } from "clsx"
 import dayjs, { Dayjs } from "dayjs"
 import { useUnit } from "effector-react"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/buttons/main-button"
-import { LONG_WEEKS_NAMES } from "@/shared/config/constants"
+import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
 
 import { generateDaysOfWeek } from "../../config"
 import { $tasksByDateKv } from "../../upcoming.model"
@@ -23,6 +24,7 @@ export function UpcomingVariantChanger({
   const [dayList, setDayList] = useState(generateDaysOfWeek(week))
   const isWeekSameOrAfter = dayjs(dayList[0]).add(-7, "day").isBefore(dayjs())
   const [tasksByDate] = useUnit([$tasksByDateKv])
+  const { t } = useTranslation()
   const changeWeek = (week: number) => {
     setWeek(week)
     setDayList(generateDaysOfWeek(week))
@@ -61,7 +63,7 @@ export function UpcomingVariantChanger({
                   "relative w-full py-2 text-sm text-cIconDefault",
                 )}
               >
-                <span>{LONG_WEEKS_NAMES[date.day()].slice(0, 2)}. </span>
+                <span>{t(SHORT_WEEKS_NAMES[date.day()]).slice(0, 2)}. </span>
                 <span className="mr-1 font-bold">{date.date()}</span>
                 {isAnyTask && (
                   <span className="after:absolute after:top-1/2 after:h-[5px] after:w-[5px] after:-translate-y-1/2 after:rounded-full after:bg-cIconDefault after:content-['']"></span>
