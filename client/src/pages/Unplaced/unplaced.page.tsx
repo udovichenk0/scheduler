@@ -86,9 +86,9 @@ export const Unplaced = () => {
         </div>
       </Layout.Content>
       <Layout.Footer
-        isTaskSelected={!!selectedTaskId}
-        deleteTask={() => selectedTaskId && deleteTaskById(selectedTaskId)}
-        action={() => openCreatedTask()}
+        selectedTaskId={selectedTaskId}
+        deleteTask={deleteTaskById}
+        action={openCreatedTask}
       />
     </Layout>
   )

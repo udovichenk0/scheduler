@@ -23,27 +23,22 @@ import {
 import { TasksByDate } from "./sections/tasks-by-date"
 import { HeaderTitle } from "./ui/header-title"
 import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer"
-
 export const Upcoming = () => {
   const ref = useRef<HTMLDivElement>(null)
   const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const [
     closeTask,
     openCreatedTask,
-    selectedDate,
     changeDate,
     deleteTaskById,
-    nextDate,
     tasks,
     variant,
     selectVariant,
   ] = useUnit([
     $$taskDisclosure.closeTaskTriggered,
     $$taskDisclosure.createdTaskOpened,
-    $selectedDate,
     currentDateSelected,
     $$deleteTask.taskDeletedById,
-    $nextDate,
     $tasksByDate,
     $variant,
     variantSelected,
@@ -71,11 +66,11 @@ export const Upcoming = () => {
         >
           {variant === "upcoming" ? (
             <AllUpcomingTasks
-              nextDate={nextDate}
+              $nextDate={$nextDate}
               selectTaskId={selectTaskId}
               selectedTaskId={selectedTaskId}
               changeDate={changeDate}
-              selectedDate={selectedDate}
+              $selectedDate={$selectedDate}
               taskRef={ref}
             />
           ) : (
@@ -90,9 +85,9 @@ export const Upcoming = () => {
         </FactoriesContext.Provider>
       </Layout.Content>
       <Layout.Footer
-        isTaskSelected={!!selectedTaskId}
-        deleteTask={() => selectedTaskId && deleteTaskById(selectedTaskId)}
-        action={() => openCreatedTask()}
+        selectedTaskId={selectedTaskId}
+        deleteTask={deleteTaskById}
+        action={openCreatedTask}
       />
     </Layout>
   )

@@ -11,13 +11,13 @@ export const $$deleteTask = createRemoveTaskFactory()
 export const $inboxTasks = $$task.$taskKv.map((tasks) =>
   Object.values(tasks).filter((task) => task.type == "inbox"),
 )
-export const $updateTask = updateTaskFactory()
-export const $createTask = createTaskFactory({
+export const $$updateTask = updateTaskFactory()
+export const $$createTask = createTaskFactory({
   defaultType: "inbox",
   defaultDate: null,
 })
 export const $$taskDisclosure = disclosureTask({
   tasks: $$task.$taskKv,
-  updateTaskModel: $updateTask,
-  createTaskModel: $createTask,
+  updateTaskModel: $$updateTask,
+  createTaskModel: $$createTask,
 })

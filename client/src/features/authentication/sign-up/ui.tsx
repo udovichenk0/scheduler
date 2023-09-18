@@ -35,7 +35,7 @@ export const Signup = ({ goBack }: { goBack: () => void }) => {
     >
       <Input
         onChange={(e) => changePassword(e.target.value)}
-        error={error? t(error) : null}
+        error={error ? t(error) : null}
         value={password}
         label={t("setting.synchronization.signup.label")}
         className="mb-10"

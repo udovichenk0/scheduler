@@ -80,7 +80,7 @@ export const $audio = createStore(audio)
 export const { tick, isRunning: $isPomodoroRunning } = interval({
   start: startTimerTriggered,
   stop: stopTimerTriggered,
-  timeout: 1,
+  timeout: 1000,
 })
 bridge(() => {
   sample({

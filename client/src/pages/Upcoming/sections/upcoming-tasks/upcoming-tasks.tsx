@@ -2,6 +2,7 @@ import dayjs from "dayjs"
 import { useUnit } from "effector-react"
 import { RefObject } from "react"
 import { useTranslation } from "react-i18next"
+import { Store } from "effector"
 
 import { LONG_MONTHS_NAMES, LONG_WEEKS_NAMES } from "@/shared/config/constants"
 import { TaskId } from "@/shared/api/task"
@@ -22,60 +23,59 @@ import {
 } from "./upcoming-tasks.model"
 
 export const AllUpcomingTasks = ({
-  selectedDate,
+  $selectedDate,
   changeDate,
   taskRef,
   selectTaskId,
   selectedTaskId,
-  nextDate,
+  $nextDate,
 }: {
-  selectedDate: Nullable<Date>
+  $selectedDate: Store<Date>
   changeDate: (date: Date) => void
   taskRef: RefObject<HTMLDivElement>
   selectTaskId: (task: Nullable<TaskId>) => void
   selectedTaskId: Nullable<TaskId>
-  nextDate: Date
+  $nextDate: Store<Date>
 }) => {
   return (
     <>
       <DateSectionTaskList
-        selectedDate={selectedDate}
+        $selectedDate={$selectedDate}
         changeDate={changeDate}
         taskRef={taskRef}
-        nextDate={nextDate}
+        $nextDate={$nextDate}
         selectedTaskId={selectedTaskId}
         selectTaskId={selectTaskId}
       />
       <RestDateSectionTasklist
-        selectedDate={selectedDate}
+        $selectedDate={$selectedDate}
         changeDate={changeDate}
         taskRef={taskRef}
-        nextDate={nextDate}
+        $nextDate={$nextDate}
         selectedTaskId={selectedTaskId}
         selectTaskId={selectTaskId}
       />
       <MonthSectionTaskList
-        selectedDate={selectedDate}
+        $selectedDate={$selectedDate}
         changeDate={changeDate}
         taskRef={taskRef}
-        nextDate={nextDate}
+        $nextDate={$nextDate}
         selectedTaskId={selectedTaskId}
         selectTaskId={selectTaskId}
       />
       <RestMonthSectionTasklist
-        selectedDate={selectedDate}
+        $selectedDate={$selectedDate}
         changeDate={changeDate}
         taskRef={taskRef}
-        nextDate={nextDate}
+        $nextDate={$nextDate}
         selectedTaskId={selectedTaskId}
         selectTaskId={selectTaskId}
       />
-
       <YearSectionTaskList
-        selectedDate={selectedDate}
+        $selectedDate={$selectedDate}
         changeDate={changeDate}
         taskRef={taskRef}
-        nextDate={nextDate}
+        $nextDate={$nextDate}
         selectedTaskId={selectedTaskId}
         selectTaskId={selectTaskId}
       />
@@ -85,20 +85,24 @@ export const AllUpcomingTasks = ({
 
 const DateSectionTaskList = ({
   selectedTaskId,
-  nextDate,
+  $nextDate,
   selectTaskId,
   taskRef,
-  selectedDate,
+  $selectedDate,
   changeDate,
 }: {
   selectedTaskId: Nullable<TaskId>
-  nextDate: Date
+  $nextDate: Store<Date>
   selectTaskId: (task: Nullable<TaskId>) => void
   taskRef: RefObject<HTMLDivElement>
-  selectedDate: Nullable<Date>
+  $selectedDate: Store<Date>
   changeDate: (date: Date) => void
 }) => {
-  const upcomingTasks = useUnit($upcomingTasks)
+  const [upcomingTasks, selectedDate, nextDate] = useUnit([
+    $upcomingTasks,
+    $selectedDate,
+    $nextDate,
+  ])
   const { t } = useTranslation()
   return (
     <>
@@ -152,19 +156,23 @@ const RestDateSectionTasklist = ({
   selectedTaskId,
   selectTaskId,
   taskRef,
-  nextDate,
-  selectedDate,
+  $nextDate,
+  $selectedDate,
   changeDate,
 }: {
   selectedTaskId: Nullable<TaskId>
   selectTaskId: (task: Nullable<TaskId>) => void
   taskRef: RefObject<HTMLDivElement>
-  nextDate: Date
-  selectedDate: Nullable<Date>
+  $nextDate: Store<Date>
+  $selectedDate: Store<Date>
   changeDate: (date: Date) => void
 }) => {
   const { t } = useTranslation()
-  const remainingDays = useUnit($remainingDays)
+  const [remainingDays, selectedDate, nextDate] = useUnit([
+    $remainingDays,
+    $selectedDate,
+    $nextDate,
+  ])
   return (
     <SectionRoot>
       <SectionRoot.Header
@@ -208,19 +216,23 @@ const MonthSectionTaskList = ({
   selectedTaskId,
   selectTaskId,
   taskRef,
-  nextDate,
-  selectedDate,
+  $nextDate,
+  $selectedDate,
   changeDate,
 }: {
   selectedTaskId: Nullable<TaskId>
   selectTaskId: (task: Nullable<TaskId>) => void
   taskRef: RefObject<HTMLDivElement>
-  nextDate: Date
-  selectedDate: Nullable<Date>
+  $nextDate: Store<Date>
+  $selectedDate: Store<Date>
   changeDate: (date: Date) => void
 }) => {
   const { t } = useTranslation()
-  const upcomingTasks = useUnit($upcomingTasks)
+  const [upcomingTasks, selectedDate, nextDate] = useUnit([
+    $upcomingTasks,
+    $selectedDate,
+    $nextDate,
+  ])
   return (
     <>
       {generateRemainingMonthsOfYear().map((date) => {
@@ -258,19 +270,23 @@ const RestMonthSectionTasklist = ({
   selectedTaskId,
   selectTaskId,
   taskRef,
-  nextDate,
-  selectedDate,
+  $nextDate,
+  $selectedDate,
   changeDate,
 }: {
   selectedTaskId: Nullable<TaskId>
   selectTaskId: (task: Nullable<TaskId>) => void
   taskRef: RefObject<HTMLDivElement>
-  nextDate: Date
-  selectedDate: Nullable<Date>
+  $nextDate: Store<Date>
+  $selectedDate: Store<Date>
   changeDate: (date: Date) => void
 }) => {
   const { t } = useTranslation()
-  const remainingMonths = useUnit($remainingMonths)
+  const [remainingMonths, selectedDate, nextDate] = useUnit([
+    $remainingMonths,
+    $selectedDate,
+    $nextDate,
+  ])
   const isNextDateSelected = remainingMonths.date.isSame(nextDate, "day")
   return (
     <SectionRoot key={remainingMonths.date.date()}>
@@ -305,18 +321,22 @@ const YearSectionTaskList = ({
   selectedTaskId,
   selectTaskId,
   taskRef,
-  nextDate,
-  selectedDate,
+  $nextDate,
+  $selectedDate,
   changeDate,
 }: {
   selectedTaskId: Nullable<TaskId>
   selectTaskId: (task: Nullable<TaskId>) => void
   taskRef: RefObject<HTMLDivElement>
-  nextDate: Date
-  selectedDate: Nullable<Date>
+  $nextDate: Store<Date>
+  $selectedDate: Store<Date>
   changeDate: (date: Date) => void
 }) => {
-  const upcomingYears = useUnit($upcomingYears)
+  const [upcomingYears, selectedDate, nextDate] = useUnit([
+    $upcomingYears,
+    $selectedDate,
+    $nextDate,
+  ])
   return (
     <>
       {Object.entries(upcomingYears).map(([year, tasks]) => {

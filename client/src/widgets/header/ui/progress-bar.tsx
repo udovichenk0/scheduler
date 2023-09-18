@@ -1,16 +1,22 @@
 import { useUnit } from "effector-react"
-
-import {
-  $currentStaticTime,
-  $tickingTime,
-  $isWorkTime,
-  $isPomodoroRunning,
-} from "@/features/pomodoro"
+import { Store } from "effector"
 
 import { normalizeSeconds } from "@/shared/lib/normalize-time"
 import { Button } from "@/shared/ui/buttons/main-button"
 
-export const PomodoroProgressBar = ({ onClick }: { onClick: () => void }) => {
+export const PomodoroProgressBar = ({
+  onClick,
+  $currentStaticTime,
+  $tickingTime,
+  $isWorkTime,
+  $isPomodoroRunning,
+}: {
+  onClick: () => void
+  $currentStaticTime: Store<number>
+  $tickingTime: Store<number>
+  $isWorkTime: Store<boolean>
+  $isPomodoroRunning: Store<boolean>
+}) => {
   const [pickedTime, passingTime, isWorkTime] = useUnit([
     $currentStaticTime,
     $tickingTime,

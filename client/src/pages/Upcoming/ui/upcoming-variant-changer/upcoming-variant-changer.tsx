@@ -21,9 +21,9 @@ export function UpcomingVariantChanger({
   variant: "upcoming" | Dayjs
 }) {
   const [week, setWeek] = useState(0)
-  const [dayList, setDayList] = useState(generateDaysOfWeek(week))
+  const [dayList, setDayList] = useState(() => generateDaysOfWeek(week))
   const isWeekSameOrAfter = dayjs(dayList[0]).add(-7, "day").isBefore(dayjs())
-  const [tasksByDate] = useUnit([$tasksByDateKv])
+  const tasksByDate = useUnit($tasksByDateKv)
   const { t } = useTranslation()
   const changeWeek = (week: number) => {
     setWeek(week)

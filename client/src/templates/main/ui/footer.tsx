@@ -2,15 +2,16 @@ import { useTranslation } from "react-i18next"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
+import { TaskId } from "@/shared/api/task"
 
 export const Footer = ({
   action,
-  isTaskSelected,
+  selectedTaskId,
   deleteTask,
 }: {
   action: () => void
-  isTaskSelected: boolean
-  deleteTask: () => void
+  selectedTaskId: Nullable<TaskId>
+  deleteTask: (selectedTaskId: TaskId) => void
 }) => {
   const { t } = useTranslation()
   return (
@@ -26,15 +27,15 @@ export const Footer = ({
       </Button>
       <Button
         title="Delete"
-        disabled={!isTaskSelected}
-        onClick={deleteTask}
+        disabled={!selectedTaskId}
+        onClick={() => deleteTask(selectedTaskId!)}
         intent={"primary"}
         size={"xs"}
       >
         <Icon
           name="common/trash-can"
           className={`text-[20px] ${
-            isTaskSelected ? "text-cIconDefault" : "opacity-40"
+            selectedTaskId ? "text-cIconDefault" : "opacity-40"
           }`}
         />
       </Button>

@@ -37,7 +37,7 @@ export const Signin = ({ goBack }: { goBack: () => void }) => {
     >
       <Input
         onChange={(e) => changePassword(e.target.value)}
-        error={error? t(error) : null}
+        error={error ? t(error) : null}
         ref={ref}
         className="mb-10"
         value={password}

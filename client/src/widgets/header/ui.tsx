@@ -3,7 +3,13 @@ import { ReactNode } from "react"
 
 import { Settings } from "@/widgets/settings"
 
-import { $isPomodoroRunning, Pomodoro } from "@/features/pomodoro"
+import {
+  $currentStaticTime,
+  $tickingTime,
+  $isWorkTime,
+  $isPomodoroRunning,
+  Pomodoro,
+} from "@/features/pomodoro"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
@@ -29,7 +35,13 @@ export const Header = ({
     <Container padding="xl" className="mb-4 text-primary">
       <div className="flex h-[40px] items-center justify-end">
         {isPomodoroRunning ? (
-          <PomodoroProgressBar onClick={openPomodoroModal} />
+          <PomodoroProgressBar
+            onClick={openPomodoroModal}
+            $currentStaticTime={$currentStaticTime}
+            $tickingTime={$tickingTime}
+            $isWorkTime={$isWorkTime}
+            $isPomodoroRunning={$isPomodoroRunning}
+          />
         ) : (
           <Button
             title="Pomodoro"
