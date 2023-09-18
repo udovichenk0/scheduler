@@ -47,8 +47,7 @@ describe("signin", () => {
   test("check password validation", async () => {
     await allSettled(passwordChanged, {
       scope,
-      params:
-        "1",
+      params: "1",
     })
     await allSettled(submitTriggered, { scope })
     // expect(scope.getState($passwordError)).not.toBeNull()

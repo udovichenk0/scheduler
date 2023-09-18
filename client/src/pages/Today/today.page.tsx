@@ -44,7 +44,6 @@ export const Today = () => {
     $overdueTasks,
     $todayTasks,
   ])
-
   return (
     <Layout>
       <Layout.Header iconName="common/outlined-star" title={t("task.today")} />
@@ -66,9 +65,9 @@ export const Today = () => {
         />
       </Layout.Content>
       <Layout.Footer
-        action={() => openCreatedTask()}
-        isTaskSelected={!!selectedTaskId}
-        deleteTask={() => selectedTaskId && deleteTaskById(selectedTaskId)}
+        action={openCreatedTask}
+        selectedTaskId={selectedTaskId}
+        deleteTask={deleteTaskById}
       />
     </Layout>
   )

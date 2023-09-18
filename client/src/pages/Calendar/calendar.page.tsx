@@ -30,15 +30,20 @@ import { Calendar } from "./ui/calendar-table"
 import { TaskFormModal } from "./ui/form-modal"
 
 export const CalendarPage = () => {
-  const [date, setDate] = useState(dayjs())
-  const [tasks, openCreatedTask, openUpdatedTask, updatedTaskId, createdTask] =
-    useUnit([
-      $mappedTasks,
-      createTaskModalOpened,
-      updateTaskModalOpened,
-      $updatedTask,
-      $createdTask,
-    ])
+  const [date, setDate] = useState(dayjs)
+  const [
+    mappedTasks,
+    openCreatedTask,
+    openUpdatedTask,
+    updatedTaskId,
+    createdTask,
+  ] = useUnit([
+    $mappedTasks,
+    createTaskModalOpened,
+    updateTaskModalOpened,
+    $updatedTask,
+    $createdTask,
+  ])
   return (
     <Layout>
       <Layout.Header iconName="common/calendar" title={<Title date={date} />} />
@@ -49,7 +54,7 @@ export const CalendarPage = () => {
           modal={$$moreTasksModal}
           date={date}
           setDate={setDate}
-          tasks={tasks}
+          tasks={mappedTasks}
         />
         <TaskFormModal
           className="w-[600px]"

@@ -1,20 +1,27 @@
 import { clsx } from "clsx"
+import { Store } from "effector"
+import { useUnit } from "effector-react"
 
 import { normalizeSeconds } from "@/shared/lib/normalize-time"
 
 const DEFAULT_PROGRESS_BAR = 848 // if 848 then progress is 0% otherwise its 100%
 
 export const ProgressCircle = ({
-  time,
-  isWorkTime,
+  $time,
+  $isWorkTime,
   stages,
-  staticTime,
+  $staticTime,
 }: {
-  time: number
-  isWorkTime: boolean
+  $time: Store<number>
+  $isWorkTime: Store<boolean>
   stages: { fulfilled: boolean }[]
-  staticTime: number
+  $staticTime: Store<number>
 }) => {
+  const [time, isWorkTime, staticTime] = useUnit([
+    $time,
+    $isWorkTime,
+    $staticTime,
+  ])
   const progress =
     DEFAULT_PROGRESS_BAR -
     ((staticTime - time) / staticTime) * DEFAULT_PROGRESS_BAR

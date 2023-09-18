@@ -22,9 +22,9 @@ export function DatePicker({
   onCancel: () => void
   onSave: () => void
 }) {
-  const [dates, setDate] = useState(generateCalendar())
+  const [dates, setDate] = useState(generateCalendar)
   const { t } = useTranslation()
-  const [displayedMonth, setDisplayedMonth] = useState(dayjs().month())
+  const [displayedMonth, setDisplayedMonth] = useState(() => dayjs().month())
   const currentSetMonth = dayjs().month(displayedMonth).month()
   const changeMonth = (month: number) => {
     if (dayjs().month() <= month) {

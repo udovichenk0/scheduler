@@ -24,21 +24,10 @@ import {
 import { ProgressCircle } from "./ui/circle-progress"
 import { StartButton } from "./ui/start-button"
 import { setCustomDuration } from "./config"
+import { PomodoroDurations } from "./ui/work-durations"
 
 const { $workDuration, $customDuration } = $$pomodoroSettings
-const defaultDurations = [
-  { time: 5 },
-  { time: 10 },
-  { time: 15 },
-  { time: 20 },
-  { time: 25 },
-  { time: 30 },
-  { time: 45 },
-  { time: 60 },
-]
-const calculateCircleDiameter = (time: number) => {
-  return Math.ceil(2 * Math.sqrt(time)) + 5
-}
+
 export const Pomodoro = ({
   leftSlot,
   taskTitle,
@@ -49,29 +38,21 @@ export const Pomodoro = ({
   modal: ModalType
 }) => {
   const { t } = useTranslation()
-  const [
-    startTimer,
-    passingTime,
-    isTicking,
-    stopTimer,
-    resetTimer,
-    isWorkTime,
-    stages,
-    currentStaticTime,
-  ] = useUnit([
+  const [startTimer, stopTimer, resetTimer, stages] = useUnit([
     startTimerTriggered,
-    $tickingTime,
-    $isPomodoroRunning,
     stopTimerTriggered,
     resetTimerTriggered,
-    $isWorkTime,
     $stages,
-    $currentStaticTime,
   ])
   return (
     <MainModal modal={modal} className="w-[320px]" title={t("pomodoro.title")}>
       <div className="px-4">
-        <PomodoroDurations />
+        <PomodoroDurations
+          timeSelected={timeSelected}
+          $customDuration={$customDuration}
+          $workDuration={$workDuration}
+          setDuration={setCustomDuration}
+        />
         {taskTitle && (
           <Container
             rounded="base"
@@ -82,19 +63,19 @@ export const Pomodoro = ({
           </Container>
         )}
         <ProgressCircle
-          staticTime={currentStaticTime}
-          isWorkTime={isWorkTime}
-          time={passingTime}
+          $staticTime={$currentStaticTime}
+          $isWorkTime={$isWorkTime}
+          $time={$tickingTime}
           stages={stages}
         />
         <div className="mt-4 flex justify-between">
           {leftSlot}
 
           <StartButton
-            isWorkTime={isWorkTime}
+            $isWorkTime={$isWorkTime}
             stop={stopTimer}
             start={startTimer}
-            isTicking={isTicking}
+            $isTicking={$isPomodoroRunning}
           />
 
           <Button intent={"primary"} size={"xs"} onClick={resetTimer}>
@@ -106,46 +87,5 @@ export const Pomodoro = ({
         </div>
       </div>
     </MainModal>
-  )
-}
-const PomodoroDurations = () => {
-  const [selectTime, customDuration, workDuration] = useUnit([
-    timeSelected,
-    $customDuration,
-    $workDuration,
-  ])
-  const durations = setCustomDuration({
-    defaultDurations,
-    customDuration: customDuration,
-  })
-  return (
-    <div className="mb-7 flex items-center justify-around">
-      {durations.map(({ time }) => {
-        const timeInSecond = time * 60
-        const activeTimer = workDuration === time
-        return (
-          <div
-            key={time}
-            className="flex h-[60px] cursor-pointer flex-col items-center justify-between"
-            onClick={() => selectTime(timeInSecond)}
-          >
-            <div className="flex h-10 items-center">
-              <div
-                style={{
-                  width: calculateCircleDiameter(time),
-                  height: calculateCircleDiameter(time),
-                }}
-                className={`${
-                  activeTimer && "border-cPomodoroRed bg-cPomodoroRed"
-                } flex items-center justify-center rounded-full border-2 border-cIconDefault`}
-              >
-                {activeTimer && <Icon name="common/done" className="w-[7px]" />}
-              </div>
-            </div>
-            <span className="text-[12px] text-cIconDefault">{time}</span>
-          </div>
-        )
-      })}
-    </div>
   )
 }

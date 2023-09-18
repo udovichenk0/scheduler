@@ -16,8 +16,8 @@ import {
   $$deleteTask,
   $inboxTasks,
   $$taskDisclosure,
-  $updateTask,
-  $createTask,
+  $$updateTask,
+  $$createTask,
 } from "./inbox.model"
 
 export const Inbox = () => {
@@ -43,8 +43,8 @@ export const Inbox = () => {
     $$taskDisclosure.updatedTaskOpenedById,
     $$taskDisclosure.createdTaskOpened,
     $$deleteTask.taskDeletedById,
-    $updateTask.statusChangedAndUpdated,
-    $updateTask.dateChangedAndUpdated,
+    $$updateTask.statusChangedAndUpdated,
+    $$updateTask.dateChangedAndUpdated,
   ])
   return (
     <Layout>
@@ -59,7 +59,7 @@ export const Inbox = () => {
               {task.id === updatedTaskId ? (
                 <ExpandedTask
                   dateModifier={false}
-                  modifyTaskModel={$updateTask}
+                  modifyTaskModel={$$updateTask}
                   taskRef={ref}
                 />
               ) : (
@@ -78,7 +78,7 @@ export const Inbox = () => {
         <div className="mx-3">
           {createdTask && (
             <ExpandedTask
-              modifyTaskModel={$createTask}
+              modifyTaskModel={$$createTask}
               dateModifier={false}
               taskRef={ref}
             />
@@ -88,9 +88,9 @@ export const Inbox = () => {
       </Layout.Content>
 
       <Layout.Footer
-        isTaskSelected={!!selectedTaskId}
-        deleteTask={() => selectedTaskId && deleteTaskById(selectedTaskId)}
-        action={() => openCreatedTask()}
+        selectedTaskId={selectedTaskId}
+        deleteTask={deleteTaskById}
+        action={openCreatedTask}
       />
     </Layout>
   )

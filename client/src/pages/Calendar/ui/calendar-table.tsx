@@ -28,7 +28,7 @@ export const Calendar = memo(
     setDate,
     date,
   }: CalendarProps) => {
-    const [calendar, setCalendar] = useState(generateCalendar())
+    const [calendar, setCalendar] = useState(generateCalendar)
     const changeMonth = (month: number) => {
       setDate(dayjs().month(month))
       setCalendar(generateCalendar(month))
