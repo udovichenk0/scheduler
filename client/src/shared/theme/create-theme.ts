@@ -4,7 +4,7 @@ import { parseCookieValue } from "../lib/storage/parse-cookie-value"
 
 export const createTheme = () => {
   const init = createEvent()
-  const setMainThemeFx = createEffect(() => {
+  const setMainThemeFx = createEffect(async () => {
     const theme = parseCookieValue("theme")
     document.documentElement.setAttribute("data-theme", `${theme || "default"}`)
   })

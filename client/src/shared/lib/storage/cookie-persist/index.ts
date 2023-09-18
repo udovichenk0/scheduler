@@ -18,10 +18,10 @@ export const cookiePersist = ({
   })
   const setFx = attach({
     effect: createEffect(async (cookieValue: string | number | boolean) => {
-      document.cookie = `${name}=${cookieValue}`
+      document.cookie = `${name}=${cookieValue};path=/`
     }),
   })
-
+  
   sample({
     clock: source,
     target: setFx,
