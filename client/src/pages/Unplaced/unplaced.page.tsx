@@ -20,7 +20,7 @@ import {
   $unplacedTasks,
 } from "./unplaced.model"
 
-export const Unplaced = () => {
+const Unplaced = () => {
   const { t } = useTranslation()
   const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const taskRef = useRef<HTMLDivElement>(null)
@@ -93,3 +93,5 @@ export const Unplaced = () => {
     </Layout>
   )
 }
+
+export default Unplaced

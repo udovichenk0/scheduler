@@ -1,6 +1,8 @@
+import { lazy } from "react"
+
 import { routes } from "@/shared/routing/router"
 
-import { Today } from "./today.page"
+const Today = lazy(() => import("./today.page"))
 
 export const HomeRoute = {
   view: Today,

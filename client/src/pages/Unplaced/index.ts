@@ -1,6 +1,8 @@
+import { lazy } from "react"
+
 import { routes } from "@/shared/routing"
 
-import { Unplaced } from "./unplaced.page"
+const Unplaced = lazy(() => import("./unplaced.page"))
 
 export const UnplacedRoute = {
   view: Unplaced,

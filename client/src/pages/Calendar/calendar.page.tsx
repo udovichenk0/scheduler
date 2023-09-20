@@ -29,7 +29,7 @@ import {
 import { Calendar } from "./ui/calendar-table"
 import { TaskFormModal } from "./ui/form-modal"
 
-export const CalendarPage = () => {
+const CalendarPage = () => {
   const [date, setDate] = useState(dayjs)
   const [
     mappedTasks,
@@ -131,3 +131,5 @@ const ActionsButton = () => {
     </div>
   )
 }
+
+export default CalendarPage

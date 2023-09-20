@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { useRef, useState } from "react"
+import { Suspense, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Layout } from "@/templates/main"
@@ -20,7 +20,7 @@ import {
   $$createTask,
 } from "./inbox.model"
 
-export const Inbox = () => {
+const Inbox = () => {
   const { t } = useTranslation()
 
   const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
@@ -47,51 +47,54 @@ export const Inbox = () => {
     $$updateTask.dateChangedAndUpdated,
   ])
   return (
-    <Layout>
-      <Layout.Header iconName="common/inbox" title={t("task.inbox")} />
-      <Layout.Content
-        className="flex flex-col"
-        onClick={(e) => onClickOutside(ref, e, closeTask)}
-      >
-        {tasks?.map((task, id) => {
-          return (
-            <div className="px-3 pb-1 first:pt-2 last:pb-2" key={id}>
-              {task.id === updatedTaskId ? (
-                <ExpandedTask
-                  dateModifier={false}
-                  modifyTaskModel={$$updateTask}
-                  taskRef={ref}
-                />
-              ) : (
-                <TaskItem
-                  onUpdateDate={changeDateAndUpdate}
-                  onUpdateStatus={changeStatusAndUpdate}
-                  isTaskSelected={selectedTaskId === task.id}
-                  onClick={selectTaskId}
-                  onDoubleClick={() => openUpdatedTaskById(task.id)}
-                  task={task}
-                />
-              )}
-            </div>
-          )
-        })}
-        <div className="mx-3">
-          {createdTask && (
-            <ExpandedTask
-              modifyTaskModel={$$createTask}
-              dateModifier={false}
-              taskRef={ref}
-            />
-          )}
-        </div>
-        <NoTasks isTaskListEmpty={!tasks?.length && !createdTask} />
-      </Layout.Content>
+    <Suspense fallback={<div>inbox loading...</div>}>
+      <Layout>
+        <Layout.Header iconName="common/inbox" title={t("task.inbox")} />
+        <Layout.Content
+          className="flex flex-col"
+          onClick={(e) => onClickOutside(ref, e, closeTask)}
+        >
+          {tasks?.map((task, id) => {
+            return (
+              <div className="px-3 pb-1 first:pt-2 last:pb-2" key={id}>
+                {task.id === updatedTaskId ? (
+                  <ExpandedTask
+                    dateModifier={false}
+                    modifyTaskModel={$$updateTask}
+                    taskRef={ref}
+                  />
+                ) : (
+                  <TaskItem
+                    onUpdateDate={changeDateAndUpdate}
+                    onUpdateStatus={changeStatusAndUpdate}
+                    isTaskSelected={selectedTaskId === task.id}
+                    onClick={selectTaskId}
+                    onDoubleClick={() => openUpdatedTaskById(task.id)}
+                    task={task}
+                  />
+                )}
+              </div>
+            )
+          })}
+          <div className="mx-3">
+            {createdTask && (
+              <ExpandedTask
+                modifyTaskModel={$$createTask}
+                dateModifier={false}
+                taskRef={ref}
+              />
+            )}
+          </div>
+          <NoTasks isTaskListEmpty={!tasks?.length && !createdTask} />
+        </Layout.Content>
 
-      <Layout.Footer
-        selectedTaskId={selectedTaskId}
-        deleteTask={deleteTaskById}
-        action={openCreatedTask}
-      />
-    </Layout>
+        <Layout.Footer
+          selectedTaskId={selectedTaskId}
+          deleteTask={deleteTaskById}
+          action={openCreatedTask}
+        />
+      </Layout>
+    </Suspense>
   )
 }
+export default Inbox

@@ -21,7 +21,7 @@ export const cookiePersist = ({
       document.cookie = `${name}=${cookieValue};path=/`
     }),
   })
-  
+
   sample({
     clock: source,
     target: setFx,

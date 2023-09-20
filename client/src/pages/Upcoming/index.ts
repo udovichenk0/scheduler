@@ -1,6 +1,8 @@
+import { lazy } from "react"
+
 import { routes } from "@/shared/routing"
 
-import { Upcoming } from "./upcoming.page"
+const Upcoming = lazy(() => import("./upcoming.page"))
 
 export const UpcomingRoute = {
   route: routes.upcoming,
