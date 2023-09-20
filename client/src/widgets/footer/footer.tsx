@@ -15,7 +15,7 @@ export const Footer = ({
 }) => {
   const { t } = useTranslation()
   return (
-    <div className="px-2 py-2" onMouseDown={(e) => e.preventDefault()}>
+    <div className="h-14 p-2" onMouseDown={(e) => e.preventDefault()}>
       <Button
         onClick={() => action()}
         intent={"primary"}

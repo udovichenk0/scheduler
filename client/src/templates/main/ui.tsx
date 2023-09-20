@@ -1,9 +1,9 @@
 import { ReactNode } from "react"
 
 import { Header } from "@/widgets/header"
+import { Footer } from "@/widgets/footer"
 
 import { Content } from "./ui/content"
-import { Footer } from "./ui/footer"
 type PropsType = {
   children: ReactNode
 }

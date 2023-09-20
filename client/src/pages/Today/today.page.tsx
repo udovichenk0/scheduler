@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { RefObject, useRef, useState } from "react"
+import { RefObject, Suspense, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Layout } from "@/templates/main"
@@ -25,7 +25,7 @@ import {
   $$createTask,
 } from "./today.model"
 
-export const Today = () => {
+const Today = () => {
   const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const { t } = useTranslation()
   const taskRef = useRef<HTMLDivElement>(null)
@@ -45,31 +45,36 @@ export const Today = () => {
     $todayTasks,
   ])
   return (
-    <Layout>
-      <Layout.Header iconName="common/outlined-star" title={t("task.today")} />
-      <Layout.Content onClick={(e) => onClickOutside(taskRef, e, closeTask)}>
-        <OverdueTasks
-          taskRef={taskRef}
-          selectTaskId={selectTaskId}
+    <Suspense fallback={<div>loading</div>}>
+      <Layout>
+        <Layout.Header
+          iconName="common/outlined-star"
+          title={t("task.today")}
+        />
+        <Layout.Content onClick={(e) => onClickOutside(taskRef, e, closeTask)}>
+          <OverdueTasks
+            taskRef={taskRef}
+            selectTaskId={selectTaskId}
+            selectedTaskId={selectedTaskId}
+          />
+          <TodayTasks
+            taskRef={taskRef}
+            selectTaskId={selectTaskId}
+            selectedTaskId={selectedTaskId}
+          />
+          <NoTasks
+            isTaskListEmpty={
+              !todayTasks.length && !overdueTasks.length && !createdTask
+            }
+          />
+        </Layout.Content>
+        <Layout.Footer
+          action={openCreatedTask}
           selectedTaskId={selectedTaskId}
+          deleteTask={deleteTaskById}
         />
-        <TodayTasks
-          taskRef={taskRef}
-          selectTaskId={selectTaskId}
-          selectedTaskId={selectedTaskId}
-        />
-        <NoTasks
-          isTaskListEmpty={
-            !todayTasks.length && !overdueTasks.length && !createdTask
-          }
-        />
-      </Layout.Content>
-      <Layout.Footer
-        action={openCreatedTask}
-        selectedTaskId={selectedTaskId}
-        deleteTask={deleteTaskById}
-      />
-    </Layout>
+      </Layout>
+    </Suspense>
   )
 }
 
@@ -243,3 +248,5 @@ const TodayTasks = ({
     </section>
   )
 }
+
+export default Today

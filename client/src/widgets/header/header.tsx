@@ -32,7 +32,7 @@ export const Header = ({
     $isPomodoroRunning,
   ])
   return (
-    <Container padding="xl" className="mb-4 text-primary">
+    <Container padding="xl" className="relative mb-4 text-primary">
       <div className="flex h-[40px] items-center justify-end">
         {isPomodoroRunning ? (
           <PomodoroProgressBar

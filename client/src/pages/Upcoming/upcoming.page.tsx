@@ -22,8 +22,8 @@ import {
 } from "./upcoming.model"
 import { TasksByDate } from "./sections/tasks-by-date"
 import { HeaderTitle } from "./ui/header-title"
-import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer"
-export const Upcoming = () => {
+import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer/variant-changer"
+const Upcoming = () => {
   const ref = useRef<HTMLDivElement>(null)
   const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const [
@@ -92,3 +92,5 @@ export const Upcoming = () => {
     </Layout>
   )
 }
+
+export default Upcoming

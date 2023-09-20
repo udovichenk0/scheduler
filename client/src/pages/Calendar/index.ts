@@ -1,8 +1,9 @@
+import { lazy } from "react"
+
 import { routes } from "@/shared/routing"
 
-import { CalendarPage } from "./calendar.page"
-
+const Calendar = lazy(() => import("./calendar.page"))
 export const CalendarRoute = {
-  view: CalendarPage,
+  view: Calendar,
   route: routes.calendar,
 }
