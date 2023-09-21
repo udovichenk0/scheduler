@@ -11,6 +11,7 @@ import { TaskItem } from "@/entities/task/task-item"
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { TaskId } from "@/shared/api/task"
+import { useDocumentTitle } from "@/shared/lib/react"
 
 import {
   $$createTask,
@@ -22,6 +23,7 @@ import {
 
 const Unplaced = () => {
   const { t } = useTranslation()
+  useDocumentTitle(t('task.unplaced'))
   const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const taskRef = useRef<HTMLDivElement>(null)
   const [
