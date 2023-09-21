@@ -8,7 +8,7 @@ import { TaskKv } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
 import { TaskId } from "@/shared/api/task"
-import { bridge } from "@/shared/lib/bridge"
+import { bridge } from "@/shared/lib/effector/bridge"
 
 export const pomodoroModal = createModal({})
 export const settingsModal = createModal({})

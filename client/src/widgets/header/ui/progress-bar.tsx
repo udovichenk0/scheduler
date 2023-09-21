@@ -1,8 +1,8 @@
 import { useUnit } from "effector-react"
 import { Store } from "effector"
 
-import { normalizeSeconds } from "@/shared/lib/normalize-time"
 import { Button } from "@/shared/ui/buttons/main-button"
+import { normalizeSeconds } from "@/shared/lib/date"
 
 export const PomodoroProgressBar = ({
   onClick,

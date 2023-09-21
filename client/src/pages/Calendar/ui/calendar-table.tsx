@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 
 import { Task } from "@/entities/task/task-item"
 
-import { generateCalendar } from "@/shared/lib/generate-calendar"
+import { generateCalendar } from "@/shared/lib/date/generate-calendar"
 import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
 import { ModalType } from "@/shared/lib/modal"
 import { TaskId } from "@/shared/api/task"

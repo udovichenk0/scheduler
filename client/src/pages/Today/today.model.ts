@@ -9,7 +9,7 @@ import { updateTaskFactory } from "@/features/task/update"
 
 import { $$task } from "@/entities/task/task-item"
 
-import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
+import { cookiePersist } from "@/shared/lib/effector/cookie-persist"
 export const $$deleteTask = createRemoveTaskFactory()
 
 export const $overdueTasks = $$task.$taskKv.map((kv) => {

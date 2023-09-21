@@ -9,7 +9,7 @@ import { $$task } from "@/entities/task/task-item"
 import { authApi } from "@/shared/api/auth"
 import { tokenService } from "@/shared/api/token"
 import { taskApi } from "@/shared/api/task"
-import { bridge } from "@/shared/lib/bridge"
+import { bridge } from "@/shared/lib/effector/bridge"
 
 import { $email } from "../by-email"
 

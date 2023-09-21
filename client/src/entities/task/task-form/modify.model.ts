@@ -3,7 +3,7 @@ import { combine, createEvent, createStore, sample } from "effector"
 
 import { createModal } from "@/shared/lib/modal"
 import { TaskId, TaskStatus, TaskType } from "@/shared/api/task"
-import { bridge } from "@/shared/lib/bridge"
+import { bridge } from "@/shared/lib/effector/bridge"
 
 export const $$dateModal = createModal({})
 export const $$typeModal = createModal({})

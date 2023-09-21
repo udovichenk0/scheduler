@@ -4,7 +4,7 @@ import { not } from "patronum"
 import { $$session } from "@/entities/session"
 
 import { taskApi } from "@/shared/api/task"
-import { singleton } from "@/shared/lib/singleton"
+import { singleton } from "@/shared/lib/effector/singleton"
 import { createModal } from "@/shared/lib/modal"
 
 import { Task } from "./type"

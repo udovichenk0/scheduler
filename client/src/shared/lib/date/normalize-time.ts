@@ -1,4 +1,4 @@
-import { addLeadingZero } from "../add-leading-zero"
+import { addLeadingZero } from "./add-leading-zero"
 
 export const normalizeSeconds = (seconds: number) => {
   const minutes = Math.floor(seconds / 60)

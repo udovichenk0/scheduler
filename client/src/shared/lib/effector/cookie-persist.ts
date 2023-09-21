@@ -1,23 +1,23 @@
 import { Store, createEvent, attach, createEffect, sample } from "effector"
 import { combineEvents } from "patronum"
 
-import { parseCookieValue } from "../parse-cookie-value"
+import { parseCookieValue } from "../storage/parse-cookie-value"
 
-export const cookiePersist = ({
+export const cookiePersist = <T>({
   source,
   name,
 }: {
-  source: Store<any>
+  source: Store<T>
   name: string
 }) => {
   const init = createEvent<string>()
   const getFx = attach({
     effect: createEffect(async (cookieName: string | number | boolean) => {
-      return parseCookieValue(cookieName)
+      return parseCookieValue(cookieName) as T
     }),
   })
   const setFx = attach({
-    effect: createEffect(async (cookieValue: string | number | boolean) => {
+    effect: createEffect(async (cookieValue: T) => {
       document.cookie = `${name}=${cookieValue};path=/`
     }),
   })

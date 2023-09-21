@@ -3,7 +3,7 @@ import { useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
 
 import { CodeInput } from "@/shared/ui/data-entry/code-input"
-import { AuthTemplate } from "@/shared/ui/templates/auth/ui"
+import { AuthTemplate } from "@/shared/ui/templates/auth"
 
 import { $code, codeChanged, submitTriggered } from "./verify.model"
 

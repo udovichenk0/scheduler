@@ -2,8 +2,8 @@ import dayjs from "dayjs"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { generateCalendar } from "@/shared/lib/generate-calendar"
-import { addLeadingZero } from "@/shared/lib/add-leading-zero"
+import { generateCalendar } from "@/shared/lib/date/generate-calendar"
+import { addLeadingZero } from "@/shared/lib/date/add-leading-zero"
 
 import { Button } from "../buttons/main-button"
 

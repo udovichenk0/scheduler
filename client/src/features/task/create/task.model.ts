@@ -7,7 +7,7 @@ import { $$task } from "@/entities/task/task-item"
 import { $$session } from "@/entities/session"
 
 import { taskApi } from "@/shared/api/task"
-import { bridge } from "@/shared/lib/bridge"
+import { bridge } from "@/shared/lib/effector/bridge"
 
 export const createTaskFactory = ({
   defaultType,
