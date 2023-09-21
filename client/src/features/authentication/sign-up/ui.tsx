@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Input } from "@/shared/ui/data-entry/main-input"
-import { AuthTemplate } from "@/shared/ui/templates/auth/ui"
+import { AuthTemplate } from "@/shared/ui/templates/auth"
 
 import { $email } from "../by-email"
 import { TogglePasswordButton } from "../shared/ui/toggle-password-button"

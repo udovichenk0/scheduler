@@ -9,7 +9,7 @@ import { condition, interval, not } from "patronum"
 
 import { $$pomodoroSettings } from "@/entities/settings/pomodoro"
 
-import { bridge } from "@/shared/lib/bridge"
+import { bridge } from "@/shared/lib/effector/bridge"
 
 import sound from "./assets/timer.mp3"
 

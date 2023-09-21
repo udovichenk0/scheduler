@@ -2,8 +2,8 @@ import { createEvent, createStore, sample } from "effector"
 import { createEffect } from "effector/effector.umd"
 import { z } from "zod"
 
-import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
-import { singleton } from "@/shared/lib/singleton"
+import { cookiePersist } from "@/shared/lib/effector/cookie-persist"
+import { singleton } from "@/shared/lib/effector/singleton"
 const themeSchema = z.enum(["space", "default", "dark", "light", "grey"])
 
 export type Theme = z.infer<typeof themeSchema>

@@ -7,7 +7,7 @@ import { $$task } from "@/entities/task/task-item"
 import { modifyTaskFactory } from "@/entities/task/task-form"
 
 import { taskApi, TaskStatus } from "@/shared/api/task"
-import { bridge } from "@/shared/lib/bridge"
+import { bridge } from "@/shared/lib/effector/bridge"
 
 export const updateTaskFactory = () => {
   const $$modifyTask = modifyTaskFactory({})

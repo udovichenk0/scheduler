@@ -5,7 +5,7 @@ import { $$session } from "@/entities/session"
 
 import { authApi } from "@/shared/api/auth"
 import { taskApi } from "@/shared/api/task"
-import { bridge } from "@/shared/lib/bridge"
+import { bridge } from "@/shared/lib/effector/bridge"
 
 import { $email } from "../by-email"
 

@@ -2,7 +2,7 @@ import { clsx } from "clsx"
 import { Store } from "effector"
 import { useUnit } from "effector-react"
 
-import { normalizeSeconds } from "@/shared/lib/normalize-time"
+import { normalizeSeconds } from "@/shared/lib/date"
 
 const DEFAULT_PROGRESS_BAR = 848 // if 848 then progress is 0% otherwise its 100%
 

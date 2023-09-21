@@ -6,7 +6,7 @@ import { Store } from "effector"
 
 import { LONG_MONTHS_NAMES, LONG_WEEKS_NAMES } from "@/shared/config/constants"
 import { TaskId } from "@/shared/api/task"
-import { lowerCase } from "@/shared/lib/lower-case"
+import { lowerCase } from "@/shared/lib/typography/lower-case"
 
 import {
   generateRemainingDaysOfMonth,

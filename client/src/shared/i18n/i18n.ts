@@ -4,7 +4,7 @@ import { initReactI18next } from "react-i18next"
 import LanguageDetector from "i18next-browser-languagedetector"
 import { RouteInstance } from "atomic-router"
 
-import { singleton } from "../lib/singleton"
+import { singleton } from "../lib/effector/singleton"
 import { router, routes } from "../routing"
 
 import ukLocale from "./locales/uk.json"

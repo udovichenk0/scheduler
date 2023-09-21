@@ -5,7 +5,7 @@ import {
   LONG_MONTHS_NAMES_PLURAL,
   LONG_WEEKS_NAMES,
 } from "@/shared/config/constants"
-import { lowerCase } from "@/shared/lib/lower-case"
+import { lowerCase } from "@/shared/lib/typography/lower-case"
 
 export const HeaderTitle = ({ variant }: { variant: "upcoming" | Dayjs }) => {
   const { t } = useTranslation()

@@ -9,7 +9,7 @@ import { updateTaskFactory } from "@/features/task/update"
 import { $$task, Task } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
-import { bridge } from "@/shared/lib/bridge"
+import { bridge } from "@/shared/lib/effector/bridge"
 
 export const $$deleteTask = createRemoveTaskFactory()
 
