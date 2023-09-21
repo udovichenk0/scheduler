@@ -11,6 +11,7 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { TaskId } from "@/shared/api/task"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
+import { useDocumentTitle } from "@/shared/lib/react"
 
 import {
   $$createTask,
@@ -31,6 +32,8 @@ import { TaskFormModal } from "./ui/form-modal"
 
 const CalendarPage = () => {
   const [date, setDate] = useState(dayjs)
+  const { t } = useTranslation()
+  useDocumentTitle(t('task.calendar'))
   const [
     mappedTasks,
     openCreatedTask,
