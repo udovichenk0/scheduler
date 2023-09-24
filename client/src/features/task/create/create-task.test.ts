@@ -76,7 +76,7 @@ describe("create task", () => {
         [$isAllowToSubmit, true],
         [$$task._.$taskKv, tasks],
       ],
-      handlers: [[taskApi.createTask.__.executeFx, mock]],
+      handlers: [[taskApi.createTaskQuery.__.executeFx, mock]],
     })
     await allSettled(createTaskTriggered, { scope })
     expect(mock).toHaveBeenCalledOnce()

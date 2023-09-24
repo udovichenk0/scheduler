@@ -34,7 +34,7 @@ sample({
 })
 sample({
   clock: tokenApi.refreshQuery.finished.success,
-  target: taskApi.getTasks.start,
+  target: taskApi.getTasksQuery.start,
 })
 
 const scope = fork()

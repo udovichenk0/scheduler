@@ -20,7 +20,7 @@ export const $$task = singleton(() => {
   const reset = createEvent()
 
   sample({
-    clock: taskApi.getTasks.finished.success,
+    clock: taskApi.getTasksQuery.finished.success,
     fn: ({ result }) => transformTasksToKv(result),
     target: $taskKv,
   })
@@ -42,7 +42,7 @@ export const $$task = singleton(() => {
     target: $taskKv,
   })
   sample({
-    clock: taskApi.createTasks.finished.success,
+    clock: taskApi.createTasksQuery.finished.success,
     target: [getTasksTriggered, taskApi.deleteTasksFromLocalStorageFx],
   })
   sample({
@@ -53,7 +53,7 @@ export const $$task = singleton(() => {
 
   sample({
     clock: getTasksTriggered,
-    target: taskApi.getTasks.start,
+    target: taskApi.getTasksQuery.start,
   })
 
   sample({
