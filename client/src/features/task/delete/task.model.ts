@@ -9,7 +9,7 @@ import { taskApi } from "@/shared/api/task"
 export const createRemoveTaskFactory = () => {
   const taskDeletedById = createEvent<string>()
 
-  const attachDeleteTaskQuery = attachOperation(taskApi.deleteTask)
+  const attachDeleteTaskQuery = attachOperation(taskApi.deleteTaskQuery)
 
   const attachDeleteTaskFromLsFx = attach({
     effect: taskApi.deleteTaskFromLocalStorageFx,

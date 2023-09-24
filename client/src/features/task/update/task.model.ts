@@ -27,9 +27,9 @@ export const updateTaskFactory = () => {
   const setFieldsTriggeredById = createEvent<string>()
   const updateTaskTriggeredById = createEvent<string>()
 
-  const attachUpdateStatusQuery = attachOperation(taskApi.updateStatus)
-  const attachUpdateTaskDate = attachOperation(taskApi.updateDate)
-  const attachUpdateTaskQuery = attachOperation(taskApi.updateTask)
+  const attachUpdateStatusQuery = attachOperation(taskApi.updateStatusQuery)
+  const attachUpdateTaskDate = attachOperation(taskApi.updateDateQuery)
+  const attachUpdateTaskQuery = attachOperation(taskApi.updateTaskQuery)
   const attachUpdateTaskDateFromLsFx = attach({
     effect: taskApi.updateDateInLocalStorageFx,
   })
@@ -132,13 +132,13 @@ export const updateTaskFactory = () => {
     updateTaskTriggeredById,
     taskSuccessfullyUpdated,
     setFieldsTriggeredById,
-    $isUpdating: taskApi.updateTask.$pending,
+    $isUpdating: taskApi.updateTaskQuery.$pending,
     ...$$modifyTask,
     _: {
       updateTaskFromLocalStorageFx: attachUpdateTaskFromLocalStorageFx,
-      updateTaskQuery: taskApi.updateTask,
+      updateTaskQuery: taskApi.updateTaskQuery,
       updateTaskDateFromLsFx: attachUpdateTaskDateFromLsFx,
-      updateTaskDate: taskApi.updateDate,
+      updateTaskDate: taskApi.updateDateQuery,
       updateStatusQuery: attachUpdateStatusQuery,
       updateStatusFromLocalStorageFx: attachUpdateStatusFromLocalStorageFx,
     },

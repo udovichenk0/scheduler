@@ -18,7 +18,7 @@ import {
 } from "./task.dto"
 
 const TaskContract = zodContract(TaskSchemaDto)
-export const createTask = authQuery<TaskDto, { body: CreateTaskDto }>({
+export const createTaskQuery = authQuery<TaskDto, { body: CreateTaskDto }>({
   request: {
     url: "tasks/create",
     method: "POST",
@@ -30,7 +30,7 @@ export const createTask = authQuery<TaskDto, { body: CreateTaskDto }>({
 })
 
 const GetTasksContract = zodContract(TasksSchemaDto)
-export const getTasks = authQuery<TaskDto[], void>({
+export const getTasksQuery = authQuery<TaskDto[], void>({
   request: {
     url: "tasks/get",
     method: "GET",
@@ -41,7 +41,7 @@ export const getTasks = authQuery<TaskDto[], void>({
   },
 })
 
-export const updateTask = authQuery<TaskDto, { body: UpdateTaskDto }>({
+export const updateTaskQuery = authQuery<TaskDto, { body: UpdateTaskDto }>({
   request: {
     url: "tasks/update",
     method: "POST",
@@ -52,7 +52,7 @@ export const updateTask = authQuery<TaskDto, { body: UpdateTaskDto }>({
   },
 })
 
-export const updateStatus = authQuery<TaskDto, { body: UpdateStatusDto }>({
+export const updateStatusQuery = authQuery<TaskDto, { body: UpdateStatusDto }>({
   request: {
     url: "tasks/update-status",
     method: "POST",
@@ -63,7 +63,7 @@ export const updateStatus = authQuery<TaskDto, { body: UpdateStatusDto }>({
   },
 })
 
-export const deleteTask = authQuery<TaskDto, { body: { id: TaskId } }>({
+export const deleteTaskQuery = authQuery<TaskDto, { body: { id: TaskId } }>({
   request: {
     url: "tasks/delete",
     method: "POST",
@@ -78,7 +78,7 @@ const CreateManyTasksSchemaDto = z.object({
   count: z.number(),
 })
 const CreateManyTasksZodContract = zodContract(CreateManyTasksSchemaDto)
-export const createTasks = authQuery<
+export const createTasksQuery = authQuery<
   { count: number },
   { body: { tasks: CreateTaskDto[] } }
 >({
@@ -92,7 +92,7 @@ export const createTasks = authQuery<
   },
 })
 
-export const updateDate = authQuery<
+export const updateDateQuery = authQuery<
   TaskDto,
   { body: { id: TaskId; date: Date } }
 >({
@@ -121,41 +121,41 @@ export const deleteTasksFromLocalStorageFx = createEffect(() => {
 export const setTaskToLocalStorageFx = createEffect(
   ({ body }: { body: CreateTaskDto }) => {
     const tasksFromLs = localStorage.getItem("tasks")
-    if (tasksFromLs) {
-      const tasks = JSON.parse(tasksFromLs)
-      const task = { ...body, id: uuidv4(), user_id: null }
-      localStorage.setItem("tasks", JSON.stringify([...tasks, task]))
-      return {
-        result: task as LocalStorageTaskDto,
-      }
-    } else {
-      const task = { ...body, id: uuidv4() }
-      localStorage.setItem("tasks", JSON.stringify([task]))
-      return {
-        result: task as LocalStorageTaskDto,
-      }
+    const task = { ...body, id: uuidv4(), user_id: null }
+    
+    const tasks = JSON.parse(tasksFromLs!)
+    localStorage.setItem("tasks", JSON.stringify([...(tasks || []), task]))
+
+    return {
+      result: task as LocalStorageTaskDto,
     }
-  },
+  }
 )
+
+function updateTask(tasks: LocalStorageTaskDto[], id: TaskId, data: CreateTaskDto){
+  const updatedTasks =  tasks.map((task: LocalStorageTaskDto) =>
+    task.id === id ? { ...task, ...data } : task,
+  )
+  const updatedTask = updatedTasks.find((task) => task.id === id)
+  return {
+    updatedTasks,
+    updatedTask
+  }
+}
 export const updateTaskFromLocalStorageFx = createEffect(
   async ({ id, data }: { id: TaskId; data: CreateTaskDto }) => {
     const tasksFromLs = localStorage.getItem("tasks")
     const parsedTasks = JSON.parse(tasksFromLs!)
 
-    const updatedTasks = parsedTasks.map((task: LocalStorageTaskDto) =>
-      task.id === id ? { id, ...data } : task,
-    )
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks))
+    const { updatedTasks, updatedTask } = updateTask(parsedTasks, id, data)
 
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks))
     return {
-      result: {
-        ...data,
-        id,
-        user_id: null,
-      },
+      result: updatedTask,
     }
   },
 )
+
 
 export const updateDateInLocalStorageFx = createEffect(
   ({ date, id }: { date: Date; id: TaskId }) => {
@@ -171,28 +171,54 @@ export const updateDateInLocalStorageFx = createEffect(
     }
   },
 )
+
+function updateTaskStatus(tasks: LocalStorageTaskDto[], id: TaskId, status: TaskStatus){
+  const updatedTasks = tasks.map((task) => (task.id === id ? { ...task, status } : task))
+
+  const updatedTask = updatedTasks.find((task) => task.id === id)
+
+  return {
+    updatedTask,
+    updatedTasks
+  }
+}
+
 export const updateStatusInLocalStorageFx = createEffect(
   ({ id, status }: { id: TaskId; status: TaskStatus }) => {
     const tasks = localStorage.getItem("tasks")
-    const updatedTasks = (JSON.parse(tasks!) as LocalStorageTaskDto[]).map(
-      (task) => (task.id === id ? { ...task, status } : task),
-    )
+    const parsedTasks = JSON.parse(tasks!) as LocalStorageTaskDto[]
+
+    const { updatedTasks, updatedTask } = updateTaskStatus(parsedTasks, id, status)
+
     localStorage.setItem("tasks", JSON.stringify(updatedTasks))
-    const updatedTask = updatedTasks.find((task) => task.id === id)
     return {
       result: updatedTask,
     }
   },
 )
 
+function deleteTask(tasks: LocalStorageTaskDto[], id: TaskId){
+  const updatedTasks = tasks.filter((task) => task.id !== id)
+
+  const deletedTask = tasks.find((task) => task.id === id)
+
+  return {
+    updatedTasks,
+    deletedTask
+  }
+}
+
 export const deleteTaskFromLocalStorageFx = createEffect((id: TaskId) => {
   const tasksFromLs = localStorage.getItem("tasks")
   const parsedTasks = JSON.parse(tasksFromLs!) as LocalStorageTaskDto[]
 
-  const filteredTasks = parsedTasks.filter((task) => task.id !== id)
-
-  localStorage.setItem("tasks", JSON.stringify(filteredTasks))
-  const deletedTask = parsedTasks.find((task) => task.id === id)
+  const { updatedTasks, deletedTask } = deleteTask(parsedTasks, id)
+  if(updatedTasks.length){
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks))
+  }
+  else {
+    localStorage.removeItem("tasks")
+  }
 
   return {
     result: deletedTask!,

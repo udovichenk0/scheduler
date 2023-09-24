@@ -21,7 +21,7 @@ export const createTaskFactory = ({
 
   const createTaskTriggered = createEvent()
 
-  const attachCreateTaskQuery = attachOperation(taskApi.createTask)
+  const attachCreateTaskQuery = attachOperation(taskApi.createTaskQuery)
   const attachSetTaskToLocalStorage = attach({
     effect: taskApi.setTaskToLocalStorageFx,
   })
@@ -59,7 +59,7 @@ export const createTaskFactory = ({
     ...$$modifyTask,
     taskSuccessfullyCreated,
     createTaskTriggered,
-    $isCreating: taskApi.createTask.$pending,
+    $isCreating: taskApi.createTaskQuery.$pending,
     _: {
       setTaskToLocalStorageFx: attachSetTaskToLocalStorage,
       createTaskQuery: attachCreateTaskQuery,

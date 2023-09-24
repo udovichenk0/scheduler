@@ -66,7 +66,7 @@ describe("update task", () => {
         [$$session.$isAuthenticated, true],
         [$isAllowToSubmit, true],
       ],
-      handlers: [[taskApi.updateTask.__.executeFx, mock]],
+      handlers: [[taskApi.updateTaskQuery.__.executeFx, mock]],
     })
     await allSettled(updateTaskTriggeredById, { scope, params: "5" })
 
