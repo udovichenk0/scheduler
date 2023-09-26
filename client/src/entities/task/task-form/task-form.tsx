@@ -123,8 +123,8 @@ export const ModifyTaskForm = ({
             </Button>
           )}
         </div>
-        <TypePickerModal currentType={taskType} changeType={changeType} />
-        <BaseModal modal={$$dateModal}>
+        <TypePickerModal $$modal={$$typeModal} currentType={taskType} changeType={changeType} />
+        <BaseModal $$modal={$$dateModal}>
           <DatePicker
             currentDate={taskDate || new Date()}
             onDateChange={changeDate}

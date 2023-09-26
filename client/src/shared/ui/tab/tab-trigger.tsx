@@ -1,7 +1,7 @@
 import { clsx } from "clsx"
 import { ReactNode, useContext } from "react"
 
-import { TabContext } from "."
+import { TabContext } from "./tab.model"
 
 interface TabProps {
   value: string

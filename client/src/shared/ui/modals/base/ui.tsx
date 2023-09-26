@@ -6,17 +6,17 @@ import { clsx } from "clsx"
 import { ModalType } from "@/shared/lib/modal"
 
 export const BaseModal = ({
-  modal,
+  $$modal,
   children,
   className,
 }: {
-  modal: ModalType
+  $$modal: ModalType
   children: ReactNode
   className?: string
 }) => {
   const [clickOutsideTriggered, isOpened] = useUnit([
-    modal.clickOutsideTriggered,
-    modal.$isOpened,
+    $$modal.clickOutsideTriggered,
+    $$modal.$isOpened,
   ])
   const ref = useRef<HTMLDivElement>(null)
   if (!isOpened) {

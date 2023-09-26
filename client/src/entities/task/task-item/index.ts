@@ -1,3 +1,3 @@
-export * from "./task-item"
+export { TaskItem } from "./task-item" 
 export * from "./task.model"
-export * from "./type"
+export type { Task } from "./type"

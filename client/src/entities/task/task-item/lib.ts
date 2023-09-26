@@ -1,6 +1,6 @@
 import { TaskId } from "@/shared/api/task"
 
-import { Task } from "."
+import { Task } from "./type"
 
 export const removeTaskFromKv = (kv: Record<string, Task>, taskId: TaskId) => {
   const updatedTasks = Object.entries(kv).filter(([key]) => key !== taskId)
