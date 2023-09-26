@@ -21,6 +21,7 @@ import {
   FactoriesContext,
   $$createTask,
   $$updateTask,
+  $tasksByDateKv,
 } from "./upcoming.model"
 import { TasksByDate } from "./sections/tasks-by-date"
 import { HeaderTitle } from "./ui/header-title"
@@ -61,6 +62,7 @@ const Upcoming = () => {
         <UpcomingVariantChanger
           setUpcomingVariant={selectVariant}
           variant={variant}
+          $tasksByDateKv={$tasksByDateKv}
         />
         <FactoriesContext.Provider
           value={{

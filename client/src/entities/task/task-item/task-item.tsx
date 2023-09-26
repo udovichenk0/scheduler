@@ -13,8 +13,7 @@ import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 import { TaskId, TaskStatus } from "@/shared/api/task"
 
 import { Task } from "./type"
-
-import { $$dateModal } from "."
+import { $$dateModal } from "./task.model"
 
 export const TaskItem = ({
   task,
@@ -55,7 +54,7 @@ export const TaskItem = ({
         name="common/upcoming"
         className="invisible translate-y-1 text-lg text-accent group-hover:visible"
       />
-      <BaseModal modal={$$dateModal}>
+      <BaseModal $$modal={$$dateModal}>
         <DatePicker
           currentDate={task.start_date || new Date()}
           onDateChange={onChangeDate}

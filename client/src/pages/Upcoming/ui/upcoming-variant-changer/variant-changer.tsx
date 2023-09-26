@@ -3,22 +3,26 @@ import dayjs, { Dayjs } from "dayjs"
 import { useUnit } from "effector-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { Store } from "effector"
+
+import { Task } from "@/entities/task/task-item"
 
 import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
 
 import { generateDaysOfWeek } from "../../config"
-import { $tasksByDateKv } from "../../upcoming.model"
 
 import style from "./style.module.css"
 
 export function UpcomingVariantChanger({
   setUpcomingVariant,
   variant,
+  $tasksByDateKv
 }: {
   setUpcomingVariant: (variant: "upcoming" | Dayjs) => void
   variant: "upcoming" | Dayjs
+  $tasksByDateKv: Store<Record<string, Task[]>>
 }) {
   const [week, setWeek] = useState(0)
   const [dayList, setDayList] = useState(() => generateDaysOfWeek(week))

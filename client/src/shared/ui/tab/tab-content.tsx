@@ -1,6 +1,6 @@
 import { ReactNode, useContext } from "react"
 
-import { TabContext } from "."
+import { TabContext } from "./tab.model"
 
 export function Content({
   label,

@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base"
+import { ModalType } from "@/shared/lib/modal"
 
-import { $$typeModal } from ".."
 
 const types = [
   { type: "inbox", iconName: "common/inbox" },
@@ -14,13 +14,15 @@ const types = [
 export const TypePickerModal = ({
   currentType,
   changeType,
+  $$modal
 }: {
   currentType: "inbox" | "unplaced"
   changeType: (payload: "inbox" | "unplaced") => void
+  $$modal: ModalType
 }) => {
   const { t } = useTranslation()
   return (
-    <BaseModal modal={$$typeModal}>
+    <BaseModal $$modal={$$modal}>
       <div className="flex w-[280px] cursor-pointer flex-col gap-y-1 rounded-[5px] bg-main p-3">
         {types.map(({ type, iconName }, id) => {
           const active = type == currentType
