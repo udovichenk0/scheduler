@@ -19,8 +19,11 @@ const $$i18n = singleton(() => {
         debug: true,
         fallbackLng: "en",
         detection: {
-          order: ["path", "localStorage"],
+          order: ["path", "cookie"],
           lookupQuerystring: "lang",
+          lookupCookie: "lang",
+          caches: ['localStorage', 'cookie'],
+          excludeCacheFor: ['cimode'],
         },
         supportedLngs: ["en", "uk"],
         resources: {
@@ -37,7 +40,7 @@ const $$i18n = singleton(() => {
     source: router.$activeRoutes,
     effect: async (
       activeRoutes: RouteInstance<any>[],
-      { lang }: { lang: string },
+      lang: string,
     ) => {
       await i18n.changeLanguage(lang)
       const curRoute = activeRoutes[0]
@@ -46,6 +49,7 @@ const $$i18n = singleton(() => {
         query: {},
         replace: true,
       })
+      return lang
     },
   })
 

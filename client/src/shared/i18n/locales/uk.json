@@ -102,6 +102,9 @@
       "theme": "Теми",
       "pomodoro": "Помодорро"
     },
+    "general": {
+      "lang": "Мова"
+    },
     "synchronization": {
       "main": {
         "title": "Ласкаво просимо до Scheduler App",

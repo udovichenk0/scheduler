@@ -102,6 +102,9 @@
       "theme": "Theme",
       "pomodoro": "Pomodoro"
     },
+    "general": {
+      "lang": "Language"
+    },
     "synchronization": {
       "main": {
         "title": "Welcome to Scheduler App",

@@ -17,7 +17,7 @@ export const PomodoroInput = ({
       onBlur={(e) => onSubmit(e.target.value)}
       className={clsx(
         style.removeArrow,
-        "w-16 appearance-none rounded-[5px] border-2 border-cSecondBorder bg-transparent text-center",
+        "w-16 appearance-none rounded-[5px] border border-cSecondBorder bg-transparent text-center",
         className,
       )}
       maxLength={3}
