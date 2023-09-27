@@ -73,7 +73,7 @@ export const ExpandedTask = ({
           className="invisible translate-y-1 text-lg text-accent group-hover:visible"
         />
       )}
-      <BaseModal modal={$$dateModal}>
+      <BaseModal $$modal={$$dateModal}>
         <DatePicker
           currentDate={startDate || new Date()}
           onDateChange={onChangeDate}

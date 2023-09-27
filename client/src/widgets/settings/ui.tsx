@@ -4,6 +4,7 @@ import { Authentication } from "@/features/authentication"
 
 import { PomodoroSettings } from "@/entities/settings/pomodoro"
 import { ThemeChanger } from "@/entities/settings/theme"
+import { GeneralSettings } from "@/entities/settings/general"
 
 import { ModalType } from "@/shared/lib/modal"
 import { Icon } from "@/shared/ui/icon"
@@ -67,7 +68,7 @@ export const Settings = ({
             <span className="text-inherit">{t("setting.tab.pomodoro")}</span>
           </Root.Trigger>
         </Root.List>
-        <Root.Content label={tabsName.general}>generalTab</Root.Content>
+        <Root.Content label={tabsName.general}><GeneralSettings/></Root.Content>
         <Root.Content label={tabsName.synchronization}>
           <Authentication />
         </Root.Content>
