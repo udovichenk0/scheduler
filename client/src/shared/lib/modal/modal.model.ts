@@ -1,5 +1,7 @@
 import { createEvent, createStore, sample } from "effector"
 
+import { router } from "@/shared/routing"
+
 export const createModal = ({
   closeOnClickOutside = true,
 }: {
@@ -17,7 +19,11 @@ export const createModal = ({
       target: close,
     })
   }
-
+  sample({
+    clock: router.$path,
+    filter: $isOpened,
+    target: close
+  })
   return {
     clickOutsideTriggered,
     $isOpened,
