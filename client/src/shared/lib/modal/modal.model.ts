@@ -22,7 +22,7 @@ export const createModal = ({
   sample({
     clock: router.$path,
     filter: $isOpened,
-    target: close
+    target: close,
   })
   return {
     clickOutsideTriggered,
