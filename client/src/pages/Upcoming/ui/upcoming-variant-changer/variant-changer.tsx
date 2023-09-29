@@ -18,7 +18,7 @@ import style from "./style.module.css"
 export function UpcomingVariantChanger({
   setUpcomingVariant,
   variant,
-  $tasksByDateKv
+  $tasksByDateKv,
 }: {
   setUpcomingVariant: (variant: "upcoming" | Dayjs) => void
   variant: "upcoming" | Dayjs

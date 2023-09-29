@@ -1,16 +1,17 @@
 import { useUnit, useGate } from "effector-react"
 import { useTranslation } from "react-i18next"
 
+import { CheckEmailForm } from "@/features/authentication/by-email"
+import { Logout } from "@/features/authentication/logout"
+import { Signin } from "@/features/authentication/sign-in"
+import { Signup } from "@/features/authentication/sign-up"
+import { VerifyEmail } from "@/features/authentication/verify-email"
+
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
 import { Icon } from "@/shared/ui/icon"
 
-import { CheckEmailForm } from "./by-email"
-import { Logout } from "./logout"
-import { $flow, flowChanged, gate, Flow } from "./model"
-import { Signin } from "./sign-in"
-import { Signup } from "./sign-up"
-import { VerifyEmail } from "./verify-email/ui"
+import { $flow, flowChanged, gate, Flow } from "./sync.modal"
 
 export const Authentication = () => {
   const [form, selectForm] = useUnit([$flow, flowChanged])

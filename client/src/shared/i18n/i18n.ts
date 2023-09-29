@@ -22,8 +22,8 @@ const $$i18n = singleton(() => {
           order: ["path", "cookie"],
           lookupQuerystring: "lang",
           lookupCookie: "lang",
-          caches: ['localStorage', 'cookie'],
-          excludeCacheFor: ['cimode'],
+          caches: ["localStorage", "cookie"],
+          excludeCacheFor: ["cimode"],
         },
         supportedLngs: ["en", "uk"],
         resources: {
@@ -38,10 +38,7 @@ const $$i18n = singleton(() => {
   })
   const changeLanguageFx = attach({
     source: router.$activeRoutes,
-    effect: async (
-      activeRoutes: RouteInstance<any>[],
-      lang: string,
-    ) => {
+    effect: async (activeRoutes: RouteInstance<any>[], lang: string) => {
       await i18n.changeLanguage(lang)
       const curRoute = activeRoutes[0]
       curRoute.navigate({

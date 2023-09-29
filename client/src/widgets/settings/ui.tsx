@@ -1,7 +1,5 @@
 import { useTranslation } from "react-i18next"
 
-import { Authentication } from "@/features/authentication"
-
 import { PomodoroSettings } from "@/entities/settings/pomodoro"
 import { ThemeChanger } from "@/entities/settings/theme"
 import { GeneralSettings } from "@/entities/settings/general"
@@ -10,6 +8,8 @@ import { ModalType } from "@/shared/lib/modal"
 import { Icon } from "@/shared/ui/icon"
 import { MainModal } from "@/shared/ui/modals/main"
 import { Root } from "@/shared/ui/tab"
+
+import { Authentication } from "./ui/sync"
 const tabsName = {
   general: "general",
   synchronization: "synchronization",
@@ -68,7 +68,9 @@ export const Settings = ({
             <span className="text-inherit">{t("setting.tab.pomodoro")}</span>
           </Root.Trigger>
         </Root.List>
-        <Root.Content label={tabsName.general}><GeneralSettings/></Root.Content>
+        <Root.Content label={tabsName.general}>
+          <GeneralSettings />
+        </Root.Content>
         <Root.Content label={tabsName.synchronization}>
           <Authentication />
         </Root.Content>

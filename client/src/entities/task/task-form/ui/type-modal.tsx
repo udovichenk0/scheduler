@@ -5,7 +5,6 @@ import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base"
 import { ModalType } from "@/shared/lib/modal"
 
-
 const types = [
   { type: "inbox", iconName: "common/inbox" },
   { type: "unplaced", iconName: "common/inbox" },
@@ -14,7 +13,7 @@ const types = [
 export const TypePickerModal = ({
   currentType,
   changeType,
-  $$modal
+  $$modal,
 }: {
   currentType: "inbox" | "unplaced"
   changeType: (payload: "inbox" | "unplaced") => void
