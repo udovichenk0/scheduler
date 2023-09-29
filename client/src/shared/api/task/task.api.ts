@@ -122,24 +122,28 @@ export const setTaskToLocalStorageFx = createEffect(
   ({ body }: { body: CreateTaskDto }) => {
     const tasksFromLs = localStorage.getItem("tasks")
     const task = { ...body, id: uuidv4(), user_id: null }
-    
+
     const tasks = JSON.parse(tasksFromLs!)
     localStorage.setItem("tasks", JSON.stringify([...(tasks || []), task]))
 
     return {
       result: task as LocalStorageTaskDto,
     }
-  }
+  },
 )
 
-function updateTask(tasks: LocalStorageTaskDto[], id: TaskId, data: CreateTaskDto){
-  const updatedTasks =  tasks.map((task: LocalStorageTaskDto) =>
+function updateTask(
+  tasks: LocalStorageTaskDto[],
+  id: TaskId,
+  data: CreateTaskDto,
+) {
+  const updatedTasks = tasks.map((task: LocalStorageTaskDto) =>
     task.id === id ? { ...task, ...data } : task,
   )
   const updatedTask = updatedTasks.find((task) => task.id === id)
   return {
     updatedTasks,
-    updatedTask
+    updatedTask,
   }
 }
 export const updateTaskFromLocalStorageFx = createEffect(
@@ -156,7 +160,6 @@ export const updateTaskFromLocalStorageFx = createEffect(
   },
 )
 
-
 export const updateDateInLocalStorageFx = createEffect(
   ({ date, id }: { date: Date; id: TaskId }) => {
     const tasksFromLs = localStorage.getItem("tasks")
@@ -172,14 +175,20 @@ export const updateDateInLocalStorageFx = createEffect(
   },
 )
 
-function updateTaskStatus(tasks: LocalStorageTaskDto[], id: TaskId, status: TaskStatus){
-  const updatedTasks = tasks.map((task) => (task.id === id ? { ...task, status } : task))
+function updateTaskStatus(
+  tasks: LocalStorageTaskDto[],
+  id: TaskId,
+  status: TaskStatus,
+) {
+  const updatedTasks = tasks.map((task) =>
+    task.id === id ? { ...task, status } : task,
+  )
 
   const updatedTask = updatedTasks.find((task) => task.id === id)
 
   return {
     updatedTask,
-    updatedTasks
+    updatedTasks,
   }
 }
 
@@ -188,7 +197,11 @@ export const updateStatusInLocalStorageFx = createEffect(
     const tasks = localStorage.getItem("tasks")
     const parsedTasks = JSON.parse(tasks!) as LocalStorageTaskDto[]
 
-    const { updatedTasks, updatedTask } = updateTaskStatus(parsedTasks, id, status)
+    const { updatedTasks, updatedTask } = updateTaskStatus(
+      parsedTasks,
+      id,
+      status,
+    )
 
     localStorage.setItem("tasks", JSON.stringify(updatedTasks))
     return {
@@ -197,14 +210,14 @@ export const updateStatusInLocalStorageFx = createEffect(
   },
 )
 
-function deleteTask(tasks: LocalStorageTaskDto[], id: TaskId){
+function deleteTask(tasks: LocalStorageTaskDto[], id: TaskId) {
   const updatedTasks = tasks.filter((task) => task.id !== id)
 
   const deletedTask = tasks.find((task) => task.id === id)
 
   return {
     updatedTasks,
-    deletedTask
+    deletedTask,
   }
 }
 
@@ -213,10 +226,9 @@ export const deleteTaskFromLocalStorageFx = createEffect((id: TaskId) => {
   const parsedTasks = JSON.parse(tasksFromLs!) as LocalStorageTaskDto[]
 
   const { updatedTasks, deletedTask } = deleteTask(parsedTasks, id)
-  if(updatedTasks.length){
+  if (updatedTasks.length) {
     localStorage.setItem("tasks", JSON.stringify(updatedTasks))
-  }
-  else {
+  } else {
     localStorage.removeItem("tasks")
   }
 

@@ -2,15 +2,15 @@ import { createEvent, createStore, sample } from "effector"
 import { createGate } from "effector-react"
 import { not } from "patronum"
 
+import { resetEmailTriggered } from "@/features/authentication/by-email"
+import { resetSigninPasswordTriggered } from "@/features/authentication/sign-in"
+import { resetSignupPasswordTriggered } from "@/features/authentication/sign-up"
+
 import { $$session } from "@/entities/session"
 
 import { authApi } from "@/shared/api/auth"
 import { tokenService } from "@/shared/api/token"
 import { userApi } from "@/shared/api/user"
-
-import { resetEmailTriggered } from "./by-email"
-import { resetSigninPasswordTriggered } from "./sign-in"
-import { resetSignupPasswordTriggered } from "./sign-up"
 
 export enum Flow {
   email = "email",

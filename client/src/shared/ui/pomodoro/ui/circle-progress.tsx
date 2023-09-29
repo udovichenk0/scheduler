@@ -9,18 +9,19 @@ const DEFAULT_PROGRESS_BAR = 848 // if 848 then progress is 0% otherwise its 100
 export const ProgressCircle = ({
   $time,
   $isWorkTime,
-  stages,
+  $stages,
   $staticTime,
 }: {
   $time: Store<number>
   $isWorkTime: Store<boolean>
-  stages: { fulfilled: boolean }[]
+  $stages: Store<{ fulfilled: boolean }[]>
   $staticTime: Store<number>
 }) => {
-  const [time, isWorkTime, staticTime] = useUnit([
+  const [time, isWorkTime, staticTime, stages] = useUnit([
     $time,
     $isWorkTime,
     $staticTime,
+    $stages,
   ])
   const progress =
     DEFAULT_PROGRESS_BAR -
