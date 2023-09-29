@@ -2,7 +2,7 @@ import { useUnit } from "effector-react"
 import { useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Layout } from "@/templates/main"
+import { Layout } from "@/widgets/layout/main"
 
 import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { TaskId } from "@/shared/api/task"
@@ -29,7 +29,7 @@ import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer/variant-ch
 const Upcoming = () => {
   const ref = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
-  useDocumentTitle(t('task.upcoming'))
+  useDocumentTitle(t("task.upcoming"))
 
   const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const [

@@ -2,9 +2,8 @@ import { useUnit } from "effector-react"
 import { RefObject, Suspense, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Layout } from "@/templates/main"
-
 import { ExpandedTask } from "@/widgets/expanded-task"
+import { Layout } from "@/widgets/layout/main"
 
 import { TaskItem } from "@/entities/task/task-item"
 
@@ -29,7 +28,7 @@ import {
 const Today = () => {
   const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const { t } = useTranslation()
-  useDocumentTitle(t('task.today'))
+  useDocumentTitle(t("task.today"))
   const taskRef = useRef<HTMLDivElement>(null)
   const [
     closeTask,

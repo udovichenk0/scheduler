@@ -3,9 +3,8 @@ import dayjs, { Dayjs } from "dayjs"
 import { useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
 
-import { Layout } from "@/templates/main"
-
 import { ExpandedTask } from "@/widgets/expanded-task"
+import { Layout } from "@/widgets/layout/main"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
@@ -33,7 +32,7 @@ import { TaskFormModal } from "./ui/form-modal"
 const CalendarPage = () => {
   const [date, setDate] = useState(dayjs)
   const { t } = useTranslation()
-  useDocumentTitle(t('task.calendar'))
+  useDocumentTitle(t("task.calendar"))
   const [
     mappedTasks,
     openCreatedTask,

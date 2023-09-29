@@ -2,8 +2,6 @@ import { useUnit } from "effector-react"
 import { ReactNode, RefObject } from "react"
 import { Store, Event } from "effector"
 
-import { Pomodoro } from "@/features/pomodoro"
-
 import { ModifyTaskForm } from "@/entities/task/task-form"
 import { $$dateModal } from "@/entities/task/task-item"
 
@@ -11,10 +9,6 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base"
 import { DatePicker } from "@/shared/ui/date-picker"
-
-import { Settings } from "../settings"
-
-import { pomodoroModal, settingsModal } from "./model"
 
 type ModifyTaskFormType = {
   $title: Store<string>
@@ -42,20 +36,9 @@ export const ExpandedTask = ({
   sideDatePicker?: boolean
   rightPanelSlot?: ReactNode
 }) => {
-  const [
-    openPomodoroModal,
-    openSettingsModal,
-    startDate,
-    changeDate,
-    title,
-    openDateModal,
-    closeDateModal,
-  ] = useUnit([
-    pomodoroModal.open,
-    settingsModal.open,
+  const [startDate, changeDate, openDateModal, closeDateModal] = useUnit([
     modifyTaskModel.$startDate,
     modifyTaskModel.dateChanged,
-    modifyTaskModel.$title,
     $$dateModal.open,
     $$dateModal.close,
   ])
@@ -91,12 +74,6 @@ export const ExpandedTask = ({
           modifyTaskModel={modifyTaskModel}
         />
         <div className="flex items-center justify-end space-x-1">
-          <Button onClick={openPomodoroModal} intent={"primary"} size={"xs"}>
-            <Icon
-              name="common/timer"
-              className="text-[24px] text-cIconDefault"
-            />
-          </Button>
           <Button onClick={openDateModal} intent={"primary"} size={"xs"}>
             <Icon
               name="common/upcoming"
@@ -105,34 +82,7 @@ export const ExpandedTask = ({
           </Button>
           {rightPanelSlot}
         </div>
-        <PomodoroModal title={title} toggleSettingsModal={openSettingsModal} />
       </div>
     </div>
-  )
-}
-
-const PomodoroModal = ({
-  title,
-  toggleSettingsModal,
-}: {
-  title?: string
-  toggleSettingsModal: () => void
-}) => {
-  return (
-    <Pomodoro
-      modal={pomodoroModal}
-      taskTitle={title}
-      leftSlot={
-        <>
-          <Button onClick={toggleSettingsModal} intent={"primary"} size={"xs"}>
-            <Icon
-              name="common/settings"
-              className="text-[24px] text-cIconDefault"
-            />
-          </Button>
-          <Settings modal={settingsModal} defaultTab="pomodoro" />
-        </>
-      }
-    />
   )
 }

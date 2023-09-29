@@ -6,10 +6,14 @@ import { Selector } from "./ui/selector"
 export const GeneralSettings = () => {
   const { t } = useTranslation()
   return (
-    <div className="mb-6 space-y-3 w-[90%] mx-auto">
+    <div className="mx-auto mb-6 w-[90%] space-y-3">
       <div className="flex items-center justify-end space-x-1">
         <span>{t("setting.general.lang")}:</span>
-        <Selector $selectedValue={$currentLanguage} options={languages} onSelect={languageChanged}/>
+        <Selector
+          $selectedValue={$currentLanguage}
+          options={languages}
+          onSelect={languageChanged}
+        />
       </div>
     </div>
   )
