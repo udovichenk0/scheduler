@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { RefObject, Suspense, useRef, useState } from "react"
+import { RefObject, Suspense, useRef } from "react"
 import { useTranslation } from "react-i18next"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
@@ -7,12 +7,15 @@ import { Layout } from "@/widgets/layout/main"
 
 import { TaskItem } from "@/entities/task/task-item"
 
-import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { TaskId } from "@/shared/api/task"
-import { useDocumentTitle } from "@/shared/lib/react"
+import {
+  useDocumentTitle,
+  onClickOutside,
+  clickOnElement,
+} from "@/shared/lib/react"
 
 import {
   $$deleteTask,
@@ -23,18 +26,21 @@ import {
   $$taskDisclosure,
   $$updateTask,
   $$createTask,
+  $$selectTask,
 } from "./today.model"
 
 const Today = () => {
-  const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const { t } = useTranslation()
   useDocumentTitle(t("task.today"))
-  const taskRef = useRef<HTMLDivElement>(null)
+  const expandedTaskRef = useRef<HTMLDivElement>(null)
+  const taskItemRef = useRef<HTMLDivElement>(null)
   const [
     closeTask,
     openCreatedTask,
     createdTask,
     deleteTaskById,
+    selectedTaskId,
+    selectTaskById,
     overdueTasks,
     todayTasks,
   ] = useUnit([
@@ -42,6 +48,8 @@ const Today = () => {
     $$taskDisclosure.createdTaskOpened,
     $$taskDisclosure.$createdTask,
     $$deleteTask.taskDeletedById,
+    $$selectTask.$selectedTaskId,
+    $$selectTask.taskIdSelected,
     $overdueTasks,
     $todayTasks,
   ])
@@ -52,15 +60,22 @@ const Today = () => {
           iconName="common/outlined-star"
           title={t("task.today")}
         />
-        <Layout.Content onClick={(e) => onClickOutside(taskRef, e, closeTask)}>
+        <Layout.Content
+          contentRef={taskItemRef}
+          className="flex flex-col"
+          onClick={(e) => {
+            onClickOutside(expandedTaskRef, e, closeTask)
+            clickOnElement(taskItemRef, e, () => selectTaskById(null))
+          }}
+        >
           <OverdueTasks
-            taskRef={taskRef}
-            selectTaskId={selectTaskId}
+            taskRef={expandedTaskRef}
+            selectTaskId={selectTaskById}
             selectedTaskId={selectedTaskId}
           />
           <TodayTasks
-            taskRef={taskRef}
-            selectTaskId={selectTaskId}
+            taskRef={expandedTaskRef}
+            selectTaskId={selectTaskById}
             selectedTaskId={selectedTaskId}
           />
           <NoTasks

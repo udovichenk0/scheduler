@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority"
 
 export const buttonCva = cva(
-  "outline-none rounded-[5px] transition-colors duration-150 focus:bg-cFocus",
+  "outline-none rounded-[5px] transition-colors duration-150",
   {
     variants: {
       intent: {

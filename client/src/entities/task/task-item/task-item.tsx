@@ -1,5 +1,4 @@
 import dayjs from "dayjs"
-import { useEffect } from "react"
 import { Link } from "atomic-router-react"
 import { t } from "i18next"
 
@@ -24,15 +23,17 @@ export const TaskItem = ({
   isTaskSelected,
   onUpdateDate,
   typeLabel = false,
+  taskRef,
 }: {
   task: Task
   onUpdateDate: ({ date, id }: { date: Date; id: TaskId }) => void
   onUpdateStatus: ({ id, status }: { status: TaskStatus; id: TaskId }) => void
   onDoubleClick: () => void
   dateLabel?: boolean
-  onClick: (task: Nullable<TaskId>) => void
+  onClick: (taskId: Nullable<TaskId>) => void
   isTaskSelected: boolean
   typeLabel?: boolean
+  taskRef?: React.RefObject<HTMLDivElement> | undefined
 }) => {
   const { title, status, start_date } = task
   const onChangeDate = (date: Date) => {
@@ -42,13 +43,8 @@ export const TaskItem = ({
   const onChangeStatus = () => {
     onUpdateStatus({ id: task.id, status })
   }
-  useEffect(() => {
-    return () => {
-      onClick(null)
-    }
-  }, [])
   return (
-    <div className="group flex gap-2">
+    <div ref={taskRef} className="group flex gap-2">
       <Icon
         onClick={() => $$dateModal.open()}
         name="common/upcoming"
@@ -66,7 +62,6 @@ export const TaskItem = ({
         intent={"primary"}
         onDoubleClick={onDoubleClick}
         onClick={() => onClick(task.id)}
-        onBlur={() => onClick(null)}
         className={`${
           isTaskSelected && "bg-cFocus"
         } flex w-full select-none items-center p-2 text-sm`}

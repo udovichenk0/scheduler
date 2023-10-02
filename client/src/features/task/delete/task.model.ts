@@ -6,7 +6,7 @@ import { $$session } from "@/entities/session"
 import { $$task } from "@/entities/task/task-item"
 
 import { taskApi } from "@/shared/api/task"
-export const createRemoveTaskFactory = () => {
+export const removeTaskFactory = () => {
   const taskDeletedById = createEvent<string>()
 
   const attachDeleteTaskQuery = attachOperation(taskApi.deleteTaskQuery)

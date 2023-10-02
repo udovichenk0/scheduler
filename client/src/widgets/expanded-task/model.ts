@@ -151,15 +151,9 @@ export const disclosureTask = ({
   // Click on opened created task, if updated task if opened and can be updated then update
   sample({
     clock: [updatedTaskClosed, createdTaskOpened],
-    source: {
-      updatedTaskId: $updatedTaskId,
-      canUpdate: $isAllowToUpdate,
-      isUpdating: $isUpdating,
-    },
-    filter: ({ updatedTaskId, canUpdate, isUpdating }) => {
-      return !!updatedTaskId && canUpdate && !isUpdating
-    },
-    fn: ({ updatedTaskId }) => updatedTaskId!,
+    source: $updatedTaskId,
+    filter: and($updatedTaskId, $isAllowToUpdate, not($isUpdating)),
+    fn: (updatedTaskId) => updatedTaskId!,
     target: updateTaskTriggeredById,
   })
 

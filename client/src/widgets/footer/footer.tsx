@@ -35,7 +35,7 @@ export const Footer = ({
         <Icon
           name="common/trash-can"
           className={`text-[20px] ${
-            selectedTaskId ? "text-cIconDefault" : "opacity-40"
+            selectedTaskId ? "opacity-70" : "opacity-40"
           }`}
         />
       </Button>

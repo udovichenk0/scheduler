@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { Suspense, useRef, useState } from "react"
+import { Suspense, useRef } from "react"
 import { useTranslation } from "react-i18next"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
@@ -7,10 +7,12 @@ import { Layout } from "@/widgets/layout/main"
 
 import { TaskItem } from "@/entities/task/task-item"
 
-import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { NoTasks } from "@/shared/ui/no-tasks"
-import { TaskId } from "@/shared/api/task"
-import { useDocumentTitle } from "@/shared/lib/react"
+import {
+  clickOnElement,
+  useDocumentTitle,
+  onClickOutside,
+} from "@/shared/lib/react"
 
 import {
   $$deleteTask,
@@ -18,13 +20,14 @@ import {
   $$taskDisclosure,
   $$updateTask,
   $$createTask,
+  $$selectTask,
 } from "./inbox.model"
 
 const Inbox = () => {
   const { t } = useTranslation()
   useDocumentTitle(t("task.inbox"))
-  const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
-  const ref = useRef<HTMLDivElement>(null)
+  const expandedTaskRef = useRef<HTMLDivElement>(null)
+  const taskItemRef = useRef<HTMLDivElement>(null)
   const [
     tasks,
     createdTask,
@@ -35,6 +38,8 @@ const Inbox = () => {
     deleteTaskById,
     changeStatusAndUpdate,
     changeDateAndUpdate,
+    selectTaskId,
+    selectedTaskId,
   ] = useUnit([
     $inboxTasks,
     $$taskDisclosure.$createdTask,
@@ -45,14 +50,20 @@ const Inbox = () => {
     $$deleteTask.taskDeletedById,
     $$updateTask.statusChangedAndUpdated,
     $$updateTask.dateChangedAndUpdated,
+    $$selectTask.taskIdSelected,
+    $$selectTask.$selectedTaskId,
   ])
   return (
     <Suspense fallback={<div>inbox loading...</div>}>
       <Layout>
         <Layout.Header iconName="common/inbox" title={t("task.inbox")} />
         <Layout.Content
+          contentRef={taskItemRef}
           className="flex flex-col"
-          onClick={(e) => onClickOutside(ref, e, closeTask)}
+          onClick={(e) => {
+            onClickOutside(expandedTaskRef, e, closeTask)
+            clickOnElement(taskItemRef, e, () => selectTaskId(null))
+          }}
         >
           {tasks?.map((task, id) => {
             return (
@@ -61,7 +72,7 @@ const Inbox = () => {
                   <ExpandedTask
                     dateModifier={false}
                     modifyTaskModel={$$updateTask}
-                    taskRef={ref}
+                    taskRef={expandedTaskRef}
                   />
                 ) : (
                   <TaskItem
@@ -81,7 +92,7 @@ const Inbox = () => {
               <ExpandedTask
                 modifyTaskModel={$$createTask}
                 dateModifier={false}
-                taskRef={ref}
+                taskRef={expandedTaskRef}
               />
             )}
           </div>
@@ -97,4 +108,5 @@ const Inbox = () => {
     </Suspense>
   )
 }
+
 export default Inbox
