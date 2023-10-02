@@ -32,14 +32,10 @@ export const Pomodoro = ({
     stopTimerTriggered,
     resetTimerTriggered,
   } = pomodoroModel
-  const {
-    start,
-    stop,
-    reset
-  } = useUnit({
+  const { start, stop, reset } = useUnit({
     start: startTimerTriggered,
     stop: stopTimerTriggered,
-    reset: resetTimerTriggered
+    reset: resetTimerTriggered,
   })
   return (
     <div className="px-4">

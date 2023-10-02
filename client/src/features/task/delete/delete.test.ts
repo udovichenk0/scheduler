@@ -4,7 +4,7 @@ import { describe, expect, test, vi } from "vitest"
 import { $$task } from "@/entities/task/task-item"
 import { $$session } from "@/entities/session"
 
-import { createRemoveTaskFactory } from "."
+import { removeTaskFactory } from "."
 const tasks = {
   "1": {
     id: "1",
@@ -25,7 +25,7 @@ const returnedTask = {
   start_date: null,
   user_id: "1",
 }
-const $$removeTask = createRemoveTaskFactory()
+const $$removeTask = removeTaskFactory()
 describe("delete task", () => {
   test("delete task from database if user is authenticated", async () => {
     const { taskDeletedById, _ } = $$removeTask

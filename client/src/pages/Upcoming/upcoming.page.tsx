@@ -1,12 +1,10 @@
 import { useUnit } from "effector-react"
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Layout } from "@/widgets/layout/main"
 
-import { onClickOutside } from "@/shared/lib/on-click-outside"
-import { TaskId } from "@/shared/api/task"
-import { useDocumentTitle } from "@/shared/lib/react"
+import { useDocumentTitle, onClickOutside } from "@/shared/lib/react"
 
 import { AllUpcomingTasks } from "./sections/upcoming-tasks"
 import {
@@ -22,16 +20,17 @@ import {
   $$createTask,
   $$updateTask,
   $tasksByDateKv,
+  upcomingTaskIdSelected,
+  $selectedTaskId,
+  $$selectTask,
 } from "./upcoming.model"
 import { TasksByDate } from "./sections/tasks-by-date"
 import { HeaderTitle } from "./ui/header-title"
 import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer/variant-changer"
 const Upcoming = () => {
-  const ref = useRef<HTMLDivElement>(null)
+  const expandedTaskRef = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
   useDocumentTitle(t("task.upcoming"))
-
-  const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const [
     closeTask,
     openCreatedTask,
@@ -40,6 +39,9 @@ const Upcoming = () => {
     tasks,
     variant,
     selectVariant,
+    selectedTaskId,
+    selectUpcoimingTaskId,
+    selectTaskId,
   ] = useUnit([
     $$taskDisclosure.closeTaskTriggered,
     $$taskDisclosure.createdTaskOpened,
@@ -48,6 +50,9 @@ const Upcoming = () => {
     $tasksByDate,
     $variant,
     variantSelected,
+    $selectedTaskId,
+    upcomingTaskIdSelected,
+    $$selectTask.taskIdSelected,
   ])
   return (
     <Layout>
@@ -57,7 +62,7 @@ const Upcoming = () => {
       />
       <Layout.Content
         className="flex flex-col"
-        onClick={(e) => onClickOutside(ref, e, closeTask)}
+        onClick={(e) => onClickOutside(expandedTaskRef, e, closeTask)}
       >
         <UpcomingVariantChanger
           setUpcomingVariant={selectVariant}
@@ -74,17 +79,17 @@ const Upcoming = () => {
           {variant === "upcoming" ? (
             <AllUpcomingTasks
               $nextDate={$nextDate}
-              selectTaskId={selectTaskId}
+              selectTaskId={selectUpcoimingTaskId}
               selectedTaskId={selectedTaskId}
               changeDate={changeDate}
               $selectedDate={$selectedDate}
-              taskRef={ref}
+              taskRef={expandedTaskRef}
             />
           ) : (
             <TasksByDate
               date={variant}
               tasks={tasks}
-              taskRef={ref}
+              taskRef={expandedTaskRef}
               selectTaskId={selectTaskId}
               selectedTaskId={selectedTaskId}
             />

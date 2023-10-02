@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import { useTranslation } from "react-i18next"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
@@ -7,14 +7,13 @@ import { Layout } from "@/widgets/layout/main"
 
 import { TaskItem } from "@/entities/task/task-item"
 
-import { onClickOutside } from "@/shared/lib/on-click-outside"
 import { NoTasks } from "@/shared/ui/no-tasks"
-import { TaskId } from "@/shared/api/task"
-import { useDocumentTitle } from "@/shared/lib/react"
+import { useDocumentTitle, onClickOutside } from "@/shared/lib/react"
 
 import {
   $$createTask,
   $$deleteTask,
+  $$selectTask,
   $$taskDisclosure,
   $$updateTask,
   $unplacedTasks,
@@ -23,7 +22,6 @@ import {
 const Unplaced = () => {
   const { t } = useTranslation()
   useDocumentTitle(t("task.unplaced"))
-  const [selectedTaskId, selectTaskId] = useState<Nullable<TaskId>>(null)
   const taskRef = useRef<HTMLDivElement>(null)
   const [
     unplacedTasks,
@@ -35,6 +33,8 @@ const Unplaced = () => {
     deleteTaskById,
     changeStatusAndUpdate,
     changeDateAndUpdate,
+    selectedTaskId,
+    selectTaskId,
   ] = useUnit([
     $unplacedTasks,
     $$taskDisclosure.$createdTask,
@@ -45,6 +45,8 @@ const Unplaced = () => {
     $$deleteTask.taskDeletedById,
     $$updateTask.statusChangedAndUpdated,
     $$updateTask.dateChangedAndUpdated,
+    $$selectTask.$selectedTaskId,
+    $$selectTask.taskIdSelected,
   ])
   return (
     <Layout>

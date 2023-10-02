@@ -3,14 +3,25 @@ import { createEvent, createStore, sample } from "effector"
 
 import { disclosureTask } from "@/widgets/expanded-task/model"
 
-import { createRemoveTaskFactory } from "@/features/task/delete"
+import { removeTaskFactory } from "@/features/task/delete"
 import { createTaskFactory } from "@/features/task/create"
 import { updateTaskFactory } from "@/features/task/update"
 
 import { $$task } from "@/entities/task/task-item"
 
 import { cookiePersist } from "@/shared/lib/effector/cookie-persist"
-export const $$deleteTask = createRemoveTaskFactory()
+import { selectTaskFactory } from "@/shared/lib/effector"
+export const $$deleteTask = removeTaskFactory()
+export const $$updateTask = updateTaskFactory()
+export const $$createTask = createTaskFactory({
+  defaultType: "unplaced",
+  defaultDate: new Date(),
+})
+export const $$taskDisclosure = disclosureTask({
+  tasks: $$task.$taskKv,
+  updateTaskModel: $$updateTask,
+  createTaskModel: $$createTask,
+})
 
 export const $overdueTasks = $$task.$taskKv.map((kv) => {
   return Object.values(kv).filter(
@@ -18,6 +29,7 @@ export const $overdueTasks = $$task.$taskKv.map((kv) => {
       start_date && dayjs(start_date).isBefore(dayjs(), "date"),
   )
 })
+export const $$selectTask = selectTaskFactory($overdueTasks)
 
 export const $todayTasks = $$task.$taskKv.map((kv) => {
   return Object.values(kv).filter(({ start_date }) =>
@@ -37,13 +49,8 @@ cookiePersist({
   source: $isOverdueTasksOpened,
   name: "overdueTasksOpened",
 })
-export const $$updateTask = updateTaskFactory()
-export const $$createTask = createTaskFactory({
-  defaultType: "unplaced",
-  defaultDate: new Date(),
-})
-export const $$taskDisclosure = disclosureTask({
-  tasks: $$task.$taskKv,
-  updateTaskModel: $$updateTask,
-  createTaskModel: $$createTask,
+
+sample({
+  clock: $$deleteTask.taskDeletedById,
+  target: $$selectTask.nextTaskIdSelected,
 })

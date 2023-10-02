@@ -2,7 +2,7 @@ import dayjs from "dayjs"
 import { createEvent, createStore, sample } from "effector"
 import { and, not } from "patronum"
 
-import { createRemoveTaskFactory } from "@/features/task/delete"
+import { removeTaskFactory } from "@/features/task/delete"
 import { createTaskFactory } from "@/features/task/create"
 import { updateTaskFactory } from "@/features/task/update"
 
@@ -11,7 +11,7 @@ import { $$task, Task } from "@/entities/task/task-item"
 import { createModal } from "@/shared/lib/modal"
 import { bridge } from "@/shared/lib/effector/bridge"
 
-export const $$deleteTask = createRemoveTaskFactory()
+export const $$deleteTask = removeTaskFactory()
 
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
