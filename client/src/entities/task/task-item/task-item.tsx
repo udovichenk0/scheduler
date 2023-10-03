@@ -1,4 +1,5 @@
 import dayjs from "dayjs"
+import { MouseEvent } from "react"
 import { Link } from "atomic-router-react"
 import { t } from "i18next"
 
@@ -30,7 +31,7 @@ export const TaskItem = ({
   onUpdateStatus: ({ id, status }: { status: TaskStatus; id: TaskId }) => void
   onDoubleClick: () => void
   dateLabel?: boolean
-  onClick: (taskId: Nullable<TaskId>) => void
+  onClick: (e: MouseEvent) => void
   isTaskSelected: boolean
   typeLabel?: boolean
   taskRef?: React.RefObject<HTMLDivElement> | undefined
@@ -61,7 +62,7 @@ export const TaskItem = ({
       <Button
         intent={"primary"}
         onDoubleClick={onDoubleClick}
-        onClick={() => onClick(task.id)}
+        onClick={onClick}
         className={`${
           isTaskSelected && "bg-cFocus"
         } flex w-full select-none items-center p-2 text-sm`}

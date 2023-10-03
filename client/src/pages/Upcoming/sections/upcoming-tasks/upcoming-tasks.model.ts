@@ -24,18 +24,23 @@ export const $groupedTasksByYear = $$task.$taskKv.map((kv) => {
   )
   return groupTasksByYear(upcomingTasks)
 })
-export const $upcomingYears = $groupedTasksByYear.map((tasks) => {
+export const $upcomingYears = $groupedTasksByYear.map((groupedTasksByYear) => {
   // for example if today is a day before a new year we don't want to show upcoming year as a year section
   const futureYear = dayjs()
     .add(MIN_DATES_LENGTH, "day")
     .add(MIN_MONTHS_LENGTH, "month")
     .format("YYYY")
   const currentYear = dayjs().format("YYYY")
-  return Object.fromEntries(
-    Object.entries(tasks).filter(
-      ([year]) => currentYear != year && futureYear != year,
-    ),
-  )
+  const result = []
+  for(const [year, tasks] of Object.entries(groupedTasksByYear) || []){
+    if(year != currentYear && year != futureYear){
+      result.push({
+        year,
+        tasks
+      })
+    }
+  }
+  return result
 })
 
 export const $remainingDays = $groupedTasksByYear.map((groupedTasksByYear) => {
@@ -133,26 +138,31 @@ export const $selectedNextTaskId = combine(
   $monthsListKv,
   $remainingMonths,
   $remainingDays,
+  $upcomingYears,
   (
     selectedTaskId,
     daysListKv,
     monthsListKv,
     remainingMonths,
     remainingDays,
+    upcomingYears,
   ) => {
     if (!selectedTaskId) return null
     const daysList = daysListKv?.map(({ tasks }) => tasks)
     const monthsList = monthsListKv?.map(({ tasks }) => tasks)
+    const yearsList = upcomingYears?.map(({ tasks }) => tasks)
     const nextIndex = [
       ...daysList,
       ...monthsList,
+      ...yearsList,
       remainingMonths.tasks,
-      remainingDays.tasks,
+      remainingDays.tasks
     ].find((tasks) => {
       if (!tasks?.length) return
       return tasks.find((task) => task.id == selectedTaskId)
     })
     const nextTaskId = takeNextTaskId(nextIndex!, selectedTaskId)
+    console.log(nextTaskId)
     return nextTaskId
   },
 )

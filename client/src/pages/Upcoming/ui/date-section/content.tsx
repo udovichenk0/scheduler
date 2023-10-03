@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { RefObject, ReactNode, useContext } from "react"
+import { RefObject, ReactNode, useContext, MouseEvent } from "react"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
 
@@ -20,7 +20,7 @@ export const Content = ({
   tasks: Task[]
   title?: ReactNode
   isSelected: boolean
-  selectTaskId: (taskId: Nullable<TaskId>) => void
+  selectTaskId: (e: MouseEvent, taskId: Nullable<TaskId>) => void
   selectedTaskId: Nullable<TaskId>
 }) => {
   const { $$createTask, $$updateTask, $$taskDisclosure } =
@@ -59,7 +59,7 @@ export const Content = ({
                   onUpdateDate={changeDateAndUpdate}
                   onUpdateStatus={changeStatusAndUpdate}
                   isTaskSelected={selectedTaskId === task.id}
-                  onClick={selectTaskId}
+                  onClick={(e) => selectTaskId(e, task.id)}
                   onDoubleClick={() => openUpdatedTaskById(task.id)}
                   task={task}
                 />
