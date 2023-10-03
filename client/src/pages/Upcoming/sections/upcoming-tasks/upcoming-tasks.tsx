@@ -1,6 +1,6 @@
 import dayjs, { Dayjs } from "dayjs"
 import { useUnit } from "effector-react"
-import { RefObject } from "react"
+import { RefObject, MouseEvent } from "react"
 import { useTranslation } from "react-i18next"
 import { Store } from "effector"
 
@@ -31,7 +31,7 @@ export const AllUpcomingTasks = ({
   $selectedDate: Store<Date>
   changeDate: (date: Date) => void
   taskRef: RefObject<HTMLDivElement>
-  selectTaskId: (taskId: Nullable<TaskId>) => void
+  selectTaskId: (e: MouseEvent, taskId: Nullable<TaskId>) => void
   selectedTaskId: Nullable<TaskId>
   $nextDate: Store<Date>
 }) => {
@@ -161,7 +161,7 @@ export const AllUpcomingTasks = ({
         tasks={remainingMonths.tasks}
       />
     </SectionRoot>
-      {Object.entries(upcomingYears).map(([year, tasks]) => {
+      {upcomingYears.map(({year, tasks}) => {
         return (
           <SectionRoot key={year}>
             <SectionRoot.Header

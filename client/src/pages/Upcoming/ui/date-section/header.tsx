@@ -1,8 +1,8 @@
-import { ReactNode } from "react"
+import { ReactNode, MouseEvent } from "react"
 
 type SectionHeaderProps = {
   isNextSelectedTask?: boolean
-  action: () => void
+  action: (e: MouseEvent) => void
   children: ReactNode
 }
 export const Header = ({

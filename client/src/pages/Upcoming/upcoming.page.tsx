@@ -1,10 +1,11 @@
 import { useUnit } from "effector-react"
-import { useRef } from "react"
+import { MouseEvent, useRef } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Layout } from "@/widgets/layout/main"
 
 import { useDocumentTitle, onClickOutside } from "@/shared/lib/react"
+import { TaskId } from "@/shared/api/task"
 
 import { AllUpcomingTasks } from "./sections/upcoming-tasks"
 import {
@@ -29,6 +30,7 @@ import { HeaderTitle } from "./ui/header-title"
 import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer/variant-changer"
 const Upcoming = () => {
   const expandedTaskRef = useRef<HTMLDivElement>(null)
+  const taskItemRef = useRef<Nullable<HTMLDivElement>>(null)
   const { t } = useTranslation()
   useDocumentTitle(t("task.upcoming"))
   const [
@@ -54,6 +56,16 @@ const Upcoming = () => {
     upcomingTaskIdSelected,
     $$selectTask.taskIdSelected,
   ])
+  const handleOnClick = (e: MouseEvent, taskId: Nullable<TaskId>) => {
+    selectUpcoimingTaskId(taskId)
+    taskItemRef.current = e.target as HTMLDivElement
+  }
+  const resetSelectedTaskId = (e: MouseEvent) => {
+    if (taskItemRef.current && taskItemRef.current !== e.target) {
+      if(taskItemRef.current !== e.target) selectUpcoimingTaskId(null)
+      taskItemRef.current = null
+    }
+  }
   return (
     <Layout>
       <Layout.Header
@@ -62,7 +74,10 @@ const Upcoming = () => {
       />
       <Layout.Content
         className="flex flex-col"
-        onClick={(e) => onClickOutside(expandedTaskRef, e, closeTask)}
+        onClick={(e) => {
+          resetSelectedTaskId(e)
+          onClickOutside(expandedTaskRef, e, closeTask)
+        }}
       >
         <UpcomingVariantChanger
           setUpcomingVariant={selectVariant}
@@ -79,7 +94,7 @@ const Upcoming = () => {
           {variant === "upcoming" ? (
             <AllUpcomingTasks
               $nextDate={$nextDate}
-              selectTaskId={selectUpcoimingTaskId}
+              selectTaskId={handleOnClick}
               selectedTaskId={selectedTaskId}
               changeDate={changeDate}
               $selectedDate={$selectedDate}
