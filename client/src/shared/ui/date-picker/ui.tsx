@@ -1,4 +1,4 @@
-import dayjs from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -22,38 +22,41 @@ export function DatePicker({
   onCancel: () => void
   onSave: () => void
 }) {
-  const [dates, setDate] = useState(generateCalendar)
+  const [calendar, setCalendar] = useState(() => generateCalendar({
+    month: new Date(currentDate).getMonth(),
+    year: new Date(currentDate).getFullYear(),
+  }))
   const { t } = useTranslation()
-  const [displayedMonth, setDisplayedMonth] = useState(() => dayjs().month())
-  const currentSetMonth = dayjs().month(displayedMonth).month()
-  const changeMonth = (month: number) => {
-    if (dayjs().month() <= month) {
-      setDisplayedMonth(month)
-      setDate(generateCalendar(month))
+  const [date, setDate] = useState(() => dayjs(currentDate))
+  const currentSetMonth = date.month()
+  const changeMonth = (date: Dayjs) => {
+    if (date.month() >= date.month() && date.year() >= date.year()) {
+      setDate(date)
+      setCalendar(generateCalendar({month: date.month(), year: date.year()}))
     }
   }
   return (
     <div className="p-3">
       <div className="relative mb-4">
         <MonthSwitcher
-          displayedMonth={displayedMonth}
+          date={date}
           changeMonth={changeMonth}
         />
         <WeeksName />
         <div className="absolute left-[30%] top-[50%] -z-[10] flex h-[50px] items-center text-[90px] font-bold text-main opacity-10 invert">
           {addLeadingZero(currentSetMonth + 1)}
         </div>
-        {dates.map((item, rowId) => {
+        {calendar.map((item, rowId) => {
           return (
             <div className="flex justify-around" key={rowId}>
               {item.map(({ date, month, year }, id) => {
                 const isTopDateBigger =
-                  rowId != dates.length - 1 &&
-                  dates[rowId][id].date > dates[rowId + 1][id].date
+                  rowId != calendar.length - 1 &&
+                  calendar[rowId][id].date > calendar[rowId + 1][id].date
 
                 const isLeftDateBigger =
                   id != item.length - 1 &&
-                  dates[rowId][id].date > dates[rowId][id + 1].date
+                  calendar[rowId][id].date > calendar[rowId][id + 1].date
 
                 return (
                   <div
