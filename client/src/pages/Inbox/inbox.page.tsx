@@ -79,7 +79,7 @@ const Inbox = () => {
                     onUpdateDate={changeDateAndUpdate}
                     onUpdateStatus={changeStatusAndUpdate}
                     isTaskSelected={selectedTaskId === task.id}
-                    onClick={selectTaskId}
+                    onClick={() => selectTaskId(task.id)}
                     onDoubleClick={() => openUpdatedTaskById(task.id)}
                     task={task}
                   />
