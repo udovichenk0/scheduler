@@ -46,7 +46,6 @@ export const ExpandedTask = ({
     closeDateModal()
     changeDate(date)
   }
-
   return (
     <div ref={taskRef} className="group flex gap-2">
       {sideDatePicker && (

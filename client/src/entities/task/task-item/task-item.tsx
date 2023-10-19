@@ -1,5 +1,5 @@
 import dayjs from "dayjs"
-import { MouseEvent } from "react"
+import { MouseEvent, useState } from "react"
 import { Link } from "atomic-router-react"
 import { t } from "i18next"
 
@@ -7,13 +7,12 @@ import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { routes } from "@/shared/routing"
-import { BaseModal } from "@/shared/ui/modals/base"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 import { TaskId, TaskStatus } from "@/shared/api/task"
 
 import { Task } from "./type"
-import { $$dateModal } from "./task.model"
+import { Modal } from "./ui/modal"
 
 export const TaskItem = ({
   task,
@@ -37,28 +36,29 @@ export const TaskItem = ({
   taskRef?: React.RefObject<HTMLDivElement> | undefined
 }) => {
   const { title, status, start_date } = task
+  const [isDateOpened, setIsDateOpened] = useState(false)
   const onChangeDate = (date: Date) => {
-    $$dateModal.close()
+    setIsDateOpened(false)
     onUpdateDate({ date, id: task.id })
   }
-  const onChangeStatus = () => {
-    onUpdateStatus({ id: task.id, status })
-  }
+  const isSameDateOrAfter = dayjs(start_date).isSameOrAfter(dayjs()) 
   return (
     <div ref={taskRef} className="group flex gap-2">
       <Icon
-        onClick={() => $$dateModal.open()}
+        onClick={() => setIsDateOpened(true)}
         name="common/upcoming"
         className="invisible translate-y-1 text-lg text-accent group-hover:visible"
       />
-      <BaseModal $$modal={$$dateModal}>
+      <Modal 
+        isOpened={isDateOpened} 
+        onClose={setIsDateOpened}>
         <DatePicker
           currentDate={task.start_date || new Date()}
           onDateChange={onChangeDate}
           onCancel={() => console.log("cancel")}
           onSave={() => console.log("cancel")}
         />
-      </BaseModal>
+      </Modal>
       <Button
         intent={"primary"}
         onDoubleClick={onDoubleClick}
@@ -70,7 +70,7 @@ export const TaskItem = ({
         <div className="flex w-full select-none gap-3">
           <Checkbox
             iconClassName="fill-cTaskEditDefault"
-            onChange={onChangeStatus}
+            onChange={() => onUpdateStatus({id: task.id, status})}
             checked={status == "FINISHED"}
           />
           <div>
@@ -78,9 +78,7 @@ export const TaskItem = ({
               {dateLabel && start_date && !dayjs(start_date).isToday() && (
                 <span
                   className={`mr-2 rounded-[5px] px-[5px] text-[12px] ${
-                    dayjs(start_date).isSameOrAfter(dayjs())
-                      ? "bg-cTimeInterval"
-                      : "bg-cTimeIntervalLow"
+                    isSameDateOrAfter ? "bg-cTimeInterval" : "bg-cTimeIntervalLow"
                   }`}
                 >
                   {normilizeDate(start_date)}

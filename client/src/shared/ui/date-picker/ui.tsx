@@ -22,17 +22,17 @@ export function DatePicker({
   onCancel: () => void
   onSave: () => void
 }) {
-  const [calendar, setCalendar] = useState(() => generateCalendar({
-    month: new Date(currentDate).getMonth(),
-    year: new Date(currentDate).getFullYear(),
-  }))
+  const [calendar, setCalendar] = useState(() => generateCalendar(
+    new Date(currentDate).getMonth(),
+    new Date(currentDate).getFullYear(),
+  ))
   const { t } = useTranslation()
   const [date, setDate] = useState(() => dayjs(currentDate))
   const currentSetMonth = date.month()
   const changeMonth = (date: Dayjs) => {
     if (date.month() >= date.month() && date.year() >= date.year()) {
       setDate(date)
-      setCalendar(generateCalendar({month: date.month(), year: date.year()}))
+      setCalendar(generateCalendar(date.month(), date.year()))
     }
   }
   return (
