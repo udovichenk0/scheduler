@@ -6,7 +6,7 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Input } from "@/shared/ui/data-entry/main-input"
 import { AuthTemplate } from "@/shared/ui/templates/auth"
 
-import { $email } from "../by-email"
+import { $email } from "../check-email"
 import { TogglePasswordButton } from "../shared/ui/toggle-password-button"
 
 import {

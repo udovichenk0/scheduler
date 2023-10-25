@@ -8,10 +8,10 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base"
 import { DatePicker } from "@/shared/ui/date-picker"
+import { ModalType } from "@/shared/lib/modal"
 
 import { $$dateModal, $$typeModal } from "./modify.model"
 import { formatTaskDate } from "./lib/normalize-date"
-import { TypePickerModal } from "./ui/type-modal"
 
 type ModifyTaskFormType = {
   $title: Store<string>
@@ -140,5 +140,50 @@ export const ModifyTaskForm = ({
         </BaseModal>
       </div>
     </div>
+  )
+}
+
+const types = [
+  { type: "inbox", iconName: "common/inbox" },
+  { type: "unplaced", iconName: "common/inbox" },
+] as const
+
+const TypePickerModal = ({
+  currentType,
+  changeType,
+  $$modal,
+}: {
+  currentType: "inbox" | "unplaced"
+  changeType: (payload: "inbox" | "unplaced") => void
+  $$modal: ModalType
+}) => {
+  const { t } = useTranslation()
+  return (
+    <BaseModal $$modal={$$modal}>
+      <div className="flex w-[280px] cursor-pointer flex-col gap-y-1 rounded-[5px] bg-main p-3">
+        {types.map(({ type, iconName }, id) => {
+          const active = type == currentType
+          return (
+            <Button
+              key={id}
+              size={"xs"}
+              onClick={() => changeType(type)}
+              className={`text-left ${
+                active && "pointer-events-none block w-full bg-cFocus"
+              }`}
+              intent={"primary"}
+            >
+              <Icon
+                name={iconName}
+                className={`mr-4 h-5 w-5 text-accent ${
+                  active && "text-cHover"
+                }`}
+              />
+              {t(`task.${type}`)}
+            </Button>
+          )
+        })}
+      </div>
+    </BaseModal>
   )
 }

@@ -1,11 +1,11 @@
 import { useUnit, useGate } from "effector-react"
 import { useTranslation } from "react-i18next"
 
-import { CheckEmailForm } from "@/features/authentication/by-email"
+import { CheckEmailForm } from "@/features/authentication/check-email"
 import { Logout } from "@/features/authentication/logout"
 import { Signin } from "@/features/authentication/sign-in"
 import { Signup } from "@/features/authentication/sign-up"
-import { VerifyEmail } from "@/features/authentication/verify-email"
+import { VerifyEmail } from "@/features/verify-email"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"

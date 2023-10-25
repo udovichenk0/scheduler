@@ -1,5 +1,5 @@
 import dayjs from "dayjs"
-import { combine, createEvent, createStore, sample } from "effector"
+import { combine, createEvent, createStore, sample, split } from "effector"
 
 import { createModal } from "@/shared/lib/modal"
 import { TaskId, TaskStatus, TaskType } from "@/shared/api/task"
@@ -24,6 +24,9 @@ export const modifyTaskFactory = ({
     id: TaskId
     status: TaskStatus
   }>()
+
+  const setStatus = createEvent<TaskStatus>()
+
   const dateChangedAndUpdated = createEvent<{ id: TaskId; date: Date }>()
   const resetFieldsTriggered = createEvent()
 
@@ -56,16 +59,25 @@ export const modifyTaskFactory = ({
     clock: titleChanged,
     target: $title,
   })
-  //!Change implementation
   sample({
-    clock: statusChanged,
-    fn: (value) => {
-      if (value == "FINISHED") {
-        return "INPROGRESS"
-      }
-      return "FINISHED"
+    clock: setStatus,
+    target: $status
+  })
+
+  //* That works well but with prepend it get typescript error
+  split({
+    //@ts-ignore
+    source: statusChanged,
+    match: {
+    //@ts-ignore
+      FINISHED: (value) => value == 'FINISHED',
+    //@ts-ignore
+      INPROGRESS: (value) => value == "INPROGRESS",
     },
-    target: $status,
+    cases: {
+      INPROGRESS: setStatus.prepend(() => 'FINISHED'),
+      FINISHED: setStatus.prepend(() => 'INPROGRESS'),
+    }
   })
   sample({
     clock: descriptionChanged,
@@ -162,4 +174,4 @@ export const modifyTaskFactory = ({
   }
 }
 
-export type ModifyTask = ReturnType<typeof modifyTaskFactory>
+export type ModifyTask = ReturnType<typeof modifyTaskFactory> // write ts-morph for unused exports
