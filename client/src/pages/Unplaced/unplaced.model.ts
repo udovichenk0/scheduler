@@ -1,8 +1,8 @@
 import { disclosureTask } from "@/widgets/expanded-task/model"
 
-import { removeTaskFactory } from "@/features/manage-task/delete"
-import { createTaskFactory } from "@/features/manage-task/create"
-import { updateTaskFactory } from "@/features/manage-task/update"
+import { removeTaskFactory } from "@/features/manage-task/model/delete"
+import { createTaskFactory } from "@/features/manage-task/model/create"
+import { updateTaskFactory } from "@/features/manage-task/model/update"
 
 import { $$task } from "@/entities/task/task-item"
 

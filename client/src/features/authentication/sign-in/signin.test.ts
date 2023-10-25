@@ -5,7 +5,7 @@ import { $$session } from "@/entities/session"
 
 import { signinQuery } from "@/shared/api/auth/auth.api"
 
-import { $email } from "../by-email"
+import { $email } from "../check-email"
 
 import { $password, $passwordError, passwordChanged, submitTriggered } from "."
 const userDto = {

@@ -11,7 +11,7 @@ import { tokenService } from "@/shared/api/token"
 import { taskApi } from "@/shared/api/task"
 import { bridge } from "@/shared/lib/effector/bridge"
 
-import { $email } from "../by-email"
+import { $email } from "../check-email"
 
 import {
   MAX_LENGTH,

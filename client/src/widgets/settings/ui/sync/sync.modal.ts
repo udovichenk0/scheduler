@@ -2,7 +2,7 @@ import { createEvent, createStore, sample } from "effector"
 import { createGate } from "effector-react"
 import { not } from "patronum"
 
-import { resetEmailTriggered } from "@/features/authentication/by-email"
+import { resetEmailTriggered } from "@/features/authentication/check-email"
 import { resetSigninPasswordTriggered } from "@/features/authentication/sign-in"
 import { resetSignupPasswordTriggered } from "@/features/authentication/sign-up"
 

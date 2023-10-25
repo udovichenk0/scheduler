@@ -5,7 +5,7 @@ import { $$session } from "@/entities/session/session.model"
 
 import { authApi } from "@/shared/api/auth"
 
-import { $email } from "../by-email"
+import { $email } from "../authentication/check-email"
 
 import { $code, codeChanged } from "./verify.model"
 const userDto = {

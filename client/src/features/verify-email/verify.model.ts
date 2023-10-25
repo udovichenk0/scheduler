@@ -6,7 +6,7 @@ import { $$session } from "@/entities/session"
 import { authApi } from "@/shared/api/auth"
 import { tokenService } from "@/shared/api/token"
 
-import { $email } from "../by-email"
+import { $email } from "../authentication/check-email"
 export const CODE_LENGTH = 6
 export const $code = createStore("")
 export const codeChanged = createEvent<string>()
