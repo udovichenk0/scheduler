@@ -2,9 +2,9 @@ import { sample } from "effector"
 
 import { disclosureTask } from "@/widgets/expanded-task/model"
 
-import { removeTaskFactory } from "@/features/task/delete"
-import { createTaskFactory } from "@/features/task/create"
-import { updateTaskFactory } from "@/features/task/update"
+import { removeTaskFactory } from "@/features/manage-task/delete"
+import { createTaskFactory } from "@/features/manage-task/create"
+import { updateTaskFactory } from "@/features/manage-task/update"
 
 import { $$task } from "@/entities/task/task-item"
 

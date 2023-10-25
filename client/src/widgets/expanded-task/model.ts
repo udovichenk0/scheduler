@@ -1,8 +1,8 @@
 import { createEvent, createStore, sample } from "effector"
 import { spread, and, not, or } from "patronum"
 
-import { CreateTaskType } from "@/features/task/create"
-import { UpdateTaskType } from "@/features/task/update"
+import { CreateTaskType } from "@/features/manage-task/create"
+import { UpdateTaskType } from "@/features/manage-task/update"
 
 import { TaskKv } from "@/entities/task/task-item"
 
