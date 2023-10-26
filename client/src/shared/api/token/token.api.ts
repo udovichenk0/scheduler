@@ -8,7 +8,7 @@ import { setTokenTriggered } from "./token.model"
 const RefreshContract = zodContract(TokenSchema)
 
 export const refreshFx = createEffect<void, TokenDto>(async () => {
-  const data = await fetch("http://localhost:3000/refresh", {
+  const data = await fetch(import.meta.env.VITE_ORIGIN_URL + "/refresh", {
     method: "GET",
     credentials: "include",
   })
