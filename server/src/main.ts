@@ -28,7 +28,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   app.enableCors({
-    origin: configService.get('CLIENT_URL'),
+    origin: 'https://scheduler-client-nine.vercel.app',
     credentials: true,
   });
   app.use(
