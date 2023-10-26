@@ -7,7 +7,7 @@ export const getUserQuery = createJsonQuery({
   params: declareParams<{ email: string }>(),
   request: {
     method: "GET",
-    url: () => "http://localhost:3000/user",
+    url: () => import.meta.env.VITE_ORIGIN_URL + "/user",
     query: ({ email }) => ({
       email,
     }),

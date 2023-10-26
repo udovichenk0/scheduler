@@ -20,7 +20,7 @@ import {
 const TaskContract = zodContract(TaskSchemaDto)
 export const createTaskQuery = authQuery<TaskDto, { body: CreateTaskDto }>({
   request: {
-    url: "tasks/create",
+    url: "/tasks/create",
     method: "POST",
   },
   response: {
@@ -32,7 +32,7 @@ export const createTaskQuery = authQuery<TaskDto, { body: CreateTaskDto }>({
 const GetTasksContract = zodContract(TasksSchemaDto)
 export const getTasksQuery = authQuery<TaskDto[], void>({
   request: {
-    url: "tasks/get",
+    url: "/tasks/get",
     method: "GET",
   },
   response: {
@@ -43,7 +43,7 @@ export const getTasksQuery = authQuery<TaskDto[], void>({
 
 export const updateTaskQuery = authQuery<TaskDto, { body: UpdateTaskDto }>({
   request: {
-    url: "tasks/update",
+    url: "/tasks/update",
     method: "POST",
   },
   response: {
@@ -54,7 +54,7 @@ export const updateTaskQuery = authQuery<TaskDto, { body: UpdateTaskDto }>({
 
 export const updateStatusQuery = authQuery<TaskDto, { body: UpdateStatusDto }>({
   request: {
-    url: "tasks/update-status",
+    url: "/tasks/update-status",
     method: "POST",
   },
   response: {
@@ -65,7 +65,7 @@ export const updateStatusQuery = authQuery<TaskDto, { body: UpdateStatusDto }>({
 
 export const deleteTaskQuery = authQuery<TaskDto, { body: { id: TaskId } }>({
   request: {
-    url: "tasks/delete",
+    url: "/tasks/delete",
     method: "POST",
   },
   response: {
@@ -83,7 +83,7 @@ export const createTasksQuery = authQuery<
   { body: { tasks: CreateTaskDto[] } }
 >({
   request: {
-    url: "tasks/create-many",
+    url: "/tasks/create-many",
     method: "POST",
   },
   response: {
@@ -97,7 +97,7 @@ export const updateDateQuery = authQuery<
   { body: { id: TaskId; date: Date } }
 >({
   request: {
-    url: "tasks/update-date",
+    url: "/tasks/update-date",
     method: "PATCH",
   },
   response: {
