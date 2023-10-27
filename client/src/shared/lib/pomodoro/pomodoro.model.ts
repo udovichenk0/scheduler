@@ -6,9 +6,11 @@ import {
   createEffect,
   Store,
 } from "effector"
-import { interval, not, condition } from "patronum"
+import { not, condition } from "patronum"
 
 import { bridge } from "../effector"
+
+import { createTimer } from "./timer"
 
 const DEFAULT_WORK_TIME = 1500 // 25mins
 const LAST_STAGE = 4
@@ -65,7 +67,9 @@ export const createPomodoro = ({
   const resetTimerTriggered = createEvent()
 
   const $kvStages = createStore(defaultStages)
-
+  const $isRunning = createStore(false)
+    .on(startTimerTriggered, () => true)
+    .on(stopTimerTriggered, () => false)
   const $stages = $kvStages.map((stages) => {
     return Object.values(stages)
   })
@@ -73,20 +77,20 @@ export const createPomodoro = ({
   const $activeStageId = createStore(0)
 
   const $currentStaticTime = createStore(DEFAULT_WORK_TIME)
-  const $tickingTime = createStore(DEFAULT_WORK_TIME)
-
   const $isWorkTime = createStore(true).on(
     toggleTimerState,
     (isWorkTime) => !isWorkTime,
   )
-
+  const {
+    $timer,
+    setTimer
+  } = createTimer({
+    stop: stopTimerTriggered,
+    start: startTimerTriggered,
+    defaultTimerDuration: DEFAULT_WORK_TIME
+  })
   const $audio = createStore(notificationSound)
 
-  const { tick, isRunning: $isPomodoroRunning } = interval({
-    start: startTimerTriggered,
-    stop: stopTimerTriggered,
-    timeout: 1000,
-  })
   bridge(() => {
     sample({
       clock: activeIdChanged,
@@ -117,20 +121,14 @@ export const createPomodoro = ({
     clock: $workDuration,
     source: $workDuration,
     fn: (duration) => duration * 60,
-    target: [$currentStaticTime, $tickingTime],
-  })
-  sample({
-    clock: tick,
-    source: $tickingTime,
-    fn: (timer) => timer - 1,
-    target: $tickingTime,
+    target: [$currentStaticTime, setTimer],
   })
 
   bridge(() => {
     sample({
       clock: timeSelected,
       target: [
-        $tickingTime,
+        setTimer,
         $currentStaticTime,
         stopTimerTriggered,
         $isWorkTime.reinit,
@@ -149,7 +147,7 @@ export const createPomodoro = ({
     clock: $workDuration,
     filter: (duration) => !!Number(duration),
     fn: (duration) => +duration * 60,
-    target: [$currentStaticTime, $tickingTime],
+    target: [$currentStaticTime, setTimer],
   })
 
   sample({
@@ -165,12 +163,11 @@ export const createPomodoro = ({
     clock: resetTimerTriggered,
     source: $workDuration,
     fn: (duration) => duration * 60,
-    target: [$currentStaticTime, $tickingTime],
+    target: [$currentStaticTime, setTimer],
   })
 
   sample({
-    clock: tick,
-    source: $tickingTime,
+    source: $timer,
     filter: (timer) => timer <= 0,
     target: timePassed,
   })
@@ -210,13 +207,13 @@ export const createPomodoro = ({
       clock: shortBreakTriggered,
       source: $shortBreakDuration,
       fn: (shortBreakDuration) => shortBreakDuration * 60,
-      target: [$currentStaticTime, $tickingTime],
+      target: [$currentStaticTime, setTimer],
     })
     sample({
       clock: longBreakTriggered,
       source: $longBreakDuration,
       fn: (longBreakDuration) => longBreakDuration * 60,
-      target: [$currentStaticTime, $tickingTime],
+      target: [$currentStaticTime, setTimer],
     })
   })
 
@@ -241,7 +238,7 @@ export const createPomodoro = ({
       clock: shortBreakPassed,
       source: $workDuration,
       fn: (workDuration) => workDuration * 60,
-      target: [$tickingTime, $currentStaticTime],
+      target: [setTimer, $currentStaticTime],
     })
   })
 
@@ -250,7 +247,7 @@ export const createPomodoro = ({
       clock: longBreakPassed,
       source: $shortBreakDuration,
       fn: (shortBreakDuration) => shortBreakDuration * 60,
-      target: [$isWorkTime.reinit, $currentStaticTime, $tickingTime],
+      target: [$isWorkTime.reinit, $currentStaticTime, setTimer],
     })
     sample({
       clock: longBreakPassed,
@@ -291,10 +288,10 @@ export const createPomodoro = ({
   return {
     startTimerTriggered,
     stopTimerTriggered,
-    $isPomodoroRunning,
+    $isPomodoroRunning: $isRunning,
     $isWorkTime,
     $workDuration,
-    $tickingTime,
+    $tickingTime: $timer,
     $stages,
     $currentStaticTime,
     timeSelected,
