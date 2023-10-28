@@ -64,14 +64,9 @@ export const createPomodoro = ({
   const activeIdChanged = createEvent()
   const timeSelected = createEvent<number>()
 
-  const startTimerTriggered = createEvent()
-  const stopTimerTriggered = createEvent()
   const resetTimerTriggered = createEvent()
 
   const $kvStages = createStore(defaultStages)
-  const $isRunning = createStore(false)
-    .on(startTimerTriggered, () => true)
-    .on(stopTimerTriggered, () => false)
   const $stages = $kvStages.map((stages) => {
     return Object.values(stages)
   })
@@ -86,14 +81,15 @@ export const createPomodoro = ({
 
   const {
     $timer,
-    setTimer
+    stopTimer,
+    startTimer,
+    setTimer,
+    $isRunning
   } = createTimer({
-    stop: stopTimerTriggered,
-    start: startTimerTriggered,
     defaultTimerDuration: DEFAULT_WORK_TIME
   })
+
   const $audio = createStore(notificationSound)
-  // debug(setTimer)
   bridge(() => {
     sample({
       clock: activeIdChanged,
@@ -126,7 +122,7 @@ export const createPomodoro = ({
       target: [
         setTimer,
         $currentStaticTime,
-        stopTimerTriggered,
+        stopTimer,
         $isWorkTime.reinit,
         $activeStageId.reinit,
         $kvStages.reinit,
@@ -152,7 +148,7 @@ export const createPomodoro = ({
       $isWorkTime.reinit,
       $kvStages.reinit,
       $activeStageId.reinit,
-      stopTimerTriggered,
+      stopTimer,
     ],
   })
   sample({
@@ -228,7 +224,7 @@ export const createPomodoro = ({
       clock: shortBreakPassed,
       source: $isEnabledAutomaticStart,
       filter: (startAutomatically) => !startAutomatically,
-      target: stopTimerTriggered,
+      target: stopTimer,
     })
     sample({
       clock: shortBreakPassed,
@@ -282,8 +278,8 @@ export const createPomodoro = ({
   }
   init()
   return {
-    startTimerTriggered,
-    stopTimerTriggered,
+    startTimerTriggered: startTimer,
+    stopTimerTriggered: stopTimer,
     $isPomodoroRunning: $isRunning,
     $isWorkTime,
     $workDuration,

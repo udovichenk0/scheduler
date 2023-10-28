@@ -1,27 +1,30 @@
-import { createEffect, scopeBind, createStore, sample, createEvent, Event } from "effector"
+import { createEffect, scopeBind, createStore, sample, createEvent } from "effector"
 
-export const createTimer = <S, T>({
-  stop,
-  start,
+export const createTimer = ({
   defaultTimerDuration = 1500,
 }: {
-  stop: Event<S>,
-  start: Event<T>,
   defaultTimerDuration: number
 }) => {
   const workerEvent = createEvent<MessageEvent>()
+  const stopTimer = createEvent()
+  const startTimer = createEvent()
   const tick = createEvent()
   const setTimer = createEvent<number>()
 
   const $timer = createStore(defaultTimerDuration)
-
+  const $isRunning = createStore(false)
   const $worker = createStore(new Worker('src/shared/lib/pomodoro/worker.ts'))
+  
   const startListeningFx = createEffect((worker: Worker) => {
     const scopedWorkerTick = scopeBind(workerEvent)
     worker.onmessage = scopedWorkerTick
   })
+  const $isWorkerListening = createStore(false)
+    .on(startListeningFx.done, () => true);
+
   sample({
     clock: workerEvent,
+    filter: ({data}) => !!data.isRunning,
     fn: () => ({}),
     target: tick
   })
@@ -31,27 +34,37 @@ export const createTimer = <S, T>({
     fn: (timer) => timer - 1,
     target: $timer,
   })
+
   const startTimerFx = createEffect((worker: Worker) => {
     worker.postMessage({command: 'start'})
   })
   const stopTimerFx = createEffect((worker: Worker) => {
     worker.postMessage({command: 'stop'})
-  })
-  const $isWorkerListening = createStore(false)
-    .on(startListeningFx.done, () => true);
+  })  
   sample({
-    clock: start,
+    clock: startTimer,
+    fn: () => true,
+    target: $isRunning
+  })
+  sample({
+    clock: stopTimer,
+    fn: () => false,
+    target: $isRunning
+  })
+  
+  sample({
+    clock: startTimer,
     source: $worker,
     filter: worker => !worker.onmessage,
     target: startListeningFx
   })
   sample({
-    clock: start,
+    clock: startTimer,
     source: $worker,
     target: startTimerFx
   })
   sample({
-    clock: stop,
+    clock: stopTimer,
     source: $worker,
     target: stopTimerFx
   })
@@ -64,7 +77,10 @@ export const createTimer = <S, T>({
     tick,
     $worker,
     $isWorkerListening,
+    $isRunning,
     $timer,
-    setTimer
+    setTimer,
+    startTimer,
+    stopTimer,
   }
 }
