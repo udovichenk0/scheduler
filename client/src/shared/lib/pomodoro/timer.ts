@@ -55,6 +55,10 @@ export const createTimer = <S, T>({
     source: $worker,
     target: stopTimerFx
   })
+  sample({
+    clock: setTimer,
+    target: $timer
+  })
 
   return {
     tick,
