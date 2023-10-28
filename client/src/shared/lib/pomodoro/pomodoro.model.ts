@@ -48,6 +48,8 @@ export const createPomodoro = ({
       fulfilled: false,
     },
   }
+  const init = createEvent()
+
   const workDone = createEvent()
   const breakDone = createEvent()
 
@@ -81,6 +83,7 @@ export const createPomodoro = ({
     toggleTimerState,
     (isWorkTime) => !isWorkTime,
   )
+
   const {
     $timer,
     setTimer
@@ -90,7 +93,7 @@ export const createPomodoro = ({
     defaultTimerDuration: DEFAULT_WORK_TIME
   })
   const $audio = createStore(notificationSound)
-
+  // debug(setTimer)
   bridge(() => {
     sample({
       clock: activeIdChanged,
@@ -117,13 +120,6 @@ export const createPomodoro = ({
     }),
   })
 
-  sample({
-    clock: $workDuration,
-    source: $workDuration,
-    fn: (duration) => duration * 60,
-    target: [$currentStaticTime, setTimer],
-  })
-
   bridge(() => {
     sample({
       clock: timeSelected,
@@ -144,12 +140,12 @@ export const createPomodoro = ({
   })
 
   sample({
-    clock: $workDuration,
+    clock: [init, $workDuration],
+    source: $workDuration,
     filter: (duration) => !!Number(duration),
-    fn: (duration) => +duration * 60,
+    fn: (duration) => duration * 60,
     target: [$currentStaticTime, setTimer],
   })
-
   sample({
     clock: resetTimerTriggered,
     target: [
@@ -284,7 +280,7 @@ export const createPomodoro = ({
     )
     return { ...kv, ...newStagesIntoKv }
   }
-
+  init()
   return {
     startTimerTriggered,
     stopTimerTriggered,
