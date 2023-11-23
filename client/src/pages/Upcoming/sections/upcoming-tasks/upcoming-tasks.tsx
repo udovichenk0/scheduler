@@ -36,23 +36,14 @@ export const AllUpcomingTasks = ({
   $nextDate: Store<Date>
 }) => {
   const { t } = useTranslation()
-  const [
-    daysListKv, 
-    remainingDays,
-    monthsListKv,
-    remainingMonths,
-    upcomingYears,
-    selectedDate, 
-    nextDate
-  ] = useUnit([
-    $daysListKv,
-    $remainingDays,
-    $monthsListKv,
-    $remainingMonths,
-    $upcomingYears,
-    $selectedDate,
-    $nextDate,
-  ])
+
+  const daysListKv = useUnit($daysListKv)
+  const remainingDays = useUnit($remainingDays)
+  const monthsListKv = useUnit($monthsListKv)
+  const remainingMonths = useUnit($remainingMonths)
+  const upcomingYears = useUnit($upcomingYears)
+  const selectedDate = useUnit($selectedDate)
+  const nextDate = useUnit($nextDate)
 
   const isNextDateSelected = remainingMonths.date.isSame(nextDate, "day")
   return (
@@ -81,41 +72,41 @@ export const AllUpcomingTasks = ({
           </SectionRoot>
         )
       })}
-    <SectionRoot>
-      <SectionRoot.Header
-        action={() => changeDate(new Date(remainingDays.date.toISOString()))}
-        isNextSelectedTask={remainingDays.date.isSame(nextDate, "day")}
-      >
-        <span>
-          {remainingDays.isLastDate ? (
-            <>
-              <span className="mr-1">{remainingDays.date.date()}</span>
-              <span>
-                {lowerCase(t(LONG_WEEKS_NAMES[remainingDays.date.day()]))}
-              </span>
-            </>
-          ) : (
-            <>
-              <span className="mr-1">
-                {lowerCase(t(LONG_MONTHS_NAMES[remainingDays.date.month()]))}
-              </span>
-              <span>
-                {remainingDays.dateRange.start}
-                {"\u2013"}
-                {remainingDays.dateRange.end}
-              </span>
-            </>
-          )}
-        </span>
-      </SectionRoot.Header>
-      <SectionRoot.Content
-        selectedTaskId={selectedTaskId}
-        selectTaskId={selectTaskId}
-        isSelected={remainingDays.date.isSame(selectedDate, "day")}
-        taskRef={taskRef}
-        tasks={remainingDays.tasks}
-      />
-    </SectionRoot>
+      <SectionRoot>
+        <SectionRoot.Header
+          action={() => changeDate(new Date(remainingDays.date.toISOString()))}
+          isNextSelectedTask={remainingDays.date.isSame(nextDate, "day")}
+        >
+          <span>
+            {remainingDays.isLastDate ? (
+              <>
+                <span className="mr-1">{remainingDays.date.date()}</span>
+                <span>
+                  {lowerCase(t(LONG_WEEKS_NAMES[remainingDays.date.day()]))}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="mr-1">
+                  {lowerCase(t(LONG_MONTHS_NAMES[remainingDays.date.month()]))}
+                </span>
+                <span>
+                  {remainingDays.dateRange.start}
+                  {"\u2013"}
+                  {remainingDays.dateRange.end}
+                </span>
+              </>
+            )}
+          </span>
+        </SectionRoot.Header>
+        <SectionRoot.Content
+          selectedTaskId={selectedTaskId}
+          selectTaskId={selectTaskId}
+          isSelected={remainingDays.date.isSame(selectedDate, "day")}
+          taskRef={taskRef}
+          tasks={remainingDays.tasks}
+        />
+      </SectionRoot>
       {monthsListKv.map(({ tasks, date }) => {
         const isNextDateSelected = date.isSame(nextDate, "day")
         return (
@@ -136,32 +127,34 @@ export const AllUpcomingTasks = ({
           </SectionRoot>
         )
       })}
-    <SectionRoot key={remainingMonths.date.date()}>
-      <SectionRoot.Header
-        action={() => changeDate(new Date(remainingMonths.date.toISOString()))}
-        isNextSelectedTask={isNextDateSelected}
-      >
-        {remainingMonths.isLastMonth ? (
-          <span>
-            {lowerCase(t(LONG_MONTHS_NAMES[remainingMonths.startDate]))}
-          </span>
-        ) : (
-          <span>{`${lowerCase(
-            t(LONG_MONTHS_NAMES[remainingMonths.startDate]),
-          )}\u2013${lowerCase(
-            t(LONG_MONTHS_NAMES[remainingMonths.endDate]),
-          )}`}</span>
-        )}
-      </SectionRoot.Header>
-      <SectionRoot.Content
-        selectedTaskId={selectedTaskId}
-        selectTaskId={selectTaskId}
-        taskRef={taskRef}
-        isSelected={remainingMonths.date.isSame(selectedDate, "day")}
-        tasks={remainingMonths.tasks}
-      />
-    </SectionRoot>
-      {upcomingYears.map(({year, tasks}) => {
+      <SectionRoot key={remainingMonths.date.date()}>
+        <SectionRoot.Header
+          action={() =>
+            changeDate(new Date(remainingMonths.date.toISOString()))
+          }
+          isNextSelectedTask={isNextDateSelected}
+        >
+          {remainingMonths.isLastMonth ? (
+            <span>
+              {lowerCase(t(LONG_MONTHS_NAMES[remainingMonths.startDate]))}
+            </span>
+          ) : (
+            <span>{`${lowerCase(
+              t(LONG_MONTHS_NAMES[remainingMonths.startDate]),
+            )}\u2013${lowerCase(
+              t(LONG_MONTHS_NAMES[remainingMonths.endDate]),
+            )}`}</span>
+          )}
+        </SectionRoot.Header>
+        <SectionRoot.Content
+          selectedTaskId={selectedTaskId}
+          selectTaskId={selectTaskId}
+          taskRef={taskRef}
+          isSelected={remainingMonths.date.isSame(selectedDate, "day")}
+          tasks={remainingMonths.tasks}
+        />
+      </SectionRoot>
+      {upcomingYears.map(({ year, tasks }) => {
         return (
           <SectionRoot key={year}>
             <SectionRoot.Header

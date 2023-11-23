@@ -34,25 +34,16 @@ const Today = () => {
   useDocumentTitle(t("task.today"))
   const expandedTaskRef = useRef<HTMLDivElement>(null)
   const taskItemRef = useRef<HTMLDivElement>(null)
-  const [
-    closeTask,
-    openCreatedTask,
-    createdTask,
-    deleteTaskById,
-    selectedTaskId,
-    selectTaskById,
-    overdueTasks,
-    todayTasks,
-  ] = useUnit([
-    $$taskDisclosure.closeTaskTriggered,
-    $$taskDisclosure.createdTaskOpened,
-    $$taskDisclosure.$createdTask,
-    $$deleteTask.taskDeletedById,
-    $$selectTask.$selectedTaskId,
-    $$selectTask.taskIdSelected,
-    $overdueTasks,
-    $todayTasks,
-  ])
+
+  const closeTask = useUnit($$taskDisclosure.closeTaskTriggered)
+  const openCreatedTask = useUnit($$taskDisclosure.createdTaskOpened)
+  const createdTask = useUnit($$taskDisclosure.$createdTask)
+  const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
+  const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
+  const selectTaskById = useUnit($$selectTask.taskIdSelected)
+  const overdueTasks = useUnit($overdueTasks)
+  const todayTasks = useUnit($todayTasks)
+
   return (
     <Suspense fallback={<div>loading</div>}>
       <Layout>
@@ -104,23 +95,15 @@ const OverdueTasks = ({
   taskRef: RefObject<HTMLDivElement>
 }) => {
   const { t } = useTranslation()
-  const [
-    updatedTask,
-    openUpdatedTaskById,
-    isOverdueTasksOpened,
-    toggleOverdueTasks,
-    overdueTasks,
-    changeStatusAndUpdate,
-    changeDateAndUpdate,
-  ] = useUnit([
-    $$taskDisclosure.$updatedTaskId,
-    $$taskDisclosure.updatedTaskOpenedById,
-    $isOverdueTasksOpened,
-    toggleOverdueTasksOpened,
-    $overdueTasks,
-    $$updateTask.statusChangedAndUpdated,
-    $$updateTask.dateChangedAndUpdated,
-  ])
+
+  const updatedTask = useUnit($$taskDisclosure.$updatedTaskId)
+  const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const isOverdueTasksOpened = useUnit($isOverdueTasksOpened)
+  const toggleOverdueTasks = useUnit(toggleOverdueTasksOpened) // Assuming this is a function
+  const overdueTasks = useUnit($overdueTasks)
+  const changeStatusAndUpdate = useUnit($$updateTask.statusChangedAndUpdated)
+  const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
+
   return (
     <section className={`${overdueTasks.length > 0 ? "block" : "hidden"}`}>
       <div className="flex items-center gap-1 border-b-2 border-t-2 border-cBorder px-5 py-2">
@@ -192,23 +175,15 @@ const TodayTasks = ({
   selectTaskId: (task: Nullable<TaskId>) => void
 }) => {
   const { t } = useTranslation()
-  const [
-    todayTasks,
-    createdTask,
-    updatedTaskId,
-    openUpdatedTaskById,
-    overdueTasks,
-    changeStatusAndUpdate,
-    changeDateAndUpdate,
-  ] = useUnit([
-    $todayTasks,
-    $$taskDisclosure.$createdTask,
-    $$taskDisclosure.$updatedTaskId,
-    $$taskDisclosure.updatedTaskOpenedById,
-    $overdueTasks,
-    $$updateTask.statusChangedAndUpdated,
-    $$updateTask.dateChangedAndUpdated,
-  ])
+
+  const todayTasks = useUnit($todayTasks)
+  const createdTask = useUnit($$taskDisclosure.$createdTask)
+  const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
+  const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const overdueTasks = useUnit($overdueTasks)
+  const changeStatusAndUpdate = useUnit($$updateTask.statusChangedAndUpdated)
+  const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
+
   return (
     <section>
       {!!overdueTasks.length && !!todayTasks.length && (

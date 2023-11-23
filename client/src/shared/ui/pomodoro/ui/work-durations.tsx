@@ -33,11 +33,10 @@ export const PomodoroDurations = ({
     customDuration: number
   }) => { time: number }[]
 }) => {
-  const [selectTime, customDuration, workDuration] = useUnit([
-    timeSelected,
-    $customDuration,
-    $workDuration,
-  ])
+  const selectTime = useUnit(timeSelected)
+  const customDuration = useUnit($customDuration)
+  const workDuration = useUnit($workDuration)
+
   const durations = setDuration({
     defaultDurations,
     customDuration: customDuration,

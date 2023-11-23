@@ -4,10 +4,10 @@ import { createPortal } from "react-dom"
 export const Modal = ({
   children,
   isOpened,
-  onClose
+  onClose,
 }: {
-  children: React.ReactNode,
-  isOpened: boolean,
+  children: React.ReactNode
+  isOpened: boolean
   onClose: (value: boolean) => void
 }) => {
   const ref = useRef<HTMLDivElement>(null)
@@ -26,9 +26,7 @@ export const Modal = ({
       onClick={handleOnClickOutside}
       className="absolute left-0 top-0 z-[999] flex h-screen w-full items-center justify-center bg-black/40 text-primary"
     >
-      <div
-        className="rounded-[5px] border-[1px] border-cBorder bg-main drop-shadow-base"
-      >
+      <div className="rounded-[5px] border-[1px] border-cBorder bg-main drop-shadow-base">
         {children}
       </div>
     </div>,

@@ -4,7 +4,6 @@ import { Sidebar } from "@/widgets/sidebar"
 
 import { RoutesView } from "@/pages"
 
-
 function App() {
   // useEffect(() => {
   //   const worker = new Worker('/worker.js')

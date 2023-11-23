@@ -9,7 +9,6 @@ export const PomodoroProgressBar = ({
   $currentStaticTime,
   $tickingTime,
   $isWorkTime,
-  $isPomodoroRunning,
 }: {
   onClick: () => void
   $currentStaticTime: Store<number>
@@ -17,12 +16,10 @@ export const PomodoroProgressBar = ({
   $isWorkTime: Store<boolean>
   $isPomodoroRunning: Store<boolean>
 }) => {
-  const [pickedTime, passingTime, isWorkTime] = useUnit([
-    $currentStaticTime,
-    $tickingTime,
-    $isWorkTime,
-    $isPomodoroRunning,
-  ])
+  const pickedTime = useUnit($currentStaticTime)
+  const passingTime = useUnit($tickingTime)
+  const isWorkTime = useUnit($isWorkTime)
+
   const CIRCLE_SIZE = 565
   const progress =
     CIRCLE_SIZE - ((pickedTime - passingTime) / pickedTime) * CIRCLE_SIZE

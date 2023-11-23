@@ -14,10 +14,9 @@ export const BaseModal = ({
   children: ReactNode
   className?: string
 }) => {
-  const [clickOutsideTriggered, isOpened] = useUnit([
-    $$modal.clickOutsideTriggered,
-    $$modal.$isOpened,
-  ])
+  const clickOutsideTriggered = useUnit($$modal.clickOutsideTriggered)
+  const isOpened = useUnit($$modal.$isOpened)
+
   const ref = useRef<HTMLDivElement>(null)
   if (!isOpened) {
     return null

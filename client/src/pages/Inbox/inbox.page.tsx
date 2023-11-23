@@ -28,31 +28,19 @@ const Inbox = () => {
   useDocumentTitle(t("task.inbox"))
   const expandedTaskRef = useRef<HTMLDivElement>(null)
   const taskItemRef = useRef<HTMLDivElement>(null)
-  const [
-    tasks,
-    createdTask,
-    updatedTaskId,
-    closeTask,
-    openUpdatedTaskById,
-    openCreatedTask,
-    deleteTaskById,
-    changeStatusAndUpdate,
-    changeDateAndUpdate,
-    selectTaskId,
-    selectedTaskId,
-  ] = useUnit([
-    $inboxTasks,
-    $$taskDisclosure.$createdTask,
-    $$taskDisclosure.$updatedTaskId,
-    $$taskDisclosure.closeTaskTriggered,
-    $$taskDisclosure.updatedTaskOpenedById,
-    $$taskDisclosure.createdTaskOpened,
-    $$deleteTask.taskDeletedById,
-    $$updateTask.statusChangedAndUpdated,
-    $$updateTask.dateChangedAndUpdated,
-    $$selectTask.taskIdSelected,
-    $$selectTask.$selectedTaskId,
-  ])
+
+  const tasks = useUnit($inboxTasks)
+  const createdTask = useUnit($$taskDisclosure.$createdTask)
+  const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
+  const closeTask = useUnit($$taskDisclosure.closeTaskTriggered)
+  const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const openCreatedTask = useUnit($$taskDisclosure.createdTaskOpened)
+  const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
+  const changeStatusAndUpdate = useUnit($$updateTask.statusChangedAndUpdated)
+  const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
+  const selectTaskId = useUnit($$selectTask.taskIdSelected)
+  const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
+
   return (
     <Suspense fallback={<div>inbox loading...</div>}>
       <Layout>

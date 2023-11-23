@@ -11,12 +11,12 @@ import { $email, $emailError, emailChanged, submitTriggered } from "./model"
 export const CheckEmailForm = ({ goBack }: { goBack: () => void }) => {
   const { t } = useTranslation()
   const ref = useRef<HTMLInputElement>(null)
-  const [email, error, changeEmail, onSubmit] = useUnit([
-    $email,
-    $emailError,
-    emailChanged,
-    submitTriggered,
-  ])
+
+  const email = useUnit($email)
+  const error = useUnit($emailError)
+  const changeEmail = useUnit(emailChanged)
+  const onSubmit = useUnit(submitTriggered)
+
   return (
     <AuthTemplate
       title={t("setting.synchronization.byEmail.title")}

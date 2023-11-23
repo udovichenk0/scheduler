@@ -16,8 +16,10 @@ export const MainThemeChanger = () => {
     "light",
     "grey",
   ] as const)
-  const [activeTheme, changeTheme] = useUnit([$theme, themeChanged])
   const { t } = useTranslation()
+
+  const activeTheme = useUnit($theme)
+  const changeTheme = useUnit(themeChanged)
   return (
     <div className="mb-6 flex justify-around px-10">
       {themes.map((theme) => {

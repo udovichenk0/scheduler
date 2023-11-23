@@ -32,11 +32,11 @@ export const $upcomingYears = $groupedTasksByYear.map((groupedTasksByYear) => {
     .format("YYYY")
   const currentYear = dayjs().format("YYYY")
   const result = []
-  for(const [year, tasks] of Object.entries(groupedTasksByYear) || []){
-    if(year != currentYear && year != futureYear){
+  for (const [year, tasks] of Object.entries(groupedTasksByYear) || []) {
+    if (year != currentYear && year != futureYear) {
       result.push({
         year,
-        tasks
+        tasks,
       })
     }
   }
@@ -156,7 +156,7 @@ export const $selectedNextTaskId = combine(
       ...monthsList,
       ...yearsList,
       remainingMonths.tasks,
-      remainingDays.tasks
+      remainingDays.tasks,
     ].find((tasks) => {
       if (!tasks?.length) return
       return tasks.find((task) => task.id == selectedTaskId)

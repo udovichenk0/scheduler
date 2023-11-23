@@ -24,11 +24,10 @@ export const Header = ({
   title: string | ReactNode
 }) => {
   const { t } = useTranslation()
-  const [openPomodoroModal, openSettingsModal, isPomodoroRunning] = useUnit([
-    $$pomodoroModal.open,
-    $$settingsModal.open,
-    $$pomodoro.$isPomodoroRunning,
-  ])
+  const openPomodoroModal = useUnit($$pomodoroModal.open)
+  const openSettingsModal = useUnit($$settingsModal.open)
+  const isPomodoroRunning = useUnit($$pomodoro.$isPomodoroRunning)
+
   return (
     <Container padding="xl" className="relative mb-4 text-primary">
       <div className="flex h-[40px] items-center justify-end">

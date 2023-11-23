@@ -19,13 +19,12 @@ import {
 export const Signin = ({ goBack }: { goBack: () => void }) => {
   const { t } = useTranslation()
 
-  const [password, error, email, changePassword, onSubmit] = useUnit([
-    $password,
-    $passwordError,
-    $email,
-    passwordChanged,
-    submitTriggered,
-  ])
+  const password = useUnit($password)
+  const error = useUnit($passwordError)
+  const email = useUnit($email)
+  const changePassword = useUnit(passwordChanged)
+  const onSubmit = useUnit(submitTriggered)
+
   const [isPasswordShown, togglePasswortView] = useState(false)
   const ref = useRef<HTMLInputElement>(null)
   return (

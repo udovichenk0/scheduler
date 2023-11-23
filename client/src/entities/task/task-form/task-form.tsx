@@ -33,35 +33,20 @@ export const ModifyTaskForm = ({
   modifyTaskModel: ModifyTaskFormType
   dateModifier?: boolean
 }) => {
-  const [
-    title,
-    description,
-    status,
-    taskType,
-    taskDate,
-    changeStatus,
-    changeDescription,
-    changeTitle,
-    changeType,
-    changeDate,
-    openDateModal,
-    closeDateModal,
-    openTypeModal,
-  ] = useUnit([
-    modifyTaskModel.$title,
-    modifyTaskModel.$description,
-    modifyTaskModel.$status,
-    modifyTaskModel.$type,
-    modifyTaskModel.$startDate,
-    modifyTaskModel.statusChanged,
-    modifyTaskModel.descriptionChanged,
-    modifyTaskModel.titleChanged,
-    modifyTaskModel.typeChanged,
-    modifyTaskModel.dateChanged,
-    $$dateModal.open,
-    $$dateModal.close,
-    $$typeModal.open,
-  ])
+  const title = useUnit(modifyTaskModel.$title)
+  const description = useUnit(modifyTaskModel.$description)
+  const status = useUnit(modifyTaskModel.$status)
+  const taskType = useUnit(modifyTaskModel.$type)
+  const taskDate = useUnit(modifyTaskModel.$startDate)
+  const changeStatus = useUnit(modifyTaskModel.statusChanged)
+  const changeDescription = useUnit(modifyTaskModel.descriptionChanged)
+  const changeTitle = useUnit(modifyTaskModel.titleChanged)
+  const changeType = useUnit(modifyTaskModel.typeChanged)
+  const changeDate = useUnit(modifyTaskModel.dateChanged)
+  const openDateModal = useUnit($$dateModal.open)
+  const closeDateModal = useUnit($$dateModal.close)
+  const openTypeModal = useUnit($$typeModal.open)
+
   const titleInputRef = useRef<HTMLInputElement>(null)
   const { t } = useTranslation()
   useEffect(() => {

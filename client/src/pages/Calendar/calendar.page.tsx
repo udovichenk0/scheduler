@@ -33,19 +33,13 @@ const CalendarPage = () => {
   const [date, setDate] = useState(dayjs)
   const { t } = useTranslation()
   useDocumentTitle(t("task.calendar"))
-  const [
-    mappedTasks,
-    openCreatedTask,
-    openUpdatedTask,
-    updatedTaskId,
-    createdTask,
-  ] = useUnit([
-    $mappedTasks,
-    createTaskModalOpened,
-    updateTaskModalOpened,
-    $updatedTask,
-    $createdTask,
-  ])
+
+  const mappedTasks = useUnit($mappedTasks)
+  const openCreatedTask = useUnit(createTaskModalOpened)
+  const openUpdatedTask = useUnit(updateTaskModalOpened)
+  const updatedTaskId = useUnit($updatedTask)
+  const createdTask = useUnit($createdTask)
+
   return (
     <Layout>
       <Layout.Header iconName="common/calendar" title={<Title date={date} />} />
@@ -117,7 +111,9 @@ const UpdateActionsButtons = ({ taskId }: { taskId: TaskId }) => {
   )
 }
 const ActionsButton = () => {
-  const [onCancel, onSave] = useUnit([canceled, saved])
+  const onCancel = useUnit(canceled)
+  const onSave = useUnit(saved)
+
   return (
     <div className="space-x-2">
       <Button onClick={onCancel} className="w-24 text-[12px]">

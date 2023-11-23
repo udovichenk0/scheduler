@@ -11,7 +11,9 @@ export const StartButton = ({
   $isTicking: Store<boolean>
   $isWorkTime: Store<boolean>
 }) => {
-  const [isTicking, isWorkTime] = useUnit([$isTicking, $isWorkTime])
+  const isTicking = useUnit($isTicking)
+  const isWorkTime = useUnit($isWorkTime)
+
   return (
     <button
       className={`flex h-8 w-8 justify-center rounded-full outline-none ${

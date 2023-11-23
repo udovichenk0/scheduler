@@ -33,36 +33,25 @@ const Upcoming = () => {
   const taskItemRef = useRef<Nullable<HTMLDivElement>>(null)
   const { t } = useTranslation()
   useDocumentTitle(t("task.upcoming"))
-  const [
-    closeTask,
-    openCreatedTask,
-    changeDate,
-    deleteTaskById,
-    tasks,
-    variant,
-    selectVariant,
-    selectedTaskId,
-    selectUpcoimingTaskId,
-    selectTaskId,
-  ] = useUnit([
-    $$taskDisclosure.closeTaskTriggered,
-    $$taskDisclosure.createdTaskOpened,
-    currentDateSelected,
-    $$deleteTask.taskDeletedById,
-    $tasksByDate,
-    $variant,
-    variantSelected,
-    $selectedTaskId,
-    upcomingTaskIdSelected,
-    $$selectTask.taskIdSelected,
-  ])
+
+  const closeTask = useUnit($$taskDisclosure.closeTaskTriggered)
+  const openCreatedTask = useUnit($$taskDisclosure.createdTaskOpened)
+  const changeDate = useUnit(currentDateSelected)
+  const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
+  const tasks = useUnit($tasksByDate)
+  const variant = useUnit($variant)
+  const selectVariant = useUnit(variantSelected)
+  const selectedTaskId = useUnit($selectedTaskId)
+  const selectUpcomingTaskId = useUnit(upcomingTaskIdSelected)
+  const selectTaskId = useUnit($$selectTask.taskIdSelected)
+
   const handleOnClick = (e: MouseEvent, taskId: Nullable<TaskId>) => {
-    selectUpcoimingTaskId(taskId)
+    selectUpcomingTaskId(taskId)
     taskItemRef.current = e.target as HTMLDivElement
   }
   const resetSelectedTaskId = (e: MouseEvent) => {
     if (taskItemRef.current && taskItemRef.current !== e.target) {
-      if(taskItemRef.current !== e.target) selectUpcoimingTaskId(null)
+      if (taskItemRef.current !== e.target) selectUpcomingTaskId(null)
       taskItemRef.current = null
     }
   }

@@ -22,7 +22,9 @@ sample({
 })
 
 export const Logout = () => {
-  const [user, submit] = useUnit([$$session.$user, submitTriggered])
+  const user = useUnit($$session.$user)
+  const submit = useUnit(submitTriggered)
+
   return (
     <div className="text-cFont">
       <Typography.Heading size="base" className="mb-3 text-lg font-medium">

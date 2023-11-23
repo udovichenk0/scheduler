@@ -17,12 +17,11 @@ export const ProgressCircle = ({
   $stages: Store<{ fulfilled: boolean }[]>
   $staticTime: Store<number>
 }) => {
-  const [time, isWorkTime, staticTime, stages] = useUnit([
-    $time,
-    $isWorkTime,
-    $staticTime,
-    $stages,
-  ])
+  const time = useUnit($time)
+  const isWorkTime = useUnit($isWorkTime)
+  const staticTime = useUnit($staticTime)
+  const stages = useUnit($stages)
+
   const progress =
     DEFAULT_PROGRESS_BAR -
     ((staticTime - time) / staticTime) * DEFAULT_PROGRESS_BAR
