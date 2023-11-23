@@ -19,11 +19,10 @@ import { SideLink } from "./ui/side-link"
 
 export const Sidebar = () => {
   const { t } = useTranslation()
-  const [inboxTasksCount, todayTasksCount, openSettingsModal] = useUnit([
-    $inboxTasksCount,
-    $todayTasksCount,
-    $$modal.open,
-  ])
+  const inboxTasksCount = useUnit($inboxTasksCount)
+  const todayTasksCount = useUnit($todayTasksCount)
+  const openSettingsModal = useUnit($$modal.open)
+
   return (
     <aside className={`border-r-[1px] border-cBorder bg-brand text-primary`}>
       <div className="grid h-full w-[250px] grid-rows-[auto_1fr_auto] flex-col">

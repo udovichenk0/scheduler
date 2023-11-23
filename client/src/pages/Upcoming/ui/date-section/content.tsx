@@ -25,19 +25,12 @@ export const Content = ({
 }) => {
   const { $$createTask, $$updateTask, $$taskDisclosure } =
     useContext(FactoriesContext)
-  const [
-    updatedTaskId,
-    openUpdatedTaskById,
-    createdTask,
-    changeStatusAndUpdate,
-    changeDateAndUpdate,
-  ] = useUnit([
-    $$taskDisclosure.$updatedTaskId,
-    $$taskDisclosure.updatedTaskOpenedById,
-    $$taskDisclosure.$createdTask,
-    $$updateTask.statusChangedAndUpdated,
-    $$updateTask.dateChangedAndUpdated,
-  ])
+  const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
+  const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const createdTask = useUnit($$taskDisclosure.$createdTask)
+  const changeStatusAndUpdate = useUnit($$updateTask.statusChangedAndUpdated)
+  const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
+
   return (
     <div className="select-none border-cBorder text-primary">
       <div>

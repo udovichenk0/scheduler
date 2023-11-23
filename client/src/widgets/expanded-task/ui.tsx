@@ -36,12 +36,11 @@ export const ExpandedTask = ({
   sideDatePicker?: boolean
   rightPanelSlot?: ReactNode
 }) => {
-  const [startDate, changeDate, openDateModal, closeDateModal] = useUnit([
-    modifyTaskModel.$startDate,
-    modifyTaskModel.dateChanged,
-    $$dateModal.open,
-    $$dateModal.close,
-  ])
+  const startDate = useUnit(modifyTaskModel.$startDate)
+  const changeDate = useUnit(modifyTaskModel.dateChanged)
+  const openDateModal = useUnit($$dateModal.open)
+  const closeDateModal = useUnit($$dateModal.close)
+
   const onChangeDate = (date: Date) => {
     closeDateModal()
     changeDate(date)

@@ -79,14 +79,8 @@ export const createPomodoro = ({
     (isWorkTime) => !isWorkTime,
   )
 
-  const {
-    $timer,
-    stopTimer,
-    startTimer,
-    setTimer,
-    $isRunning
-  } = createTimer({
-    defaultTimerDuration: DEFAULT_WORK_TIME
+  const { $timer, stopTimer, startTimer, setTimer, $isRunning } = createTimer({
+    defaultTimerDuration: DEFAULT_WORK_TIME,
   })
 
   const $audio = createStore(notificationSound)

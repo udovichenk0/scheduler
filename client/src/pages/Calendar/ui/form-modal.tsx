@@ -15,8 +15,11 @@ export const TaskFormModal = ({
   $isOpened: Store<boolean>
   onClose: Event<void>
 }) => {
-  const [close, isOpened] = useUnit([onClose, $isOpened])
   const ref = useRef<HTMLDivElement>(null)
+
+  const close = useUnit(onClose)
+  const isOpened = useUnit($isOpened)
+
   if (!isOpened) {
     return null
   }

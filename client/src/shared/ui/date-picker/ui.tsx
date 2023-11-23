@@ -22,10 +22,12 @@ export function DatePicker({
   onCancel: () => void
   onSave: () => void
 }) {
-  const [calendar, setCalendar] = useState(() => generateCalendar(
-    new Date(currentDate).getMonth(),
-    new Date(currentDate).getFullYear(),
-  ))
+  const [calendar, setCalendar] = useState(() =>
+    generateCalendar(
+      new Date(currentDate).getMonth(),
+      new Date(currentDate).getFullYear(),
+    ),
+  )
   const { t } = useTranslation()
   const [date, setDate] = useState(() => dayjs(currentDate))
   const currentSetMonth = date.month()
@@ -38,10 +40,7 @@ export function DatePicker({
   return (
     <div className="p-3">
       <div className="relative mb-4">
-        <MonthSwitcher
-          date={date}
-          changeMonth={changeMonth}
-        />
+        <MonthSwitcher date={date} changeMonth={changeMonth} />
         <WeeksName />
         <div className="absolute left-[30%] top-[50%] -z-[10] flex h-[50px] items-center text-[90px] font-bold text-main opacity-10 invert">
           {addLeadingZero(currentSetMonth + 1)}

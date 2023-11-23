@@ -26,23 +26,15 @@ export const TasksByDate = ({
 }) => {
   const { $$taskDisclosure, $$updateTask, $$createTask } =
     useContext(FactoriesContext)
-  const [
-    createdTask,
-    updatedTaskId,
-    openUpdatedTaskById,
-    changeUpdatedDate,
-    changeCreatedDate,
-    changeStatusAndUpdate,
-    changeDateAndUpdate,
-  ] = useUnit([
-    $$taskDisclosure.$createdTask,
-    $$taskDisclosure.$updatedTaskId,
-    $$taskDisclosure.updatedTaskOpenedById,
-    $$updateTask.dateChanged,
-    $$createTask.dateChanged,
-    $$updateTask.statusChangedAndUpdated,
-    $$updateTask.dateChangedAndUpdated,
-  ])
+
+  const createdTask = useUnit($$taskDisclosure.$createdTask)
+  const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
+  const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const changeUpdatedDate = useUnit($$updateTask.dateChanged)
+  const changeCreatedDate = useUnit($$createTask.dateChanged)
+  const changeStatusAndUpdate = useUnit($$updateTask.statusChangedAndUpdated)
+  const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
+
   useEffect(() => {
     changeUpdatedDate(date.toDate())
     changeCreatedDate(date.toDate())

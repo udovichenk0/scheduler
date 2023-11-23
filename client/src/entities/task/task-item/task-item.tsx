@@ -41,7 +41,7 @@ export const TaskItem = ({
     setIsDateOpened(false)
     onUpdateDate({ date, id: task.id })
   }
-  const isSameDateOrAfter = dayjs(start_date).isSameOrAfter(dayjs()) 
+  const isSameDateOrAfter = dayjs(start_date).isSameOrAfter(dayjs())
   return (
     <div ref={taskRef} className="group flex gap-2">
       <Icon
@@ -49,9 +49,7 @@ export const TaskItem = ({
         name="common/upcoming"
         className="invisible translate-y-1 text-lg text-accent group-hover:visible"
       />
-      <Modal 
-        isOpened={isDateOpened} 
-        onClose={setIsDateOpened}>
+      <Modal isOpened={isDateOpened} onClose={setIsDateOpened}>
         <DatePicker
           currentDate={task.start_date || new Date()}
           onDateChange={onChangeDate}
@@ -70,7 +68,7 @@ export const TaskItem = ({
         <div className="flex w-full select-none gap-3">
           <Checkbox
             iconClassName="fill-cTaskEditDefault"
-            onChange={() => onUpdateStatus({id: task.id, status})}
+            onChange={() => onUpdateStatus({ id: task.id, status })}
             checked={status == "FINISHED"}
           />
           <div>
@@ -78,7 +76,9 @@ export const TaskItem = ({
               {dateLabel && start_date && !dayjs(start_date).isToday() && (
                 <span
                   className={`mr-2 rounded-[5px] px-[5px] text-[12px] ${
-                    isSameDateOrAfter ? "bg-cTimeInterval" : "bg-cTimeIntervalLow"
+                    isSameDateOrAfter
+                      ? "bg-cTimeInterval"
+                      : "bg-cTimeIntervalLow"
                   }`}
                 >
                   {normilizeDate(start_date)}

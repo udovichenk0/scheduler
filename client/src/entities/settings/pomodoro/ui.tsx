@@ -31,24 +31,13 @@ export const PomodoroSettings = () => {
 
 const SettingsWithInputs = () => {
   const { t } = useTranslation()
-  const [
-    changeWorkDuration,
-    changeShortBreak,
-    changeLongBreak,
-    workDuration,
-    shortBreak,
-    longBreak,
-    applySettings,
-  ] = useUnit([
-    workDurationChanged,
-    shortBreakDurationChanged,
-    longBreakDurationChanged,
-    $workDuration,
-    $shortBreakDuration,
-    $longBreakDuration,
-    settingsApplied,
-  ])
-
+  const changeWorkDuration = useUnit(workDurationChanged)
+  const changeShortBreak = useUnit(shortBreakDurationChanged)
+  const changeLongBreak = useUnit(longBreakDurationChanged)
+  const workDuration = useUnit($workDuration)
+  const shortBreak = useUnit($shortBreakDuration)
+  const longBreak = useUnit($longBreakDuration)
+  const applySettings = useUnit(settingsApplied)
   return (
     <div className="mb-6 space-y-3">
       <div className="flex items-center justify-end">
@@ -87,17 +76,11 @@ const SettingsWithInputs = () => {
 
 const SettingsWithCheckboxes = () => {
   const { t } = useTranslation()
-  const [
-    enableAutomaticTimerStart,
-    startAutomatically,
-    isEnabledNotificationSound,
-    setSoundInTheEndTriggered,
-  ] = useUnit([
-    automaticTimerStartEnabled,
-    $isEnabledAutomaticStart,
-    $isEnabledNotificationSound,
-    notificationSoundEnabled,
-  ])
+  const enableAutomaticTimerStart = useUnit(automaticTimerStartEnabled)
+  const startAutomatically = useUnit($isEnabledAutomaticStart)
+  const isEnabledNotificationSound = useUnit($isEnabledNotificationSound)
+  const setSoundInTheEndTriggered = useUnit(notificationSoundEnabled)
+
   return (
     <div className="space-y-3">
       <div className="flex gap-3">

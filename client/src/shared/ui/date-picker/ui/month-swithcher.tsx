@@ -12,14 +12,15 @@ export const MonthSwitcher = ({
   date: Dayjs
 }) => {
   const { t } = useTranslation()
-  const isCurrentDate = dayjs().isSame(date, "month") && dayjs().isSame(date, "year")
+  const isCurrentDate =
+    dayjs().isSame(date, "month") && dayjs().isSame(date, "year")
   return (
     <div className="flex items-center justify-end gap-2">
       <Button
         disabled={isCurrentDate}
         intent={"primary"}
         className="h-6 w-6"
-        onClick={() => changeMonth(date.add(-1, 'month'))}
+        onClick={() => changeMonth(date.add(-1, "month"))}
       >
         <Icon
           name="common/arrow"
@@ -38,7 +39,7 @@ export const MonthSwitcher = ({
       <Button
         intent={"primary"}
         className="h-6 w-6"
-        onClick={() => changeMonth(date.add(1, 'month'))}
+        onClick={() => changeMonth(date.add(1, "month"))}
       >
         <Icon name="common/arrow" className="rotate-90 text-[10px]" />
       </Button>

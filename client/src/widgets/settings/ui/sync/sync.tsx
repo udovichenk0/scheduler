@@ -14,23 +14,25 @@ import { Icon } from "@/shared/ui/icon"
 import { $flow, flowChanged, gate, Flow } from "./sync.modal"
 
 export const Authentication = () => {
-  const [form, selectForm] = useUnit([$flow, flowChanged])
+  const currentFlow = useUnit($flow)
+  const selectForm = useUnit(flowChanged)
+
   useGate(gate)
   return (
     <div className="flex justify-center">
       <div className="w-[391px] text-primary">
-        {form === Flow.email && (
+        {currentFlow === Flow.email && (
           <CheckEmailForm goBack={() => selectForm(Flow.options)} />
         )}
-        {form === Flow.login && (
+        {currentFlow === Flow.login && (
           <Signin goBack={() => selectForm(Flow.email)} />
         )}
-        {form === Flow.register && (
+        {currentFlow === Flow.register && (
           <Signup goBack={() => selectForm(Flow.email)} />
         )}
-        {form === Flow.logout && <Logout />}
-        {form === Flow.options && <AuthOptions />}
-        {form === Flow.verify && (
+        {currentFlow === Flow.logout && <Logout />}
+        {currentFlow === Flow.options && <AuthOptions />}
+        {currentFlow === Flow.verify && (
           <VerifyEmail goBack={() => selectForm(Flow.email)} />
         )}
       </div>

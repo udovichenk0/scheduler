@@ -26,7 +26,9 @@ export const AccentThemeChanger = () => {
   )
 }
 const AccentThemeBox = ({ accent }: { accent: Accent }) => {
-  const [changeAccent, activeAccent] = useUnit([accentChanged, $accent])
+  const changeAccent = useUnit(accentChanged)
+  const activeAccent = useUnit($accent)
+
   const isActive = activeAccent == accent
   return (
     <button

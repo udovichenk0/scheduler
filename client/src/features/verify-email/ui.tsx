@@ -10,11 +10,11 @@ import { $code, codeChanged, submitTriggered } from "./verify.model"
 export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
   const { t } = useTranslation()
   const ref = useRef<HTMLInputElement>(null)
-  const [code, changeCode, onSubmit] = useUnit([
-    $code,
-    codeChanged,
-    submitTriggered,
-  ])
+
+  const code = useUnit($code)
+  const changeCode = useUnit(codeChanged)
+  const onSubmit = useUnit(submitTriggered)
+
   return (
     <AuthTemplate
       title={t("setting.synchronization.verify.title")}

@@ -61,7 +61,7 @@ export const modifyTaskFactory = ({
   })
   sample({
     clock: setStatus,
-    target: $status
+    target: $status,
   })
 
   //* That works well but with prepend it get typescript error
@@ -69,15 +69,15 @@ export const modifyTaskFactory = ({
     //@ts-ignore
     source: statusChanged,
     match: {
-    //@ts-ignore
-      FINISHED: (value) => value == 'FINISHED',
-    //@ts-ignore
+      //@ts-ignore
+      FINISHED: (value) => value == "FINISHED",
+      //@ts-ignore
       INPROGRESS: (value) => value == "INPROGRESS",
     },
     cases: {
-      INPROGRESS: setStatus.prepend(() => 'FINISHED'),
-      FINISHED: setStatus.prepend(() => 'INPROGRESS'),
-    }
+      INPROGRESS: setStatus.prepend(() => "FINISHED"),
+      FINISHED: setStatus.prepend(() => "INPROGRESS"),
+    },
   })
   sample({
     clock: descriptionChanged,

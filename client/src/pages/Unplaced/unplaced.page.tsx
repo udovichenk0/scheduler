@@ -23,31 +23,19 @@ const Unplaced = () => {
   const { t } = useTranslation()
   useDocumentTitle(t("task.unplaced"))
   const taskRef = useRef<HTMLDivElement>(null)
-  const [
-    unplacedTasks,
-    createdTask,
-    updatedTaskId,
-    closeTask,
-    openUpdatedTaskById,
-    openCreatedTask,
-    deleteTaskById,
-    changeStatusAndUpdate,
-    changeDateAndUpdate,
-    selectedTaskId,
-    selectTaskId,
-  ] = useUnit([
-    $unplacedTasks,
-    $$taskDisclosure.$createdTask,
-    $$taskDisclosure.$updatedTaskId,
-    $$taskDisclosure.closeTaskTriggered,
-    $$taskDisclosure.updatedTaskOpenedById,
-    $$taskDisclosure.createdTaskOpened,
-    $$deleteTask.taskDeletedById,
-    $$updateTask.statusChangedAndUpdated,
-    $$updateTask.dateChangedAndUpdated,
-    $$selectTask.$selectedTaskId,
-    $$selectTask.taskIdSelected,
-  ])
+
+  const unplacedTasks = useUnit($unplacedTasks)
+  const createdTask = useUnit($$taskDisclosure.$createdTask)
+  const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
+  const closeTask = useUnit($$taskDisclosure.closeTaskTriggered)
+  const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const openCreatedTask = useUnit($$taskDisclosure.createdTaskOpened)
+  const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
+  const changeStatusAndUpdate = useUnit($$updateTask.statusChangedAndUpdated)
+  const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
+  const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
+  const selectTaskId = useUnit($$selectTask.taskIdSelected)
+
   return (
     <Layout>
       <Layout.Header

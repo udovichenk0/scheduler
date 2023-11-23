@@ -1,4 +1,10 @@
-import { createEffect, scopeBind, createStore, sample, createEvent } from "effector"
+import {
+  createEffect,
+  scopeBind,
+  createStore,
+  sample,
+  createEvent,
+} from "effector"
 
 export const createTimer = ({
   defaultTimerDuration = 1500,
@@ -13,20 +19,22 @@ export const createTimer = ({
 
   const $timer = createStore(defaultTimerDuration)
   const $isRunning = createStore(false)
-  const $worker = createStore(new Worker('src/shared/lib/pomodoro/worker.ts'))
-  
+  const $worker = createStore(new Worker("src/shared/lib/pomodoro/worker.ts"))
+
   const startListeningFx = createEffect((worker: Worker) => {
     const scopedWorkerTick = scopeBind(workerEvent)
     worker.onmessage = scopedWorkerTick
   })
-  const $isWorkerListening = createStore(false)
-    .on(startListeningFx.done, () => true);
+  const $isWorkerListening = createStore(false).on(
+    startListeningFx.done,
+    () => true,
+  )
 
   sample({
     clock: workerEvent,
-    filter: ({data}) => !!data.isRunning,
+    filter: ({ data }) => !!data.isRunning,
     fn: () => ({}),
-    target: tick
+    target: tick,
   })
   sample({
     clock: tick,
@@ -36,41 +44,41 @@ export const createTimer = ({
   })
 
   const startTimerFx = createEffect((worker: Worker) => {
-    worker.postMessage({command: 'start'})
+    worker.postMessage({ command: "start" })
   })
   const stopTimerFx = createEffect((worker: Worker) => {
-    worker.postMessage({command: 'stop'})
-  })  
+    worker.postMessage({ command: "stop" })
+  })
   sample({
     clock: startTimer,
     fn: () => true,
-    target: $isRunning
+    target: $isRunning,
   })
   sample({
     clock: stopTimer,
     fn: () => false,
-    target: $isRunning
+    target: $isRunning,
   })
-  
+
   sample({
     clock: startTimer,
     source: $worker,
-    filter: worker => !worker.onmessage,
-    target: startListeningFx
+    filter: (worker) => !worker.onmessage,
+    target: startListeningFx,
   })
   sample({
     clock: startTimer,
     source: $worker,
-    target: startTimerFx
+    target: startTimerFx,
   })
   sample({
     clock: stopTimer,
     source: $worker,
-    target: stopTimerFx
+    target: stopTimerFx,
   })
   sample({
     clock: setTimer,
-    target: $timer
+    target: $timer,
   })
 
   return {

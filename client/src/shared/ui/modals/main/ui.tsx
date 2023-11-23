@@ -17,11 +17,10 @@ export const MainModal = ({
   title,
   className,
 }: ModalProps) => {
-  const [clickOutsideTriggered, closeModal, isOpened] = useUnit([
-    modal.clickOutsideTriggered,
-    modal.close,
-    modal.$isOpened,
-  ])
+  const clickOutsideTriggered = useUnit(modal.clickOutsideTriggered)
+  const closeModal = useUnit(modal.close)
+  const isOpened = useUnit(modal.$isOpened)
+
   const ref = useRef<HTMLDivElement>(null)
   if (!isOpened) {
     return null
