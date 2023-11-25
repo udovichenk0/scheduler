@@ -36,10 +36,6 @@ export const router = createHistoryRouter({
       route: [routes.unplaced],
       path: "/unplaced",
     },
-    {
-      route: routes.unplaced,
-      path: "/notfound",
-    },
   ],
   notFoundRoute: routes.notFoundRoute,
 })
