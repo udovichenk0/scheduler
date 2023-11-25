@@ -59,8 +59,8 @@ export const ProgressCircle = ({
           strokeDasharray="848"
         ></circle>
         <text
-          x="22%"
           y="51%"
+          x="16%"
           fontSize={60}
           className={isWorkTime ? "fill-cPomodoroRed" : "fill-cPomodoroGreen"}
         >
