@@ -24,8 +24,8 @@ export function DatePicker({
 }) {
   const [calendar, setCalendar] = useState(() =>
     generateCalendar(
-      new Date(currentDate).getMonth(),
       new Date(currentDate).getFullYear(),
+      new Date(currentDate).getMonth(),
     ),
   )
   const { t } = useTranslation()
@@ -34,7 +34,7 @@ export function DatePicker({
   const changeMonth = (date: Dayjs) => {
     if (date.month() >= date.month() && date.year() >= date.year()) {
       setDate(date)
-      setCalendar(generateCalendar(date.month(), date.year()))
+      setCalendar(generateCalendar(date.year(), date.month()))
     }
   }
   return (
