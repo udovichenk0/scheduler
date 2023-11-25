@@ -25,7 +25,7 @@ export const $$taskDisclosure = disclosureTask({
 })
 
 export const $$deleteTask = removeTaskFactory()
-export const FactoriesContext = createContext({
+export const TaskManagerContext = createContext({
   $$updateTask,
   $$createTask,
   $$taskDisclosure,

@@ -7,7 +7,7 @@ import { Task, TaskItem } from "@/entities/task/task-item"
 
 import { TaskId } from "@/shared/api/task"
 
-import { FactoriesContext } from "../../upcoming.model"
+import { TaskManagerContext } from "../../upcoming.model"
 
 export const Content = ({
   taskRef,
@@ -24,7 +24,7 @@ export const Content = ({
   selectedTaskId: Nullable<TaskId>
 }) => {
   const { $$createTask, $$updateTask, $$taskDisclosure } =
-    useContext(FactoriesContext)
+    useContext(TaskManagerContext)
   const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
   const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpenedById)
   const createdTask = useUnit($$taskDisclosure.$createdTask)

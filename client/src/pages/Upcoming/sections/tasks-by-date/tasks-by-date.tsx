@@ -9,7 +9,7 @@ import { TaskItem, Task } from "@/entities/task/task-item"
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { TaskId } from "@/shared/api/task"
 
-import { FactoriesContext } from "../../upcoming.model"
+import { TaskManagerContext } from "../../upcoming.model"
 
 export const TasksByDate = ({
   taskRef,
@@ -25,7 +25,7 @@ export const TasksByDate = ({
   date: Dayjs
 }) => {
   const { $$taskDisclosure, $$updateTask, $$createTask } =
-    useContext(FactoriesContext)
+    useContext(TaskManagerContext)
 
   const createdTask = useUnit($$taskDisclosure.$createdTask)
   const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
