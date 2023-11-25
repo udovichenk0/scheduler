@@ -17,7 +17,7 @@ import {
   $tasksByDate,
   $variant,
   variantSelected,
-  FactoriesContext,
+  TaskManagerContext,
   $$createTask,
   $$updateTask,
   $tasksByDateKv,
@@ -73,7 +73,7 @@ const Upcoming = () => {
           variant={variant}
           $tasksByDateKv={$tasksByDateKv}
         />
-        <FactoriesContext.Provider
+        <TaskManagerContext.Provider
           value={{
             $$createTask,
             $$updateTask,
@@ -98,7 +98,7 @@ const Upcoming = () => {
               selectedTaskId={selectedTaskId}
             />
           )}
-        </FactoriesContext.Provider>
+        </TaskManagerContext.Provider>
       </Layout.Content>
       <Layout.Footer
         selectedTaskId={selectedTaskId}
