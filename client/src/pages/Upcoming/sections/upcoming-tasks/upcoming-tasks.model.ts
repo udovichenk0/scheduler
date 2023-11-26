@@ -1,208 +1,150 @@
-import { combine, sample } from "effector"
 import dayjs, { Dayjs } from "dayjs"
 
 import { $$task, Task } from "@/entities/task/task-item"
 
-import { takeNextTaskId } from "@/shared/lib/effector/task-selection"
+import { i18n } from "@/shared/i18n"
+import { lowerCase } from "@/shared/lib/typography"
+import { LONG_MONTHS_NAMES, LONG_WEEKS_NAMES } from "@/shared/config/constants"
 
 import {
   MIN_DATES_LENGTH,
   MIN_MONTHS_LENGTH,
-  generateRemainingDaysOfMonth,
-  generateRemainingMonthsOfYear,
+  generateSequentialDates,
+  generateSequentialMonths,
 } from "../../config"
-import {
-  $$deleteTask,
-  $selectedUpcomingTaskId,
-  upcomingTaskIdSelected,
-} from "../../upcoming.model"
 
-export const $groupedTasksByYear = $$task.$taskKv.map((kv) => {
-  const upcomingTasks = Object.values(kv).filter(
-    ({ start_date }) =>
-      start_date && dayjs(start_date).isSameOrAfter(dayjs(), "date"),
-  )
-  return groupTasksByYear(upcomingTasks)
+//! main store with filter(props(date if i want to choose date)) and pass computed to components
+
+export const $generateTasks = $$task.$taskKv.map((kv) => {
+  const tasks = Object.values(kv)
+  const first = getTasksPerDate(tasks)
+  const second = getTasksForRemainingMonth(tasks)
+  const third = getTasksPerMonth(tasks)
+  const fourth = getTasksForRemainingYear(tasks)
+  const fifth = getTasksPerYear(tasks)
+  return first.concat(second, third, fourth, fifth)
 })
-export const $upcomingYears = $groupedTasksByYear.map((groupedTasksByYear) => {
-  // for example if today is a day before a new year we don't want to show upcoming year as a year section
-  const futureYear = dayjs()
-    .add(MIN_DATES_LENGTH, "day")
-    .add(MIN_MONTHS_LENGTH, "month")
-    .format("YYYY")
-  const currentYear = dayjs().format("YYYY")
-  const result = []
-  for (const [year, tasks] of Object.entries(groupedTasksByYear) || []) {
-    if (year != currentYear && year != futureYear) {
-      result.push({
-        year,
-        tasks,
-      })
+function getTasksPerDate(tasks: Task[]) {
+  return generateSequentialDates().map((date) => {
+    const t = tasks.filter(({ start_date }) => {
+      return dayjs(start_date).isSame(date, "date")
+    })
+    const isCurrentMonth = dayjs().isSame(date, "month")
+    return {
+      tasks: t,
+      title: `${date.date()} ${
+        !isCurrentMonth
+          ? lowerCase(i18n.t(LONG_MONTHS_NAMES[dayjs(date).month()]))
+          : ""
+      } ${getFormattedDateSuffix(date)}`,
+      date,
     }
+  })
+}
+
+function getTasksForRemainingMonth(tasks: Task[]) {
+  const firstDay = dayjs().add(MIN_DATES_LENGTH, "day").startOf("date")
+
+  const lastDay = dayjs(firstDay).endOf("month")
+
+  const t = tasks.filter(
+    ({ start_date }) =>
+      start_date &&
+      isSameDateOrBetween({
+        date: start_date,
+        firstDate: firstDay,
+        lastDate: lastDay,
+      }),
+  )
+  return {
+    tasks: t,
+    title: `${lowerCase(
+      i18n.t(LONG_MONTHS_NAMES[firstDay.month()]),
+    )} ${firstDay.date()}-${lastDay.date()}`,
+    date: firstDay,
   }
-  return result
-})
+}
+function getTasksPerMonth(tasks: Task[]) {
+  return generateSequentialMonths().map((date) => {
+    const row = tasks?.filter(({ start_date }) => {
+      if (!start_date) return
+      return (
+        dayjs(start_date).isSame(date, "month") &&
+        dayjs(start_date).isSame(date, "year")
+      )
+    })
 
-export const $remainingDays = $groupedTasksByYear.map((groupedTasksByYear) => {
-  const currentYear = dayjs().format("YYYY")
-  const firstDayOfRemainingDays = dayjs()
+    return {
+      tasks: row,
+      date,
+      title: `${lowerCase(i18n.t(LONG_MONTHS_NAMES[date.month()]))}`,
+    }
+  })
+}
+function getTasksForRemainingYear(tasks: Task[]) {
+  const date = dayjs()
     .add(MIN_DATES_LENGTH, "day")
-    .startOf("date")
-  const lastDayOfRemainingDays = dayjs(firstDayOfRemainingDays).endOf("month")
+    .add(MIN_MONTHS_LENGTH + 1, "month")
+  const firstDate = date.startOf("month")
+  const lastDate = date.endOf("year")
 
-  const tasks = groupedTasksByYear[currentYear]?.filter(({ start_date }) => {
+  const t = tasks?.filter(({ start_date }) => {
     return (
       start_date &&
       isSameDateOrBetween({
         date: start_date,
-        firstDate: firstDayOfRemainingDays,
-        lastDate: lastDayOfRemainingDays,
+        firstDate: firstDate,
+        lastDate: lastDate,
       })
     )
   })
-  const isLastDateOfMonth = firstDayOfRemainingDays.isSame(
-    lastDayOfRemainingDays,
-    "date",
-  )
+  const isLastMonthOfYear = firstDate.isSame(lastDate, "month")
   return {
-    tasks,
-    isLastDate: isLastDateOfMonth,
-    dateRange: {
-      start: firstDayOfRemainingDays.date(),
-      end: lastDayOfRemainingDays.date(),
-    },
-    date: dayjs(firstDayOfRemainingDays),
+    title: isLastMonthOfYear
+      ? lowerCase(i18n.t(LONG_MONTHS_NAMES[firstDate.month()]))
+      : `${lowerCase(
+          i18n.t(LONG_MONTHS_NAMES[firstDate.month()]),
+        )}\u2013${lowerCase(i18n.t(LONG_MONTHS_NAMES[lastDate.month()]))}`,
+    tasks: t,
+    date: firstDate,
   }
-})
-
-export const $remainingMonths = $groupedTasksByYear.map(
-  (groupedTasksByYear) => {
-    const date = dayjs()
-      .add(MIN_DATES_LENGTH, "day")
-      .add(MIN_MONTHS_LENGTH + 1, "month")
-    const firstDateOfRemainingMonths = date.startOf("month")
-    const lastDateOfRemainingMonths = date.endOf("year")
-    const year = firstDateOfRemainingMonths.format("YYYY")
-
-    const tasks = groupedTasksByYear[year]?.filter(({ start_date }) => {
-      return (
-        start_date &&
-        isSameDateOrBetween({
-          date: start_date,
-          firstDate: firstDateOfRemainingMonths,
-          lastDate: lastDateOfRemainingMonths,
-        })
-      )
-    })
-    const isLastMonthOfYear = firstDateOfRemainingMonths.isSame(
-      lastDateOfRemainingMonths,
-      "month",
-    )
-    return {
-      tasks,
-      startDate: firstDateOfRemainingMonths.month(),
-      isLastMonth: isLastMonthOfYear,
-      endDate: lastDateOfRemainingMonths.month(),
-      date: dayjs()
-        .year(firstDateOfRemainingMonths.year())
-        .month(firstDateOfRemainingMonths.month())
-        .startOf("month"),
-    }
-  },
-)
-
-export const $monthsListKv = $groupedTasksByYear.map((groupedTasksByYear) => {
-  return generateRemainingMonthsOfYear().map((date) => {
-    const year = dayjs().format("YYYY")
-    const tasks = getTasksForMonth(date, groupedTasksByYear[year])
-    return {
-      tasks,
-      date,
-    }
-  })
-})
-
-export const $daysListKv = $groupedTasksByYear.map((groupedTasksByYear) => {
-  return generateRemainingDaysOfMonth().map((date) => {
-    const year = dayjs().format("YYYY")
-    const tasks = getTasksByDate(date, groupedTasksByYear[year])
-    return {
-      tasks,
-      date,
-    }
-  })
-})
-export const $selectedNextTaskId = combine(
-  $selectedUpcomingTaskId,
-  $daysListKv,
-  $monthsListKv,
-  $remainingMonths,
-  $remainingDays,
-  $upcomingYears,
-  (
-    selectedTaskId,
-    daysListKv,
-    monthsListKv,
-    remainingMonths,
-    remainingDays,
-    upcomingYears,
-  ) => {
-    if (!selectedTaskId) return null
-    const daysList = daysListKv?.map(({ tasks }) => tasks)
-    const monthsList = monthsListKv?.map(({ tasks }) => tasks)
-    const yearsList = upcomingYears?.map(({ tasks }) => tasks)
-    const nextIndex = [
-      ...daysList,
-      ...monthsList,
-      ...yearsList,
-      remainingMonths.tasks,
-      remainingDays.tasks,
-    ].find((tasks) => {
-      if (!tasks?.length) return
-      return tasks.find((task) => task.id == selectedTaskId)
-    })
-    const nextTaskId = takeNextTaskId(nextIndex!, selectedTaskId)
-    console.log(nextTaskId)
-    return nextTaskId
-  },
-)
-
-sample({
-  clock: $$deleteTask.taskDeletedById,
-  source: $selectedNextTaskId,
-  filter: (taskId) => !!taskId,
-  target: upcomingTaskIdSelected,
-})
-function getTasksForMonth(date: Dayjs, tasks: Task[]) {
-  return tasks?.filter(({ start_date }) => {
-    if (!start_date) return
-    return (
-      dayjs(start_date).isSame(date, "month") &&
-      dayjs(start_date).isSame(date, "year")
-    )
-  })
 }
-
-function getTasksByDate(date: Dayjs, tasks: Task[]) {
-  return tasks?.filter(({ start_date }) => {
-    if (!start_date) return
-    return dayjs(start_date).isSame(date, "date")
-  })
-}
-
-function groupTasksByYear(array: Task[]) {
-  return array.reduce(
-    (groups, task) => {
-      const year = dayjs(task.start_date).format("YYYY")
-      if (!groups[year]) {
-        groups[year] = []
+function getTasksPerYear(tasks: Task[]) {
+  const futureYear = dayjs()
+    .add(MIN_DATES_LENGTH, "day")
+    .add(MIN_MONTHS_LENGTH, "month")
+    .format("YYYY")
+  const groupedTasksByYear = tasks.reduce(
+    (acc, task) => {
+      if (!task.start_date) return acc
+      const taskYear = dayjs(task?.start_date).format("YYYY")
+      if (taskYear > futureYear) {
+        if (acc[taskYear]) {
+          acc[taskYear].tasks.push(task)
+        } else {
+          acc[taskYear] = {
+            tasks: [task],
+            date: dayjs(task.start_date).startOf("year"),
+            title: taskYear,
+          }
+        }
+        return acc
       }
-      groups[year].push(task)
-      return groups
+      return acc
     },
-    {} as Record<string, Task[]>,
+    {} as Record<string, { tasks: Task[]; date: Dayjs; title: string }>,
   )
+  return Object.values(groupedTasksByYear)
 }
+function getFormattedDateSuffix(date: Dayjs) {
+  if (date.isToday()) {
+    return lowerCase(i18n.t("date.today"))
+  } else if (date.isTomorrow()) {
+    return lowerCase(i18n.t("date.tomorrow"))
+  }
+  return lowerCase(i18n.t(LONG_WEEKS_NAMES[date.day()]))
+}
+
 function isSameDateOrBetween({
   date,
   firstDate,
