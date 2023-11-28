@@ -58,6 +58,7 @@ export const TaskItem = ({
         />
       </Modal>
       <Button
+        id="task"
         intent={"primary"}
         onDoubleClick={onDoubleClick}
         onClick={onClick}
@@ -65,7 +66,9 @@ export const TaskItem = ({
           isTaskSelected && "bg-cFocus"
         } flex w-full select-none items-center p-2 text-sm`}
       >
-        <div className="flex w-full select-none gap-3">
+        <div
+          id='task'
+          className="flex w-full select-none gap-3">
           <Checkbox
             iconClassName="fill-cTaskEditDefault"
             onChange={() => onUpdateStatus({ id: task.id, status })}
