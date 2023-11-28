@@ -1,40 +1,44 @@
 import { useUnit } from "effector-react"
-import { RefObject, MouseEvent } from "react"
+import { RefObject } from "react"
 import { Store } from "effector"
+import dayjs, { Dayjs } from "dayjs"
+
+import { Task } from "@/entities/task/task-item"
 
 import { TaskId } from "@/shared/api/task"
 
 import { SectionRoot } from "../../ui/date-section/root"
 
-import { $generateTasks } from "./upcoming-tasks.model"
 
 export const AllUpcomingTasks = ({
   $selectedDate,
   changeDate,
   taskRef,
+  tasks,
   selectTaskId,
   selectedTaskId,
-  $nextDate,
 }: {
   $selectedDate: Store<Date>
   changeDate: (date: Date) => void
   taskRef: RefObject<HTMLDivElement>
-  selectTaskId: (e: MouseEvent, taskId: Nullable<TaskId>) => void
+  selectTaskId: (taskId: Nullable<TaskId>) => void
+  tasks: {
+    tasks: Task[],
+    title: string,
+    date: Dayjs
+  }[],
   selectedTaskId: Nullable<TaskId>
-  $nextDate: Store<Date>
 }) => {
   const selectedDate = useUnit($selectedDate)
-  const nextDate = useUnit($nextDate)
-  const generatedTasks = useUnit($generateTasks)
 
   return (
     <>
-      {generatedTasks.map(({ tasks, title, date }) => {
+      {tasks.map(({ tasks, title, date }) => {
         return (
           <SectionRoot key={title}>
             <SectionRoot.Header
               action={() => changeDate(new Date(date.toISOString()))}
-              isNextSelectedTask={date.isSame(nextDate, "day")}
+              isNextSelectedTask={dayjs(selectedDate).isSame(date, "day")}
             >
               {title}
             </SectionRoot.Header>
