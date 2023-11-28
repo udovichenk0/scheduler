@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next"
 import { Layout } from "@/widgets/layout/main"
 
 import { useDocumentTitle, onClickOutside } from "@/shared/lib/react"
-import { TaskId } from "@/shared/api/task"
 
 import { AllUpcomingTasks } from "./sections/upcoming-tasks"
 import {
@@ -13,24 +12,22 @@ import {
   $selectedDate,
   currentDateSelected,
   $$taskDisclosure,
-  $nextDate,
-  $tasksByDate,
   $variant,
   variantSelected,
   TaskManagerContext,
   $$createTask,
   $$updateTask,
   $tasksByDateKv,
-  upcomingTaskIdSelected,
+  $upcomingTasks,
+  $tasksByDate,
+  selectTaskId,
   $selectedTaskId,
-  $$selectTask,
 } from "./upcoming.model"
 import { TasksByDate } from "./sections/tasks-by-date"
 import { HeaderTitle } from "./ui/header-title"
 import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer/variant-changer"
 const Upcoming = () => {
   const expandedTaskRef = useRef<HTMLDivElement>(null)
-  const taskItemRef = useRef<Nullable<HTMLDivElement>>(null)
   const { t } = useTranslation()
   useDocumentTitle(t("task.upcoming"))
 
@@ -38,21 +35,17 @@ const Upcoming = () => {
   const openCreatedTask = useUnit($$taskDisclosure.createdTaskOpened)
   const changeDate = useUnit(currentDateSelected)
   const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
-  const tasks = useUnit($tasksByDate)
+  const upcomingTasks = useUnit($upcomingTasks)
+  const tasksByDate = useUnit($tasksByDate)
   const variant = useUnit($variant)
   const selectVariant = useUnit(variantSelected)
+  const onSelectUpcomingTaskId = useUnit(selectTaskId)
   const selectedTaskId = useUnit($selectedTaskId)
-  const selectUpcomingTaskId = useUnit(upcomingTaskIdSelected)
-  const selectTaskId = useUnit($$selectTask.taskIdSelected)
 
-  const handleOnClick = (e: MouseEvent, taskId: Nullable<TaskId>) => {
-    selectUpcomingTaskId(taskId)
-    taskItemRef.current = e.target as HTMLDivElement
-  }
   const resetSelectedTaskId = (e: MouseEvent) => {
-    if (taskItemRef.current && taskItemRef.current !== e.target) {
-      if (taskItemRef.current !== e.target) selectUpcomingTaskId(null)
-      taskItemRef.current = null
+    const t = e.target as HTMLDivElement
+    if (t.id != 'task') {
+      onSelectUpcomingTaskId(null)
     }
   }
   return (
@@ -82,8 +75,8 @@ const Upcoming = () => {
         >
           {variant === "upcoming" ? (
             <AllUpcomingTasks
-              $nextDate={$nextDate}
-              selectTaskId={handleOnClick}
+              tasks={upcomingTasks}
+              selectTaskId={onSelectUpcomingTaskId}
               selectedTaskId={selectedTaskId}
               changeDate={changeDate}
               $selectedDate={$selectedDate}
@@ -92,9 +85,9 @@ const Upcoming = () => {
           ) : (
             <TasksByDate
               date={variant}
-              tasks={tasks}
+              tasks={tasksByDate}
               taskRef={expandedTaskRef}
-              selectTaskId={selectTaskId}
+              selectTaskId={onSelectUpcomingTaskId}
               selectedTaskId={selectedTaskId}
             />
           )}

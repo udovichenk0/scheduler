@@ -7,16 +7,25 @@ import { TaskId } from "@/shared/api/task"
 export const selectTaskFactory = ($tasks: Store<Task[]>) => {
   const reset = createEvent()
   const taskIdSelected = createEvent<Nullable<TaskId>>()
-  const nextTaskIdSelected = createEvent<TaskId>()
+  const nextTaskIdSelected = createEvent()
   const $selectedTaskId = createStore<Nullable<TaskId>>(null).reset(reset)
   sample({
     clock: taskIdSelected,
     target: $selectedTaskId,
   })
+  type ArgInp = {
+    tasks: Task[],
+    selectedTaskId: Nullable<TaskId>
+  }
+  type ArgOut = {
+    tasks: Task[],
+    selectedTaskId: TaskId
+  }
   sample({
     clock: nextTaskIdSelected,
-    source: $tasks,
-    fn: (task, id) => takeNextTaskId(task, id),
+    source: {tasks: $tasks, selectedTaskId: $selectedTaskId},
+    filter: (params: ArgInp): params is ArgOut => !!params.selectedTaskId,
+    fn: ({tasks, selectedTaskId}) => getNextTaskId(tasks, selectedTaskId),
     target: $selectedTaskId,
   })
   return {
@@ -26,10 +35,14 @@ export const selectTaskFactory = ($tasks: Store<Task[]>) => {
     reset,
   }
 }
-export function takeNextTaskId(tasks: Task[], current: TaskId) {
-  const index = tasks?.findIndex((task) => task.id == current)
-  if (tasks?.[index + 1]) {
+export function getNextTaskId(tasks: Task[], selectedTaskId: TaskId) {
+  if(!selectedTaskId) return null
+  const index = tasks?.findIndex((task) => task.id == selectedTaskId)
+  if (index >= 0 && tasks?.[index + 1]) {
     return tasks[index + 1].id
+  }
+  if(index >= 0 && tasks?.[index - 1]){
+    return tasks[index - 1].id
   }
   return null
 }
