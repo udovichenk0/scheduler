@@ -26,8 +26,11 @@ import {
   $$taskDisclosure,
   $$updateTask,
   $$createTask,
-  $$selectTask,
+  $$filter,
+  $selectedTaskId,
+  selectTaskId,
 } from "./today.model"
+import { FILTER_CONFIG } from "./config"
 
 const Today = () => {
   const { t } = useTranslation()
@@ -39,10 +42,12 @@ const Today = () => {
   const openCreatedTask = useUnit($$taskDisclosure.createdTaskOpened)
   const createdTask = useUnit($$taskDisclosure.$createdTask)
   const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
-  const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
-  const selectTaskById = useUnit($$selectTask.taskIdSelected)
   const overdueTasks = useUnit($overdueTasks)
+  const selectedTaskId = useUnit($selectedTaskId)
+  const onSelectId = useUnit(selectTaskId)
   const todayTasks = useUnit($todayTasks)
+  const onFilterSelect = useUnit($$filter.sort)
+  const activeFilter = useUnit($$filter.$sortType)
 
   return (
     <Suspense fallback={<div>loading</div>}>
@@ -50,23 +55,28 @@ const Today = () => {
         <Layout.Header
           iconName="common/outlined-star"
           title={t("task.today")}
+          filter={{
+            onChange: onFilterSelect,
+            active: activeFilter,
+            config: FILTER_CONFIG,
+          }}
         />
         <Layout.Content
           contentRef={taskItemRef}
           className="flex flex-col"
           onClick={(e) => {
             onClickOutside(expandedTaskRef, e, closeTask)
-            clickOnElement(taskItemRef, e, () => selectTaskById(null))
+            clickOnElement(taskItemRef, e, () => onSelectId(null))
           }}
         >
           <OverdueTasks
             taskRef={expandedTaskRef}
-            selectTaskId={selectTaskById}
+            selectTaskId={onSelectId}
             selectedTaskId={selectedTaskId}
           />
           <TodayTasks
             taskRef={expandedTaskRef}
-            selectTaskId={selectTaskById}
+            selectTaskId={onSelectId}
             selectedTaskId={selectedTaskId}
           />
           <NoTasks

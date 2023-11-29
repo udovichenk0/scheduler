@@ -22,10 +22,12 @@ import {
   $tasksByDate,
   selectTaskId,
   $selectedTaskId,
+  $$filter,
 } from "./upcoming.model"
 import { TasksByDate } from "./sections/tasks-by-date"
 import { HeaderTitle } from "./ui/header-title"
 import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer/variant-changer"
+import { FILTER_CONFIG } from "./config"
 const Upcoming = () => {
   const expandedTaskRef = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
@@ -41,6 +43,8 @@ const Upcoming = () => {
   const selectVariant = useUnit(variantSelected)
   const onSelectUpcomingTaskId = useUnit(selectTaskId)
   const selectedTaskId = useUnit($selectedTaskId)
+  const sortType = useUnit($$filter.$sortType)
+  const onFilter = useUnit($$filter.sort)
 
   const resetSelectedTaskId = (e: MouseEvent) => {
     const t = e.target as HTMLDivElement
@@ -51,6 +55,11 @@ const Upcoming = () => {
   return (
     <Layout>
       <Layout.Header
+        filter={{
+          config: FILTER_CONFIG,
+          active: sortType,
+          onChange: onFilter
+        }}
         iconName="common/upcoming"
         title={<HeaderTitle variant={variant} />}
       />

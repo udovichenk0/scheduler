@@ -2,7 +2,19 @@ import dayjs, { Dayjs } from "dayjs"
 
 export const MIN_DATES_LENGTH = 14
 export const MIN_MONTHS_LENGTH = 3
-export function generateRemainingDaysOfMonth() {
+
+export const FILTER_CONFIG = [
+  {
+    value: "alph_desc" as const,
+    label: "By alphabet(desc)",
+  },
+  {
+    value: "alph_asc" as const,
+    label: "By alphabet(asc)",
+  },
+]
+
+export function generateSequentialDates() {
   let dayCounter = dayjs().date()
   return new Array(MIN_DATES_LENGTH).fill(null).map(() => {
     const date = dayjs().date(dayCounter).startOf("date")
@@ -11,7 +23,7 @@ export function generateRemainingDaysOfMonth() {
   })
 }
 
-export function generateRemainingMonthsOfYear() {
+export function generateSequentialMonths() {
   const nextMonth = dayjs().add(MIN_DATES_LENGTH, "day").month() + 1
   let monthCounter = nextMonth
   return new Array(MIN_MONTHS_LENGTH).fill(null).map(() => {
