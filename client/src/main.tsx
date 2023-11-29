@@ -38,7 +38,7 @@ sample({
 })
 
 const scope = fork()
-await allSettled(init, { scope })
+allSettled(init, { scope })
 createRoot(document.getElementById("root") as HTMLElement).render(
   <I18nextProvider i18n={$$i18n.i18n}>
     <RouterProvider router={router}>

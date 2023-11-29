@@ -1,5 +1,5 @@
 import dayjs from "dayjs"
-import { createEvent, createStore, sample } from "effector"
+import { createEvent, createStore, sample, combine } from "effector"
 
 import { disclosureTask } from "@/widgets/expanded-task/model"
 
@@ -7,10 +7,11 @@ import { removeTaskFactory } from "@/features/manage-task/model/delete"
 import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
 
-import { $$task } from "@/entities/task/task-item"
+import { $$task, createFilter } from "@/entities/task/task-item"
 
 import { cookiePersist } from "@/shared/lib/effector/cookie-persist"
-import { selectTaskFactory } from "@/shared/lib/effector"
+import { getNextTaskId } from "@/shared/lib/effector"
+import { TaskId } from "@/shared/api/task"
 export const $$deleteTask = removeTaskFactory()
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
@@ -22,20 +23,54 @@ export const $$taskDisclosure = disclosureTask({
   updateTaskModel: $$updateTask,
   createTaskModel: $$createTask,
 })
-
-export const $overdueTasks = $$task.$taskKv.map((kv) => {
-  return Object.values(kv).filter(
+export const $$filter = createFilter()
+const $tasks = combine($$task.$taskKv, $$filter.$sortType, (kv, sortType) => {
+  const tasks = Object.values(kv).filter(
     ({ start_date }) =>
-      start_date && dayjs(start_date).isBefore(dayjs(), "date"),
+      dayjs(start_date).isSame(dayjs(), "day") ||
+      dayjs(start_date).isBefore(dayjs(), "date"),
   )
+  return $$filter.filterBy(sortType, tasks)
 })
-export const $$selectTask = selectTaskFactory($overdueTasks)
 
-export const $todayTasks = $$task.$taskKv.map((kv) => {
-  return Object.values(kv).filter(({ start_date }) =>
-    dayjs(start_date).isSame(dayjs(), "day"),
+/**
+ * !make "Today" task type
+ * !Overdue task only can be if it was created as "Today" previously
+ */
+export const $overdueTasks = $tasks.map((tasks) => {
+  return (
+    tasks?.filter(
+      ({ start_date }) =>
+        start_date && dayjs(start_date).isBefore(dayjs(), "date"),
+    ) || []
   )
 })
+export const $todayTasks = $tasks.map((tasks) => {
+  return (
+    tasks?.filter(({ start_date }) =>
+      dayjs(start_date).isSame(dayjs(), "day"),
+    ) || []
+  )
+})
+
+export const selectTaskId = createEvent<Nullable<TaskId>>()
+export const selectNextId = createEvent<TaskId>()
+export const $selectedTaskId = createStore<Nullable<TaskId>>(null)
+  .on(selectTaskId, (_, id) => id)
+
+sample({
+  clock: selectNextId,
+  source: {t: $todayTasks, o: $overdueTasks},
+  fn: ({t,o}, id) => {
+    const tId = getNextTaskId(t, id)
+    if(tId) return tId
+    const oId = getNextTaskId(o, id)
+    if(oId) return oId
+    return null
+  },
+  target: $selectedTaskId
+})
+
 export const $isOverdueTasksOpened = createStore(false)
 export const toggleOverdueTasksOpened = createEvent()
 
@@ -52,5 +87,5 @@ cookiePersist({
 
 sample({
   clock: $$deleteTask.taskDeletedById,
-  target: $$selectTask.nextTaskIdSelected,
+  target: selectNextId
 })

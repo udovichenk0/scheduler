@@ -13,11 +13,14 @@ import { useDocumentTitle, onClickOutside } from "@/shared/lib/react"
 import {
   $$createTask,
   $$deleteTask,
-  $$selectTask,
+  $$filter,
   $$taskDisclosure,
   $$updateTask,
+  $selectedTaskId,
   $unplacedTasks,
+  selectTaskId,
 } from "./unplaced.model"
+import { FILTER_CONFIG } from "./config"
 
 const Unplaced = () => {
   const { t } = useTranslation()
@@ -33,14 +36,21 @@ const Unplaced = () => {
   const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
   const changeStatusAndUpdate = useUnit($$updateTask.statusChangedAndUpdated)
   const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
-  const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
-  const selectTaskId = useUnit($$selectTask.taskIdSelected)
+  const selectedTaskId = useUnit($selectedTaskId)
+  const onSelectTaskId = useUnit(selectTaskId)
+  const onFilterSelect = useUnit($$filter.sort)
+  const activeFilter = useUnit($$filter.$sortType)
 
   return (
     <Layout>
       <Layout.Header
         iconName="common/cross-arrows"
         title={t("task.unplaced")}
+        filter={{
+          onChange: onFilterSelect,
+          active: activeFilter,
+          config: FILTER_CONFIG,
+        }}
       />
       <Layout.Content onClick={(e) => onClickOutside(taskRef, e, closeTask)}>
         {unplacedTasks?.map((task, id) => {
@@ -57,7 +67,7 @@ const Unplaced = () => {
                   onUpdateDate={changeDateAndUpdate}
                   onUpdateStatus={changeStatusAndUpdate}
                   isTaskSelected={selectedTaskId === task.id}
-                  onClick={() => selectTaskId(task.id)}
+                  onClick={() => onSelectTaskId(task.id)}
                   onDoubleClick={() => openUpdatedTaskById(task.id)}
                   task={task}
                 />

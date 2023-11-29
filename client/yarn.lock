@@ -1438,7 +1438,7 @@ effector-storage@^6.0.1:
   resolved "https://registry.yarnpkg.com/effector-storage/-/effector-storage-6.0.1.tgz#da4530f4ad8cc7e5d9466e3e5ccdc260a4482ded"
   integrity sha512-uIPbVnBYyJLhfQnJ35f+ideqj8rJ+RcFvLw2UhhIUicbMaeu/UmhUeEf2I2H1N9WOTuEuGfDSHCHO9a4iLdSiw==
 
-effector@^22.8.7:
+effector@22.8.7:
   version "22.8.7"
   resolved "https://registry.yarnpkg.com/effector/-/effector-22.8.7.tgz#39d00a8fba86645cc093bec49205d549519d0ffa"
   integrity sha512-vCevjxmFwnZJuRGtqjwfi+sHtu+7gK3qdbv4fxi/AsMdDtoMeoz9C3/28pjNABviZeEARj6ZfAHbNAq5i9d7RQ==

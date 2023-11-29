@@ -20,12 +20,16 @@ import {
   $$taskDisclosure,
   $$updateTask,
   $$createTask,
-  $$selectTask,
+  $$filter,
+  selectTaskId,
+  $selectedTaskId,
 } from "./inbox.model"
+import { FILTER_CONFIG } from "./config"
 
 const Inbox = () => {
   const { t } = useTranslation()
   useDocumentTitle(t("task.inbox"))
+
   const expandedTaskRef = useRef<HTMLDivElement>(null)
   const taskItemRef = useRef<HTMLDivElement>(null)
 
@@ -36,21 +40,34 @@ const Inbox = () => {
   const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpenedById)
   const openCreatedTask = useUnit($$taskDisclosure.createdTaskOpened)
   const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
+
   const changeStatusAndUpdate = useUnit($$updateTask.statusChangedAndUpdated)
   const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
-  const selectTaskId = useUnit($$selectTask.taskIdSelected)
-  const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
 
+  const onSelectTaskId = useUnit(selectTaskId)
+  const selectedTaskId = useUnit($selectedTaskId)
+
+  const onFilterSelect = useUnit($$filter.sort)
+  const activeFilter = useUnit($$filter.$sortType)
+  
   return (
     <Suspense fallback={<div>inbox loading...</div>}>
       <Layout>
-        <Layout.Header iconName="common/inbox" title={t("task.inbox")} />
+        <Layout.Header
+          filter={{
+            onChange: onFilterSelect,
+            active: activeFilter,
+            config: FILTER_CONFIG,
+          }}
+          iconName="common/inbox"
+          title={t("task.inbox")}
+        />
         <Layout.Content
           contentRef={taskItemRef}
           className="flex flex-col"
           onClick={(e) => {
             onClickOutside(expandedTaskRef, e, closeTask)
-            clickOnElement(taskItemRef, e, () => selectTaskId(null))
+            clickOnElement(taskItemRef, e, () => onSelectTaskId(null))
           }}
         >
           {tasks?.map((task, id) => {
@@ -67,7 +84,7 @@ const Inbox = () => {
                     onUpdateDate={changeDateAndUpdate}
                     onUpdateStatus={changeStatusAndUpdate}
                     isTaskSelected={selectedTaskId === task.id}
-                    onClick={() => selectTaskId(task.id)}
+                    onClick={() => onSelectTaskId(task.id)}
                     onDoubleClick={() => openUpdatedTaskById(task.id)}
                     task={task}
                   />

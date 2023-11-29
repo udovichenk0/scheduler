@@ -19,6 +19,7 @@ export interface SpritesMap {
     | "timer"
     | "trash-can"
     | "upcoming"
+  filter: "alph_asc" | "alph_desc"
 }
 
 export const SPRITES_META: { [K in keyof SpritesMap]: SpritesMap[K][] } = {
@@ -43,4 +44,5 @@ export const SPRITES_META: { [K in keyof SpritesMap]: SpritesMap[K][] } = {
     "trash-can",
     "upcoming",
   ],
+  filter: ["alph_asc", "alph_desc"],
 }
