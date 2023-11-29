@@ -17,7 +17,12 @@ import { LONG_MONTHS_NAMES, LONG_WEEKS_NAMES } from "@/shared/config/constants"
 import { i18n } from "@/shared/i18n"
 import { lowerCase } from "@/shared/lib/typography"
 
-import { generateSequentialDates, MIN_DATES_LENGTH, generateSequentialMonths, MIN_MONTHS_LENGTH } from "./config"
+import {
+  generateSequentialDates,
+  MIN_DATES_LENGTH,
+  generateSequentialMonths,
+  MIN_MONTHS_LENGTH,
+} from "./config"
 
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
@@ -53,7 +58,7 @@ const $tasks = combine($$task.$taskKv, $$filter.$sortType, (kv, sortType) => {
   return $$filter.filterBy(sortType, tasks)
 })
 export const $upcomingTasks = combine($tasks, $variant, (tasks, variant) => {
-  if(variant == 'upcoming' && tasks){
+  if (variant == "upcoming" && tasks) {
     const first = getTasksPerDate(tasks)
     const second = getTasksForRemainingMonth(tasks)
     const third = getTasksPerMonth(tasks)
@@ -64,11 +69,9 @@ export const $upcomingTasks = combine($tasks, $variant, (tasks, variant) => {
   return []
 })
 export const $tasksByDate = combine($tasks, $variant, (tasks, variant) => {
-  if(variant != 'upcoming' && tasks){
+  if (variant != "upcoming" && tasks) {
     return tasks.filter(({ start_date }) => {
-      return (
-        dayjs(start_date).startOf("date").isSame(variant.startOf("date"))
-      )
+      return dayjs(start_date).startOf("date").isSame(variant.startOf("date"))
     })
   }
   return []
@@ -76,29 +79,31 @@ export const $tasksByDate = combine($tasks, $variant, (tasks, variant) => {
 /////////////////////////////////
 export const selectTaskId = createEvent<Nullable<TaskId>>()
 export const selectNextId = createEvent<TaskId>()
-export const $selectedTaskId = createStore<Nullable<TaskId>>(null)
-  .on(selectTaskId, (_, id) => id)
+export const $selectedTaskId = createStore<Nullable<TaskId>>(null).on(
+  selectTaskId,
+  (_, id) => id,
+)
 
 sample({
   clock: selectNextId,
-  source: {t: $upcomingTasks, v: $variant},
-  filter: ({v}) => v === 'upcoming',
-  fn: ({t}, id) => {
-      for(let i = 0; i < t.length; i++){
-        const tasks = t[i].tasks
-        const nextTaskId = getNextTaskId(tasks, id)
-        if(nextTaskId) return nextTaskId
-      }
+  source: { t: $upcomingTasks, v: $variant },
+  filter: ({ v }) => v === "upcoming",
+  fn: ({ t }, id) => {
+    for (let i = 0; i < t.length; i++) {
+      const tasks = t[i].tasks
+      const nextTaskId = getNextTaskId(tasks, id)
+      if (nextTaskId) return nextTaskId
+    }
     return null
   },
-  target: $selectedTaskId
+  target: $selectedTaskId,
 })
 sample({
   clock: selectNextId,
-  source: {t: $tasksByDate, v: $variant},
-  filter: ({v}) => v != 'upcoming',
-  fn: ({t}, id) => getNextTaskId(t, id),
-  target: $selectedTaskId
+  source: { t: $tasksByDate, v: $variant },
+  filter: ({ v }) => v != "upcoming",
+  fn: ({ t }, id) => getNextTaskId(t, id),
+  target: $selectedTaskId,
 })
 
 export const $tasksByDateKv = combine($$task.$taskKv, (kv) => {
@@ -145,12 +150,12 @@ sample({
 sample({
   clock: variantSelected,
   fn: (variant) => {
-    if(variant == 'upcoming'){
+    if (variant == "upcoming") {
       return new Date()
     }
     return variant.toDate()
   },
-  target: $selectedDate
+  target: $selectedDate,
 })
 sample({
   clock: $$deleteTask.taskDeletedById,

@@ -32,28 +32,27 @@ export const Header = ({
 }) => {
   const [isFilterOpened, setIsFilterOpened] = useState(false)
   const r = useRef<HTMLDivElement>(null)
-  
+
   const { t } = useTranslation()
   const openPomodoroModal = useUnit($$pomodoroModal.open)
   const openSettingsModal = useUnit($$settingsModal.open)
   const isPomodoroRunning = useUnit($$pomodoro.$isPomodoroRunning)
   useEffect(() => {
     const closeFilter = (e: MouseEvent) => {
-      if(!r.current?.contains(e.target as Node)) {
-
+      if (!r.current?.contains(e.target as Node)) {
         setIsFilterOpened(false)
       }
     }
-    if(isFilterOpened) {
-      document.addEventListener('click', closeFilter)
+    if (isFilterOpened) {
+      document.addEventListener("click", closeFilter)
     }
     return () => {
-      document.removeEventListener('click', closeFilter)
+      document.removeEventListener("click", closeFilter)
     }
   }, [isFilterOpened])
   return (
     <Container padding="xl" className="relative mb-4 text-primary">
-      <div className="flex h-[40px] items-center justify-end mb-2">
+      <div className="mb-2 flex h-[40px] items-center justify-end">
         {isPomodoroRunning ? (
           <PomodoroProgressBar
             onClick={openPomodoroModal}
@@ -99,43 +98,45 @@ export const Header = ({
           }
         />
       </MainModal>
-      <div className="flex justify-between w-full">
+      <div className="flex w-full justify-between">
         <div className="flex items-center gap-4">
           <Icon name={iconName} className="fill-cIconDefault text-2xl" />
           <Typography.Heading size="lg">{title}</Typography.Heading>
         </div>
         <div className="relative pr-1">
-          {
-            filter && (
-              <div ref={r}>
-                <button className="w-6 h-6" onClick={() => setIsFilterOpened((prev) => !prev)}>
-                  <Icon name={`filter/${filter.active}`} className="text-2xl text-cIconDefault"/>
-                </button>
-                {
-                  isFilterOpened && (
-                    
-                    <div className="absolute bg-menuBg z-[15] w-[215px] right-0 flex flex-col">
-                      {
-                        filter.config.map(({ value, label }) => {
-                          return (
-                            <button 
-                              key={value} 
-                              className={`px-4 py-3 hover:bg-cHover ${value === filter.active && 'bg-cHover'}`} 
-                              onClick={() => {
-                                filter.onChange(value)
-                                setIsFilterOpened(false)
-                              }}>
-                              {label}
-                            </button>
-                          )
-                        })
-                      }
-                    </div>
-                  )
-                }
-              </div>
-            )
-          }
+          {filter && (
+            <div ref={r}>
+              <button
+                className="h-6 w-6"
+                onClick={() => setIsFilterOpened((prev) => !prev)}
+              >
+                <Icon
+                  name={`filter/${filter.active}`}
+                  className="text-2xl text-cIconDefault"
+                />
+              </button>
+              {isFilterOpened && (
+                <div className="absolute right-0 z-[15] flex w-[215px] flex-col bg-menuBg">
+                  {filter.config.map(({ value, label }) => {
+                    return (
+                      <button
+                        key={value}
+                        className={`px-4 py-3 hover:bg-cHover ${
+                          value === filter.active && "bg-cHover"
+                        }`}
+                        onClick={() => {
+                          filter.onChange(value)
+                          setIsFilterOpened(false)
+                        }}
+                      >
+                        {label}
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </Container>

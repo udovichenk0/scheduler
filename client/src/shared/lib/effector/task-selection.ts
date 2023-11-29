@@ -14,18 +14,18 @@ export const selectTaskFactory = ($tasks: Store<Task[]>) => {
     target: $selectedTaskId,
   })
   type ArgInp = {
-    tasks: Task[],
+    tasks: Task[]
     selectedTaskId: Nullable<TaskId>
   }
   type ArgOut = {
-    tasks: Task[],
+    tasks: Task[]
     selectedTaskId: TaskId
   }
   sample({
     clock: nextTaskIdSelected,
-    source: {tasks: $tasks, selectedTaskId: $selectedTaskId},
+    source: { tasks: $tasks, selectedTaskId: $selectedTaskId },
     filter: (params: ArgInp): params is ArgOut => !!params.selectedTaskId,
-    fn: ({tasks, selectedTaskId}) => getNextTaskId(tasks, selectedTaskId),
+    fn: ({ tasks, selectedTaskId }) => getNextTaskId(tasks, selectedTaskId),
     target: $selectedTaskId,
   })
   return {
@@ -36,12 +36,12 @@ export const selectTaskFactory = ($tasks: Store<Task[]>) => {
   }
 }
 export function getNextTaskId(tasks: Task[], selectedTaskId: TaskId) {
-  if(!selectedTaskId) return null
+  if (!selectedTaskId) return null
   const index = tasks?.findIndex((task) => task.id == selectedTaskId)
   if (index >= 0 && tasks?.[index + 1]) {
     return tasks[index + 1].id
   }
-  if(index >= 0 && tasks?.[index - 1]){
+  if (index >= 0 && tasks?.[index - 1]) {
     return tasks[index - 1].id
   }
   return null

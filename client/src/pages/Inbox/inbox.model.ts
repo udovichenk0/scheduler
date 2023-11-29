@@ -14,10 +14,14 @@ import { TaskId } from "@/shared/api/task"
 export const $$deleteTask = removeTaskFactory()
 
 export const $$filter = createFilter()
-export const $inboxTasks = combine($$task.$taskKv, $$filter.$sortType, (kv, sortType) => {
-  const tasks = Object.values(kv).filter(({ type }) => type == "inbox")
-  return $$filter.filterBy(sortType, tasks)
-})
+export const $inboxTasks = combine(
+  $$task.$taskKv,
+  $$filter.$sortType,
+  (kv, sortType) => {
+    const tasks = Object.values(kv).filter(({ type }) => type == "inbox")
+    return $$filter.filterBy(sortType, tasks)
+  },
+)
 
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
@@ -31,18 +35,20 @@ export const $$taskDisclosure = disclosureTask({
 })
 export const selectTaskId = createEvent<Nullable<TaskId>>()
 export const selectNextId = createEvent<TaskId>()
-export const $selectedTaskId = createStore<Nullable<TaskId>>(null)
-  .on(selectTaskId, (_, id) => id)
+export const $selectedTaskId = createStore<Nullable<TaskId>>(null).on(
+  selectTaskId,
+  (_, id) => id,
+)
 
 sample({
   clock: selectNextId,
   source: $inboxTasks,
   fn: (t, id) => {
     const tId = getNextTaskId(t, id)
-    if(tId) return tId
+    if (tId) return tId
     return null
   },
-  target: $selectedTaskId
+  target: $selectedTaskId,
 })
 sample({
   clock: $$deleteTask.taskDeletedById,

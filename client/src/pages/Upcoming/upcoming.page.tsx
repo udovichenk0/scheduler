@@ -48,7 +48,7 @@ const Upcoming = () => {
 
   const resetSelectedTaskId = (e: MouseEvent) => {
     const t = e.target as HTMLDivElement
-    if (t.id != 'task') {
+    if (t.id != "task") {
       onSelectUpcomingTaskId(null)
     }
   }
@@ -58,7 +58,7 @@ const Upcoming = () => {
         filter={{
           config: FILTER_CONFIG,
           active: sortType,
-          onChange: onFilter
+          onChange: onFilter,
         }}
         iconName="common/upcoming"
         title={<HeaderTitle variant={variant} />}
