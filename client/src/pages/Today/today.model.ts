@@ -55,20 +55,22 @@ export const $todayTasks = $tasks.map((tasks) => {
 
 export const selectTaskId = createEvent<Nullable<TaskId>>()
 export const selectNextId = createEvent<TaskId>()
-export const $selectedTaskId = createStore<Nullable<TaskId>>(null)
-  .on(selectTaskId, (_, id) => id)
+export const $selectedTaskId = createStore<Nullable<TaskId>>(null).on(
+  selectTaskId,
+  (_, id) => id,
+)
 
 sample({
   clock: selectNextId,
-  source: {t: $todayTasks, o: $overdueTasks},
-  fn: ({t,o}, id) => {
+  source: { t: $todayTasks, o: $overdueTasks },
+  fn: ({ t, o }, id) => {
     const tId = getNextTaskId(t, id)
-    if(tId) return tId
+    if (tId) return tId
     const oId = getNextTaskId(o, id)
-    if(oId) return oId
+    if (oId) return oId
     return null
   },
-  target: $selectedTaskId
+  target: $selectedTaskId,
 })
 
 export const $isOverdueTasksOpened = createStore(false)
@@ -87,5 +89,5 @@ cookiePersist({
 
 sample({
   clock: $$deleteTask.taskDeletedById,
-  target: selectNextId
+  target: selectNextId,
 })

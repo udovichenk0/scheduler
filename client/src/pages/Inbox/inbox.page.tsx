@@ -49,7 +49,7 @@ const Inbox = () => {
 
   const onFilterSelect = useUnit($$filter.sort)
   const activeFilter = useUnit($$filter.$sortType)
-  
+
   return (
     <Suspense fallback={<div>inbox loading...</div>}>
       <Layout>

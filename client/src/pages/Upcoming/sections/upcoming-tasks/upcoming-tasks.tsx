@@ -9,7 +9,6 @@ import { TaskId } from "@/shared/api/task"
 
 import { SectionRoot } from "../../ui/date-section/root"
 
-
 export const AllUpcomingTasks = ({
   $selectedDate,
   changeDate,
@@ -23,10 +22,10 @@ export const AllUpcomingTasks = ({
   taskRef: RefObject<HTMLDivElement>
   selectTaskId: (taskId: Nullable<TaskId>) => void
   tasks: {
-    tasks: Task[],
-    title: string,
+    tasks: Task[]
+    title: string
     date: Dayjs
-  }[],
+  }[]
   selectedTaskId: Nullable<TaskId>
 }) => {
   const selectedDate = useUnit($selectedDate)
