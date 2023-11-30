@@ -57,7 +57,7 @@ describe("update task", () => {
     } = updateTaskModel
     const scope = fork({
       values: [
-        [$$task.$taskKv, tasks],
+        [$$task._.$taskKv, tasks],
         [$title, "title"],
         [$description, "my description"],
         [$status, "FINISHED"],
@@ -93,7 +93,7 @@ describe("update task", () => {
     } = updateTaskModel
     const scope = fork({
       values: [
-        [$$task.$taskKv, tasks],
+        [$$task._.$taskKv, tasks],
         [$title, "title"],
         [$description, "my description"],
         [$status, "FINISHED"],

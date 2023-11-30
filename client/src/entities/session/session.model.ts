@@ -14,7 +14,7 @@ export const $$session = singleton(() => {
     fn: ({ result }) => result.user,
     target: $user,
   })
-  const $isAuthenticated = $user.map((user) => Boolean(user))
+  const $isAuthenticated = createStore(false).on($user, (user) => !!user)
   sample({
     clock: sessionSet,
     target: $user,
@@ -25,7 +25,7 @@ export const $$session = singleton(() => {
   })
 
   return {
-    $user: $user.map((user) => user),
+    $user,
     $isAuthenticated,
     reset,
     sessionSet,
