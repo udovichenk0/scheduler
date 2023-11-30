@@ -167,13 +167,13 @@ export const createPomodoro = ({
     sample({
       clock: timePassed,
       filter: $isWorkTime,
+      batch: false,
       target: [toggleTimerState, activeIdChanged, workDone],
-      greedy: true,
     })
     sample({
       clock: timePassed,
       filter: not($isWorkTime),
-      greedy: true,
+      batch: false,
       target: [breakDone, toggleTimerState],
     })
   })
