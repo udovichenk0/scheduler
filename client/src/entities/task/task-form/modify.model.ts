@@ -36,11 +36,8 @@ export const modifyTaskFactory = ({
   const $startDate = createStore<Nullable<Date>>(defaultDate)
   const $type = createStore<"inbox" | "unplaced">(defaultType)
   const $isDirty = createStore(false)
-  const $isAllowToSubmit = combine(
-    $isDirty,
-    $title,
-    (isDirty, title) => isDirty && Boolean(title),
-  )
+  const $isAllowToSubmit = createStore(false)
+
   const $fields = combine(
     $title,
     $description,
@@ -55,6 +52,15 @@ export const modifyTaskFactory = ({
       start_date,
     }),
   )
+  sample({
+    source: {
+      d: $isDirty,
+      t: $title,
+    },
+    fn: ({ d, t }) => d && Boolean(t),
+    target: $isAllowToSubmit,
+  })
+
   sample({
     clock: titleChanged,
     target: $title,

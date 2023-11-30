@@ -33,7 +33,7 @@ describe("delete task", () => {
     const scope = fork({
       values: [
         [$$session.$isAuthenticated, true],
-        [$$task.$taskKv, tasks],
+        [$$task._.$taskKv, tasks],
       ],
       handlers: [[_.deleteTaskQuery.__.executeFx, mock]],
     })
@@ -52,7 +52,7 @@ describe("delete task", () => {
     const scope = fork({
       values: [
         [$$session.$isAuthenticated, false],
-        [$$task.$taskKv, tasks],
+        [$$task._.$taskKv, tasks],
       ],
       handlers: [[_.deleteTaskFromLsFx, mock]],
     })
