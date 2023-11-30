@@ -1,6 +1,6 @@
 import { useUnit } from "effector-react"
 import { ReactNode, RefObject } from "react"
-import { Store, Event } from "effector"
+import { Store, EventCallable } from "effector"
 
 import { ModifyTaskForm } from "@/entities/task/task-form"
 import { $$dateModal } from "@/entities/task/task-item"
@@ -16,11 +16,11 @@ type ModifyTaskFormType = {
   $status: Store<"FINISHED" | "INPROGRESS">
   $type: Store<"inbox" | "unplaced">
   $startDate: Store<Nullable<Date>>
-  statusChanged: Event<"FINISHED" | "INPROGRESS">
-  descriptionChanged: Event<string>
-  titleChanged: Event<string>
-  typeChanged: Event<"inbox" | "unplaced">
-  dateChanged: Event<Date>
+  statusChanged: EventCallable<"FINISHED" | "INPROGRESS">
+  descriptionChanged: EventCallable<string>
+  titleChanged: EventCallable<string>
+  typeChanged: EventCallable<"inbox" | "unplaced">
+  dateChanged: EventCallable<Date>
 }
 
 export const ExpandedTask = ({

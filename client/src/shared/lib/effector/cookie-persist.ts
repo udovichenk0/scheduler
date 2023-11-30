@@ -1,4 +1,4 @@
-import { Store, createEvent, attach, createEffect, sample } from "effector"
+import { StoreWritable, createEvent, attach, createEffect, sample } from "effector"
 import { combineEvents } from "patronum"
 
 import { parseCookieValue } from "../storage/parse-cookie-value"
@@ -7,7 +7,7 @@ export const cookiePersist = <T>({
   source,
   name,
 }: {
-  source: Store<T>
+  source: StoreWritable<T>
   name: string
 }) => {
   const init = createEvent<string>()

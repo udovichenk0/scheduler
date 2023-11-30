@@ -1,4 +1,4 @@
-import { Event as EffectorEvent, Store } from "effector"
+import { EventCallable, Store } from "effector"
 import { useUnit } from "effector-react"
 import { useRef, useEffect } from "react"
 import { useTranslation } from "react-i18next"
@@ -19,11 +19,11 @@ type ModifyTaskFormType = {
   $status: Store<"FINISHED" | "INPROGRESS">
   $type: Store<"inbox" | "unplaced">
   $startDate: Store<Nullable<Date>>
-  statusChanged: EffectorEvent<"FINISHED" | "INPROGRESS">
-  descriptionChanged: EffectorEvent<string>
-  titleChanged: EffectorEvent<string>
-  typeChanged: EffectorEvent<"inbox" | "unplaced">
-  dateChanged: EffectorEvent<Date>
+  statusChanged: EventCallable<"FINISHED" | "INPROGRESS">
+  descriptionChanged: EventCallable<string>
+  titleChanged: EventCallable<string>
+  typeChanged: EventCallable<"inbox" | "unplaced">
+  dateChanged: EventCallable<Date>
 }
 
 export const ModifyTaskForm = ({
