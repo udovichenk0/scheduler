@@ -392,15 +392,15 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.40.0.tgz#3ba73359e11f5a7bd3e407f70b3528abfae69cec"
   integrity sha512-ElyB54bJIhXQYVKjDSvCkPO1iU1tSAeVQJbllWJq1XQSmmA4dgFk8CbiBGpiOPxleE48vDogxCtmMYku4HSVLA==
 
-"@farfetched/core@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@farfetched/core/-/core-0.10.0.tgz#84cc24f0938934ab8eda1888d82685fa7deddfe6"
-  integrity sha512-8oHMBPEvpMG3dBCUGfjlWeQwn32erQM57OAnnVVHH8zeVk0VRnjXvsS7GhOgS0J9CFnXPBz9LU+2e/VWk4g2Gw==
+"@farfetched/core@^0.11.1":
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/@farfetched/core/-/core-0.11.1.tgz#5cd3e8b7cd35f85d1cfbb61984c747b42ed8d141"
+  integrity sha512-90ZKTh1vFh/lB/qfHLRGRHKugJMhDBMg2DTva4x7l+4dsuUmPXYozRPjKWRzllsYbnzSvzX6xkBFO2q7r79G9w==
 
-"@farfetched/zod@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@farfetched/zod/-/zod-0.10.0.tgz#dd5affe1eeeb5a42571f8ab7e58b3fef6fdaf059"
-  integrity sha512-yEZ2qVxPfiXqSTQDG8/dXDKn0WyEuKsZr3sgCrvyuJUpVZfnM6Lk2oLvyPj5NaLYga3ZLf2xvowCvitd3Q+P+A==
+"@farfetched/zod@^0.11.1":
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/@farfetched/zod/-/zod-0.11.1.tgz#10a889c01c842522e1150340a65eb1004f95eccc"
+  integrity sha512-2K2dg7aaMF6gTrq6PJ9mBB/CnBWDvrBBqx6g0dMLR1xMNUl0EY4vzWK9C/Y45kWaY2R2ZI8biaEpap4ZOkJfAQ==
 
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.8"
@@ -945,17 +945,17 @@ assertion-error@^1.1.0:
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.1.0.tgz#e60b6b0e8f301bd97e5375215bda406c85118c0b"
   integrity sha512-jgsaNduz+ndvGyFt3uSuWqvy4lCnIJiovtouQN5JZHOKCS2QuhEdbcQHFhVksz2N2U9hXJo8odG7ETyWlEeuDw==
 
-atomic-router-react@^0.8.3:
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/atomic-router-react/-/atomic-router-react-0.8.3.tgz#006f646c76674475790d8e41d491e4f6439fdf4a"
-  integrity sha512-Y1SNqHVaPF770VLFEfwfeqnImdvhvs1w+Wm//IHc2yVveerwgLLY42QNOTSljMxP6UKU4MF3iWgCNNkH4RDD5w==
+atomic-router-react@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/atomic-router-react/-/atomic-router-react-0.9.0.tgz#db423416ecb52d4a35990119c8e51cb4cbe71376"
+  integrity sha512-PqRij7NB+K3FUHhtLzf4UdbK1R5wUBIfhB3/g9YVuAxE2CBoQR51llekxsjv58zh2pg+xPNPDngr+gOak7YbJw==
   dependencies:
     clsx "^1.1.1"
 
-atomic-router@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/atomic-router/-/atomic-router-0.8.0.tgz#4cc023117845955b81a64a22d406b609cb4edc58"
-  integrity sha512-jUNmxqs4zKiTWnvcgNU7u51k+wS8XHYgy7YKTTwiuNB+PPRj+sRAjE+50nyExDygRS5A7yELhT14ziIICjQoqQ==
+atomic-router@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/atomic-router/-/atomic-router-0.9.0.tgz#bb9bb66c1bbcfd2f7782fed4a621ba6dfa71ae77"
+  integrity sha512-OrFdtF0glxV9L7vVEfRlpjlr5gLRO1D+pm3KJEgYwnkUCHDMHVnMLbiNjG9S0CJJU9nihjP2WrD8CL9xCKzSQA==
   dependencies:
     path-to-regexp "^6.2.0"
 
@@ -1426,10 +1426,10 @@ effector-logger@^0.14.0:
     detect-node "2.0.4"
     just-debounce-it "^1.1.0"
 
-effector-react@^22.5.1:
-  version "22.5.1"
-  resolved "https://registry.yarnpkg.com/effector-react/-/effector-react-22.5.1.tgz#09e7ef9a9328edf1ff4f4fcd50b0f4ff98980a52"
-  integrity sha512-Sy5b/sUEZoCuyoCr+SiHcgd0L+PQqnIGx+SuPCZ7MhECYxezkkeecsk0EVj9sykLL2qlEeg+rdiWvIATJgOTeA==
+effector-react@^23.0.0:
+  version "23.0.0"
+  resolved "https://registry.yarnpkg.com/effector-react/-/effector-react-23.0.0.tgz#5be06510e2560a0b0644ed30120a288061caad42"
+  integrity sha512-H8G/b2Q+LCM8ligdYlaVS+3uYck1cKOlAjVV3j1Org9LcFzisEKfhOd22zK7jCCnHO2VA0m02RbFKoY7HK7I0w==
   dependencies:
     use-sync-external-store "^1.0.0"
 
@@ -1438,10 +1438,10 @@ effector-storage@^6.0.1:
   resolved "https://registry.yarnpkg.com/effector-storage/-/effector-storage-6.0.1.tgz#da4530f4ad8cc7e5d9466e3e5ccdc260a4482ded"
   integrity sha512-uIPbVnBYyJLhfQnJ35f+ideqj8rJ+RcFvLw2UhhIUicbMaeu/UmhUeEf2I2H1N9WOTuEuGfDSHCHO9a4iLdSiw==
 
-effector@22.8.7:
-  version "22.8.7"
-  resolved "https://registry.yarnpkg.com/effector/-/effector-22.8.7.tgz#39d00a8fba86645cc093bec49205d549519d0ffa"
-  integrity sha512-vCevjxmFwnZJuRGtqjwfi+sHtu+7gK3qdbv4fxi/AsMdDtoMeoz9C3/28pjNABviZeEARj6ZfAHbNAq5i9d7RQ==
+effector@23.0.0:
+  version "23.0.0"
+  resolved "https://registry.yarnpkg.com/effector/-/effector-23.0.0.tgz#87a8a4ebee1cee38f67122ac4ff0a4be4c4f26e4"
+  integrity sha512-8lT1iX8ivWRUnJL4XG2OhCZPRZku1XVc7AwbJCChxZhhB6ii/hZgs0GOTeE3BJfvc1BKf97q2hU3Yzp323sCiA==
 
 electron-to-chromium@^1.4.284:
   version "1.4.385"
@@ -2999,10 +2999,10 @@ pathval@^1.1.1:
   resolved "https://registry.yarnpkg.com/pathval/-/pathval-1.1.1.tgz#8534e77a77ce7ac5a2512ea21e0fdb8fcf6c3d8d"
   integrity sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==
 
-patronum@^1.17.0:
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/patronum/-/patronum-1.17.0.tgz#ebaa05e863b9715f27a2b5397024f69e5dea55e7"
-  integrity sha512-FCcbjJ52ELV5ikaqURjniCEV4IfrtBP6BSOBpmP7iCvC9seo83YjymSfxaaRBG5vkn/HRKf/5SDpHangJylBKw==
+patronum@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/patronum/-/patronum-2.0.0.tgz#1d5bc37f41feb675e48e7bd8390d2907b0f701f4"
+  integrity sha512-qNlLpXXE9ULVEH6+Tj7pQeHgiRNBL1ibE8kScD89ZysW9yQym+xUQXPJzC1XZlCK4olkTHFhmFLK/mks8r/3fQ==
 
 picocolors@^1.0.0:
   version "1.0.0"

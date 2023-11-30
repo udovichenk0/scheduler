@@ -4,7 +4,7 @@ import {
   sample,
   attach,
   createEffect,
-  Store,
+  StoreWritable,
 } from "effector"
 import { not, condition } from "patronum"
 
@@ -18,11 +18,11 @@ const MAX_STAGES_LENGTH = 12
 
 type PomodoroProps = {
   notificationSound: HTMLAudioElement
-  $workDuration: Store<number>
-  $shortBreakDuration: Store<number>
-  $longBreakDuration: Store<number>
-  $isEnabledNotificationSound: Store<boolean>
-  $isEnabledAutomaticStart: Store<boolean>
+  $workDuration: StoreWritable<number>
+  $shortBreakDuration: StoreWritable<number>
+  $longBreakDuration: StoreWritable<number>
+  $isEnabledNotificationSound: StoreWritable<boolean>
+  $isEnabledAutomaticStart: StoreWritable<boolean>
 }
 
 export type Stage = { fulfilled: boolean }

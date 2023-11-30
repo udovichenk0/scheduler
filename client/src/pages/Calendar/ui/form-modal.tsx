@@ -1,5 +1,5 @@
 import { clsx } from "clsx"
-import { Store, Event } from "effector"
+import { Store, EventCallable } from "effector"
 import { useUnit } from "effector-react"
 import { ReactNode, useRef, MouseEvent } from "react"
 import { createPortal } from "react-dom"
@@ -13,7 +13,7 @@ export const TaskFormModal = ({
   children: ReactNode
   className?: string
   $isOpened: Store<boolean>
-  onClose: Event<void>
+  onClose: EventCallable<void>
 }) => {
   const ref = useRef<HTMLDivElement>(null)
 

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react"
-import { Event, Store } from "effector"
+import { EventCallable, Store } from "effector"
 import { useUnit } from "effector-react"
 type Options = {
   value: string
@@ -8,7 +8,7 @@ type Options = {
 type SelectorProps = {
   $selectedValue: Store<string>
   options: Options
-  onSelect: Event<string>
+  onSelect: EventCallable<string>
 }
 export const Selector = ({
   $selectedValue,

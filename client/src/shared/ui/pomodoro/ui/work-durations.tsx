@@ -1,4 +1,4 @@
-import { Store, Event } from "effector"
+import { Store, EventCallable } from "effector"
 import { useUnit } from "effector-react"
 
 import { Icon } from "@/shared/ui/icon"
@@ -22,7 +22,7 @@ export const PomodoroDurations = ({
   $workDuration,
   setDuration,
 }: {
-  timeSelected: Event<number>
+  timeSelected: EventCallable<number>
   $customDuration: Store<number>
   $workDuration: Store<number>
   setDuration: ({
