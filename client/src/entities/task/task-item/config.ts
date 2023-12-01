@@ -8,11 +8,11 @@ export const Filters = {
   BY_ALPHABET: {
     ASC: {
       value: SortingTypes.ALPH_ASC,
-      label: "By alphabet(desc)",
+      label: "By alphabet(asc)",
     },
     DESC: {
       value: SortingTypes.ALPH_DESC,
-      label: "By alphabet(asc)",
+      label: "By alphabet(desc)",
     },
   },
   BY_TIME: {
