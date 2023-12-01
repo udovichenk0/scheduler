@@ -54,7 +54,7 @@ export const $variant = createStore<Variant>("upcoming").on(
 
 export const $$filter = createFilter()
 const $tasks = combine($$task.$taskKv, $$filter.$sortType, (kv, sortType) => {
-  if (!kv) return null
+  if (!kv) return []
   const tasks = Object.values(kv)
   return $$filter.filterBy(sortType, tasks)
 })
