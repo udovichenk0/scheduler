@@ -36,7 +36,7 @@ export const selectTaskFactory = ($tasks: Store<Task[]>) => {
   }
 }
 export function getNextTaskId(tasks: Task[], selectedTaskId: TaskId) {
-  if (!selectedTaskId) return null
+  if (!selectedTaskId || !tasks) return null
   const index = tasks?.findIndex((task) => task.id == selectedTaskId)
   if (index >= 0 && tasks?.[index + 1]) {
     return tasks[index + 1].id

@@ -25,6 +25,7 @@ export const $$taskDisclosure = disclosureTask({
 })
 export const $$filter = createFilter()
 const $tasks = combine($$task.$taskKv, $$filter.$sortType, (kv, sortType) => {
+  if(!kv) return null
   const tasks = Object.values(kv).filter(
     ({ start_date }) =>
       dayjs(start_date).isSame(dayjs(), "day") ||

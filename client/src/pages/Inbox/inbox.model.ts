@@ -18,6 +18,7 @@ export const $inboxTasks = combine(
   $$task.$taskKv,
   $$filter.$sortType,
   (kv, sortType) => {
+    if(!kv) return null
     const tasks = Object.values(kv).filter(({ type }) => type == "inbox")
     return $$filter.filterBy(sortType, tasks)
   },
@@ -44,7 +45,7 @@ sample({
   clock: selectNextId,
   source: $inboxTasks,
   fn: (t, id) => {
-    const tId = getNextTaskId(t, id)
+    const tId = getNextTaskId(t!, id)
     if (tId) return tId
     return null
   },

@@ -54,6 +54,7 @@ export const $variant = createStore<Variant>("upcoming").on(
 
 export const $$filter = createFilter()
 const $tasks = combine($$task.$taskKv, $$filter.$sortType, (kv, sortType) => {
+  if (!kv) return null
   const tasks = Object.values(kv)
   return $$filter.filterBy(sortType, tasks)
 })
@@ -107,6 +108,7 @@ sample({
 })
 
 export const $tasksByDateKv = combine($$task.$taskKv, (kv) => {
+  if(!kv) return null
   return Object.values(kv).reduce(
     (acc, item) => {
       const date = dayjs(item.start_date).format("YYYY-MM-DD")

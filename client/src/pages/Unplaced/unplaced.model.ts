@@ -16,6 +16,7 @@ export const $unplacedTasks = combine(
   $$task.$taskKv,
   $$filter.$sortType,
   (kv, sortType) => {
+    if(!kv) return null
     const tasks = Object.values(kv).filter(({ type }) => type == "unplaced")
     return $$filter.filterBy(sortType, tasks)
   },
@@ -43,7 +44,7 @@ sample({
   clock: selectNextId,
   source: $unplacedTasks,
   fn: (t, id) => {
-    const tId = getNextTaskId(t, id)
+    const tId = getNextTaskId(t!, id)
     if (tId) return tId
     return null
   },

@@ -3,7 +3,7 @@ import { not } from "patronum"
 
 import { $$session } from "@/entities/session"
 
-import { taskApi } from "@/shared/api/task"
+import { TaskId, taskApi } from "@/shared/api/task"
 import { singleton } from "@/shared/lib/effector/singleton"
 import { createModal } from "@/shared/lib/modal"
 
@@ -12,11 +12,11 @@ import { addTaskToKv, removeTaskFromKv, transformTasksToKv } from "../lib"
 
 export const $$dateModal = createModal({})
 export const $$task = singleton(() => {
-  const $taskKv = createStore<Record<string, Task>>({})
+  const $taskKv = createStore<Nullable<Record<string, Task>>>(null)
   const setTaskKvTriggered = createEvent<Task[]>()
   const setTaskTriggered = createEvent<Task>()
   const getTasksTriggered = createEvent()
-  const taskDeleted = createEvent<Task>()
+  const taskDeleted = createEvent<TaskId>()
   const reset = createEvent()
   sample({
     clock: taskApi.getTasksQuery.finished.success,
@@ -26,13 +26,15 @@ export const $$task = singleton(() => {
   sample({
     clock: setTaskTriggered,
     source: $taskKv,
+    filter: (kv: Nullable<Record<string, Task>>): kv is Record<string, Task> => !!kv,
     fn: addTaskToKv,
     target: $taskKv,
   })
   sample({
     clock: taskDeleted,
     source: $taskKv,
-    fn: (kv, task) => removeTaskFromKv(kv, task.id),
+    filter: (kv: Nullable<Record<string, Task>>): kv is Record<string, Task> => !!kv,
+    fn: removeTaskFromKv,
     target: $taskKv,
   })
   sample({

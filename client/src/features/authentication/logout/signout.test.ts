@@ -27,6 +27,6 @@ test("logout", async () => {
   })
   await allSettled(submitTriggered, { scope })
   expect(mock).toHaveBeenCalled()
-  expect(scope.getState($$task.$taskKv)).toStrictEqual({})
+  expect(scope.getState($$task.$taskKv)).toStrictEqual(null)
   expect(scope.getState($$session.$user)).toBeNull()
 })
