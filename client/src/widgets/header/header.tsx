@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { ReactNode, useEffect, useRef, useState } from "react"
+import { ReactNode, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Settings } from "@/widgets/settings"
@@ -13,6 +13,7 @@ import { Icon, IconName } from "@/shared/ui/icon"
 import { Container } from "@/shared/ui/general/container"
 import { Pomodoro } from "@/shared/ui/pomodoro"
 import { MainModal } from "@/shared/ui/modals/main"
+import { useClickOutside } from "@/shared/lib/react/on-click-outside"
 
 import { $$pomodoroModal, $$settingsModal, $$pomodoro } from "./header.model"
 import { PomodoroProgressBar } from "./ui/progress-bar"
@@ -37,19 +38,9 @@ export const Header = ({
   const openPomodoroModal = useUnit($$pomodoroModal.open)
   const openSettingsModal = useUnit($$settingsModal.open)
   const isPomodoroRunning = useUnit($$pomodoro.$isPomodoroRunning)
-  useEffect(() => {
-    const closeFilter = (e: MouseEvent) => {
-      if (!r.current?.contains(e.target as Node)) {
-        setIsFilterOpened(false)
-      }
-    }
-    if (isFilterOpened) {
-      document.addEventListener("click", closeFilter)
-    }
-    return () => {
-      document.removeEventListener("click", closeFilter)
-    }
-  }, [isFilterOpened])
+
+  useClickOutside({ref: r, callback: () => setIsFilterOpened(false), deps: [isFilterOpened]})
+
   return (
     <Container padding="xl" className="relative mb-4 text-primary">
       <div className="mb-2 flex h-[40px] items-center justify-end">
