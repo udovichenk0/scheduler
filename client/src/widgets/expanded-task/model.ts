@@ -4,7 +4,7 @@ import { spread, and, not, or } from "patronum"
 import { CreateTaskType } from "@/features/manage-task/model/create"
 import { UpdateTaskType } from "@/features/manage-task/model/update"
 
-import { TaskKv } from "@/entities/task/task-item"
+import { Task, TaskKv } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
 import { TaskId } from "@/shared/api/task"
@@ -57,6 +57,7 @@ export const disclosureTask = ({
   sample({
     clock: updatedTaskOpenedById,
     source: tasks,
+    filter: (tasks: Nullable<Record<string, Task>>): tasks is Record<string, Task> => tasks != null,
     fn: (tasks, id) => tasks[id],
     target: spread({
       targets: {

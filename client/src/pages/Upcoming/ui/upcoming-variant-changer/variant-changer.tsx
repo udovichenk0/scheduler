@@ -22,7 +22,7 @@ export function UpcomingVariantChanger({
 }: {
   setUpcomingVariant: (variant: "upcoming" | Dayjs) => void
   variant: "upcoming" | Dayjs
-  $tasksByDateKv: Store<Record<string, Task[]>>
+  $tasksByDateKv: Store<Nullable<Record<string, Task[]>>>
 }) {
   const [week, setWeek] = useState(0)
   const [dayList, setDayList] = useState(() => generateDaysOfWeek(week))
@@ -56,7 +56,7 @@ export function UpcomingVariantChanger({
         </div>
         <div className="flex w-full justify-around text-sm">
           {dayList.map((date, id) => {
-            const isAnyTask = !!tasksByDate[date.format("YYYY-MM-DD")]
+            const isAnyTask = !!tasksByDate?.[date.format("YYYY-MM-DD")]
             return (
               <button
                 key={id}

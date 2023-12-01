@@ -13,7 +13,7 @@ import { MonthSwitcher } from "./month-switcher"
 import { Cell } from "./cell"
 
 type CalendarProps = {
-  tasks: Record<string, Task[]>
+  tasks: Nullable<Record<string, Task[]>>
   openUpdatedTask: (taskId: TaskId) => void
   openCreatedTask: (date: Date) => void
   setDate: (date: Dayjs) => void
@@ -51,7 +51,7 @@ export const Calendar = memo(
                   const date = dayjs(
                     new Date(cell.year, cell.month, cell.date),
                   ).format("YYYY-MM-DD")
-                  const t = tasks[date]
+                  const t = tasks?.[date]
                   const key = `${cell.date}/${cell.month}/${cell.year}`
 
                   return (

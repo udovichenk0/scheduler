@@ -36,7 +36,7 @@ export const removeTaskFactory = () => {
       attachDeleteTaskQuery.finished.success,
       attachDeleteTaskFromLsFx.doneData,
     ],
-    fn: ({ result }) => result,
+    fn: ({ result }) => result.id,
     target: $$task.taskDeleted,
   })
   return {
