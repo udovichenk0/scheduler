@@ -97,15 +97,16 @@ export const Header = ({
         <div className="relative pr-1">
           {filter && (
             <div ref={r}>
-              <button
-                className="h-6 w-6"
+              <Button
+                intent={"primary"}
+                size={"xs"}
                 onClick={() => setIsFilterOpened((prev) => !prev)}
               >
                 <Icon
                   name={`filter/${filter.active}`}
                   className="text-2xl text-cIconDefault"
                 />
-              </button>
+              </Button>
               {isFilterOpened && (
                 <div className="absolute right-0 z-[15] flex w-[215px] flex-col bg-menuBg">
                   {filter.config.map(({ value, label }) => {
