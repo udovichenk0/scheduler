@@ -1,7 +1,6 @@
 import { createStore, createEvent, sample } from "effector"
 
 import { SortType, Task } from "../type"
-
 export const createFilter = () => {
   const $sortType = createStore<SortType>("alph_asc")
   const sort = createEvent<SortType>()
@@ -11,6 +10,10 @@ export const createFilter = () => {
         return [...tasks!.sort((a, b) => (a.title < b.title ? -1 : 1))]
       case "alph_desc":
         return [...tasks!.sort((a, b) => (a.title > b.title ? -1 : 1))]
+      case "time_asc":
+        return [...tasks!.sort((a,b ) => (a.start_date! < b.start_date! ? -1 : 1))]
+      case "time_desc":
+        return [...tasks!.sort((a,b ) => (a.start_date! > b.start_date! ? -1 : 1))]
     }
   }
 
