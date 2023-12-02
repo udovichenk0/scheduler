@@ -40,10 +40,10 @@ export const TasksByDate = ({
     changeCreatedDate(date.toDate())
   }, [date])
   return (
-    <section className="h-full">
+    <section className="h-full pt-2">
       {tasks?.map((task, id) => {
         return (
-          <div className="mb-1 px-3 first:pt-2 last:pb-2" key={id}>
+          <div className="px-3 pb-2" key={id}>
             {task.id === updatedTaskId ? (
               <ExpandedTask modifyTaskModel={$$updateTask} taskRef={taskRef} />
             ) : (

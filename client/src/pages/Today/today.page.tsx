@@ -146,7 +146,7 @@ const OverdueTasks = ({
           overdueTasks.map((task, id) => {
             return (
               <div
-                className="px-3 first:pt-2 [&:not(:last-child)]:pb-1"
+                className="px-3 pb-2"
                 key={id}
               >
                 {task.id === updatedTask ? (
@@ -216,7 +216,7 @@ const TodayTasks = ({
       <div>
         {todayTasks.map((task, id) => {
           return (
-            <div className="px-3 pb-1 first:pt-2 last:pb-2" key={id}>
+            <div className="px-3 pb-2" key={id}>
               {task.id === updatedTaskId ? (
                 <ExpandedTask
                   modifyTaskModel={$$updateTask}

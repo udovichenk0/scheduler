@@ -72,7 +72,7 @@ const Inbox = () => {
         >
           {tasks?.map((task, id) => {
             return (
-              <div className="px-3 pb-1 first:pt-2 last:pb-2" key={id}>
+              <div className="px-3 pb-2" key={id}>
                 {task.id === updatedTaskId ? (
                   <ExpandedTask
                     dateModifier={false}

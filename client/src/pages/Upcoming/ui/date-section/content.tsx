@@ -33,11 +33,11 @@ export const Content = ({
 
   return (
     <div className="select-none border-cBorder text-primary">
-      <div>
+      <div className="pt-2">
         {tasks?.map((task, id) => {
           return (
             <div
-              className="border-cBorder px-3 pb-1 first:pt-2 last:border-b last:pb-2"
+              className="border-cBorder px-3 pb-2 last:border-b"
               key={id}
             >
               {task.id === updatedTaskId ? (
