@@ -2,6 +2,7 @@ import { attach, createEvent, merge, sample } from "effector"
 import { spread, and, not } from "patronum"
 import { attachOperation } from "@farfetched/core"
 
+import { switchTaskType } from '@/entities/task/task-item/lib';
 import { $$session } from "@/entities/session"
 import { $$task, TaskKv } from "@/entities/task/task-item"
 import { modifyTaskFactory } from "@/entities/task/task-form"
@@ -49,13 +50,24 @@ export const updateTaskFactory = () => {
   bridge(() => {
     sample({
       clock: dateChangedAndUpdated,
+      source: $$task.$taskKv,
       filter: not($$session.$isAuthenticated),
+      fn: (kv, { date, id }) => {
+        const task = kv![id]
+        const type = switchTaskType(task.type, date)
+        return { id, date, type }
+      },
       target: attachUpdateTaskDateFromLsFx,
     })
     sample({
       clock: dateChangedAndUpdated,
+      source: $$task.$taskKv,
       filter: $$session.$isAuthenticated,
-      fn: ({ date, id }) => ({ body: { date, id } }),
+      fn: (kv, { date, id }) => {
+        const task = kv![id]
+        const type = switchTaskType(task.type, date)
+        return { body: { date, id, type } }
+      },
       target: attachUpdateTaskDate.start,
     })
   })

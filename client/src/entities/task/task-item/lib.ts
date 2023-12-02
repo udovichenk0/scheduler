@@ -1,4 +1,4 @@
-import { TaskId } from "@/shared/api/task"
+import { TaskId, TaskType } from "@/shared/api/task"
 
 import { Task, TaskKv } from "./type"
 
@@ -15,4 +15,15 @@ export const transformTasksToKv = (tasks: Task[]) => {
 export const addTaskToKv = (kv: TaskKv, task: Task) => {
   if(!kv) return null
   return { ...kv, [task.id]: task }
+}
+
+export const switchTaskType = (type: TaskType, date?: Date): TaskType => {
+  switch(true){
+    case type === 'inbox' && !!date: 
+      return 'unplaced'
+    case type === 'unplaced' && !date:
+      return 'inbox'
+    default: 
+      return 'inbox'
+  }
 }
