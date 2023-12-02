@@ -3,8 +3,13 @@ export const SortingTypes = {
   ALPH_DESC: "alph_desc",
   TIME_ASC: "time_asc",
   TIME_DESC: "time_desc",
+  DATE_CREATED_ASC: 'date_created_asc',
 } as const
 export const Filters = {
+  DEFAULT: {
+    value: SortingTypes.DATE_CREATED_ASC,
+    label: "Custom sorting",
+  },
   BY_ALPHABET: {
     ASC: {
       value: SortingTypes.ALPH_ASC,
