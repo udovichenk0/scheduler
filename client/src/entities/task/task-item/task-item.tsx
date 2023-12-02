@@ -1,7 +1,8 @@
 import dayjs from "dayjs"
-import { MouseEvent, useState } from "react"
+import { MouseEvent } from "react"
 import { Link } from "atomic-router-react"
 import { t } from "i18next"
+import { useUnit } from "effector-react"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
@@ -10,9 +11,10 @@ import { routes } from "@/shared/routing"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 import { TaskId, TaskStatus } from "@/shared/api/task"
+import { BaseModal } from "@/shared/ui/modals/base"
 
 import { Task } from "./type"
-import { Modal } from "./ui/modal"
+import { $$modal } from "./model/task.model"
 
 export const TaskItem = ({
   task,
@@ -36,27 +38,29 @@ export const TaskItem = ({
   taskRef?: React.RefObject<HTMLDivElement> | undefined
 }) => {
   const { title, status, start_date } = task
-  const [isDateOpened, setIsDateOpened] = useState(false)
+  const onOpenDateModal = useUnit($$modal.open)
+  const onCloseDateModal = useUnit($$modal.close)
+  const id = useUnit($$modal.$id)
   const onChangeDate = (date: Date) => {
-    setIsDateOpened(false)
+    onCloseDateModal()
     onUpdateDate({ date, id: task.id })
   }
   const isSameDateOrAfter = dayjs(start_date).isSameOrAfter(dayjs())
   return (
     <div ref={taskRef} className="group flex gap-2">
       <Icon
-        onClick={() => setIsDateOpened(true)}
+        onClick={() => onOpenDateModal(task.id)}
         name="common/upcoming"
         className="invisible translate-y-1 text-lg text-accent group-hover:visible"
       />
-      <Modal isOpened={isDateOpened} onClose={setIsDateOpened}>
+      <BaseModal isOpened={task.id == id} onClose={onCloseDateModal}>
         <DatePicker
           currentDate={task.start_date || new Date()}
           onDateChange={onChangeDate}
           onCancel={() => console.log("cancel")}
           onSave={() => console.log("cancel")}
         />
-      </Modal>
+      </BaseModal>
       <Button
         id="task"
         intent={"primary"}

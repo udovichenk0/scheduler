@@ -8,7 +8,8 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base"
 import { DatePicker } from "@/shared/ui/date-picker"
-import { ModalType } from "@/shared/lib/modal"
+
+import { TaskTypes } from "../task-item"
 
 import { $$dateModal, $$typeModal } from "./modify.model"
 import { formatTaskDate } from "./lib/normalize-date"
@@ -43,9 +44,14 @@ export const ModifyTaskForm = ({
   const changeTitle = useUnit(modifyTaskModel.titleChanged)
   const changeType = useUnit(modifyTaskModel.typeChanged)
   const changeDate = useUnit(modifyTaskModel.dateChanged)
+
   const openDateModal = useUnit($$dateModal.open)
   const closeDateModal = useUnit($$dateModal.close)
+  const isDateModalOpened = useUnit($$dateModal.$isOpened)
+
   const openTypeModal = useUnit($$typeModal.open)
+  const closeTypeModal = useUnit($$typeModal.close)
+  const isTypeModalOpened = useUnit($$typeModal.$isOpened)
 
   const titleInputRef = useRef<HTMLInputElement>(null)
   const { t } = useTranslation()
@@ -108,12 +114,13 @@ export const ModifyTaskForm = ({
             </Button>
           )}
         </div>
-        <TypePickerModal
-          $$modal={$$typeModal}
-          currentType={taskType}
-          changeType={changeType}
-        />
-        <BaseModal $$modal={$$dateModal}>
+        <BaseModal isOpened={isTypeModalOpened} onClose={closeTypeModal}>
+          <TypePicker
+            currentType={taskType}
+            changeType={changeType}
+          />
+        </BaseModal>
+        <BaseModal isOpened={isDateModalOpened} onClose={closeDateModal}>
           <DatePicker
             currentDate={taskDate || new Date()}
             onDateChange={changeDate}
@@ -129,46 +136,43 @@ export const ModifyTaskForm = ({
 }
 
 const types = [
-  { type: "inbox", iconName: "common/inbox" },
-  { type: "unplaced", iconName: "common/inbox" },
+  { type: TaskTypes.INBOX, iconName: "common/inbox" },
+  { type: TaskTypes.UNPLACED, iconName: "common/inbox" },
 ] as const
 
-const TypePickerModal = ({
+const TypePicker = ({
   currentType,
   changeType,
-  $$modal,
 }: {
   currentType: "inbox" | "unplaced"
   changeType: (payload: "inbox" | "unplaced") => void
-  $$modal: ModalType
 }) => {
+
   const { t } = useTranslation()
   return (
-    <BaseModal $$modal={$$modal}>
-      <div className="flex w-[280px] cursor-pointer flex-col gap-y-1 rounded-[5px] bg-main p-3">
-        {types.map(({ type, iconName }, id) => {
-          const active = type == currentType
-          return (
-            <Button
-              key={id}
-              size={"xs"}
-              onClick={() => changeType(type)}
-              className={`text-left ${
-                active && "pointer-events-none block w-full bg-cFocus"
+    <div className="flex w-[280px] cursor-pointer flex-col gap-y-1 rounded-[5px] bg-main p-3">
+      {types.map(({ type, iconName }, id) => {
+        const active = type == currentType
+        return (
+          <Button
+            key={id}
+            size={"xs"}
+            onClick={() => changeType(type)}
+            className={`text-left ${
+              active && "pointer-events-none block w-full bg-cFocus"
+            }`}
+            intent={"primary"}
+          >
+            <Icon
+              name={iconName}
+              className={`mr-4 h-5 w-5 text-accent ${
+                active && "text-cHover"
               }`}
-              intent={"primary"}
-            >
-              <Icon
-                name={iconName}
-                className={`mr-4 h-5 w-5 text-accent ${
-                  active && "text-cHover"
-                }`}
-              />
-              {t(`task.${type}`)}
-            </Button>
-          )
-        })}
-      </div>
-    </BaseModal>
+            />
+            {t(`task.${type}`)}
+          </Button>
+        )
+      })}
+    </div>
   )
 }

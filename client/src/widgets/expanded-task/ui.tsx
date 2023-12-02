@@ -40,6 +40,7 @@ export const ExpandedTask = ({
   const changeDate = useUnit(modifyTaskModel.dateChanged)
   const openDateModal = useUnit($$dateModal.open)
   const closeDateModal = useUnit($$dateModal.close)
+  const isModalOpened = useUnit($$dateModal.$isOpened)
 
   const onChangeDate = (date: Date) => {
     closeDateModal()
@@ -54,7 +55,7 @@ export const ExpandedTask = ({
           className="invisible translate-y-1 text-lg text-accent group-hover:visible"
         />
       )}
-      <BaseModal $$modal={$$dateModal}>
+      <BaseModal isOpened={isModalOpened} onClose={closeDateModal}>
         <DatePicker
           currentDate={startDate || new Date()}
           onDateChange={onChangeDate}
