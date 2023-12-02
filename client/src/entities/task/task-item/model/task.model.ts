@@ -7,12 +7,12 @@ import { TaskId, taskApi } from "@/shared/api/task"
 import { singleton } from "@/shared/lib/effector/singleton"
 import { createModal } from "@/shared/lib/modal"
 
-import { Task } from "../type"
+import { Task, TaskKv } from "../type"
 import { addTaskToKv, removeTaskFromKv, transformTasksToKv } from "../lib"
 
 export const $$dateModal = createModal({})
 export const $$task = singleton(() => {
-  const $taskKv = createStore<Nullable<Record<string, Task>>>(null)
+  const $taskKv = createStore<Nullable<TaskKv>>(null)
   const setTaskKvTriggered = createEvent<Task[]>()
   const setTaskTriggered = createEvent<Task>()
   const getTasksTriggered = createEvent()
@@ -26,14 +26,14 @@ export const $$task = singleton(() => {
   sample({
     clock: setTaskTriggered,
     source: $taskKv,
-    filter: (kv: Nullable<Record<string, Task>>): kv is Record<string, Task> => !!kv,
+    filter: (kv: Nullable<TaskKv>): kv is TaskKv => !!kv,
     fn: addTaskToKv,
     target: $taskKv,
   })
   sample({
     clock: taskDeleted,
     source: $taskKv,
-    filter: (kv: Nullable<Record<string, Task>>): kv is Record<string, Task> => !!kv,
+    filter: (kv: Nullable<TaskKv>): kv is TaskKv => !!kv,
     fn: removeTaskFromKv,
     target: $taskKv,
   })
@@ -73,4 +73,3 @@ export const $$task = singleton(() => {
     },
   }
 })
-export type TaskKv = typeof $$task.$taskKv

@@ -1,10 +1,10 @@
-import { createEvent, createStore, sample } from "effector"
+import { createEvent, createStore, sample, Store } from "effector"
 import { spread, and, not, or } from "patronum"
 
 import { CreateTaskType } from "@/features/manage-task/model/create"
 import { UpdateTaskType } from "@/features/manage-task/model/update"
 
-import { Task, TaskKv } from "@/entities/task/task-item"
+import { TaskKv } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
 import { TaskId } from "@/shared/api/task"
@@ -21,7 +21,7 @@ export const disclosureTask = ({
 }: {
   updateTaskModel: UpdateTaskType
   createTaskModel: CreateTaskType
-  tasks: TaskKv
+  tasks: Store<Nullable<TaskKv>>
 }) => {
   const {
     $title,
@@ -57,7 +57,7 @@ export const disclosureTask = ({
   sample({
     clock: updatedTaskOpenedById,
     source: tasks,
-    filter: (tasks: Nullable<Record<string, Task>>): tasks is Record<string, Task> => tasks != null,
+    filter: (tasks: Nullable<TaskKv>): tasks is TaskKv => tasks != null,
     fn: (tasks, id) => tasks[id],
     target: spread({
       targets: {
