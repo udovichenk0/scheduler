@@ -26,11 +26,11 @@ import {
   $$taskDisclosure,
   $$updateTask,
   $$createTask,
-  $$filter,
+  $$sort,
   $selectedTaskId,
   selectTaskId,
 } from "./today.model"
-import { FILTER_CONFIG } from "./config"
+import { SORT_CONFIG } from "./config"
 
 const Today = () => {
   const { t } = useTranslation()
@@ -46,8 +46,8 @@ const Today = () => {
   const selectedTaskId = useUnit($selectedTaskId)
   const onSelectId = useUnit(selectTaskId)
   const todayTasks = useUnit($todayTasks)
-  const onFilterSelect = useUnit($$filter.sort)
-  const activeFilter = useUnit($$filter.$sortType)
+  const onSortChange = useUnit($$sort.sort)
+  const activeSort = useUnit($$sort.$sortType)
 
   return (
     <Suspense fallback={<div>loading</div>}>
@@ -55,10 +55,10 @@ const Today = () => {
         <Layout.Header
           iconName="common/outlined-star"
           title={t("task.today")}
-          filter={{
-            onChange: onFilterSelect,
-            active: activeFilter,
-            config: FILTER_CONFIG,
+          sorting={{
+            onChange: onSortChange,
+            active: activeSort,
+            config: SORT_CONFIG,
           }}
         />
         <Layout.Content

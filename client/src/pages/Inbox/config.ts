@@ -1,7 +1,7 @@
-import { Filters } from "@/entities/task/task-item";
+import { Sorts } from "@/entities/task/task-item";
 
-export const FILTER_CONFIG = [
-  Filters.DEFAULT,
-  Filters.BY_ALPHABET.ASC,
-  Filters.BY_ALPHABET.DESC,
+export const SORT_CONFIG = [
+  Sorts.DEFAULT,
+  Sorts.BY_ALPHABET.ASC,
+  Sorts.BY_ALPHABET.DESC,
 ]

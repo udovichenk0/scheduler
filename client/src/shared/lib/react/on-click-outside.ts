@@ -18,14 +18,14 @@ type UseClickOutsideProps = {
 export const useClickOutside = (props: UseClickOutsideProps) => {
   const { callback, deps, ref } = props
   useEffect(() => {
-    const closeFilter = (e: MouseEvent) => {
+    const onClickOutside = (e: MouseEvent) => {
       if (!(ref.current)?.contains(e.target as Node)) {
         callback()
       }
     }
-      document.addEventListener("click", closeFilter)
+      document.addEventListener("click", onClickOutside)
     return () => {
-      document.removeEventListener("click", closeFilter)
+      document.removeEventListener("click", onClickOutside)
     }
   }, deps)
 }

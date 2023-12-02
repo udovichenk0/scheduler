@@ -1,32 +1,32 @@
-export const SortingTypes = {
+export const SortTypes = {
   ALPH_ASC: "alph_asc",
   ALPH_DESC: "alph_desc",
   TIME_ASC: "time_asc",
   TIME_DESC: "time_desc",
   DATE_CREATED_ASC: 'date_created_asc',
 } as const
-export const Filters = {
+export const Sorts = {
   DEFAULT: {
-    value: SortingTypes.DATE_CREATED_ASC,
+    value: SortTypes.DATE_CREATED_ASC,
     label: "Custom sorting",
   },
   BY_ALPHABET: {
     ASC: {
-      value: SortingTypes.ALPH_ASC,
+      value: SortTypes.ALPH_ASC,
       label: "By alphabet(asc)",
     },
     DESC: {
-      value: SortingTypes.ALPH_DESC,
+      value: SortTypes.ALPH_DESC,
       label: "By alphabet(desc)",
     },
   },
   BY_TIME: {
     ASC: {
-      value: SortingTypes.TIME_ASC,
+      value: SortTypes.TIME_ASC,
       label: "By time(asc)",
     },
     DESC: {
-      value: SortingTypes.TIME_DESC,
+      value: SortTypes.TIME_DESC,
       label: "By time(desc)",
     }
   }

@@ -7,7 +7,7 @@ import { removeTaskFactory } from "@/features/manage-task/model/delete"
 import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
 
-import { $$task, createFilter } from "@/entities/task/task-item"
+import { $$task, createSorting } from "@/entities/task/task-item"
 
 import { cookiePersist } from "@/shared/lib/effector/cookie-persist"
 import { getNextTaskId } from "@/shared/lib/effector"
@@ -23,15 +23,15 @@ export const $$taskDisclosure = disclosureTask({
   updateTaskModel: $$updateTask,
   createTaskModel: $$createTask,
 })
-export const $$filter = createFilter()
-const $tasks = combine($$task.$taskKv, $$filter.$sortType, (kv, sortType) => {
+export const $$sort = createSorting()
+const $tasks = combine($$task.$taskKv, $$sort.$sortType, (kv, sortType) => {
   if(!kv) return null
   const tasks = Object.values(kv).filter(
     ({ start_date }) =>
       dayjs(start_date).isSame(dayjs(), "day") ||
       dayjs(start_date).isBefore(dayjs(), "date"),
   )
-  return $$filter.filterBy(sortType, tasks)
+  return $$sort.sortBy(sortType, tasks)
 })
 
 /**

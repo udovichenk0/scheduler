@@ -6,21 +6,21 @@ import { removeTaskFactory } from "@/features/manage-task/model/delete"
 import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
 
-import { $$task, createFilter } from "@/entities/task/task-item"
+import { $$task, createSorting } from "@/entities/task/task-item"
 
 import { getNextTaskId } from "@/shared/lib/effector/task-selection"
 import { TaskId } from "@/shared/api/task"
 
 export const $$deleteTask = removeTaskFactory()
 
-export const $$filter = createFilter()
+export const $$sort = createSorting()
 export const $inboxTasks = combine(
   $$task.$taskKv,
-  $$filter.$sortType,
+  $$sort.$sortType,
   (kv, sortType) => {
     if(!kv) return null
     const tasks = Object.values(kv).filter(({ type }) => type == "inbox")
-    return $$filter.filterBy(sortType, tasks)
+    return $$sort.sortBy(sortType, tasks)
   },
 )
 

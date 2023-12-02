@@ -1,16 +1,16 @@
 import dayjs, { Dayjs } from "dayjs"
 
-import { Filters } from "@/entities/task/task-item"
+import { Sorts } from "@/entities/task/task-item"
 
 export const MIN_DATES_LENGTH = 14
 export const MIN_MONTHS_LENGTH = 3
 
-export const FILTER_CONFIG = [
-  Filters.DEFAULT,
-  Filters.BY_ALPHABET.ASC,
-  Filters.BY_ALPHABET.DESC,
-  Filters.BY_TIME.ASC,
-  Filters.BY_TIME.DESC,
+export const SORT_CONFIG = [
+  Sorts.DEFAULT,
+  Sorts.BY_ALPHABET.ASC,
+  Sorts.BY_ALPHABET.DESC,
+  Sorts.BY_TIME.ASC,
+  Sorts.BY_TIME.DESC,
 ]
 
 export function generateSequentialDates() {
