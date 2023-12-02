@@ -15,6 +15,7 @@ import {
   UpdateStatusDto,
   TaskId,
   LocalStorageTaskDto,
+  TaskType,
 } from "./task.dto"
 
 const TaskContract = zodContract(TaskSchemaDto)
@@ -94,7 +95,7 @@ export const createTasksQuery = authQuery<
 
 export const updateDateQuery = authQuery<
   TaskDto,
-  { body: { id: TaskId; date: Date } }
+  { body: { id: TaskId; date: Date, type: TaskType } }
 >({
   request: {
     url: "/tasks/update-date",
@@ -161,11 +162,11 @@ export const updateTaskFromLocalStorageFx = createEffect(
 )
 
 export const updateDateInLocalStorageFx = createEffect(
-  ({ date, id }: { date: Date; id: TaskId }) => {
+  ({ date, type, id }: { date: Date; id: TaskId, type: TaskType }) => {
     const tasksFromLs = localStorage.getItem("tasks")
     const parsedTasks = JSON.parse(tasksFromLs!) as LocalStorageTaskDto[]
     const updatedTasks = parsedTasks.map((task: LocalStorageTaskDto) =>
-      task.id === id ? { ...task, start_date: date } : task,
+      task.id === id ? { ...task, start_date: date, type } : task,
     )
     const updatedTask = updatedTasks.find((task) => task.id === id)
     localStorage.setItem("tasks", JSON.stringify(updatedTasks))
