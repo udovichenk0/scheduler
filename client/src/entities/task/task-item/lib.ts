@@ -1,6 +1,7 @@
 import { TaskId, TaskType } from "@/shared/api/task"
 
 import { Task, TaskKv } from "./type"
+import { TaskTypes } from "./config"
 
 export const removeTaskFromKv = (kv: TaskKv, taskId: TaskId) => {
   if(!kv) return null
@@ -19,11 +20,11 @@ export const addTaskToKv = (kv: TaskKv, task: Task) => {
 
 export const switchTaskType = (type: TaskType, date?: Date): TaskType => {
   switch(true){
-    case type === 'inbox' && !!date: 
-      return 'unplaced'
-    case type === 'unplaced' && !date:
-      return 'inbox'
+    case type === TaskTypes.INBOX && !!date: 
+      return TaskTypes.UNPLACED
+    case type === TaskTypes.UNPLACED && !date:
+      return TaskTypes.INBOX
     default: 
-      return 'inbox'
+      return TaskTypes.INBOX
   }
 }

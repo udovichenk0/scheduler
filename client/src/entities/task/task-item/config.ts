@@ -31,3 +31,13 @@ export const Filters = {
     }
   }
 }
+
+export const TaskTypes  = {
+  INBOX: 'inbox',
+  UNPLACED: 'unplaced',
+} as const
+
+export const TaskStatuses = {
+  INPROGRESS: 'INPROGRESS',
+  FINISHED: 'FINISHED',
+} as const

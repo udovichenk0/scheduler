@@ -5,6 +5,8 @@ import { createModal } from "@/shared/lib/modal"
 import { TaskId, TaskStatus, TaskType } from "@/shared/api/task"
 import { bridge } from "@/shared/lib/effector/bridge"
 
+import { TaskStatuses, TaskTypes } from "../task-item"
+
 export const $$dateModal = createModal({})
 export const $$typeModal = createModal({})
 
@@ -12,7 +14,7 @@ export const modifyTaskFactory = ({
   defaultType = "inbox",
   defaultDate = null,
 }: {
-  defaultType?: "inbox" | "unplaced"
+  defaultType?: TaskType
   defaultDate?: Nullable<Date>
 }) => {
   const statusChanged = createEvent<TaskStatus>()
@@ -32,9 +34,9 @@ export const modifyTaskFactory = ({
 
   const $title = createStore("")
   const $description = createStore<string>("")
-  const $status = createStore<"FINISHED" | "INPROGRESS">("INPROGRESS")
+  const $status = createStore<TaskStatus>("INPROGRESS")
   const $startDate = createStore<Nullable<Date>>(defaultDate)
-  const $type = createStore<"inbox" | "unplaced">(defaultType)
+  const $type = createStore<TaskType>(defaultType)
   const $isDirty = createStore(false)
   const $isAllowToSubmit = createStore(false)
 
@@ -76,13 +78,13 @@ export const modifyTaskFactory = ({
     source: statusChanged,
     match: {
       //@ts-ignore
-      FINISHED: (value) => value == "FINISHED",
+      FINISHED: (value) => value == TaskStatuses.FINISHED,
       //@ts-ignore
-      INPROGRESS: (value) => value == "INPROGRESS",
+      INPROGRESS: (value) => value == TaskStatuses.INPROGRESS,
     },
     cases: {
-      INPROGRESS: setStatus.prepend(() => "FINISHED"),
-      FINISHED: setStatus.prepend(() => "INPROGRESS"),
+      INPROGRESS: setStatus.prepend(() => TaskStatuses.FINISHED),
+      FINISHED: setStatus.prepend(() => TaskStatuses.INPROGRESS),
     },
   })
   sample({
@@ -98,16 +100,16 @@ export const modifyTaskFactory = ({
     sample({
       clock: dateChanged,
       source: $type,
-      filter: (type, date) => type == "inbox" && Boolean(date),
-      fn: () => "unplaced" as const,
+      filter: (type, date) => type == TaskTypes.INBOX && !!date,
+      fn: () => TaskTypes.UNPLACED,
       target: $type,
     })
 
     sample({
       clock: dateChanged,
       source: $type,
-      filter: (type, date) => type == "unplaced" && !date,
-      fn: () => "inbox" as const,
+      filter: (type, date) => type == TaskTypes.UNPLACED && !date,
+      fn: () => TaskTypes.INBOX,
       target: $type,
     })
   })
@@ -126,13 +128,13 @@ export const modifyTaskFactory = ({
     })
     sample({
       clock: typeChanged,
-      filter: (type) => type == "inbox",
+      filter: (type) => type == TaskTypes.INBOX,
       fn: () => null,
       target: $startDate,
     })
     sample({
       clock: typeChanged,
-      filter: (type) => type == "unplaced",
+      filter: (type) => type == TaskTypes.UNPLACED,
       fn: () => dayjs().startOf("day").toDate(),
       target: $startDate,
     })
