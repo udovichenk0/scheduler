@@ -55,7 +55,7 @@ const Upcoming = () => {
   return (
     <Layout>
       <Layout.Header
-        filter={{
+        sorting={{
           config: FILTER_CONFIG,
           active: sortType,
           onChange: onFilter,

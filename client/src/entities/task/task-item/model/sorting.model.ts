@@ -2,10 +2,10 @@ import { createStore, createEvent, sample } from "effector"
 
 import { SortType, Task } from "../type"
 import { SortingTypes } from "../config"
-export const createFilter = () => {
+export const createSorting = () => {
   const $sortType = createStore<SortType>(SortingTypes.DATE_CREATED_ASC)
   const sort = createEvent<SortType>()
-  function filterBy(sortType: SortType, tasks: Nullable<Task[]>) {
+  function sortBy(sortType: SortType, tasks: Nullable<Task[]>) {
     switch (sortType) {
       case SortingTypes.DATE_CREATED_ASC: 
         return [...tasks!.sort((a, b) => (a.date_created < b.date_created ? -1 : 1))]
@@ -27,7 +27,7 @@ export const createFilter = () => {
 
   return {
     $sortType,
-    filterBy,
+    sortBy,
     sort,
   }
 }
