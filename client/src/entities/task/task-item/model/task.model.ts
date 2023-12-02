@@ -5,12 +5,13 @@ import { $$session } from "@/entities/session"
 
 import { TaskId, taskApi } from "@/shared/api/task"
 import { singleton } from "@/shared/lib/effector/singleton"
-import { createModal } from "@/shared/lib/modal"
+import { createIdModal, createModal } from "@/shared/lib/modal"
 
 import { Task, TaskKv } from "../type"
 import { addTaskToKv, removeTaskFromKv, transformTasksToKv } from "../lib"
 
 export const $$dateModal = createModal({})
+export const $$modal = createIdModal()
 export const $$task = singleton(() => {
   const $taskKv = createStore<Nullable<TaskKv>>(null)
   const setTaskKvTriggered = createEvent<Task[]>()

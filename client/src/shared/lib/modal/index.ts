@@ -1,2 +1,3 @@
-export { createModal } from "./modal.model"
-export type { ModalType } from "./modal.model"
+export { createModal } from "./base.modal"
+export { createIdModal } from './id.modal'
+export type { ModalType } from "./base.modal"

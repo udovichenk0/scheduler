@@ -1,29 +1,25 @@
-import { useUnit } from "effector-react"
 import { ReactNode, useRef, MouseEvent } from "react"
 import { createPortal } from "react-dom"
 import { clsx } from "clsx"
 
-import { ModalType } from "@/shared/lib/modal"
-
 export const BaseModal = ({
-  $$modal,
+  isOpened,
+  onClose,
   children,
   className,
 }: {
-  $$modal: ModalType
+  isOpened: boolean,
+  onClose: () => void,
   children: ReactNode
   className?: string
 }) => {
-  const clickOutsideTriggered = useUnit($$modal.clickOutsideTriggered)
-  const isOpened = useUnit($$modal.$isOpened)
-
   const ref = useRef<HTMLDivElement>(null)
   if (!isOpened) {
     return null
   }
   const handleOnClickOutside = (e: MouseEvent) => {
     if (e.target === ref.current) {
-      clickOutsideTriggered()
+      onClose()
     }
     e.stopPropagation()
   }
