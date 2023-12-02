@@ -8,6 +8,7 @@ export const TaskSchemaDto = z.object({
   start_date: z.coerce.date().nullable(),
   user_id: z.string(),
   type: z.enum(["inbox", "unplaced"]),
+  date_created: z.coerce.date(),
 })
 export const TasksSchemaDto = z.array(TaskSchemaDto)
 
@@ -34,5 +35,6 @@ export type UpdateStatusDto = {
 export interface LocalStorageTaskDto extends CreateTaskDto {
   id: TaskId
   user_id: null
+  date_created: Date
 }
 export type TaskDto = z.infer<typeof TaskSchemaDto>

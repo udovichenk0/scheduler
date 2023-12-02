@@ -121,7 +121,7 @@ export const deleteTasksFromLocalStorageFx = createEffect(() => {
 export const setTaskToLocalStorageFx = createEffect(
   ({ body }: { body: CreateTaskDto }) => {
     const tasksFromLs = localStorage.getItem("tasks")
-    const task = { ...body, id: uuidv4(), user_id: null }
+    const task = { ...body, id: uuidv4(), user_id: null, date_created: new Date() }
 
     const tasks = JSON.parse(tasksFromLs!)
     localStorage.setItem("tasks", JSON.stringify([...(tasks || []), task]))
