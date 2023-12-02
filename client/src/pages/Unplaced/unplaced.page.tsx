@@ -55,7 +55,7 @@ const Unplaced = () => {
       <Layout.Content onClick={(e) => onClickOutside(taskRef, e, closeTask)}>
         {unplacedTasks?.map((task, id) => {
           return (
-            <div className="px-3 pb-1" key={id}>
+            <div className="px-3 pb-2" key={id}>
               {task.id === updatedTaskId ? (
                 <ExpandedTask
                   modifyTaskModel={$$updateTask}
