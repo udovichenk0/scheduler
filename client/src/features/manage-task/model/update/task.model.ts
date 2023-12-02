@@ -3,7 +3,7 @@ import { spread, and, not } from "patronum"
 import { attachOperation } from "@farfetched/core"
 
 import { $$session } from "@/entities/session"
-import { $$task, Task } from "@/entities/task/task-item"
+import { $$task, TaskKv } from "@/entities/task/task-item"
 import { modifyTaskFactory } from "@/entities/task/task-form"
 
 import { taskApi, TaskStatus } from "@/shared/api/task"
@@ -104,7 +104,7 @@ export const updateTaskFactory = () => {
   sample({
     clock: setFieldsTriggeredById,
     source: $$task.$taskKv,
-    filter: (tasks: Nullable<Record<string, Task>>): tasks is Record<string, Task> => !!tasks,
+    filter: (tasks: Nullable<TaskKv>): tasks is TaskKv => !!tasks,
     fn: (tasks, id) => tasks[id],
     target: spread({
       targets: {
