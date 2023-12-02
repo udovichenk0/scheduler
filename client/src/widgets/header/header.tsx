@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { Settings } from "@/widgets/settings"
 
 import { $$pomodoroSettings } from "@/entities/settings/pomodoro"
-import { FilterConfig, SortType } from "@/entities/task/task-item"
+import { SortConfig, SortType, TaskSorting } from "@/entities/task/task-item"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
@@ -21,17 +21,17 @@ import { PomodoroProgressBar } from "./ui/progress-bar"
 export const Header = ({
   iconName,
   title,
-  filter,
+  sorting,
 }: {
   iconName: IconName
   title: string | ReactNode
-  filter?: {
-    config: FilterConfig[]
+  sorting?: {
+    config: SortConfig[]
     active: SortType
     onChange: (value: SortType) => SortType
   }
 }) => {
-  const [isFilterOpened, setIsFilterOpened] = useState(false)
+  const [isSortingOpened, setIsSortingOpened] = useState(false)
   const r = useRef<HTMLDivElement>(null)
 
   const { t } = useTranslation()
@@ -39,7 +39,7 @@ export const Header = ({
   const openSettingsModal = useUnit($$settingsModal.open)
   const isPomodoroRunning = useUnit($$pomodoro.$isPomodoroRunning)
 
-  useClickOutside({ref: r, callback: () => setIsFilterOpened(false), deps: [isFilterOpened]})
+  useClickOutside({ref: r, callback: () => setIsSortingOpened(false), deps: [isSortingOpened]})
 
   return (
     <Container padding="xl" className="relative mb-4 text-primary">
@@ -95,37 +95,27 @@ export const Header = ({
           <Typography.Heading size="lg">{title}</Typography.Heading>
         </div>
         <div className="relative pr-1">
-          {filter && (
+          {sorting && (
             <div ref={r}>
               <Button
                 intent={"primary"}
                 size={"xs"}
-                onClick={() => setIsFilterOpened((prev) => !prev)}
+                onClick={() => setIsSortingOpened((prev) => !prev)}
               >
                 <Icon
-                  name={`filter/${filter.active}`}
+                  name={`sort/${sorting.active}`}
                   className="text-2xl text-cIconDefault"
                 />
               </Button>
-              {isFilterOpened && (
-                <div className="absolute right-0 z-[15] flex w-[215px] flex-col bg-menuBg">
-                  {filter.config.map(({ value, label }) => {
-                    return (
-                      <button
-                        key={value}
-                        className={`px-4 py-3 hover:bg-cHover ${
-                          value === filter.active && "bg-cHover"
-                        }`}
-                        onClick={() => {
-                          filter.onChange(value)
-                          setIsFilterOpened(false)
-                        }}
-                      >
-                        {label}
-                      </button>
-                    )
-                  })}
-                </div>
+              {isSortingOpened && (
+                <TaskSorting 
+                  onChange={(value) => {
+                    setIsSortingOpened(false)
+                    sorting.onChange(value)
+                  }}
+                  config={sorting.config}
+                  active={sorting.active}
+                />
               )}
             </div>
           )}

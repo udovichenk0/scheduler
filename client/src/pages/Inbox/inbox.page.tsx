@@ -20,11 +20,11 @@ import {
   $$taskDisclosure,
   $$updateTask,
   $$createTask,
-  $$filter,
+  $$sort,
   selectTaskId,
   $selectedTaskId,
 } from "./inbox.model"
-import { FILTER_CONFIG } from "./config"
+import { SORT_CONFIG } from "./config"
 
 const Inbox = () => {
   const { t } = useTranslation()
@@ -47,17 +47,17 @@ const Inbox = () => {
   const onSelectTaskId = useUnit(selectTaskId)
   const selectedTaskId = useUnit($selectedTaskId)
 
-  const onFilterSelect = useUnit($$filter.sort)
-  const activeFilter = useUnit($$filter.$sortType)
+  const onSortChange = useUnit($$sort.sort)
+  const activeSort = useUnit($$sort.$sortType)
 
   return (
     <Suspense fallback={<div>inbox loading...</div>}>
       <Layout>
         <Layout.Header
-          filter={{
-            onChange: onFilterSelect,
-            active: activeFilter,
-            config: FILTER_CONFIG,
+          sorting={{
+            onChange: onSortChange,
+            active: activeSort,
+            config: SORT_CONFIG,
           }}
           iconName="common/inbox"
           title={t("task.inbox")}

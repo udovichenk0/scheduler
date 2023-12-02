@@ -13,14 +13,14 @@ import { useDocumentTitle, onClickOutside } from "@/shared/lib/react"
 import {
   $$createTask,
   $$deleteTask,
-  $$filter,
+  $$sort,
   $$taskDisclosure,
   $$updateTask,
   $selectedTaskId,
   $unplacedTasks,
   selectTaskId,
 } from "./unplaced.model"
-import { FILTER_CONFIG } from "./config"
+import { SORT_CONFIG } from "./config"
 
 const Unplaced = () => {
   const { t } = useTranslation()
@@ -38,18 +38,19 @@ const Unplaced = () => {
   const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
   const selectedTaskId = useUnit($selectedTaskId)
   const onSelectTaskId = useUnit(selectTaskId)
-  const onFilterSelect = useUnit($$filter.sort)
-  const activeFilter = useUnit($$filter.$sortType)
+
+  const onSortChange = useUnit($$sort.sort)
+  const activeSort = useUnit($$sort.$sortType)
 
   return (
     <Layout>
       <Layout.Header
         iconName="common/cross-arrows"
         title={t("task.unplaced")}
-        filter={{
-          onChange: onFilterSelect,
-          active: activeFilter,
-          config: FILTER_CONFIG,
+        sorting={{
+          onChange: onSortChange,
+          active: activeSort,
+          config: SORT_CONFIG,
         }}
       />
       <Layout.Content onClick={(e) => onClickOutside(taskRef, e, closeTask)}>

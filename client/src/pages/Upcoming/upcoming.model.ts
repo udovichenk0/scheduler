@@ -9,7 +9,7 @@ import { removeTaskFactory } from "@/features/manage-task/model/delete"
 import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
 
-import { $$task, Task, createFilter } from "@/entities/task/task-item"
+import { $$task, Task, createSorting } from "@/entities/task/task-item"
 
 import { TaskId } from "@/shared/api/task"
 import { selectTaskFactory, getNextTaskId } from "@/shared/lib/effector"
@@ -52,11 +52,11 @@ export const $variant = createStore<Variant>("upcoming").on(
   (_, variant) => variant,
 )
 
-export const $$filter = createFilter()
-const $tasks = combine($$task.$taskKv, $$filter.$sortType, (kv, sortType) => {
+export const $$sort = createSorting()
+const $tasks = combine($$task.$taskKv, $$sort.$sortType, (kv, sortType) => {
   if (!kv) return []
   const tasks = Object.values(kv)
-  return $$filter.filterBy(sortType, tasks)
+  return $$sort.sortBy(sortType, tasks)
 })
 export const $upcomingTasks = combine($tasks, $variant, (tasks, variant) => {
   if (variant == "upcoming" && tasks) {

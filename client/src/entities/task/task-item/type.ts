@@ -11,8 +11,8 @@ export type Task = {
   user_id: Nullable<string>
   date_created: Date
 }
-export type SortType = SpritesMap["filter"]
-export type FilterConfig = {
+export type SortType = SpritesMap["sort"]
+export type SortConfig = {
   label: string
   value: SortType
 }
