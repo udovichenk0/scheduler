@@ -13,8 +13,8 @@ import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 import { TaskId, TaskStatus } from "@/shared/api/task"
 import { BaseModal } from "@/shared/ui/modals/base"
 
-import { Task } from "./type"
-import { $$modal } from "./model/task.model"
+import { Task } from "../type"
+import { $$modal } from "../model/task.model"
 
 export const TaskItem = ({
   task,
