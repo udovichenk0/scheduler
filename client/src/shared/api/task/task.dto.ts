@@ -32,9 +32,17 @@ export type UpdateStatusDto = {
   id: TaskId
   status: TaskStatus
 }
-export interface LocalStorageTaskDto extends CreateTaskDto {
-  id: TaskId
-  user_id: null
-  date_created: Date
-}
+export const LocalStorageTaskDto = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  status: z.enum(["FINISHED", "INPROGRESS"]),
+  start_date: z.coerce.date().nullable(),
+  user_id: z.null(),
+  type: z.enum(["inbox", "unplaced"]),
+  date_created: z.coerce.date(),
+})
+export const LocalStorageTasksDto = z.array(LocalStorageTaskDto)
+export type LocalStorageTaskDto  = z.infer<typeof LocalStorageTaskDto>
+
 export type TaskDto = z.infer<typeof TaskSchemaDto>

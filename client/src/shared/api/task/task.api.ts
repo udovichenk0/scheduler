@@ -4,6 +4,7 @@ import { createEffect } from "effector"
 import { v4 as uuidv4 } from "uuid"
 
 import { authQuery } from "@/shared/api/auth-query"
+import { parseDto } from "@/shared/lib/parse-dto"
 
 import {
   TaskDto,
@@ -16,6 +17,7 @@ import {
   TaskId,
   LocalStorageTaskDto,
   TaskType,
+  LocalStorageTasksDto,
 } from "./task.dto"
 
 const TaskContract = zodContract(TaskSchemaDto)
@@ -111,7 +113,7 @@ export const getTasksFromLocalStorageFx = createEffect(() => {
   const tasks = localStorage.getItem("tasks")
   if (tasks) {
     const result = JSON.parse(tasks) as LocalStorageTaskDto[]
-    return result
+    return parseDto(LocalStorageTasksDto, result)
   }
   return []
 })
@@ -123,12 +125,13 @@ export const setTaskToLocalStorageFx = createEffect(
   ({ body }: { body: CreateTaskDto }) => {
     const tasksFromLs = localStorage.getItem("tasks")
     const task = { ...body, id: uuidv4(), user_id: null, date_created: new Date() }
+    const parsedTask = parseDto(LocalStorageTaskDto, task)
 
     const tasks = JSON.parse(tasksFromLs!)
-    localStorage.setItem("tasks", JSON.stringify([...(tasks || []), task]))
+    localStorage.setItem("tasks", JSON.stringify([...(tasks || []), parsedTask]))
 
     return {
-      result: task as LocalStorageTaskDto,
+      result: parsedTask,
     }
   },
 )
@@ -142,6 +145,7 @@ function updateTask(
     task.id === id ? { ...task, ...data } : task,
   )
   const updatedTask = updatedTasks.find((task) => task.id === id)
+
   return {
     updatedTasks,
     updatedTask,
@@ -153,10 +157,10 @@ export const updateTaskFromLocalStorageFx = createEffect(
     const parsedTasks = JSON.parse(tasksFromLs!)
 
     const { updatedTasks, updatedTask } = updateTask(parsedTasks, id, data)
-
+    const parsedTask = parseDto(LocalStorageTaskDto, updatedTask!)
     localStorage.setItem("tasks", JSON.stringify(updatedTasks))
     return {
-      result: updatedTask,
+      result: parsedTask,
     }
   },
 )
@@ -169,9 +173,10 @@ export const updateDateInLocalStorageFx = createEffect(
       task.id === id ? { ...task, start_date: date, type } : task,
     )
     const updatedTask = updatedTasks.find((task) => task.id === id)
+    const parsedTask = parseDto(LocalStorageTaskDto, updatedTask!)
     localStorage.setItem("tasks", JSON.stringify(updatedTasks))
     return {
-      result: updatedTask!,
+      result: parsedTask,
     }
   },
 )
@@ -203,10 +208,10 @@ export const updateStatusInLocalStorageFx = createEffect(
       id,
       status,
     )
-
+    const parsedTask = parseDto(LocalStorageTaskDto, updatedTask!)
     localStorage.setItem("tasks", JSON.stringify(updatedTasks))
     return {
-      result: updatedTask,
+      result: parsedTask,
     }
   },
 )
@@ -215,7 +220,7 @@ function deleteTask(tasks: LocalStorageTaskDto[], id: TaskId) {
   const updatedTasks = tasks.filter((task) => task.id !== id)
 
   const deletedTask = tasks.find((task) => task.id === id)
-
+  
   return {
     updatedTasks,
     deletedTask,
