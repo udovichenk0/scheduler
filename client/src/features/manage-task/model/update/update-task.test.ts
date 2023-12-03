@@ -6,7 +6,7 @@ import { $$task } from "@/entities/task/task-item"
 
 import { taskApi } from "@/shared/api/task"
 
-import { updateTaskFactory } from "."
+import { updateTaskFactory } from "./task.model"
 
 const updateTaskModel = updateTaskFactory()
 
@@ -19,6 +19,7 @@ const tasks = {
     status: "INPROGRESS",
     start_date: null,
     user_id: "1",
+    date_created: "2023-12-03T11:11:51.227Z"
   },
 }
 
@@ -31,6 +32,7 @@ const updatedTasks = {
     status: "FINISHED",
     start_date: null,
     user_id: "1",
+    date_created: "2023-12-03T11:11:51.227Z"
   },
 }
 
@@ -42,6 +44,7 @@ const returnedValue = {
   status: "FINISHED",
   start_date: null,
   user_id: "1",
+  date_created: "2023-12-03T11:11:51.227Z"
 }
 describe("update task", () => {
   test("Update task from the server if user is authenticated, update the value in store and reset fields", async () => {
