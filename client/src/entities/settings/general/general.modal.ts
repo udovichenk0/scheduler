@@ -4,7 +4,7 @@ import { createEffect } from "effector/effector.mjs"
 import { $$i18n } from "@/shared/i18n"
 import { parseCookieValue } from "@/shared/lib/storage"
 
-import { languageKv } from "./config"
+import { languages } from "./config"
 
 export const init = createEvent()
 export const $currentLanguage = createStore("")
@@ -23,11 +23,8 @@ sample({
   clock: init,
   target: getLanguageFx,
 })
-
 sample({
   clock: [getLanguageFx.doneData, $$i18n.changeLanguageFx.doneData],
-  fn: (lang) => languageKv[lang],
+  fn: (lang) => languages.find(({value}) => value == lang)?.label || "English",
   target: $currentLanguage,
 })
-
-init()
