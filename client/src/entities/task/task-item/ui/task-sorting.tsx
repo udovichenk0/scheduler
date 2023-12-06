@@ -1,5 +1,6 @@
-import { SortConfig, SortType } from "../type"
+import { t } from 'i18next'
 
+import { SortConfig, SortType } from "../type"
 export const TaskSorting = ({
   config,
   onChange,
@@ -20,7 +21,7 @@ export const TaskSorting = ({
               }`}
               onClick={() => onChange(value)}
             >
-              {label}
+              {t(label)}
             </button>
           )
         })}

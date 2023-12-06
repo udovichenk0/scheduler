@@ -164,5 +164,12 @@
   "noTasks": {
     "title": "There is nothing here",
     "description": "Press + icon to create a new task"
+  },
+  "sort": {
+    "custom_sort": "Custom sort",
+    "alph_asc": "By alphabet(asc)",
+    "alph_desc": "By alphabet(desc)",
+    "time_asc": "By time(asc)",
+    "time_desc": "By time(desc)"
   }
 }
