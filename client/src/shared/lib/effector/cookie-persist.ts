@@ -10,10 +10,10 @@ export const cookiePersist = <T>({
   source: StoreWritable<T>
   name: string
 }) => {
-  const init = createEvent<string>()
+  const init = createEvent()
   const getFx = attach({
-    effect: createEffect(async (cookieName: string | number | boolean) => {
-      return parseCookieValue(cookieName) as T
+    effect: createEffect(async () => {
+      return parseCookieValue(name) as T
     }),
   })
   const setFx = attach({
@@ -43,5 +43,5 @@ export const cookiePersist = <T>({
     target: setFx,
   })
 
-  init(name)
+  return init
 }

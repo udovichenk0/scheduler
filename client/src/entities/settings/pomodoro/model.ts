@@ -17,6 +17,8 @@ import {
 } from "./config"
 
 export const $$pomodoroSettings = singleton(() => {
+  const init = createEvent()
+
   const workDurationChanged = createEvent<string>()
   const shortBreakDurationChanged = createEvent<string>()
   const longBreakDurationChanged = createEvent<string>()
@@ -32,7 +34,6 @@ export const $$pomodoroSettings = singleton(() => {
   )
 
   const $workDuration = createStore(DEFAULT_WORK_DURATION)
-
   const $shortBreakDuration = createStore(DEFAULT_SHORT_BREAK)
   const $longBreakDuration = createStore(DEFAULT_LONG_BREAK)
 
@@ -125,32 +126,44 @@ export const $$pomodoroSettings = singleton(() => {
     })
   })
   bridge(() => {
-    cookiePersist({
+    const initWorkDuration = cookiePersist({
       source: $workDuration,
       name: "workDuration",
     })
-    cookiePersist({
+    const initShortBreakDuration = cookiePersist({
       source: $shortBreakDuration,
       name: "shortBreak",
     })
-    cookiePersist({
+    const initLongBreakDuration = cookiePersist({
       source: $longBreakDuration,
       name: "longBreak",
     })
-    cookiePersist({
+    const initCustomDuration = cookiePersist({
       source: $customDuration,
       name: "customDuration",
     })
-    cookiePersist({
+    const initStartTimerAutomatically = cookiePersist({
       source: $isEnabledAutomaticStart,
       name: "startTimerAutomatically",
     })
-    cookiePersist({
+    const initNotificationSound = cookiePersist({
       source: $isEnabledNotificationSound,
       name: "notificationSound",
     })
+    sample({
+      clock: init,
+      target: [
+        initWorkDuration, 
+        initShortBreakDuration, 
+        initLongBreakDuration, 
+        initCustomDuration, 
+        initStartTimerAutomatically, 
+        initNotificationSound
+      ],
+    })
   })
   return {
+    init,
     workDurationChanged,
     shortBreakDurationChanged,
     longBreakDurationChanged,
