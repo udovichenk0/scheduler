@@ -1,6 +1,6 @@
 import { EventCallable, Store } from "effector"
 import { useUnit } from "effector-react"
-import { useRef, useEffect } from "react"
+import { useRef } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
@@ -8,6 +8,7 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base"
 import { DatePicker } from "@/shared/ui/date-picker"
+import { onMount } from "@/shared/lib/react"
 
 import { TaskTypes } from "../task-item"
 
@@ -55,10 +56,7 @@ export const ModifyTaskForm = ({
 
   const titleInputRef = useRef<HTMLInputElement>(null)
   const { t } = useTranslation()
-  useEffect(() => {
-    titleInputRef.current!.focus()
-  }, [])
-
+  onMount(titleInputRef.current!.focus)
   return (
     <div className="flex w-full gap-2 rounded-[5px] text-cTaskEditDefault">
       <span>

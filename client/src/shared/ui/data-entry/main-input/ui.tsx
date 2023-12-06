@@ -3,10 +3,11 @@ import {
   InputHTMLAttributes,
   ReactNode,
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useRef,
 } from "react"
+
+import { onMount } from "@/shared/lib/react"
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   icon?: ReactNode
@@ -41,11 +42,11 @@ export const Input = forwardRef<InputRef, InputProps>(
         }
       },
     }))
-    useEffect(() => {
+    onMount(() => {
       if (autoFocus && inputRef.current) {
         inputRef.current.focus()
       }
-    }, [])
+    })
     return (
       <label className={clsx("relative flex w-full flex-col", className)}>
         <label className="text-left text-[12px] text-grey">{label}</label>

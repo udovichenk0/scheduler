@@ -2,10 +2,10 @@ import { useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
+import { onMount } from "@/shared/lib/react"
 
 import { $$pomodoroSettings } from "./model"
 import { PomodoroInput } from "./ui/input"
-import { useEffect } from "react"
 
 const {
   init,
@@ -41,9 +41,7 @@ const SettingsWithInputs = () => {
   const longBreak = useUnit($longBreakDuration)
   const applySettings = useUnit(settingsApplied)
   const onInit = useUnit(init)
-  useEffect(() => {
-    onInit()
-  }, [])
+  onMount(onInit)
   return (
     <div className="mb-6 space-y-3">
       <div className="flex items-center justify-end">
