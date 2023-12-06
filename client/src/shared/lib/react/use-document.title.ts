@@ -1,7 +1,6 @@
-import { useEffect } from "react"
+import { onMount } from "./on-mount"
 
 export const useDocumentTitle = (title: string) => {
-  useEffect(() => {
-    document.title = title
-  }, [])
+  onMount(() => document.title = title)
+    
 }

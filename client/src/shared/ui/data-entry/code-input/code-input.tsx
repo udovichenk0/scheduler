@@ -3,11 +3,12 @@ import {
   ChangeEvent,
   KeyboardEvent,
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useRef,
   ClipboardEvent,
 } from "react"
+
+import { onMount } from "@/shared/lib/react"
 
 interface CodeInputProps {
   length: number
@@ -44,11 +45,11 @@ export const CodeInput = forwardRef(
         }
       },
     }))
-    useEffect(() => {
+    onMount(() => {
       if (autoFocus) {
         inputRefs.current[0].focus()
       }
-    }, [])
+    })
     const sendValue = () => {
       const value = inputRefs.current.map((input) => input.value).join("")
       if (value.length === length) {
@@ -62,12 +63,12 @@ export const CodeInput = forwardRef(
       if (value.length > 1) {
         event.target.value = value.charAt(0)
         if (nextElementSibling) {
-          ;(nextElementSibling as HTMLInputElement).focus()
+          (nextElementSibling as HTMLInputElement).focus()
         }
       } else {
         if (value.match("[0-9]{1}")) {
           if (nextElementSibling) {
-            ;(nextElementSibling as HTMLInputElement).focus()
+            (nextElementSibling as HTMLInputElement).focus()
           }
         } else {
           event.target.value = ""
