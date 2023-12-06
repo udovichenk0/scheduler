@@ -8,26 +8,26 @@ export const SortTypes = {
 export const Sorts = {
   DEFAULT: {
     value: SortTypes.DATE_CREATED_ASC,
-    label: "Custom sorting",
+    label: "sort.custom_sort",
   },
   BY_ALPHABET: {
     ASC: {
       value: SortTypes.ALPH_ASC,
-      label: "By alphabet(asc)",
+      label: "sort.alph_asc",
     },
     DESC: {
       value: SortTypes.ALPH_DESC,
-      label: "By alphabet(desc)",
+      label: "sort.alph_desc",
     },
   },
   BY_TIME: {
     ASC: {
       value: SortTypes.TIME_ASC,
-      label: "By time(asc)",
+      label: "sort.time_asc",
     },
     DESC: {
       value: SortTypes.TIME_DESC,
-      label: "By time(desc)",
+      label: "sort.time_desc",
     }
   }
 }
