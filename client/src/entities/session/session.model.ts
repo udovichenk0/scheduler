@@ -12,16 +12,21 @@ export const $$session = singleton(() => {
   sample({
     clock: tokenApi.refreshQuery.finished.success,
     fn: ({ result }) => result.user,
-    target: $user,
+    target: sessionSet,
   })
-  const $isAuthenticated = createStore(false).on($user, (user) => !!user)
+  const $isAuthenticated = createStore(false)
   sample({
     clock: sessionSet,
     target: $user,
   })
   sample({
+    clock: sessionSet,
+    fn: () => true,
+    target: $isAuthenticated
+  })
+  sample({
     clock: reset,
-    target: $user.reinit!,
+    target: [$user.reinit, $isAuthenticated.reinit],
   })
 
   return {
