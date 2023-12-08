@@ -12,7 +12,7 @@ const UserContract = zodContract(UserSchema)
 const signinFx = createEffect(
   async (body: { email: string; password: string }) => {
     const data = await fetch(
-      import.meta.env.VITE_ORIGIN_URL + "/auth/sign-in",
+      import.meta.env.VITE_ORIGIN_URL + "auth/sign-in",
       {
         credentials: "include",
         method: "POST",
@@ -34,7 +34,7 @@ export const signinQuery = createQuery({
 export const signupFx = createEffect(
   async (body: { email: string; password: string }) => {
     const data = await fetch(
-      import.meta.env.VITE_ORIGIN_URL + "/auth/sign-up",
+      import.meta.env.VITE_ORIGIN_URL + "auth/sign-up",
       {
         credentials: "include",
         method: "POST",
@@ -55,7 +55,7 @@ export const signupQuery = createQuery({
 
 export const logoutQuery = createQuery({
   effect: createEffect(async () => {
-    const data = await fetch(import.meta.env.VITE_ORIGIN_URL + "/auth/logout", {
+    const data = await fetch(import.meta.env.VITE_ORIGIN_URL + "auth/logout", {
       method: "POST",
       credentials: "include",
     })
@@ -68,7 +68,7 @@ export const verifyQuery = createQuery({
   effect: createEffect<{ code: string; email: string }, AuthDto>(
     async ({ code, email }) => {
       const result = await fetch(
-        import.meta.env.VITE_ORIGIN_URL + "/auth/verify-email",
+        import.meta.env.VITE_ORIGIN_URL + "auth/verify-email",
         {
           method: "POST",
           credentials: "include",
