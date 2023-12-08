@@ -56,7 +56,7 @@ export const ModifyTaskForm = ({
 
   const titleInputRef = useRef<HTMLInputElement>(null)
   const { t } = useTranslation()
-  onMount(titleInputRef.current!.focus)
+  onMount(() => titleInputRef.current?.focus())
   return (
     <div className="flex w-full gap-2 rounded-[5px] text-cTaskEditDefault">
       <span>
