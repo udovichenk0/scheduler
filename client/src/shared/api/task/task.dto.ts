@@ -9,6 +9,7 @@ export const TaskSchemaDto = z.object({
   user_id: z.string(),
   type: z.enum(["inbox", "unplaced"]),
   date_created: z.coerce.date(),
+  is_deleted: z.boolean()
 })
 export const TasksSchemaDto = z.array(TaskSchemaDto)
 
@@ -41,6 +42,7 @@ export const LocalStorageTaskDto = z.object({
   user_id: z.null(),
   type: z.enum(["inbox", "unplaced"]),
   date_created: z.coerce.date(),
+  is_deleted: z.boolean()
 })
 export const LocalStorageTasksDto = z.array(LocalStorageTaskDto)
 export type LocalStorageTaskDto  = z.infer<typeof LocalStorageTaskDto>

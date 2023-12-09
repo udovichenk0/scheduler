@@ -2,16 +2,16 @@ import { combine, createEvent, createStore, sample } from "effector"
 
 import { disclosureTask } from "@/widgets/expanded-task/model"
 
-import { removeTaskFactory } from "@/features/manage-task/model/delete"
 import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
+import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
 import { $$task, createSorting } from "@/entities/task/task-item"
 
 import { getNextTaskId } from "@/shared/lib/effector/task-selection"
 import { TaskId } from "@/shared/api/task"
 
-export const $$deleteTask = removeTaskFactory()
+export const $$trashTask = trashTaskFactory()
 
 export const $$sort = createSorting()
 export const $inboxTasks = combine(
@@ -19,7 +19,7 @@ export const $inboxTasks = combine(
   $$sort.$sortType,
   (kv, sortType) => {
     if(!kv) return null
-    const tasks = Object.values(kv).filter(({ type }) => type == "inbox")
+    const tasks = Object.values(kv).filter(({ type, is_deleted }) => type == "inbox" && !is_deleted)
     return $$sort.sortBy(sortType, tasks)
   },
 )
@@ -52,6 +52,6 @@ sample({
   target: $selectedTaskId,
 })
 sample({
-  clock: $$deleteTask.taskDeletedById,
+  clock: $$trashTask.taskTrashedById,
   target: selectNextId,
 })

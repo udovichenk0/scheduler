@@ -76,6 +76,16 @@ export const deleteTaskQuery = authQuery<TaskDto, { body: { id: TaskId } }>({
     mapData: (data) => data.result,
   },
 })
+export const trashTaskQuery = authQuery<TaskDto, { body: { id: TaskId } }>({
+  request: {
+    url: "tasks/trash",
+    method: "POST",
+  },
+  response: {
+    contract: TaskContract,
+    mapData: (data) => data.result,
+  },
+})
 
 const CreateManyTasksSchemaDto = z.object({
   count: z.number(),
@@ -124,12 +134,10 @@ export const deleteTasksFromLocalStorageFx = createEffect(() => {
 export const setTaskToLocalStorageFx = createEffect(
   ({ body }: { body: CreateTaskDto }) => {
     const tasksFromLs = localStorage.getItem("tasks")
-    const task = { ...body, id: uuidv4(), user_id: null, date_created: new Date() }
+    const task = { ...body, id: uuidv4(), user_id: null, date_created: new Date(), is_deleted: false }
     const parsedTask = parseDto(LocalStorageTaskDto, task)
-
     const tasks = JSON.parse(tasksFromLs!)
     localStorage.setItem("tasks", JSON.stringify([...(tasks || []), parsedTask]))
-
     return {
       result: parsedTask,
     }
@@ -240,5 +248,22 @@ export const deleteTaskFromLocalStorageFx = createEffect((id: TaskId) => {
 
   return {
     result: deletedTask!,
+  }
+})
+
+export const trashTaskFromLocalStorageFx = createEffect((id: TaskId) => {
+  const tasksFromLs = localStorage.getItem("tasks")
+  const parsedTasks = JSON.parse(tasksFromLs!) as LocalStorageTaskDto[]
+
+  const updatedTasks = parsedTasks.map((task) => task.id == id ? {...task, is_deleted: true} : task)
+  const trashedTask = updatedTasks.find((task) => task.id == id)
+  if (updatedTasks.length) {
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks))
+  } else {
+    localStorage.removeItem("tasks")
+  }
+
+  return {
+    result: trashedTask!,
   }
 })

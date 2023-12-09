@@ -9,6 +9,7 @@ export const routes = {
   upcoming: createRoute(),
   calendar: createRoute(),
   unplaced: createRoute(),
+  trash: createRoute(),
   notFoundRoute: createRoute(),
 }
 export const controls = createRouterControls()
@@ -36,6 +37,10 @@ export const router = createHistoryRouter({
       route: [routes.unplaced],
       path: "/unplaced",
     },
+    {
+      route: [routes.trash],
+      path: "/trash",
+    }
   ],
   notFoundRoute: routes.notFoundRoute,
 })

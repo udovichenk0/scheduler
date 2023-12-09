@@ -58,4 +58,14 @@ export class TaskService {
     });
     return tasks;
   }
+  trashOne(id: string) {
+    return this.prismaService.task.update({
+      data: {
+        is_deleted: true,
+      },
+      where: {
+        id,
+      },
+    });
+  }
 }

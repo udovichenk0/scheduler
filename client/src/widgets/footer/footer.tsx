@@ -9,7 +9,7 @@ export const Footer = ({
   selectedTaskId,
   deleteTask,
 }: {
-  action: () => void
+  action?: () => void
   selectedTaskId: Nullable<TaskId>
   deleteTask: (selectedTaskId: TaskId) => void
 }) => {
@@ -17,10 +17,11 @@ export const Footer = ({
   return (
     <div className="h-14 p-2" onMouseDown={(e) => e.preventDefault()}>
       <Button
-        onClick={() => action()}
+        onClick={action}
+        disabled={!action}
         intent={"primary"}
         size={"base"}
-        className="!text-accent"
+        className={`!text-accent ${!action && "opacity-40"}`}
       >
         <Icon name="common/plus" className="mr-4" />
         {t("footer.newTask")}

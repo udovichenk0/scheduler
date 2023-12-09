@@ -85,6 +85,14 @@ export const Sidebar = () => {
           >
             <Icon name="common/cross-arrows" className="text-[24px]" />
           </Button>
+          <Button
+            title="Trash"
+            onClick={() => navigate(routes.trash)}
+            intent={"primary"}
+            size={"xs"}
+          >
+            <Icon name="common/trash-can" className="text-[24px]" />
+          </Button>
           <Settings modal={$$modal} defaultTab="general" />
         </Container>
       </div>

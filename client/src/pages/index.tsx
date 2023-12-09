@@ -5,6 +5,7 @@ import { HomeRoute } from "./Today"
 import { UnplacedRoute } from "./Unplaced"
 import { UpcomingRoute } from "./Upcoming"
 import { CalendarRoute } from "./Calendar"
+import { TrashRoute } from "./Trash"
 
 const routes = [
   HomeRoute,
@@ -12,6 +13,7 @@ const routes = [
   UpcomingRoute,
   UnplacedRoute,
   CalendarRoute,
+  TrashRoute
 ]
 
 export const RoutesView = createRoutesView({

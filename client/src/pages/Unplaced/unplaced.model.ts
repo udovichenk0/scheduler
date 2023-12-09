@@ -2,9 +2,9 @@ import { combine, createEvent, createStore, sample } from "effector"
 
 import { disclosureTask } from "@/widgets/expanded-task/model"
 
-import { removeTaskFactory } from "@/features/manage-task/model/delete"
 import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
+import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
 import { $$task, createSorting } from "@/entities/task/task-item"
 
@@ -17,12 +17,12 @@ export const $unplacedTasks = combine(
   $$sort.$sortType,
   (kv, sortType) => {
     if(!kv) return null
-    const tasks = Object.values(kv).filter(({ type }) => type == "unplaced")
+    const tasks = Object.values(kv).filter(({ type, is_deleted }) => type == "unplaced" && !is_deleted)
     return $$sort.sortBy(sortType, tasks)
   },
 )
 
-export const $$deleteTask = removeTaskFactory()
+export const $$trashTask = trashTaskFactory()
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
   defaultType: "unplaced",
@@ -52,7 +52,7 @@ sample({
 })
 
 sample({
-  clock: $$deleteTask.taskDeletedById,
+  clock: $$trashTask.taskTrashedById,
   target: selectNextId,
 })
 /**
