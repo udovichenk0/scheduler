@@ -1,17 +1,16 @@
-import { createEvent, createStore, sample } from 'effector';
+import { createEvent, createStore, sample } from "effector"
 
-import { removeTaskFactory } from '@/features/manage-task';
+import { removeTaskFactory } from "@/features/manage-task"
 
-import { $$task } from '@/entities/task/task-item';
+import { $$task } from "@/entities/task/task-item"
 
-import { TaskId } from '@/shared/api/task';
-import { getNextTaskId } from '@/shared/lib/effector';
-
+import { TaskId } from "@/shared/api/task"
+import { getNextTaskId } from "@/shared/lib/effector"
 
 export const $$deleteTask = removeTaskFactory()
 export const $trashTasks = $$task.$taskKv.map((kv) => {
   console.log(kv)
-  if(kv) return Object.values(kv).filter(({is_deleted}) => is_deleted)
+  if (kv) return Object.values(kv).filter(({ is_deleted }) => is_deleted)
   return null
 })
 

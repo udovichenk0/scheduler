@@ -39,7 +39,11 @@ export const Header = ({
   const openSettingsModal = useUnit($$settingsModal.open)
   const isPomodoroRunning = useUnit($$pomodoro.$isPomodoroRunning)
 
-  useClickOutside({ref: r, callback: () => setIsSortingOpened(false), deps: [isSortingOpened]})
+  useClickOutside({
+    ref: r,
+    callback: () => setIsSortingOpened(false),
+    deps: [isSortingOpened],
+  })
 
   return (
     <Container padding="xl" className="relative mb-4 text-primary">
@@ -89,7 +93,7 @@ export const Header = ({
           }
         />
       </MainModal>
-      <div className="flex w-full justify-between items-center h-10">
+      <div className="flex h-10 w-full items-center justify-between">
         <div className="flex items-center gap-4">
           <Icon name={iconName} className="fill-cIconDefault text-2xl" />
           <Typography.Heading size="lg">{title}</Typography.Heading>
@@ -108,7 +112,7 @@ export const Header = ({
                 />
               </Button>
               {isSortingOpened && (
-                <TaskSorting 
+                <TaskSorting
                   onChange={(value) => {
                     setIsSortingOpened(false)
                     sorting.onChange(value)

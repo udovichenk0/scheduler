@@ -1,19 +1,24 @@
-import { t } from 'i18next'
-import { Suspense, useRef } from 'react'
-import { useUnit } from 'effector-react'
+import { t } from "i18next"
+import { Suspense, useRef } from "react"
+import { useUnit } from "effector-react"
 
-import { Layout } from '@/widgets/layout/main'
+import { Layout } from "@/widgets/layout/main"
 
-import { TaskItem } from '@/entities/task/task-item'
+import { TaskItem } from "@/entities/task/task-item"
 
 import { clickOnElement, useDocumentTitle } from "@/shared/lib/react"
-import { NoTasks } from '@/shared/ui/no-tasks'
+import { NoTasks } from "@/shared/ui/no-tasks"
 
-import { $$deleteTask, $selectedTaskId, $trashTasks, selectTaskId } from './trash.model'
+import {
+  $$deleteTask,
+  $selectedTaskId,
+  $trashTasks,
+  selectTaskId,
+} from "./trash.model"
 
 const Trash = () => {
   const taskItemRef = useRef<HTMLDivElement>(null)
-  useDocumentTitle(t('task.trash'))
+  useDocumentTitle(t("task.trash"))
   const tasks = useUnit($trashTasks)
   const onSelectTaskId = useUnit(selectTaskId)
   const selectedTaskId = useUnit($selectedTaskId)
@@ -21,10 +26,7 @@ const Trash = () => {
   return (
     <Suspense fallback={<div>inbox loading...</div>}>
       <Layout>
-        <Layout.Header
-          iconName="common/inbox"
-          title={t("task.trash")}
-        />
+        <Layout.Header iconName="common/inbox" title={t("task.trash")} />
         <Layout.Content
           contentRef={taskItemRef}
           className="flex flex-col"

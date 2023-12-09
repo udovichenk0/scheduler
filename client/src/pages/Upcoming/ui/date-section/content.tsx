@@ -36,10 +36,7 @@ export const Content = ({
       <div className="pt-2">
         {tasks?.map((task, id) => {
           return (
-            <div
-              className="border-cBorder px-3 pb-2 last:border-b"
-              key={id}
-            >
+            <div className="border-cBorder px-3 pb-2 last:border-b" key={id}>
               {task.id === updatedTaskId ? (
                 <ExpandedTask
                   modifyTaskModel={$$updateTask}

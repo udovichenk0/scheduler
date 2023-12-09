@@ -8,8 +8,8 @@ export const BaseModal = ({
   children,
   className,
 }: {
-  isOpened: boolean,
-  onClose: () => void,
+  isOpened: boolean
+  onClose: () => void
   children: ReactNode
   className?: string
 }) => {

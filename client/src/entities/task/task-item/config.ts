@@ -3,7 +3,7 @@ export const SortTypes = {
   ALPH_DESC: "alph_desc",
   TIME_ASC: "time_asc",
   TIME_DESC: "time_desc",
-  DATE_CREATED_ASC: 'date_created_asc',
+  DATE_CREATED_ASC: "date_created_asc",
 } as const
 export const Sorts = {
   DEFAULT: {
@@ -28,16 +28,16 @@ export const Sorts = {
     DESC: {
       value: SortTypes.TIME_DESC,
       label: "sort.time_desc",
-    }
-  }
+    },
+  },
 }
 
-export const TaskTypes  = {
-  INBOX: 'inbox',
-  UNPLACED: 'unplaced',
+export const TaskTypes = {
+  INBOX: "inbox",
+  UNPLACED: "unplaced",
 } as const
 
 export const TaskStatuses = {
-  INPROGRESS: 'INPROGRESS',
-  FINISHED: 'FINISHED',
+  INPROGRESS: "INPROGRESS",
+  FINISHED: "FINISHED",
 } as const

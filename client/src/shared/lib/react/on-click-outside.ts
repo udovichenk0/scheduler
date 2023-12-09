@@ -19,11 +19,11 @@ export const useClickOutside = (props: UseClickOutsideProps) => {
   const { callback, deps, ref } = props
   useEffect(() => {
     const onClickOutside = (e: MouseEvent) => {
-      if (!(ref.current)?.contains(e.target as Node)) {
+      if (!ref.current?.contains(e.target as Node)) {
         callback()
       }
     }
-      document.addEventListener("click", onClickOutside)
+    document.addEventListener("click", onClickOutside)
     return () => {
       document.removeEventListener("click", onClickOutside)
     }

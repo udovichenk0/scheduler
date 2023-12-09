@@ -13,7 +13,7 @@ const routes = [
   UpcomingRoute,
   UnplacedRoute,
   CalendarRoute,
-  TrashRoute
+  TrashRoute,
 ]
 
 export const RoutesView = createRoutesView({

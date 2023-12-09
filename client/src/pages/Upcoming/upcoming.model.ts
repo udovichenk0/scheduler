@@ -55,7 +55,7 @@ export const $variant = createStore<Variant>("upcoming").on(
 export const $$sort = createSorting()
 const $tasks = combine($$task.$taskKv, $$sort.$sortType, (kv, sortType) => {
   if (!kv) return []
-  const tasks = Object.values(kv).filter(({is_deleted}) => !is_deleted)
+  const tasks = Object.values(kv).filter(({ is_deleted }) => !is_deleted)
   return $$sort.sortBy(sortType, tasks)
 })
 export const $upcomingTasks = combine($tasks, $variant, (tasks, variant) => {
@@ -108,7 +108,7 @@ sample({
 })
 
 export const $tasksByDateKv = combine($$task.$taskKv, (kv) => {
-  if(!kv) return null
+  if (!kv) return null
   return Object.values(kv).reduce(
     (acc, item) => {
       const date = dayjs(item.start_date).format("YYYY-MM-DD")

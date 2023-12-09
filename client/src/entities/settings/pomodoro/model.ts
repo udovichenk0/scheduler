@@ -153,12 +153,12 @@ export const $$pomodoroSettings = singleton(() => {
     sample({
       clock: init,
       target: [
-        initWorkDuration, 
-        initShortBreakDuration, 
-        initLongBreakDuration, 
-        initCustomDuration, 
-        initStartTimerAutomatically, 
-        initNotificationSound
+        initWorkDuration,
+        initShortBreakDuration,
+        initLongBreakDuration,
+        initCustomDuration,
+        initStartTimerAutomatically,
+        initNotificationSound,
       ],
     })
   })

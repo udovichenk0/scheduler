@@ -8,11 +8,7 @@ import { routes } from "@/shared/routing"
 import { Button } from "@/shared/ui/buttons/main-button/ui"
 import { Container } from "@/shared/ui/general/container"
 
-import {
-  $inboxTasksCount,
-  $todayTasksCount,
-  $$modal,
-} from "./sidebar.modal"
+import { $inboxTasksCount, $todayTasksCount, $$modal } from "./sidebar.modal"
 import { Logo } from "./ui/logo"
 
 export const Sidebar = () => {
@@ -33,48 +29,66 @@ export const Sidebar = () => {
             <div>... {/* make a popup*/}</div>
           </div>
           <div className="space-y-2">
-            <Button 
-            as="link"
-            to={routes.inbox}
-            intent={'primary'} className="w-full flex items-center justify-between" size={'sm'}>
+            <Button
+              as="link"
+              to={routes.inbox}
+              intent={"primary"}
+              className="flex w-full items-center justify-between"
+              size={"sm"}
+            >
               <div className="flex">
-                <Icon name={'common/inbox'} className="text-[20px] mr-4 fill-accent" />
-                {t('task.inbox')}
+                <Icon
+                  name={"common/inbox"}
+                  className="mr-4 fill-accent text-[20px]"
+                />
+                {t("task.inbox")}
               </div>
               <span className="text-grey">{inboxTasksCount}</span>
             </Button>
 
-            <Button 
-              as='link'
+            <Button
+              as="link"
               to={routes.home}
-              intent={'primary'} 
-              className="w-full flex items-center justify-between" 
-              size={'sm'}>
+              intent={"primary"}
+              className="flex w-full items-center justify-between"
+              size={"sm"}
+            >
               <div className="flex">
-                <Icon name={'common/outlined-star'} className="text-[20px] mr-4 fill-accent" />
-                {t('task.today')}
+                <Icon
+                  name={"common/outlined-star"}
+                  className="mr-4 fill-accent text-[20px]"
+                />
+                {t("task.today")}
               </div>
               <span className="text-grey">{todayTasksCount}</span>
             </Button>
 
-            <Button 
-              as="link" 
-              to={routes.upcoming} 
-              intent={'primary'} 
-              className="w-full flex items-center" size={'sm'}
-              >
-                <Icon name={'common/upcoming'} className="text-[20px] mr-4 fill-accent" />
-                {t('task.upcoming')}
+            <Button
+              as="link"
+              to={routes.upcoming}
+              intent={"primary"}
+              className="flex w-full items-center"
+              size={"sm"}
+            >
+              <Icon
+                name={"common/upcoming"}
+                className="mr-4 fill-accent text-[20px]"
+              />
+              {t("task.upcoming")}
             </Button>
 
-            <Button 
-              as="link" 
-              to={routes.calendar} 
-              intent={'primary'} 
-              className="w-full flex items-center" size={'sm'}
-              >
-                <Icon name={'common/calendar'} className="text-[20px] mr-4 fill-accent" />
-                {t('task.calendar')}
+            <Button
+              as="link"
+              to={routes.calendar}
+              intent={"primary"}
+              className="flex w-full items-center"
+              size={"sm"}
+            >
+              <Icon
+                name={"common/calendar"}
+                className="mr-4 fill-accent text-[20px]"
+              />
+              {t("task.calendar")}
             </Button>
           </div>
         </Container>
