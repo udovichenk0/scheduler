@@ -1,57 +1,52 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
-export const TaskIdSchema = z.object({
-  id: z.string(),
-});
+
+const TaskStatusSchema = z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']);
+const TaskTypeSchema = z.enum(['inbox', 'unplaced']);
+const TaskIdSchema = z.string();
+
+export type TaskStatus = z.infer<typeof TaskStatusSchema>;
+export type TaskType = z.infer<typeof TaskTypeSchema>;
 export type TaskId = z.infer<typeof TaskIdSchema>;
 
-const TaskContract = z.object({
+export const TaskIdParam = z.object({
+  id: TaskIdSchema,
+});
+
+const CreateTaskSchema = z.object({
   title: z.string().nonempty(),
   description: z.string(),
-  status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
-  type: z.enum(['inbox', 'unplaced']),
+  status: TaskStatusSchema,
+  type: TaskTypeSchema,
   start_date: z.string().pipe(z.coerce.date()).nullable(),
 });
+export class CreateTaskDto extends createZodDto(CreateTaskSchema) {}
 
-export class CreateTaskCredentialDto extends createZodDto(TaskContract) {}
-
-const UpdateDateContract = z.object({
+const UpdateTaskDateSchema = z.object({
   start_date: z.string().pipe(z.coerce.date()).nullable(),
-  type: z.enum(['inbox', 'unplaced']),
+  type: TaskTypeSchema,
 });
-export class UpdateDateCredentialsDto extends createZodDto(
-  UpdateDateContract,
-) {}
+export class UpdateDateDto extends createZodDto(UpdateTaskDateSchema) {}
 
-const TestContract = z.object({
+export const UpdateTaskStatusSchema = z.object({
+  status: TaskStatusSchema,
+});
+export class UpdateStatusDto extends createZodDto(UpdateTaskStatusSchema) {}
+
+const CreateTasksSchema = z.object({
+  tasks: CreateTaskSchema.array(),
+});
+export class CreateTasksDto extends createZodDto(CreateTasksSchema) {}
+
+const TaskDtoSchema = z.object({
   title: z.string().nonempty(),
   description: z.string(),
-  status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
-  type: z.enum(['inbox', 'unplaced']),
-  start_date: z.string().pipe(z.coerce.date()).nullable(),
-});
-export class TestDto extends createZodDto(TestContract) {}
-
-export const updateStatusCredentialsDto = z.object({
-  status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
-});
-export class UpdateStatusCredentialDto extends createZodDto(
-  updateStatusCredentialsDto,
-) {}
-
-const CreateManyTasksCredentials = z.object({ tasks: TaskContract.array() });
-export class CreateManyTasksCredentialDto extends createZodDto(
-  CreateManyTasksCredentials,
-) {}
-const TaskDtoContract = TaskContract.extend({
-  title: z.string().nonempty(),
-  description: z.string(),
-  status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
-  type: z.enum(['inbox', 'unplaced']),
+  status: TaskStatusSchema,
+  type: TaskTypeSchema,
   start_date: z.date().nullable(),
   id: z.string(),
   user_id: z.string(),
   is_deleted: z.boolean(),
   date_created: z.date(),
 });
-export class TaskDto extends createZodDto(TaskDtoContract) {}
+export class TaskDto extends createZodDto(TaskDtoSchema) {}

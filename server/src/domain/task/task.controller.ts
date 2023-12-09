@@ -16,13 +16,12 @@ import { TaskService } from './task.service';
 import { Request } from 'express';
 import { UserDto } from '../user/dto/user.dto';
 import {
-  CreateManyTasksCredentialDto,
-  CreateTaskCredentialDto,
+  CreateTasksDto,
+  CreateTaskDto,
   TaskDto,
-  TaskIdSchema,
-  TestDto,
-  UpdateDateCredentialsDto,
-  UpdateStatusCredentialDto,
+  TaskIdParam,
+  UpdateDateDto,
+  UpdateStatusDto,
 } from './dto/task.dto';
 import { UseZodGuard, ZodValidationPipe } from 'nestjs-zod';
 
@@ -38,8 +37,8 @@ export class TaskController {
   }
 
   @Post()
-  @UsePipes(new ZodValidationPipe(CreateTaskCredentialDto))
-  async createTask(@Req() req: Request, @Body() body: CreateTaskCredentialDto) {
+  @UsePipes(new ZodValidationPipe(CreateTaskDto))
+  async createTask(@Req() req: Request, @Body() body: CreateTaskDto) {
     const user = req.session['user'] as UserDto;
     const task = await this.taskService.createOne({
       id: uuidv4(),
@@ -53,47 +52,38 @@ export class TaskController {
     return TaskDto.create(task);
   }
   @Patch(':id')
-  @UseZodGuard('body', TestDto)
-  @UseZodGuard('params', TaskIdSchema)
-  async updateTask(@Body() data: TestDto, @Param('id') id: string) {
+  @UseZodGuard('body', CreateTaskDto)
+  @UseZodGuard('params', TaskIdParam)
+  async updateTask(@Body() data: CreateTaskDto, @Param('id') id: string) {
     const updatedTask = await this.taskService.updateOne(data, id);
     return TaskDto.create(updatedTask);
   }
 
   @Post(':id/status')
-  @UseZodGuard('params', TaskIdSchema)
-  @UseZodGuard('body', UpdateStatusCredentialDto)
-  async updateStatus(
-    @Body() data: UpdateStatusCredentialDto,
-    @Param('id') id: string,
-  ) {
+  @UseZodGuard('params', TaskIdParam)
+  @UseZodGuard('body', UpdateStatusDto)
+  async updateStatus(@Body() data: UpdateStatusDto, @Param('id') id: string) {
     const task = await this.taskService.updateOne(data, id);
     return TaskDto.create(task);
   }
 
   @Patch(':id/date')
-  @UseZodGuard('params', TaskIdSchema)
-  @UseZodGuard('body', UpdateDateCredentialsDto)
-  async updateDate(
-    @Body() data: UpdateDateCredentialsDto,
-    @Param('id') id: string,
-  ) {
+  @UseZodGuard('params', TaskIdParam)
+  @UseZodGuard('body', UpdateDateDto)
+  async updateDate(@Body() data: UpdateDateDto, @Param('id') id: string) {
     const task = await this.taskService.updateOne(data, id);
     return TaskDto.create(task);
   }
 
   @Delete(':id')
-  @UseZodGuard('params', TaskIdSchema)
+  @UseZodGuard('params', TaskIdParam)
   async deleteTask(@Param('id') id: string) {
     const task = await this.taskService.deleteOne(id);
     return task;
   }
   @Post('batch')
-  @UsePipes(CreateManyTasksCredentialDto)
-  async createMany(
-    @Body() data: CreateManyTasksCredentialDto,
-    @Req() req: Request,
-  ) {
+  @UsePipes(CreateTasksDto)
+  async createMany(@Body() data: CreateTasksDto, @Req() req: Request) {
     const user = req.session['user'] as UserDto;
     const tasks = data.tasks;
     const response = await this.taskService.createMany({
@@ -104,7 +94,7 @@ export class TaskController {
   }
 
   @Patch(':id/trash')
-  @UseZodGuard('params', TaskIdSchema)
+  @UseZodGuard('params', TaskIdParam)
   async trash(@Param('id') id: string) {
     const task = await this.taskService.updateOne({ is_deleted: true }, id);
     return TaskDto.create(task);
