@@ -1,5 +1,10 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
+export const TaskIdSchema = z.object({
+  id: z.string(),
+});
+export type TaskId = z.infer<typeof TaskIdSchema>;
+
 const TaskContract = z.object({
   title: z.string().nonempty(),
   description: z.string(),
@@ -10,24 +15,24 @@ const TaskContract = z.object({
 
 export class CreateTaskCredentialDto extends createZodDto(TaskContract) {}
 
-const UpdateTaskContract = z.object({
-  id: z.string(),
-  task: TaskContract,
-});
-
-export class UpdateTaskCredentialDto extends createZodDto(UpdateTaskContract) {}
-
 const UpdateDateContract = z.object({
-  id: z.string(),
-  date: z.string().pipe(z.coerce.date()).nullable(),
+  start_date: z.string().pipe(z.coerce.date()).nullable(),
+  type: z.enum(['inbox', 'unplaced']),
 });
-
 export class UpdateDateCredentialsDto extends createZodDto(
   UpdateDateContract,
 ) {}
 
+const TestContract = z.object({
+  title: z.string().nonempty(),
+  description: z.string(),
+  status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
+  type: z.enum(['inbox', 'unplaced']),
+  start_date: z.string().pipe(z.coerce.date()).nullable(),
+});
+export class TestDto extends createZodDto(TestContract) {}
+
 export const updateStatusCredentialsDto = z.object({
-  id: z.string(),
   status: z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']),
 });
 export class UpdateStatusCredentialDto extends createZodDto(
@@ -50,11 +55,3 @@ const TaskDtoContract = TaskContract.extend({
   date_created: z.date(),
 });
 export class TaskDto extends createZodDto(TaskDtoContract) {}
-
-export const DeleteTaskCredentialSchema = z.object({
-  id: z.string(),
-});
-
-export class DeleteTaskCredentialsDto extends createZodDto(
-  DeleteTaskCredentialSchema,
-) {}

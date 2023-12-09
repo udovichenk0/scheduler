@@ -9,7 +9,6 @@ import { getNextTaskId } from "@/shared/lib/effector"
 
 export const $$deleteTask = removeTaskFactory()
 export const $trashTasks = $$task.$taskKv.map((kv) => {
-  console.log(kv)
   if (kv) return Object.values(kv).filter(({ is_deleted }) => is_deleted)
   return null
 })

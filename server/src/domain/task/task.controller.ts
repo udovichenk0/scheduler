@@ -7,6 +7,8 @@ import {
   Req,
   UseGuards,
   UsePipes,
+  Param,
+  Delete,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { TokenGuard } from '../token/guards/token-guard';
@@ -16,25 +18,26 @@ import { UserDto } from '../user/dto/user.dto';
 import {
   CreateManyTasksCredentialDto,
   CreateTaskCredentialDto,
-  DeleteTaskCredentialsDto,
   TaskDto,
+  TaskIdSchema,
+  TestDto,
   UpdateDateCredentialsDto,
   UpdateStatusCredentialDto,
-  UpdateTaskCredentialDto,
 } from './dto/task.dto';
-import { ZodValidationPipe } from 'nestjs-zod';
+import { UseZodGuard, ZodValidationPipe } from 'nestjs-zod';
 
 @Controller('tasks')
 @UseGuards(TokenGuard)
 export class TaskController {
   constructor(private taskService: TaskService) {}
-  @Get('get')
+  @Get()
   async getTasks(@Req() req: Request) {
     const user = req.session['user'] as UserDto;
     const tasks = await this.taskService.findMany({ id: user.id });
     return tasks;
   }
-  @Post('create')
+
+  @Post()
   @UsePipes(new ZodValidationPipe(CreateTaskCredentialDto))
   async createTask(@Req() req: Request, @Body() body: CreateTaskCredentialDto) {
     const user = req.session['user'] as UserDto;
@@ -49,56 +52,44 @@ export class TaskController {
     });
     return TaskDto.create(task);
   }
-  @Post('update')
-  @UsePipes(new ZodValidationPipe(UpdateTaskCredentialDto))
-  async updateTask(@Body() body: UpdateTaskCredentialDto) {
-    const { id, task } = body;
-    const updatedTask = await this.taskService.updateOne({
-      data: task,
-      where: {
-        id,
-      },
-    });
+  @Patch(':id')
+  @UseZodGuard('body', TestDto)
+  @UseZodGuard('params', TaskIdSchema)
+  async updateTask(@Body() data: TestDto, @Param('id') id: string) {
+    const updatedTask = await this.taskService.updateOne(data, id);
     return TaskDto.create(updatedTask);
   }
-  @Post('update-status')
-  @UsePipes(new ZodValidationPipe(UpdateStatusCredentialDto))
-  async updateStatus(@Body() body: UpdateStatusCredentialDto) {
-    const { status, id } = body;
-    const task = await this.taskService.updateStatus({
-      data: {
-        status,
-      },
-      where: {
-        id,
-      },
-    });
+
+  @Post(':id/status')
+  @UseZodGuard('params', TaskIdSchema)
+  @UseZodGuard('body', UpdateStatusCredentialDto)
+  async updateStatus(
+    @Body() data: UpdateStatusCredentialDto,
+    @Param('id') id: string,
+  ) {
+    const task = await this.taskService.updateOne(data, id);
     return TaskDto.create(task);
   }
-  @Patch('update-date')
-  async updateDate(@Body() body: UpdateDateCredentialsDto) {
-    const task = await this.taskService.updateOne({
-      data: {
-        start_date: body.date,
-      },
-      where: {
-        id: body.id,
-      },
-    });
+
+  @Patch(':id/date')
+  @UseZodGuard('params', TaskIdSchema)
+  @UseZodGuard('body', UpdateDateCredentialsDto)
+  async updateDate(
+    @Body() data: UpdateDateCredentialsDto,
+    @Param('id') id: string,
+  ) {
+    const task = await this.taskService.updateOne(data, id);
     return TaskDto.create(task);
   }
-  @Post('delete')
-  @UsePipes(new ZodValidationPipe(DeleteTaskCredentialsDto))
-  async deleteTask(@Body() body: DeleteTaskCredentialsDto) {
-    const { id } = body;
-    const task = await this.taskService.deleteOne({
-      where: {
-        id,
-      },
-    });
+
+  @Delete(':id')
+  @UseZodGuard('params', TaskIdSchema)
+  async deleteTask(@Param('id') id: string) {
+    const task = await this.taskService.deleteOne(id);
     return task;
   }
-  @Post('create-many')
+  @Post('batch')
+  @UsePipes(CreateManyTasksCredentialDto)
   async createMany(
     @Body() data: CreateManyTasksCredentialDto,
     @Req() req: Request,
@@ -111,11 +102,11 @@ export class TaskController {
     });
     return response;
   }
-  @Post('trash')
-  @UsePipes(new ZodValidationPipe(DeleteTaskCredentialsDto))
-  async trash(@Body() body: DeleteTaskCredentialsDto) {
-    const { id } = body;
-    const task = await this.taskService.trashOne(id);
+
+  @Patch(':id/trash')
+  @UseZodGuard('params', TaskIdSchema)
+  async trash(@Param('id') id: string) {
+    const task = await this.taskService.updateOne({ is_deleted: true }, id);
     return TaskDto.create(task);
   }
 }

@@ -22,23 +22,20 @@ export class TaskService {
     });
     return task;
   }
-  updateOne({ data, where }: Prisma.taskUpdateArgs) {
+  updateOne(data: Prisma.taskUpdateInput, id: string) {
     const task = this.prismaService.task.update({
       data,
-      where,
+      where: {
+        id,
+      },
     });
     return task;
   }
-  updateStatus({ data, where }: Prisma.taskUpdateArgs) {
-    const task = this.prismaService.task.update({
-      data,
-      where,
-    });
-    return task;
-  }
-  deleteOne({ where }: Prisma.taskDeleteArgs) {
+  deleteOne(id: string) {
     const task = this.prismaService.task.delete({
-      where,
+      where: {
+        id,
+      },
     });
     return task;
   }
@@ -57,15 +54,5 @@ export class TaskService {
       })),
     });
     return tasks;
-  }
-  trashOne(id: string) {
-    return this.prismaService.task.update({
-      data: {
-        is_deleted: true,
-      },
-      where: {
-        id,
-      },
-    });
   }
 }
