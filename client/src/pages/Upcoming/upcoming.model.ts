@@ -5,9 +5,9 @@ import { createContext } from "react"
 
 import { disclosureTask } from "@/widgets/expanded-task/model"
 
-import { removeTaskFactory } from "@/features/manage-task/model/delete"
 import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
+import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
 import { $$task, Task, createSorting } from "@/entities/task/task-item"
 
@@ -35,7 +35,7 @@ export const $$taskDisclosure = disclosureTask({
   createTaskModel: $$createTask,
 })
 
-export const $$deleteTask = removeTaskFactory()
+export const $$trashTask = trashTaskFactory()
 export const TaskManagerContext = createContext({
   $$updateTask,
   $$createTask,
@@ -55,7 +55,7 @@ export const $variant = createStore<Variant>("upcoming").on(
 export const $$sort = createSorting()
 const $tasks = combine($$task.$taskKv, $$sort.$sortType, (kv, sortType) => {
   if (!kv) return []
-  const tasks = Object.values(kv)
+  const tasks = Object.values(kv).filter(({is_deleted}) => !is_deleted)
   return $$sort.sortBy(sortType, tasks)
 })
 export const $upcomingTasks = combine($tasks, $variant, (tasks, variant) => {
@@ -160,11 +160,11 @@ sample({
   target: $selectedDate,
 })
 sample({
-  clock: $$deleteTask.taskDeletedById,
+  clock: $$trashTask.taskTrashedById,
   target: selectNextId,
 })
 sample({
-  clock: $$deleteTask.taskDeletedById,
+  clock: $$trashTask.taskTrashedById,
   filter: and($$selectFilteredTask.$selectedTaskId),
   target: $$selectFilteredTask.nextTaskIdSelected,
 })

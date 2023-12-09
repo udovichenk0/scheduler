@@ -36,14 +36,11 @@ export class TaskController {
   }
   @Post('create')
   @UsePipes(new ZodValidationPipe(CreateTaskCredentialDto))
-  async createTask(
-    @Req() req: Request,
-    @Body() taskCredentials: CreateTaskCredentialDto,
-  ) {
+  async createTask(@Req() req: Request, @Body() body: CreateTaskCredentialDto) {
     const user = req.session['user'] as UserDto;
     const task = await this.taskService.createOne({
       id: uuidv4(),
-      ...taskCredentials,
+      ...body,
       user: {
         connect: {
           id: user.id,
@@ -54,8 +51,8 @@ export class TaskController {
   }
   @Post('update')
   @UsePipes(new ZodValidationPipe(UpdateTaskCredentialDto))
-  async updateTask(@Body() taskCredentials: UpdateTaskCredentialDto) {
-    const { id, task } = taskCredentials;
+  async updateTask(@Body() body: UpdateTaskCredentialDto) {
+    const { id, task } = body;
     const updatedTask = await this.taskService.updateOne({
       data: task,
       where: {
@@ -66,8 +63,8 @@ export class TaskController {
   }
   @Post('update-status')
   @UsePipes(new ZodValidationPipe(UpdateStatusCredentialDto))
-  async updateStatus(@Body() taskCredentials: UpdateStatusCredentialDto) {
-    const { status, id } = taskCredentials;
+  async updateStatus(@Body() body: UpdateStatusCredentialDto) {
+    const { status, id } = body;
     const task = await this.taskService.updateStatus({
       data: {
         status,
@@ -76,24 +73,24 @@ export class TaskController {
         id,
       },
     });
-    return task;
+    return TaskDto.create(task);
   }
   @Patch('update-date')
-  async updateDate(@Body() taskCredentials: UpdateDateCredentialsDto) {
+  async updateDate(@Body() body: UpdateDateCredentialsDto) {
     const task = await this.taskService.updateOne({
       data: {
-        start_date: taskCredentials.date,
+        start_date: body.date,
       },
       where: {
-        id: taskCredentials.id,
+        id: body.id,
       },
     });
-    return task;
+    return TaskDto.create(task);
   }
   @Post('delete')
   @UsePipes(new ZodValidationPipe(DeleteTaskCredentialsDto))
-  async deleteTask(@Body() taskCredentials: DeleteTaskCredentialsDto) {
-    const { id } = taskCredentials;
+  async deleteTask(@Body() body: DeleteTaskCredentialsDto) {
+    const { id } = body;
     const task = await this.taskService.deleteOne({
       where: {
         id,
@@ -113,5 +110,12 @@ export class TaskController {
       data: tasks,
     });
     return response;
+  }
+  @Post('trash')
+  @UsePipes(new ZodValidationPipe(DeleteTaskCredentialsDto))
+  async trash(@Body() body: DeleteTaskCredentialsDto) {
+    const { id } = body;
+    const task = await this.taskService.trashOne(id);
+    return TaskDto.create(task);
   }
 }

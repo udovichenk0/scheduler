@@ -46,6 +46,8 @@ const TaskDtoContract = TaskContract.extend({
   start_date: z.date().nullable(),
   id: z.string(),
   user_id: z.string(),
+  is_deleted: z.boolean(),
+  date_created: z.date(),
 });
 export class TaskDto extends createZodDto(TaskDtoContract) {}
 

@@ -12,7 +12,7 @@ import { useDocumentTitle, onClickOutside } from "@/shared/lib/react"
 
 import {
   $$createTask,
-  $$deleteTask,
+  $$trashTask,
   $$sort,
   $$taskDisclosure,
   $$updateTask,
@@ -33,7 +33,7 @@ const Unplaced = () => {
   const closeTask = useUnit($$taskDisclosure.closeTaskTriggered)
   const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpenedById)
   const openCreatedTask = useUnit($$taskDisclosure.createdTaskOpened)
-  const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
+  const deleteTaskById = useUnit($$trashTask.taskTrashedById)
   const changeStatusAndUpdate = useUnit($$updateTask.statusChangedAndUpdated)
   const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
   const selectedTaskId = useUnit($selectedTaskId)

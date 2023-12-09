@@ -28,9 +28,9 @@ export const TaskItem = ({
   taskRef,
 }: {
   task: Task
-  onUpdateDate: ({ date, id }: { date: Date; id: TaskId }) => void
-  onUpdateStatus: ({ id, status }: { status: TaskStatus; id: TaskId }) => void
-  onDoubleClick: () => void
+  onUpdateDate?: ({ date, id }: { date: Date; id: TaskId }) => void
+  onUpdateStatus?: ({ id, status }: { status: TaskStatus; id: TaskId }) => void
+  onDoubleClick?: () => void
   dateLabel?: boolean
   onClick: (e: MouseEvent) => void
   isTaskSelected: boolean
@@ -43,16 +43,20 @@ export const TaskItem = ({
   const id = useUnit($$modal.$id)
   const onChangeDate = (date: Date) => {
     onCloseDateModal()
-    onUpdateDate({ date, id: task.id })
+    onUpdateDate?.({ date, id: task.id })
   }
   const isSameDateOrAfter = dayjs(start_date).isSameOrAfter(dayjs())
   return (
     <div ref={taskRef} className="group flex gap-2">
-      <Icon
-        onClick={() => onOpenDateModal(task.id)}
-        name="common/upcoming"
-        className="invisible translate-y-1 text-lg text-accent group-hover:visible"
-      />
+      <div className="w-5">
+      {onUpdateDate && (
+          <Icon
+            onClick={() => onOpenDateModal(task.id)}
+            name="common/upcoming"
+            className="invisible translate-y-1 text-lg text-accent group-hover:visible"
+          />
+        )} 
+      </div>
       <BaseModal isOpened={task.id == id} onClose={onCloseDateModal}>
         <DatePicker
           currentDate={task.start_date || new Date()}
@@ -73,7 +77,7 @@ export const TaskItem = ({
         <div id="task" className="flex w-full select-none gap-3">
           <Checkbox
             iconClassName="fill-cTaskEditDefault"
-            onChange={() => onUpdateStatus({ id: task.id, status })}
+            onChange={() => onUpdateStatus?.({ id: task.id, status })}
             checked={status == "FINISHED"}
           />
           <div>

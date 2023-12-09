@@ -18,7 +18,7 @@ import {
 } from "@/shared/lib/react"
 
 import {
-  $$deleteTask,
+  $$trashTask,
   $isOverdueTasksOpened,
   $overdueTasks,
   $todayTasks,
@@ -41,7 +41,7 @@ const Today = () => {
   const closeTask = useUnit($$taskDisclosure.closeTaskTriggered)
   const openCreatedTask = useUnit($$taskDisclosure.createdTaskOpened)
   const createdTask = useUnit($$taskDisclosure.$createdTask)
-  const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
+  const deleteTaskById = useUnit($$trashTask.taskTrashedById)
   const overdueTasks = useUnit($overdueTasks)
   const selectedTaskId = useUnit($selectedTaskId)
   const onSelectId = useUnit(selectTaskId)

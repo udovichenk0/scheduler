@@ -89,7 +89,7 @@ export const Header = ({
           }
         />
       </MainModal>
-      <div className="flex w-full justify-between">
+      <div className="flex w-full justify-between items-center h-10">
         <div className="flex items-center gap-4">
           <Icon name={iconName} className="fill-cIconDefault text-2xl" />
           <Typography.Heading size="lg">{title}</Typography.Heading>

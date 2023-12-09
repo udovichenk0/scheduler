@@ -30,6 +30,7 @@ model task {
   user          user      @relation(fields: [user_id], references: [id])
   user_id       String
   date_created  DateTime  @default(now())
+  is_deleted    Boolean   @default(false)
 }
 model emailConfirmation {
   id          String    @id

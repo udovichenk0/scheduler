@@ -29,7 +29,6 @@ export const createTaskFactory = ({
     attachSetTaskToLocalStorage.doneData,
     attachCreateTaskQuery.finished.success,
   ])
-
   bridge(() => {
     sample({
       clock: createTaskTriggered,

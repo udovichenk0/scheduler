@@ -3,16 +3,16 @@ import { createEvent, createStore, sample, combine } from "effector"
 
 import { disclosureTask } from "@/widgets/expanded-task/model"
 
-import { removeTaskFactory } from "@/features/manage-task/model/delete"
 import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
+import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
 import { $$task, createSorting } from "@/entities/task/task-item"
 
 import { cookiePersist } from "@/shared/lib/effector/cookie-persist"
 import { getNextTaskId } from "@/shared/lib/effector"
 import { TaskId } from "@/shared/api/task"
-export const $$deleteTask = removeTaskFactory()
+export const $$trashTask = trashTaskFactory()
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
   defaultType: "unplaced",
@@ -89,6 +89,6 @@ cookiePersist({
 })
 
 sample({
-  clock: $$deleteTask.taskDeletedById,
+  clock: $$trashTask.taskTrashedById,
   target: selectNextId,
 })

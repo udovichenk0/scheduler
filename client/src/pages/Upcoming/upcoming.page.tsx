@@ -8,7 +8,7 @@ import { useDocumentTitle, onClickOutside } from "@/shared/lib/react"
 
 import { AllUpcomingTasks } from "./sections/upcoming-tasks"
 import {
-  $$deleteTask,
+  $$trashTask,
   $selectedDate,
   currentDateSelected,
   $$taskDisclosure,
@@ -36,7 +36,7 @@ const Upcoming = () => {
   const closeTask = useUnit($$taskDisclosure.closeTaskTriggered)
   const openCreatedTask = useUnit($$taskDisclosure.createdTaskOpened)
   const changeDate = useUnit(currentDateSelected)
-  const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
+  const deleteTaskById = useUnit($$trashTask.taskTrashedById)
   const upcomingTasks = useUnit($upcomingTasks)
   const tasksByDate = useUnit($tasksByDate)
   const variant = useUnit($variant)
