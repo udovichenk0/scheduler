@@ -4,7 +4,7 @@ import { describe, expect, test, vi } from "vitest"
 import { $$task } from "@/entities/task/task-item"
 import { $$session } from "@/entities/session"
 
-import { removeTaskFactory } from "."
+import { removeTaskFactory } from "./task.model"
 const tasks = {
   "1": {
     id: "1",
@@ -46,7 +46,7 @@ describe("delete task", () => {
       params: "1",
     })
     expect(mock).toBeCalled()
-    expect(mock).toBeCalledWith({ body: { id: "1" } })
+    expect(mock).toBeCalledWith({ params: { id: "1" } })
     expect(mock).toReturnWith(returnedTask)
     expect(scope.getState($$task.$taskKv)).toStrictEqual({})
   })
