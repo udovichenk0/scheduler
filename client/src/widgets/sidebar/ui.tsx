@@ -12,10 +12,8 @@ import {
   $inboxTasksCount,
   $todayTasksCount,
   $$modal,
-  navigate,
 } from "./sidebar.modal"
 import { Logo } from "./ui/logo"
-import { SideLink } from "./ui/side-link"
 
 export const Sidebar = () => {
   const { t } = useTranslation()
@@ -35,28 +33,49 @@ export const Sidebar = () => {
             <div>... {/* make a popup*/}</div>
           </div>
           <div className="space-y-2">
-            <SideLink
-              route={routes.inbox}
-              title={t("task.inbox")}
-              rightCount={inboxTasksCount}
-              iconName="common/inbox"
-            />
-            <SideLink
-              route={routes.home}
-              title={t("task.today")}
-              rightCount={todayTasksCount}
-              iconName="common/outlined-star"
-            />
-            <SideLink
-              route={routes.upcoming}
-              title={t("task.upcoming")}
-              iconName="common/upcoming"
-            />
-            <SideLink
-              route={routes.calendar}
-              title={t("task.calendar")}
-              iconName="common/calendar"
-            />
+            <Button 
+            as="link"
+            to={routes.inbox}
+            intent={'primary'} className="w-full flex items-center justify-between" size={'sm'}>
+              <div className="flex">
+                <Icon name={'common/inbox'} className="text-[20px] mr-4 fill-accent" />
+                {t('task.inbox')}
+              </div>
+              <span className="text-grey">{inboxTasksCount}</span>
+            </Button>
+
+            <Button 
+              as='link'
+              to={routes.home}
+              intent={'primary'} 
+              className="w-full flex items-center justify-between" 
+              size={'sm'}>
+              <div className="flex">
+                <Icon name={'common/outlined-star'} className="text-[20px] mr-4 fill-accent" />
+                {t('task.today')}
+              </div>
+              <span className="text-grey">{todayTasksCount}</span>
+            </Button>
+
+            <Button 
+              as="link" 
+              to={routes.upcoming} 
+              intent={'primary'} 
+              className="w-full flex items-center" size={'sm'}
+              >
+                <Icon name={'common/upcoming'} className="text-[20px] mr-4 fill-accent" />
+                {t('task.upcoming')}
+            </Button>
+
+            <Button 
+              as="link" 
+              to={routes.calendar} 
+              intent={'primary'} 
+              className="w-full flex items-center" size={'sm'}
+              >
+                <Icon name={'common/calendar'} className="text-[20px] mr-4 fill-accent" />
+                {t('task.calendar')}
+            </Button>
           </div>
         </Container>
         <Container>
@@ -78,16 +97,18 @@ export const Sidebar = () => {
             <Icon name="common/settings" className="text-[24px]" />
           </Button>
           <Button
+            as="link"
+            to={routes.unplaced}
             title="Unplaced"
-            onClick={() => navigate(routes.unplaced)}
             intent={"primary"}
             size={"xs"}
           >
             <Icon name="common/cross-arrows" className="text-[24px]" />
           </Button>
           <Button
+            as="link"
+            to={routes.trash}
             title="Trash"
-            onClick={() => navigate(routes.trash)}
             intent={"primary"}
             size={"xs"}
           >
