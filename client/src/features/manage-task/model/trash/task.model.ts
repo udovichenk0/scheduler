@@ -23,7 +23,7 @@ export const trashTaskFactory = () => {
   sample({
     clock: taskTrashedById,
     filter: $$session.$isAuthenticated,
-    fn: (id) => ({ body: { id } }),
+    fn: (id) => ({ params: { id } }),
     target: attachTrashTaskQuery.start,
   })
   sample({
