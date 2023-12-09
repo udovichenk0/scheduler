@@ -20,6 +20,7 @@ const tasks = {
     start_date: null,
     user_id: "1",
     date_created: "2023-12-03T11:11:51.227Z",
+    is_deleted: false
   },
 }
 
@@ -33,6 +34,7 @@ const updatedTasks = {
     start_date: null,
     user_id: "1",
     date_created: "2023-12-03T11:11:51.227Z",
+    is_deleted: false
   },
 }
 
@@ -45,6 +47,7 @@ const returnedValue = {
   start_date: null,
   user_id: "1",
   date_created: "2023-12-03T11:11:51.227Z",
+  is_deleted: false
 }
 describe("update task", () => {
   test("Update task from the server if user is authenticated, update the value in store and reset fields", async () => {

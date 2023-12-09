@@ -15,6 +15,7 @@ const tasks = {
     start_date: null,
     user_id: "1",
     date_created: "2023-12-03T11:11:51.227Z",
+    is_deleted: true
   },
 }
 const returnedTask = {
@@ -26,6 +27,7 @@ const returnedTask = {
   start_date: null,
   user_id: "1",
   date_created: "2023-12-03T11:11:51.227Z",
+  is_deleted: true
 }
 const $$removeTask = removeTaskFactory()
 describe("delete task", () => {
