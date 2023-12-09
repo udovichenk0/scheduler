@@ -40,7 +40,7 @@ export const router = createHistoryRouter({
     {
       route: [routes.trash],
       path: "/trash",
-    }
+    },
   ],
   notFoundRoute: routes.notFoundRoute,
 })

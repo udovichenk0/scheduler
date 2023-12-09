@@ -9,12 +9,12 @@ export const createIdModal = () => {
 
   sample({
     clock: open,
-    target: $id, 
+    target: $id,
   })
   sample({
     clock: close,
     fn: () => null,
-    target: $id, 
+    target: $id,
   })
   sample({
     clock: router.$path,

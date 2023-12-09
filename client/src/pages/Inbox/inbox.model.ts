@@ -18,8 +18,10 @@ export const $inboxTasks = combine(
   $$task.$taskKv,
   $$sort.$sortType,
   (kv, sortType) => {
-    if(!kv) return null
-    const tasks = Object.values(kv).filter(({ type, is_deleted }) => type == "inbox" && !is_deleted)
+    if (!kv) return null
+    const tasks = Object.values(kv).filter(
+      ({ type, is_deleted }) => type == "inbox" && !is_deleted,
+    )
     return $$sort.sortBy(sortType, tasks)
   },
 )

@@ -49,13 +49,13 @@ export const TaskItem = ({
   return (
     <div ref={taskRef} className="group flex gap-2">
       <div className="w-5">
-      {onUpdateDate && (
+        {onUpdateDate && (
           <Icon
             onClick={() => onOpenDateModal(task.id)}
             name="common/upcoming"
             className="invisible translate-y-1 text-lg text-accent group-hover:visible"
           />
-        )} 
+        )}
       </div>
       <BaseModal isOpened={task.id == id} onClose={onCloseDateModal}>
         <DatePicker

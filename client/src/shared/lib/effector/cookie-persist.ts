@@ -1,4 +1,10 @@
-import { StoreWritable, createEvent, attach, createEffect, sample } from "effector"
+import {
+  StoreWritable,
+  createEvent,
+  attach,
+  createEffect,
+  sample,
+} from "effector"
 import { combineEvents } from "patronum"
 
 import { parseCookieValue } from "../storage/parse-cookie-value"

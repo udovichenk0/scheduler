@@ -5,6 +5,6 @@ export const parseDto = <S>(schema: z.ZodType<S>, data: unknown) => {
   if (parsed.success) return parsed.data
   throw {
     data,
-    message: 'Response was considered as invalid against a given contract'
+    message: "Response was considered as invalid against a given contract",
   }
 }

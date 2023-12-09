@@ -113,10 +113,7 @@ export const ModifyTaskForm = ({
           )}
         </div>
         <BaseModal isOpened={isTypeModalOpened} onClose={closeTypeModal}>
-          <TypePicker
-            currentType={taskType}
-            changeType={changeType}
-          />
+          <TypePicker currentType={taskType} changeType={changeType} />
         </BaseModal>
         <BaseModal isOpened={isDateModalOpened} onClose={closeDateModal}>
           <DatePicker
@@ -145,7 +142,6 @@ const TypePicker = ({
   currentType: "inbox" | "unplaced"
   changeType: (payload: "inbox" | "unplaced") => void
 }) => {
-
   const { t } = useTranslation()
   return (
     <div className="flex w-[280px] cursor-pointer flex-col gap-y-1 rounded-[5px] bg-main p-3">
@@ -163,9 +159,7 @@ const TypePicker = ({
           >
             <Icon
               name={iconName}
-              className={`mr-4 h-5 w-5 text-accent ${
-                active && "text-cHover"
-              }`}
+              className={`mr-4 h-5 w-5 text-accent ${active && "text-cHover"}`}
             />
             {t(`task.${type}`)}
           </Button>

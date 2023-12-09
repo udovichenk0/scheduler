@@ -4,7 +4,7 @@ import { Task, TaskKv } from "./type"
 import { TaskTypes } from "./config"
 
 export const removeTaskFromKv = (kv: TaskKv, taskId: TaskId) => {
-  if(!kv) return null
+  if (!kv) return null
   const updatedTasks = Object.entries(kv).filter(([key]) => key !== taskId)
   return Object.fromEntries(updatedTasks)
 }
@@ -14,17 +14,17 @@ export const transformTasksToKv = (tasks: Task[]) => {
 }
 
 export const addTaskToKv = (kv: TaskKv, task: Task) => {
-  if(!kv) return null
+  if (!kv) return null
   return { ...kv, [task.id]: task }
 }
 
 export const switchTaskType = (type: TaskType, date?: Date): TaskType => {
-  switch(true){
-    case type === TaskTypes.INBOX && !!date: 
+  switch (true) {
+    case type === TaskTypes.INBOX && !!date:
       return TaskTypes.UNPLACED
     case type === TaskTypes.UNPLACED && !date:
       return TaskTypes.INBOX
-    default: 
+    default:
       return TaskTypes.INBOX
   }
 }

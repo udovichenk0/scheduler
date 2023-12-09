@@ -2,7 +2,7 @@ import { attach, createEvent, merge, sample } from "effector"
 import { spread, and, not } from "patronum"
 import { attachOperation } from "@farfetched/core"
 
-import { switchTaskType } from '@/entities/task/task-item/lib';
+import { switchTaskType } from "@/entities/task/task-item/lib"
 import { $$session } from "@/entities/session"
 import { $$task, TaskKv } from "@/entities/task/task-item"
 import { modifyTaskFactory } from "@/entities/task/task-form"

@@ -25,6 +25,7 @@ sample({
 })
 sample({
   clock: [getLanguageFx.doneData, $$i18n.changeLanguageFx.doneData],
-  fn: (lang) => languages.find(({value}) => value == lang)?.label || "English",
+  fn: (lang) =>
+    languages.find(({ value }) => value == lang)?.label || "English",
   target: $currentLanguage,
 })

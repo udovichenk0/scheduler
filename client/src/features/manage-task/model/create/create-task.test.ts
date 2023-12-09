@@ -21,7 +21,7 @@ const tasks = {
     status: "INPROGRESS",
     start_date: null,
     user_id: "1",
-    date_created: "2023-12-03T11:11:51.227Z"
+    date_created: "2023-12-03T11:11:51.227Z",
   },
 }
 const resultedTasks = {
@@ -33,7 +33,7 @@ const resultedTasks = {
     status: "INPROGRESS",
     start_date: null,
     user_id: "1",
-    date_created: "2023-12-03T11:11:51.227Z"
+    date_created: "2023-12-03T11:11:51.227Z",
   },
   "2": {
     id: "2",
@@ -43,7 +43,7 @@ const resultedTasks = {
     status: "FINISHED",
     start_date: null,
     user_id: "1",
-    date_created: "2023-13-03T11:11:51.227Z"
+    date_created: "2023-13-03T11:11:51.227Z",
   },
 }
 const returnedTask = {
@@ -54,7 +54,7 @@ const returnedTask = {
   status: "FINISHED",
   start_date: null,
   user_id: "1",
-  date_created: "2023-13-03T11:11:51.227Z"
+  date_created: "2023-13-03T11:11:51.227Z",
 }
 
 describe("create task", () => {

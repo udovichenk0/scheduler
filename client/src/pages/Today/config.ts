@@ -1,4 +1,4 @@
-import { Sorts } from "@/entities/task/task-item";
+import { Sorts } from "@/entities/task/task-item"
 
 export const SORT_CONFIG = [
   Sorts.DEFAULT,

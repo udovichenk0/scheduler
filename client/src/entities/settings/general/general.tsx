@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { useUnit } from 'effector-react'
+import { useUnit } from "effector-react"
 
 import { onMount } from "@/shared/lib/react"
 
