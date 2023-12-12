@@ -38,16 +38,17 @@ const Today = () => {
   const expandedTaskRef = useRef<HTMLDivElement>(null)
   const taskItemRef = useRef<HTMLDivElement>(null)
 
-  const closeTask = useUnit($$taskDisclosure.closeTaskTriggered)
-  const openCreatedTask = useUnit($$taskDisclosure.createdTaskOpened)
   const createdTask = useUnit($$taskDisclosure.$createdTask)
-  const deleteTaskById = useUnit($$trashTask.taskTrashedById)
   const overdueTasks = useUnit($overdueTasks)
-  const selectedTaskId = useUnit($selectedTaskId)
-  const onSelectId = useUnit(selectTaskId)
   const todayTasks = useUnit($todayTasks)
-  const onSortChange = useUnit($$sort.sort)
+  const selectedTaskId = useUnit($selectedTaskId)
   const activeSort = useUnit($$sort.$sortType)
+
+  const onCloseTaskForm = useUnit($$taskDisclosure.closeTaskTriggered)
+  const onCreateTaskFormOpen = useUnit($$taskDisclosure.createdTaskOpened)
+  const onDeleteTask = useUnit($$trashTask.taskTrashedById)
+  const onSelectTaskId = useUnit(selectTaskId)
+  const onSortChange = useUnit($$sort.sort)
 
   return (
     <Suspense fallback={<div>loading</div>}>
@@ -65,18 +66,18 @@ const Today = () => {
           contentRef={taskItemRef}
           className="flex flex-col"
           onClick={(e) => {
-            onClickOutside(expandedTaskRef, e, closeTask)
-            clickOnElement(taskItemRef, e, () => onSelectId(null))
+            onClickOutside(expandedTaskRef, e, onCloseTaskForm)
+            clickOnElement(taskItemRef, e, () => onSelectTaskId(null))
           }}
         >
           <OverdueTasks
             taskRef={expandedTaskRef}
-            selectTaskId={onSelectId}
+            onSelectTaskId={onSelectTaskId}
             selectedTaskId={selectedTaskId}
           />
           <TodayTasks
             taskRef={expandedTaskRef}
-            selectTaskId={onSelectId}
+            onSelectTaskId={onSelectTaskId}
             selectedTaskId={selectedTaskId}
           />
           <NoTasks
@@ -86,9 +87,9 @@ const Today = () => {
           />
         </Layout.Content>
         <Layout.Footer
-          action={openCreatedTask}
+          onCreateTask={onCreateTaskFormOpen}
           selectedTaskId={selectedTaskId}
-          deleteTask={deleteTaskById}
+          onDeleteTask={onDeleteTask}
         />
       </Layout>
     </Suspense>
@@ -96,23 +97,24 @@ const Today = () => {
 }
 
 const OverdueTasks = ({
-  selectTaskId,
+  onSelectTaskId,
   selectedTaskId,
   taskRef,
 }: {
-  selectTaskId: (task: Nullable<TaskId>) => void
+  onSelectTaskId: (task: Nullable<TaskId>) => void
   selectedTaskId: Nullable<TaskId>
   taskRef: RefObject<HTMLDivElement>
 }) => {
   const { t } = useTranslation()
 
   const updatedTask = useUnit($$taskDisclosure.$updatedTaskId)
-  const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpenedById)
   const isOverdueTasksOpened = useUnit($isOverdueTasksOpened)
-  const toggleOverdueTasks = useUnit(toggleOverdueTasksOpened) // Assuming this is a function
   const overdueTasks = useUnit($overdueTasks)
-  const changeStatusAndUpdate = useUnit($$updateTask.statusChangedAndUpdated)
-  const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
+
+  const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const onToggleVisibility = useUnit(toggleOverdueTasksOpened) // Assuming this is a function
+  const onChangeStatus = useUnit($$updateTask.statusChangedAndUpdated)
+  const onChangeDate = useUnit($$updateTask.dateChangedAndUpdated)
 
   return (
     <section className={`${overdueTasks.length > 0 ? "block" : "hidden"}`}>
@@ -124,7 +126,7 @@ const OverdueTasks = ({
         <Button
           intent={"primary"}
           size={"sm"}
-          onClick={toggleOverdueTasks}
+          onClick={onToggleVisibility}
           className="flex w-full items-center justify-between px-3"
         >
           <span className="text-[18px]">{t("today.overdueTasks")}</span>
@@ -156,11 +158,11 @@ const OverdueTasks = ({
                   <TaskItem
                     dateLabel
                     typeLabel
-                    onUpdateDate={changeDateAndUpdate}
-                    onUpdateStatus={changeStatusAndUpdate}
+                    onUpdateDate={onChangeDate}
+                    onUpdateStatus={onChangeStatus}
                     isTaskSelected={selectedTaskId === task.id}
-                    onClick={() => selectTaskId(task.id)}
-                    onDoubleClick={() => openUpdatedTaskById(task.id)}
+                    onClick={() => onSelectTaskId(task.id)}
+                    onDoubleClick={() => onUpdateTaskFormOpen(task.id)}
                     task={task}
                   />
                 )}
@@ -173,23 +175,24 @@ const OverdueTasks = ({
 }
 
 const TodayTasks = ({
+  onSelectTaskId,
   selectedTaskId,
-  selectTaskId,
   taskRef,
 }: {
-  taskRef: RefObject<HTMLDivElement>
+  onSelectTaskId: (task: Nullable<TaskId>) => void
   selectedTaskId: Nullable<TaskId>
-  selectTaskId: (task: Nullable<TaskId>) => void
+  taskRef: RefObject<HTMLDivElement>
 }) => {
   const { t } = useTranslation()
 
   const todayTasks = useUnit($todayTasks)
   const createdTask = useUnit($$taskDisclosure.$createdTask)
   const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
-  const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpenedById)
   const overdueTasks = useUnit($overdueTasks)
-  const changeStatusAndUpdate = useUnit($$updateTask.statusChangedAndUpdated)
-  const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
+  
+  const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const onChangeStatus = useUnit($$updateTask.statusChangedAndUpdated)
+  const onChangeDate = useUnit($$updateTask.dateChangedAndUpdated)
 
   return (
     <section>
@@ -222,11 +225,11 @@ const TodayTasks = ({
               ) : (
                 <TaskItem
                   typeLabel
-                  onUpdateDate={changeDateAndUpdate}
-                  onUpdateStatus={changeStatusAndUpdate}
+                  onUpdateDate={onChangeDate}
+                  onUpdateStatus={onChangeStatus}
                   isTaskSelected={selectedTaskId === task.id}
-                  onClick={() => selectTaskId(task.id)}
-                  onDoubleClick={() => openUpdatedTaskById(task.id)}
+                  onClick={() => onSelectTaskId(task.id)}
+                  onDoubleClick={() => onUpdateTaskFormOpen(task.id)}
                   task={task}
                 />
               )}

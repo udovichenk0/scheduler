@@ -36,19 +36,17 @@ const Inbox = () => {
   const tasks = useUnit($inboxTasks)
   const createdTask = useUnit($$taskDisclosure.$createdTask)
   const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
-  const closeTask = useUnit($$taskDisclosure.closeTaskTriggered)
-  const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpenedById)
-  const openCreatedTask = useUnit($$taskDisclosure.createdTaskOpened)
-  const deleteTaskById = useUnit($$trashTask.taskTrashedById)
-
-  const changeStatusAndUpdate = useUnit($$updateTask.statusChangedAndUpdated)
-  const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
-
-  const onSelectTaskId = useUnit(selectTaskId)
   const selectedTaskId = useUnit($selectedTaskId)
-
-  const onSortChange = useUnit($$sort.sort)
   const activeSort = useUnit($$sort.$sortType)
+
+  const onCloseTaskForm = useUnit($$taskDisclosure.closeTaskTriggered)
+  const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const onCreateTaskFormOpen = useUnit($$taskDisclosure.createdTaskOpened)
+  const onDeleteTask = useUnit($$trashTask.taskTrashedById)
+  const onChangeTaskStatus = useUnit($$updateTask.statusChangedAndUpdated)
+  const onChangeTaskDate = useUnit($$updateTask.dateChangedAndUpdated)
+  const onSelectTaskId = useUnit(selectTaskId)
+  const onSortChange = useUnit($$sort.sort)
 
   return (
     <Suspense fallback={<div>inbox loading...</div>}>
@@ -66,7 +64,7 @@ const Inbox = () => {
           contentRef={taskItemRef}
           className="flex flex-col"
           onClick={(e) => {
-            onClickOutside(expandedTaskRef, e, closeTask)
+            onClickOutside(expandedTaskRef, e, onCloseTaskForm)
             clickOnElement(taskItemRef, e, () => onSelectTaskId(null))
           }}
         >
@@ -81,11 +79,11 @@ const Inbox = () => {
                   />
                 ) : (
                   <TaskItem
-                    onUpdateDate={changeDateAndUpdate}
-                    onUpdateStatus={changeStatusAndUpdate}
+                    onUpdateDate={onChangeTaskDate}
+                    onUpdateStatus={onChangeTaskStatus}
                     isTaskSelected={selectedTaskId === task.id}
                     onClick={() => onSelectTaskId(task.id)}
-                    onDoubleClick={() => openUpdatedTaskById(task.id)}
+                    onDoubleClick={() => onUpdateTaskFormOpen(task.id)}
                     task={task}
                   />
                 )}
@@ -106,8 +104,8 @@ const Inbox = () => {
 
         <Layout.Footer
           selectedTaskId={selectedTaskId}
-          deleteTask={deleteTaskById}
-          action={openCreatedTask}
+          onDeleteTask={onDeleteTask}
+          onCreateTask={onCreateTaskFormOpen}
         />
       </Layout>
     </Suspense>

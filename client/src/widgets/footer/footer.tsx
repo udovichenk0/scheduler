@@ -5,23 +5,23 @@ import { Icon } from "@/shared/ui/icon"
 import { TaskId } from "@/shared/api/task"
 
 export const Footer = ({
-  action,
+  onCreateTask,
   selectedTaskId,
-  deleteTask,
+  onDeleteTask,
 }: {
-  action?: () => void
+  onCreateTask?: () => void
   selectedTaskId: Nullable<TaskId>
-  deleteTask: (selectedTaskId: TaskId) => void
+  onDeleteTask: (selectedTaskId: TaskId) => void
 }) => {
   const { t } = useTranslation()
   return (
     <div className="h-14 p-2" onMouseDown={(e) => e.preventDefault()}>
       <Button
-        onClick={action}
-        disabled={!action}
+        onClick={onCreateTask}
+        disabled={!onCreateTask}
         intent={"primary"}
         size={"base"}
-        className={`!text-accent ${!action && "opacity-40"}`}
+        className={`!text-accent ${!onCreateTask && "opacity-40"}`}
       >
         <Icon name="common/plus" className="mr-4" />
         {t("footer.newTask")}
@@ -29,7 +29,7 @@ export const Footer = ({
       <Button
         title="Delete"
         disabled={!selectedTaskId}
-        onClick={() => deleteTask(selectedTaskId!)}
+        onClick={() => onDeleteTask(selectedTaskId!)}
         intent={"primary"}
         size={"xs"}
       >

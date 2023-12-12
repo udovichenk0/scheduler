@@ -29,15 +29,16 @@ export const TasksByDate = ({
 
   const createdTask = useUnit($$taskDisclosure.$createdTask)
   const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
-  const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpenedById)
-  const changeUpdatedDate = useUnit($$updateTask.dateChanged)
-  const changeCreatedDate = useUnit($$createTask.dateChanged)
-  const changeStatusAndUpdate = useUnit($$updateTask.statusChangedAndUpdated)
-  const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
+
+  const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const onChangeUpdateDate = useUnit($$updateTask.dateChanged)
+  const onChangeCreateDate = useUnit($$createTask.dateChanged)
+  const onChangeStatus = useUnit($$updateTask.statusChangedAndUpdated)
+  const onChangeDate = useUnit($$updateTask.dateChangedAndUpdated)
 
   useEffect(() => {
-    changeUpdatedDate(date.toDate())
-    changeCreatedDate(date.toDate())
+    onChangeUpdateDate(date.toDate())
+    onChangeCreateDate(date.toDate())
   }, [date])
   return (
     <section className="h-full pt-2">
@@ -48,11 +49,11 @@ export const TasksByDate = ({
               <ExpandedTask modifyTaskModel={$$updateTask} taskRef={taskRef} />
             ) : (
               <TaskItem
-                onUpdateDate={changeDateAndUpdate}
-                onUpdateStatus={changeStatusAndUpdate}
+                onUpdateDate={onChangeDate}
+                onUpdateStatus={onChangeStatus}
                 isTaskSelected={selectedTaskId === task.id}
                 onClick={() => selectTaskId(task.id)}
-                onDoubleClick={() => openUpdatedTaskById(task.id)}
+                onDoubleClick={() => onUpdateTaskFormOpen(task.id)}
                 task={task}
               />
             )}

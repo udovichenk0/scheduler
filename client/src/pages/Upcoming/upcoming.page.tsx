@@ -33,19 +33,20 @@ const Upcoming = () => {
   const { t } = useTranslation()
   useDocumentTitle(t("task.upcoming"))
 
-  const closeTask = useUnit($$taskDisclosure.closeTaskTriggered)
-  const openCreatedTask = useUnit($$taskDisclosure.createdTaskOpened)
-  const changeDate = useUnit(currentDateSelected)
-  const deleteTaskById = useUnit($$trashTask.taskTrashedById)
   const upcomingTasks = useUnit($upcomingTasks)
   const tasksByDate = useUnit($tasksByDate)
   const variant = useUnit($variant)
-  const selectVariant = useUnit(variantSelected)
-  const onSelectUpcomingTaskId = useUnit(selectTaskId)
   const selectedTaskId = useUnit($selectedTaskId)
-
   const activeSort = useUnit($$sort.$sortType)
+  
+  const onCloseTaskForm = useUnit($$taskDisclosure.closeTaskTriggered)
+  const onCreateTaskFormOpen = useUnit($$taskDisclosure.createdTaskOpened)
+  const onChangeDate = useUnit(currentDateSelected)
+  const onDeleteTask = useUnit($$trashTask.taskTrashedById)
+  const onSelectViewVariant = useUnit(variantSelected)
+  const onSelectUpcomingTaskId = useUnit(selectTaskId)
   const onSortChange = useUnit($$sort.sort)
+
 
   const resetSelectedTaskId = (e: MouseEvent) => {
     const t = e.target as HTMLDivElement
@@ -68,11 +69,11 @@ const Upcoming = () => {
         className="flex flex-col"
         onClick={(e) => {
           resetSelectedTaskId(e)
-          onClickOutside(expandedTaskRef, e, closeTask)
+          onClickOutside(expandedTaskRef, e, onCloseTaskForm)
         }}
       >
         <UpcomingVariantChanger
-          setUpcomingVariant={selectVariant}
+          setUpcomingVariant={onSelectViewVariant}
           variant={variant}
           $tasksByDateKv={$tasksByDateKv}
         />
@@ -88,7 +89,7 @@ const Upcoming = () => {
               tasks={upcomingTasks}
               selectTaskId={onSelectUpcomingTaskId}
               selectedTaskId={selectedTaskId}
-              changeDate={changeDate}
+              changeDate={onChangeDate}
               $selectedDate={$selectedDate}
               taskRef={expandedTaskRef}
             />
@@ -105,8 +106,8 @@ const Upcoming = () => {
       </Layout.Content>
       <Layout.Footer
         selectedTaskId={selectedTaskId}
-        deleteTask={deleteTaskById}
-        action={openCreatedTask}
+        onDeleteTask={onDeleteTask}
+        onCreateTask={onCreateTaskFormOpen}
       />
     </Layout>
   )
