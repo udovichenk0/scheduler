@@ -19,9 +19,11 @@ import {
 const Trash = () => {
   const taskItemRef = useRef<HTMLDivElement>(null)
   useDocumentTitle(t("task.trash"))
+
   const tasks = useUnit($trashTasks)
-  const onSelectTaskId = useUnit(selectTaskId)
   const selectedTaskId = useUnit($selectedTaskId)
+
+  const onSelectTaskId = useUnit(selectTaskId)
   const onDeleteTask = useUnit($$deleteTask.taskDeletedById)
   return (
     <Suspense fallback={<div>inbox loading...</div>}>
@@ -52,7 +54,7 @@ const Trash = () => {
 
         <Layout.Footer
           selectedTaskId={selectedTaskId}
-          deleteTask={onDeleteTask}
+          onDeleteTask={onDeleteTask}
         />
       </Layout>
     </Suspense>
