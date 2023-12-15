@@ -1,5 +1,5 @@
 .accentColor {
-  @apply inline-block h-[23px] w-[23px] rounded-[5px] text-center text-primary;
+  @apply h-[23px] w-[23px] rounded-[5px] text-center text-primary flex items-center justify-center;
   &[data-active="true"] {
     @apply border-[1px] border-cFont;
   }
