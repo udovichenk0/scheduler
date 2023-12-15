@@ -21,7 +21,7 @@ export const MainThemeChanger = () => {
   const activeTheme = useUnit($theme)
   const changeTheme = useUnit(themeChanged)
   return (
-    <div className="mb-6 flex justify-around px-10">
+    <div className="mb-6 flex justify-around items-center h-[100px] px-10">
       {themes.map((theme) => {
         return (
           <ThemeBox
@@ -51,33 +51,33 @@ const ThemeBox = ({
   const isActive = activeTheme == theme
   return (
     <button
-      className="flex max-w-[50px] flex-col items-center"
+      className="flex flex-col items-center w-[60px]"
       key={title}
       onClick={() => changeTheme(theme)}
     >
-      <div data-color={theme} data-active={isActive} className={style.mainBg}>
-        <div className="flex w-full items-end gap-[3px] p-[5px]">
-          <div className="w-full">
-            <div className={`h-[8px] w-full rounded-[2px] bg-accent`} />
-            <div className="mt-[2px] flex w-full gap-[2px]">
-              <div data-color={theme} className={style.leftBox} />
-              <div data-color={theme} className={style.rightBox} />
+        <div data-color={theme} data-active={isActive} className={style.mainBg}>
+          <div className="flex w-10 items-center justify-center gap-[3px]">
+            <div className="w-full">
+              <div className={`h-[8px] w-full rounded-[2px] bg-accent`} />
+              <div className="mt-[2px] flex w-full gap-[2px]">
+                <div data-color={theme} className={style.leftBox} />
+                <div data-color={theme} className={style.rightBox} />
+              </div>
             </div>
+            <span data-color={theme} className={style.text}>
+              A
+            </span>
           </div>
-          <span data-color={theme} className={style.text}>
-            A
-          </span>
+          <div className="flex group justify-end gap-x-1 text-[12px] text-cFont absolute -bottom-5">
+            <div className="w-[10px] absolute -left-[12px]">
+              <Icon
+                name="common/done"
+                className={`text-[10px] ${!isActive && "hidden"}`}
+              />
+            </div>
+            <div>{title}</div>
+          </div>
         </div>
-      </div>
-      <div className="flex -translate-x-[7px] items-center justify-start gap-x-1 text-[12px] text-cFont">
-        <div className="w-[10px]">
-          <Icon
-            name="common/done"
-            className={`text-[10px] ${!isActive && "hidden"}`}
-          />
-        </div>
-        <div>{title}</div>
-      </div>
     </button>
   )
 }

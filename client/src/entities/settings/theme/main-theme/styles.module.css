@@ -71,7 +71,8 @@
   }
 }
 .mainBg {
-  @apply flex h-[50px] w-[50px] items-end justify-center rounded-[5px];
+  box-sizing: content-box;
+  @apply flex h-[50px] w-[50px] items-end justify-center rounded-[5px] relative;
   &[data-active="true"] {
     @apply border-[1px] border-cBorder;
   }
