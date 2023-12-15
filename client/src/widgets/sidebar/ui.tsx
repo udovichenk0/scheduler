@@ -30,13 +30,14 @@ export const Sidebar = () => {
           </div>
           <div className="space-y-2">
             <Button
+              activeClassName="bg-cFocus"
               as="link"
               to={routes.inbox}
               intent={"primary"}
               className="flex w-full items-center justify-between"
               size={"sm"}
             >
-              <div className="flex">
+              <div className="flex items-center justify-center">
                 <Icon
                   name={"common/inbox"}
                   className="mr-4 fill-accent text-[20px]"
@@ -47,13 +48,14 @@ export const Sidebar = () => {
             </Button>
 
             <Button
+              activeClassName="bg-cFocus"
               as="link"
               to={routes.home}
               intent={"primary"}
               className="flex w-full items-center justify-between"
               size={"sm"}
             >
-              <div className="flex">
+              <div className="flex items-center justify-center">
                 <Icon
                   name={"common/outlined-star"}
                   className="mr-4 fill-accent text-[20px]"
@@ -64,6 +66,7 @@ export const Sidebar = () => {
             </Button>
 
             <Button
+              activeClassName="bg-cFocus"
               as="link"
               to={routes.upcoming}
               intent={"primary"}
@@ -78,6 +81,7 @@ export const Sidebar = () => {
             </Button>
 
             <Button
+              activeClassName="bg-cFocus"
               as="link"
               to={routes.calendar}
               intent={"primary"}
@@ -111,6 +115,7 @@ export const Sidebar = () => {
             <Icon name="common/settings" className="text-[24px]" />
           </Button>
           <Button
+            activeClassName="bg-cFocus"
             as="link"
             to={routes.unplaced}
             title="Unplaced"
@@ -120,6 +125,7 @@ export const Sidebar = () => {
             <Icon name="common/cross-arrows" className="text-[24px]" />
           </Button>
           <Button
+            activeClassName="bg-cFocus"
             as="link"
             to={routes.trash}
             title="Trash"
