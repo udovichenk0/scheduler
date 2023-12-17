@@ -38,7 +38,7 @@ export function UpcomingVariantChanger({
       <div className="mb-2 flex w-full border-b border-accent/50 px-9 text-cIconDefault">
         <div className="flex">
           <button
-            title="Upcoming"
+            title={t("task.upcoming")}
             className={clsx(style.active, "px-2 pb-2")}
             onClick={() => setUpcomingVariant("upcoming")}
             data-active={variant === "upcoming"}
@@ -46,7 +46,7 @@ export function UpcomingVariantChanger({
             <Icon name="common/upcoming" className="text-[21px]" />
           </button>
           <button
-            title="Today"
+            title={t("task.today")}
             className={clsx(style.active, "px-2 pb-2")}
             onClick={() => setUpcomingVariant(dayjs().startOf("day"))}
             data-active={dayjs(variant).isToday()}
@@ -95,6 +95,7 @@ const ArrowsChangers = ({
   week: number
   isCurrentWeekOrFuture: boolean
 }) => {
+  const { t } = useTranslation()
   return (
     <div className="flex gap-2">
       <Button
@@ -102,7 +103,7 @@ const ArrowsChangers = ({
         onClick={() => changeWeek(week - 1)}
         className="h-7 w-7"
         intent={"primary"}
-        title="Previous Week"
+        title={t("prev_week")}
       >
         <Icon
           name="common/arrow"
@@ -115,7 +116,7 @@ const ArrowsChangers = ({
         onClick={() => changeWeek(week + 1)}
         className="h-7 w-7"
         intent={"primary"}
-        title="Next Week"
+        title={t("next_week")}
       >
         <Icon
           name="common/arrow"

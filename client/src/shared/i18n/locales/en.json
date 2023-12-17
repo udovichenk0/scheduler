@@ -172,5 +172,9 @@
     "alph_desc": "By alphabet(desc)",
     "time_asc": "By time(asc)",
     "time_desc": "By time(desc)"
-  }
+  },
+  "prev_week": "Previous week",
+  "next_week": "Next week",
+
+  "delete": "Delete"
 }

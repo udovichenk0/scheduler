@@ -96,7 +96,7 @@
     "today": "Сьогодні"
   },
   "setting": {
-    "modalTitle": "Налаштування",
+    "title": "Налаштування",
     "tab": {
       "general": "Загальні",
       "synchronization": "Синхронізація",
@@ -172,5 +172,9 @@
     "alph_desc": "За алфавітом(desc)",
     "time_asc": "За часом(asc)",
     "time_desc": "За часом(desc)"
-  }
+  },
+  "prev_week": "Попередній тиждень",
+  "next_week": "Наступний тиждень",
+
+  "delete": "Видалити"
 }

@@ -26,7 +26,7 @@ export const Settings = ({
   const { t } = useTranslation()
   return (
     <MainModal
-      title={t("setting.modalTitle")}
+      title={t("setting.title")}
       className="w-[600px]"
       modal={modal}
     >

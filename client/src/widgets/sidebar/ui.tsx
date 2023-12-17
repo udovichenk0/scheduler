@@ -107,7 +107,7 @@ export const Sidebar = () => {
 
         <Container className="flex gap-2 border-t-[1px] border-cBorder text-cIconDefault">
           <Button
-            title="Settings"
+            title={t("setting.title")}
             onClick={openSettingsModal}
             intent={"primary"}
             size={"xs"}
@@ -118,7 +118,7 @@ export const Sidebar = () => {
             activeClassName="bg-cFocus"
             as="link"
             to={routes.unplaced}
-            title="Unplaced"
+            title={t("task.unplaced")}
             intent={"primary"}
             size={"xs"}
           >
@@ -128,7 +128,7 @@ export const Sidebar = () => {
             activeClassName="bg-cFocus"
             as="link"
             to={routes.trash}
-            title="Trash"
+            title={t("task.trash")}
             intent={"primary"}
             size={"xs"}
           >
