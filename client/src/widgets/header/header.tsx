@@ -58,7 +58,7 @@ export const Header = ({
           />
         ) : (
           <Button
-            title="Pomodoro"
+            title={t("setting.tab.pomodoro")}
             intent={"primary"}
             size={"xs"}
             onClick={openPomodoroModal}

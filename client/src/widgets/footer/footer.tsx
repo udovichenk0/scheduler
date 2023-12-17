@@ -27,7 +27,7 @@ export const Footer = ({
         {t("footer.newTask")}
       </Button>
       <Button
-        title="Delete"
+        title={t("delete")}
         disabled={!selectedTaskId}
         onClick={() => onDeleteTask(selectedTaskId!)}
         intent={"primary"}
