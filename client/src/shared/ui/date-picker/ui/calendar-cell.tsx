@@ -28,7 +28,7 @@ export const Cell = ({
   return (
     <button
       onClick={() => onDateChange(new Date(year, month, date))}
-      // disabled={isPast || isTaskDate}
+      disabled={isPast || isTaskDate}
       className={`h-[35px] w-[35px] text-[13px] ${
         !isTaskDate && !isPast && "hover:bg-cHover"
       } 
