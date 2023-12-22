@@ -96,7 +96,7 @@
     "today": "Today"
   },
   "setting": {
-    "modalTitle": "Settings",
+    "title": "Settings",
     "tab": {
       "general": "General",
       "synchronization": "Synchronization",
