@@ -47,13 +47,15 @@ export const ExpandedTask = ({
     changeDate(date)
   }
   return (
-    <div ref={taskRef} className="group flex gap-2">
+    <div ref={taskRef} className="group flex">
       {sideDatePicker && (
-        <Icon
-          onClick={openDateModal}
-          name="common/upcoming"
-          className="invisible translate-y-1 text-lg text-accent group-hover:visible"
-        />
+        <div className="w-5">
+          <Icon
+            onClick={openDateModal}
+            name="common/upcoming"
+            className="invisible translate-y-1 text-lg text-accent group-hover:visible"
+          />
+        </div>
       )}
       <BaseModal isOpened={isModalOpened} onClose={closeDateModal}>
         <DatePicker
