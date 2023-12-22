@@ -27,7 +27,8 @@ export const $$sort = createSorting()
 const $tasks = combine($$task.$taskKv, $$sort.$sortType, (kv, sortType) => {
   if (!kv) return null
   const tasks = Object.values(kv).filter(
-    ({ start_date }) =>
+    ({ start_date, is_deleted }) =>
+      !is_deleted && 
       dayjs(start_date).isSame(dayjs(), "day") ||
       dayjs(start_date).isBefore(dayjs(), "date"),
   )
