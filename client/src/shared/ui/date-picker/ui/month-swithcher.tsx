@@ -39,6 +39,7 @@ export const MonthSwitcher = ({
       <Button
         intent={"primary"}
         className="h-6 w-6"
+        data-testid="next-month-button"
         onClick={() => changeMonth(date.add(1, "month"))}
       >
         <Icon name="common/arrow" className="rotate-90 text-[10px]" />

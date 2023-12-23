@@ -7,6 +7,7 @@ export const Content = (props: ContentProps) => {
   const { children, className, contentRef, ...rest } = props
   return (
     <section
+      data-testid="page-content"
       {...rest}
       ref={contentRef}
       className={clsx(
