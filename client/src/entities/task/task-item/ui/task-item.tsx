@@ -47,10 +47,11 @@ export const TaskItem = ({
   }
   const isSameDateOrAfter = dayjs(start_date).isSameOrAfter(dayjs())
   return (
-    <div ref={taskRef} className="group flex gap-2">
+    <div ref={taskRef} className="group flex">
       <div className="w-5">
         {onUpdateDate && (
           <Icon
+            data-testid="task-date-button"
             onClick={() => onOpenDateModal(task.id)}
             name="common/upcoming"
             className="invisible translate-y-1 text-lg text-accent group-hover:visible"
@@ -66,6 +67,7 @@ export const TaskItem = ({
         />
       </BaseModal>
       <Button
+        data-testid="task-item"
         id="task"
         intent={"primary"}
         onDoubleClick={onDoubleClick}
