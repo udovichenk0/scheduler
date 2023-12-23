@@ -21,7 +21,7 @@ export const MainThemeChanger = () => {
   const activeTheme = useUnit($theme)
   const changeTheme = useUnit(themeChanged)
   return (
-    <div className="mb-6 flex justify-around items-center h-[100px] px-10">
+    <div className="mb-6 flex h-[100px] items-center justify-around px-10">
       {themes.map((theme) => {
         return (
           <ThemeBox
@@ -51,33 +51,33 @@ const ThemeBox = ({
   const isActive = activeTheme == theme
   return (
     <button
-      className="flex flex-col items-center w-[60px]"
+      className="flex w-[60px] flex-col items-center"
       key={title}
       onClick={() => changeTheme(theme)}
     >
-        <div data-color={theme} data-active={isActive} className={style.mainBg}>
-          <div className="flex w-10 items-center justify-center gap-[3px]">
-            <div className="w-full">
-              <div className={`h-[8px] w-full rounded-[2px] bg-accent`} />
-              <div className="mt-[2px] flex w-full gap-[2px]">
-                <div data-color={theme} className={style.leftBox} />
-                <div data-color={theme} className={style.rightBox} />
-              </div>
+      <div data-color={theme} data-active={isActive} className={style.mainBg}>
+        <div className="flex w-10 items-center justify-center gap-[3px]">
+          <div className="w-full">
+            <div className={`h-[8px] w-full rounded-[2px] bg-accent`} />
+            <div className="mt-[2px] flex w-full gap-[2px]">
+              <div data-color={theme} className={style.leftBox} />
+              <div data-color={theme} className={style.rightBox} />
             </div>
-            <span data-color={theme} className={style.text}>
-              A
-            </span>
           </div>
-          <div className="flex group justify-end gap-x-1 text-[12px] text-cFont absolute -bottom-5">
-            <div className="w-[10px] absolute -left-[12px]">
-              <Icon
-                name="common/done"
-                className={`text-[10px] ${!isActive && "hidden"}`}
-              />
-            </div>
-            <div>{title}</div>
-          </div>
+          <span data-color={theme} className={style.text}>
+            A
+          </span>
         </div>
+        <div className="group absolute -bottom-5 flex justify-end gap-x-1 text-[12px] text-cFont">
+          <div className="absolute -left-[12px] w-[10px]">
+            <Icon
+              name="common/done"
+              className={`text-[10px] ${!isActive && "hidden"}`}
+            />
+          </div>
+          <div>{title}</div>
+        </div>
+      </div>
     </button>
   )
 }

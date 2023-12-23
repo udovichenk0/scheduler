@@ -12,7 +12,12 @@ export const appInitializer = () => {
   const theme = $$themeSettings
   sample({
     clock: init,
-    target: [$$accentSettings.init, $$routerHistory.init, $$i18n.init, theme.init],
+    target: [
+      $$accentSettings.init,
+      $$routerHistory.init,
+      $$i18n.init,
+      theme.init,
+    ],
   })
   return {
     init,

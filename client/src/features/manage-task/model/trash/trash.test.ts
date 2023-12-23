@@ -6,7 +6,6 @@ import { $$task } from "@/entities/task/task-item"
 
 import { trashTaskFactory } from "./task.model"
 
-
 const tasks = {
   "1": {
     id: "1",
@@ -17,7 +16,7 @@ const tasks = {
     start_date: null,
     user_id: "1",
     date_created: "2023-12-03T11:11:51.227Z",
-    is_deleted: false
+    is_deleted: false,
   },
 }
 const returnedTask = {
@@ -29,7 +28,7 @@ const returnedTask = {
   start_date: null,
   user_id: "1",
   date_created: "2023-12-03T11:11:51.227Z",
-  is_deleted: true
+  is_deleted: true,
 }
 const $$trashTask = trashTaskFactory()
 describe("delete task", () => {
@@ -50,7 +49,7 @@ describe("delete task", () => {
     expect(mock).toBeCalled()
     expect(mock).toBeCalledWith({ params: { id: "1" } })
     expect(mock).toReturnWith(returnedTask)
-    expect(scope.getState($$task.$taskKv)).toStrictEqual({'1': returnedTask})
+    expect(scope.getState($$task.$taskKv)).toStrictEqual({ "1": returnedTask })
   })
   test("delete task from localstorage if user is not authenticated", async () => {
     const { taskTrashedById, _ } = $$trashTask
@@ -69,6 +68,6 @@ describe("delete task", () => {
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toBeCalledWith(null, "1")
     expect(mock).toReturnWith({ result: returnedTask })
-    expect(scope.getState($$task.$taskKv)).toStrictEqual({'1': returnedTask})
+    expect(scope.getState($$task.$taskKv)).toStrictEqual({ "1": returnedTask })
   })
 })

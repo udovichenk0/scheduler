@@ -189,7 +189,7 @@ const TodayTasks = ({
   const createdTask = useUnit($$taskDisclosure.$createdTask)
   const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
   const overdueTasks = useUnit($overdueTasks)
-  
+
   const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpenedById)
   const onChangeStatus = useUnit($$updateTask.statusChangedAndUpdated)
   const onChangeDate = useUnit($$updateTask.dateChangedAndUpdated)

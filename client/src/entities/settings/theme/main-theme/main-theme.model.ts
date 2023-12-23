@@ -26,29 +26,29 @@ export const $$themeSettings = singleton(() => {
   })
   const getThemeFx = createEffect(() => {
     const theme = parseCookieValue("theme") as string
-    if(ThemeSchema.safeParse(theme).success){
+    if (ThemeSchema.safeParse(theme).success) {
       console.log("here")
       return theme
     }
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches
     const preferredTheme = isDark ? "dark" : "light"
 
     return preferredTheme
   })
   sample({
     clock: init,
-    target: getThemeFx
+    target: getThemeFx,
   })
   sample({
     clock: getThemeFx.doneData,
     filter: (theme) => ThemeSchema.safeParse(theme).success,
     fn: (theme) => theme as Theme,
-    target: [$theme, initThemeFx]
+    target: [$theme, initThemeFx],
   })
   sample({
     clock: changeThemeFx.done,
-    fn: ({params}) => params,
-    target: $theme
+    fn: ({ params }) => params,
+    target: $theme,
   })
   sample({
     clock: themeChanged,
@@ -57,6 +57,6 @@ export const $$themeSettings = singleton(() => {
   return {
     $theme,
     themeChanged,
-    init
+    init,
   }
 })

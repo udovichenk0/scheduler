@@ -53,7 +53,9 @@ const Unplaced = () => {
           config: SORT_CONFIG,
         }}
       />
-      <Layout.Content onClick={(e) => onClickOutside(taskRef, e, onCloseTaskForm)}>
+      <Layout.Content
+        onClick={(e) => onClickOutside(taskRef, e, onCloseTaskForm)}
+      >
         {unplacedTasks?.map((task, id) => {
           return (
             <div className="px-3 pb-2" key={id}>

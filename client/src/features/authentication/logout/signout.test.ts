@@ -19,9 +19,9 @@ const tasks = {
   },
 }
 const fakeUser = {
-  id: 'asdfasdf',
-  email: 'fakeemail@example.com',
-  verified: true
+  id: "asdfasdf",
+  email: "fakeemail@example.com",
+  verified: true,
 }
 test("logout", async () => {
   const mock = vi.fn()
@@ -37,7 +37,7 @@ test("logout", async () => {
   expect(scope.getState($$session.$isAuthenticated)).toBeTruthy()
 
   await allSettled(submitTriggered, { scope })
-  
+
   expect(mock).toHaveBeenCalled()
   expect(scope.getState($$task.$taskKv)).toStrictEqual(null)
   expect(scope.getState($$session.$isAuthenticated)).toBeFalsy()

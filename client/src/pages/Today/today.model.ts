@@ -28,8 +28,7 @@ const $tasks = combine($$task.$taskKv, $$sort.$sortType, (kv, sortType) => {
   if (!kv) return null
   const tasks = Object.values(kv).filter(
     ({ start_date, is_deleted }) =>
-      !is_deleted && 
-      dayjs(start_date).isSame(dayjs(), "day") ||
+      (!is_deleted && dayjs(start_date).isSame(dayjs(), "day")) ||
       dayjs(start_date).isBefore(dayjs(), "date"),
   )
   return $$sort.sortBy(sortType, tasks)
