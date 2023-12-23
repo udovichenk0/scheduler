@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import * as path from "path"
 
 import svg from "@neodx/svg/vite"
@@ -7,6 +8,9 @@ import { defineConfig } from "vite"
 import tsconfigPaths from "vite-tsconfig-paths"
 // https://vitejs.dev/config/
 export default defineConfig({
+  test: {
+    include: ['**/*.test.ts']
+  },
   build: {
     target: "esnext",
   },
