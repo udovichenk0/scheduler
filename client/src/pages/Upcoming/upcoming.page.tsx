@@ -38,7 +38,7 @@ const Upcoming = () => {
   const variant = useUnit($variant)
   const selectedTaskId = useUnit($selectedTaskId)
   const activeSort = useUnit($$sort.$sortType)
-  
+
   const onCloseTaskForm = useUnit($$taskDisclosure.closeTaskTriggered)
   const onCreateTaskFormOpen = useUnit($$taskDisclosure.createdTaskOpened)
   const onChangeDate = useUnit(currentDateSelected)
@@ -46,7 +46,6 @@ const Upcoming = () => {
   const onSelectViewVariant = useUnit(variantSelected)
   const onSelectUpcomingTaskId = useUnit(selectTaskId)
   const onSortChange = useUnit($$sort.sort)
-
 
   const resetSelectedTaskId = (e: MouseEvent) => {
     const t = e.target as HTMLDivElement

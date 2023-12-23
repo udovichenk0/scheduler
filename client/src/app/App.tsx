@@ -1,8 +1,8 @@
 import { Suspense } from "react"
 
-import { Sidebar } from "@/widgets/sidebar"
-
 import { RoutesView } from "@/pages"
+
+import { Sidebar } from "@/widgets/sidebar"
 
 function App() {
   return (

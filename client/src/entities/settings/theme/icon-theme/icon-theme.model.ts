@@ -22,21 +22,21 @@ export const $$accentSettings = singleton(() => {
   const $accent = createStore<Accent>("blue")
 
   const changeAccentFx = createEffect((accent: Accent) => {
-    if(AccentSchema.safeParse(accent).success){
+    if (AccentSchema.safeParse(accent).success) {
       document.documentElement.style.setProperty("--accent", `var(--${accent})`)
-      setCookie('accent', accent)
+      setCookie("accent", accent)
     }
   })
   const getAccentFx = createEffect(() => {
     const accent = parseCookieValue("accent")
-    if(AccentSchema.safeParse(accent).success){
+    if (AccentSchema.safeParse(accent).success) {
       return accent as Accent
     }
-    return 'blue'
+    return "blue"
   })
   const initAccentFx = createEffect(() => {
     const accent = parseCookieValue("accent")
-    if(AccentSchema.safeParse(accent).success){
+    if (AccentSchema.safeParse(accent).success) {
       document.documentElement.style.setProperty("--accent", `var(--${accent})`)
     }
   })
@@ -55,11 +55,11 @@ export const $$accentSettings = singleton(() => {
   sample({
     clock: changeAccentFx.done,
     fn: ({ params }) => params,
-    target: $accent
+    target: $accent,
   })
   return {
     $accent,
     accentChanged,
-    init
+    init,
   }
 })

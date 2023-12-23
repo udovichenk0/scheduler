@@ -25,11 +25,7 @@ export const Settings = ({
 }) => {
   const { t } = useTranslation()
   return (
-    <MainModal
-      title={t("setting.title")}
-      className="w-[600px]"
-      modal={modal}
-    >
+    <MainModal title={t("setting.title")} className="w-[600px]" modal={modal}>
       <Root defaultValue={defaultTab} className="text-sm">
         <Root.List className="flex gap-5 border-b-[1px] border-cBorder px-6 pb-4">
           <Root.Trigger
