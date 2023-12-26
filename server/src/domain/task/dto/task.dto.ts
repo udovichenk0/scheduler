@@ -49,4 +49,7 @@ const TaskDtoSchema = z.object({
   is_deleted: z.boolean(),
   date_created: z.date(),
 });
+
 export class TaskDto extends createZodDto(TaskDtoSchema) {}
+
+export class TasksDto extends createZodDto(z.array(TaskDtoSchema)) {}

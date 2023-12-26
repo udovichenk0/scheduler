@@ -22,6 +22,7 @@ import {
   TaskIdParam,
   UpdateDateDto,
   UpdateStatusDto,
+  TasksDto,
 } from './dto/task.dto';
 import { UseZodGuard, ZodValidationPipe } from 'nestjs-zod';
 
@@ -79,18 +80,17 @@ export class TaskController {
   @UseZodGuard('params', TaskIdParam)
   async deleteTask(@Param('id') id: string) {
     const task = await this.taskService.deleteOne(id);
-    return task;
+    return TaskDto.create(task);
   }
   @Post('batch')
   @UsePipes(CreateTasksDto)
   async createMany(@Body() data: CreateTasksDto, @Req() req: Request) {
     const user = req.session['user'] as UserDto;
-    const tasks = data.tasks;
-    const response = await this.taskService.createMany({
+    const tasks = await this.taskService.createMany({
       user_id: user.id,
-      data: tasks,
+      data: data.tasks,
     });
-    return response;
+    return TasksDto.create(tasks);
   }
 
   @Patch(':id/trash')

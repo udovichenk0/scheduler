@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { Prisma } from '@prisma/client';
-import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class TaskService {
   constructor(private prismaService: PrismaService) {}
@@ -17,7 +16,6 @@ export class TaskService {
     const task = this.prismaService.task.create({
       data: {
         ...data,
-        id: uuidv4(),
       },
     });
     return task;
@@ -39,20 +37,22 @@ export class TaskService {
     });
     return task;
   }
-  createMany({
+  async createMany({
     user_id,
     data,
   }: {
     user_id: string;
     data: Omit<Prisma.taskCreateManyInput, 'user_id' | 'id'>[];
   }) {
-    const tasks = this.prismaService.task.createMany({
+    const result = await this.prismaService.task.createMany({
       data: data.map((task) => ({
         ...task,
-        id: uuidv4(),
         user_id,
       })),
     });
-    return tasks;
+    if (result) {
+      return await this.findMany({ id: user_id });
+    }
+    return null;
   }
 }
