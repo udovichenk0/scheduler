@@ -1,5 +1,4 @@
 import { zodContract } from "@farfetched/zod"
-import { z } from "zod"
 import { createEffect } from "effector"
 import { v4 as uuidv4 } from "uuid"
 
@@ -93,12 +92,8 @@ export const trashTaskQuery = authQuery<TaskDto, { params: { id: TaskId } }>({
   },
 })
 
-const CreateManyTasksSchemaDto = z.object({
-  count: z.number(),
-})
-const CreateManyTasksZodContract = zodContract(CreateManyTasksSchemaDto)
 export const createTasksQuery = authQuery<
-  { count: number },
+  TaskDto[],
   { body: { tasks: CreateTaskDto[] } }
 >({
   request: {
@@ -106,7 +101,7 @@ export const createTasksQuery = authQuery<
     method: "POST",
   },
   response: {
-    contract: CreateManyTasksZodContract,
+    contract: GetTasksContract,
     mapData: (data) => data.result,
   },
 })

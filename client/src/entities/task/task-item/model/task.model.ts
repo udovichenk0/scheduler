@@ -45,7 +45,8 @@ export const $$task = singleton(() => {
   })
   sample({
     clock: taskApi.createTasksQuery.finished.success,
-    target: [getTasksTriggered, taskApi.deleteTasksFromLocalStorageFx],
+    fn: ({result}) => result,
+    target: [setTaskKvTriggered, taskApi.deleteTasksFromLocalStorageFx],
   })
   sample({
     clock: taskApi.getTasksFromLocalStorageFx.doneData,
