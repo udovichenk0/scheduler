@@ -1,5 +1,4 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
 import { RefreshService } from './refreshToken/refresh.service';
 import { UserDto } from '../user/dto/user.dto';
 import { JWTService } from './jwtToken/jwt.service';
@@ -8,7 +7,6 @@ import { UserService } from '../user/user.service';
 @Injectable()
 export class TokenService {
   constructor(
-    private prismaService: PrismaService,
     private refreshService: RefreshService,
     private userService: UserService,
     private jwtService: JWTService,
