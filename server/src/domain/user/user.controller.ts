@@ -8,6 +8,6 @@ export class UserController {
   @UsePipes(UserCredentials)
   async getUser(@Query('email') email: string) {
     const user = await this.userService.findOne({ email });
-    return user;
+    return UserDto.create(user);
   }
 }

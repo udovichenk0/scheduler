@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { Prisma } from '@prisma/client';
-import { UserDto } from './dto/user.dto';
+import { encryptPassword } from 'src/lib/hash-password/encrypt';
 
 @Injectable()
 export class UserService {
@@ -11,15 +11,39 @@ export class UserService {
       where,
     });
     if (user && user.verified) {
-      return UserDto.create(user);
+      return user;
     }
+    //todo do smth with it
     if (user && !user.verified) {
-      await this.prismaService.user.delete({
-        where: {
-          id: user.id,
-        },
-      });
+      await this.deleteOne(user.id);
     }
-    return {};
+    return null;
+  }
+  async createOne(data: { password: string; email: string }) {
+    const hash = await encryptPassword(data.password);
+    const user = await this.prismaService.user.create({
+      data: {
+        email: data.email,
+        hash,
+      },
+    });
+    return user;
+  }
+  async deleteOne(id: string) {
+    await this.prismaService.user.delete({
+      where: {
+        id,
+      },
+    });
+  }
+  async verify(id: string) {
+    return await this.prismaService.user.update({
+      where: {
+        id,
+      },
+      data: {
+        verified: true,
+      },
+    });
   }
 }
