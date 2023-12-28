@@ -14,12 +14,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { sendEmail } from 'src/nodemailer/send-email';
 import { UserService } from '../user/user.service';
 import { randomCode } from 'src/lib/random-code';
+import { ConfirmationService } from '../email-confirmation/confirmation.service';
 @Injectable()
 export class AuthService {
   constructor(
     private prismaService: PrismaService,
     private tokenService: TokenService,
     private userService: UserService,
+    private confirmationService: ConfirmationService,
   ) {}
 
   async createUser(data: AuthCredentialsDto) {
@@ -31,13 +33,7 @@ export class AuthService {
     }
     const code = randomCode();
     const user = await this.userService.createOne(data);
-    await this.prismaService.emailConfirmation.create({
-      data: {
-        id: uuidv4(),
-        code,
-        user_id: user.id,
-      },
-    });
+    await this.confirmationService.createOne({ code, user_id: user.id });
     await sendEmail(data.email, code);
     return user;
   }
@@ -69,11 +65,7 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException(userNotFound(email));
     }
-    const confirmation = await this.prismaService.emailConfirmation.findUnique({
-      where: {
-        user_id: user.id,
-      },
-    });
+    const confirmation = await this.confirmationService.findOne(user.id);
     if (!confirmation) {
       throw new NotFoundException(userNotFound(email));
     }
@@ -82,11 +74,7 @@ export class AuthService {
       throw new NotAcceptableException('Code is not valid');
     }
     const verifiedUser = await this.userService.verify(user.id);
-    await this.prismaService.emailConfirmation.delete({
-      where: {
-        user_id: verifiedUser.id,
-      },
-    });
+    await this.confirmationService.deleteOne(verifiedUser.id);
     const userDto = UserDto.create(verifiedUser);
     const { access_token, refresh_token } = await this.tokenService.issueTokens(
       userDto,
