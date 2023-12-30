@@ -1,8 +1,8 @@
 import { createJsonQuery, declareParams } from "@farfetched/core"
+import { zodContract } from "@farfetched/zod"
 
-import { UserDto } from "@/shared/api/user"
-
-import { UserSchema } from "./user.dto"
+import { GetUserDto } from "./user.dto"
+const UserContract = zodContract(GetUserDto)
 export const getUserQuery = createJsonQuery({
   params: declareParams<{ email: string }>(),
   request: {
@@ -13,10 +13,7 @@ export const getUserQuery = createJsonQuery({
     }),
   },
   response: {
-    contract: {
-      isData: (prepared: unknown): prepared is UserDto =>
-        !!UserSchema.safeParse(prepared),
-      getErrorMessages: () => [],
-    },
+    contract: UserContract,
+    mapData: ({ result }) => result,
   },
 })

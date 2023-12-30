@@ -40,18 +40,17 @@ sample({
 
 sample({
   clock: userApi.getUserQuery.finished.success,
-  filter: ({ result }) => !result.id,
-  fn: () => Flow.register,
+  filter: ({result}) => 'id' in result,
+  fn: () => Flow.login,
   target: $flow,
 })
 
 sample({
   clock: userApi.getUserQuery.finished.success,
-  filter: ({ result }) => Boolean(result.id),
-  fn: () => Flow.login,
+  filter: ({result}) => 'error' in result,
+  fn: () => Flow.register,
   target: $flow,
 })
-
 sample({
   clock: authApi.logoutQuery.finished.success,
   fiilter: Boolean,
