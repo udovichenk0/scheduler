@@ -4,13 +4,11 @@ import {
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
 import { AuthCredentialsDto } from './dto/auth.dto';
 import { TokenService } from '../token/token.service';
 import { UserDto } from '../user/dto/user.dto';
 import { passwordNotCorrect, userNotFound } from './constant/authErrorMessages';
 import { compareHash } from 'src/lib/hash-password/compareHash';
-import { v4 as uuidv4 } from 'uuid';
 import { sendEmail } from 'src/nodemailer/send-email';
 import { UserService } from '../user/user.service';
 import { randomCode } from 'src/lib/random-code';
@@ -18,7 +16,6 @@ import { ConfirmationService } from '../email-confirmation/confirmation.service'
 @Injectable()
 export class AuthService {
   constructor(
-    private prismaService: PrismaService,
     private tokenService: TokenService,
     private userService: UserService,
     private confirmationService: ConfirmationService,
