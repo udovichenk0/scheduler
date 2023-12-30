@@ -1,3 +1,4 @@
+import { UserDto } from './dto/user.dto';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { Prisma } from '@prisma/client';
@@ -10,14 +11,7 @@ export class UserService {
     const user = await this.prismaService.user.findUnique({
       where,
     });
-    if (user && user.verified) {
-      return user;
-    }
-    //todo do smth with it
-    if (user && !user.verified) {
-      await this.deleteOne(user.id);
-    }
-    return null;
+    return user;
   }
   async createOne(data: { password: string; email: string }) {
     const hash = await encryptPassword(data.password);
@@ -29,11 +23,9 @@ export class UserService {
     });
     return user;
   }
-  async deleteOne(id: string) {
+  async deleteOne(where: Prisma.userWhereUniqueInput) {
     await this.prismaService.user.delete({
-      where: {
-        id,
-      },
+      where,
     });
   }
   async verify(id: string) {
@@ -45,5 +37,18 @@ export class UserService {
         verified: true,
       },
     });
+  }
+  async findVerifiedUser(where: Prisma.userWhereUniqueInput) {
+    const user = await this.findOne(where);
+    if (user && user.verified) {
+      return UserDto.create(user);
+    }
+    if (user && !user.verified) {
+      await this.deleteOne(where);
+    }
+    return {
+      error: 'not_found',
+      message: 'User is not created',
+    };
   }
 }
