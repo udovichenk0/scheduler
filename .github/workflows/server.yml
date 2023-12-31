@@ -3,6 +3,8 @@ name: Scheduler CI Server
 on:
   push:
     branches: [ "develop" ]
+env:
+  JWT_SECRET: 'jwt_secret'
 
 jobs:
   build:
@@ -11,6 +13,7 @@ jobs:
     defaults: 
       run:
         working-directory: './server'
+
     strategy:
       matrix:
         node-version: [16.x, 18.x]
