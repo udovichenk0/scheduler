@@ -8,8 +8,8 @@ import { AuthCredentialsDto } from './dto/auth.dto';
 import { TokenService } from '../token/token.service';
 import { UserDto } from '../user/dto/user.dto';
 import {
-  codeNotValid,
-  passwordNotCorrect,
+  CODE_IS_NOT_VALID,
+  PASSWORD_IS_NOT_CORRECT,
   userNotFound,
 } from './constant/authErrorMessages';
 import { compareHash } from 'src/lib/hash-password/compareHash';
@@ -47,7 +47,7 @@ export class AuthService {
     }
     const compared = await compareHash(user.hash, password);
     if (!compared) {
-      throw new NotFoundException(passwordNotCorrect);
+      throw new NotFoundException(PASSWORD_IS_NOT_CORRECT);
     }
     const userDto = UserDto.create(user);
     const { access_token, refresh_token } = await this.tokenService.issueTokens(
@@ -72,7 +72,7 @@ export class AuthService {
     }
     const isValid = confirmation.code === code;
     if (!isValid) {
-      throw new NotAcceptableException(codeNotValid);
+      throw new NotAcceptableException(CODE_IS_NOT_VALID);
     }
     const verifiedUser = await this.userService.verify(user.id);
     await this.confirmationService.deleteOne(verifiedUser.id);
