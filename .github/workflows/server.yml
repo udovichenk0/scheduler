@@ -22,16 +22,8 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install yarn
-      run: npm install -g yarn
-    - name: Setup node with yarn cache
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: yarn
-        cache-dependency-path: './server/yarn.lock'
     - name: Install dependencies
-      run: yarn
+      run: npm install
     - name: Generate build
       run: yarn build
     - name: Run tests
