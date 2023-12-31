@@ -9,6 +9,7 @@ import * as mod from 'src/nodemailer/send-email';
 import { UserDto } from 'src/domain/user/dto/user.dto';
 import { encryptPassword } from 'src/lib/hash-password/encrypt';
 import {
+  codeNotValid,
   passwordNotCorrect,
   userNotFound,
 } from '../constant/authErrorMessages';
@@ -221,5 +222,5 @@ test('should not verify email if verification code is wrong', async () => {
       code: wrongCode,
       email: unverifiedUser.email,
     }),
-  ).rejects.toThrow('Code is not valid');
+  ).rejects.toThrow(codeNotValid);
 });

@@ -7,7 +7,11 @@ import {
 import { AuthCredentialsDto } from './dto/auth.dto';
 import { TokenService } from '../token/token.service';
 import { UserDto } from '../user/dto/user.dto';
-import { passwordNotCorrect, userNotFound } from './constant/authErrorMessages';
+import {
+  codeNotValid,
+  passwordNotCorrect,
+  userNotFound,
+} from './constant/authErrorMessages';
 import { compareHash } from 'src/lib/hash-password/compareHash';
 import { sendEmail } from 'src/nodemailer/send-email';
 import { UserService } from '../user/user.service';
@@ -68,7 +72,7 @@ export class AuthService {
     }
     const isValid = confirmation.code === code;
     if (!isValid) {
-      throw new NotAcceptableException('Code is not valid');
+      throw new NotAcceptableException(codeNotValid);
     }
     const verifiedUser = await this.userService.verify(user.id);
     await this.confirmationService.deleteOne(verifiedUser.id);
