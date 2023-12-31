@@ -5,7 +5,6 @@ import { UserService } from 'src/domain/user/user.service';
 import { JWTService } from 'src/domain/token/jwtToken/jwt.service';
 import { RefreshService } from 'src/domain/token/refreshToken/refresh.service';
 import { ConfirmationService } from 'src/domain/email-confirmation/confirmation.service';
-import * as mod from 'src/nodemailer/send-email';
 import { UserDto } from 'src/domain/user/dto/user.dto';
 import { encryptPassword } from 'src/lib/hash-password/encrypt';
 import {
@@ -15,6 +14,7 @@ import {
 } from '../constant/authErrorMessages';
 let mockCtx: MockContext;
 let authService: AuthService;
+let emailConfirmationService: ConfirmationService;
 beforeEach(() => {
   mockCtx = createMockContext();
   const jwtService = new JWTService();
@@ -25,8 +25,12 @@ beforeEach(() => {
     userService,
     jwtService,
   );
-  const confirmationService = new ConfirmationService(mockCtx.prisma);
-  authService = new AuthService(tokenService, userService, confirmationService);
+  emailConfirmationService = new ConfirmationService(mockCtx.prisma);
+  authService = new AuthService(
+    tokenService,
+    userService,
+    emailConfirmationService,
+  );
 });
 
 //create user
@@ -41,8 +45,9 @@ test('should create user', async () => {
   mockCtx.prisma.user.findUnique.mockResolvedValue(null);
   mockCtx.prisma.user.create.mockResolvedValue(user);
   const mocked = jest
-    .spyOn(mod, 'sendEmail')
+    .spyOn(emailConfirmationService, 'sendEmail')
     .mockImplementation(() => Promise.resolve({}));
+
   mockCtx.prisma.emailConfirmation.create.mockResolvedValue({
     id: '123',
     code: '',

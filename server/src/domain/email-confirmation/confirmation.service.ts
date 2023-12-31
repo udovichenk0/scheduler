@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
+import { transporter } from 'src/nodemailer';
 
 @Injectable()
 export class ConfirmationService {
@@ -23,5 +24,21 @@ export class ConfirmationService {
         user_id,
       },
     });
+  }
+  sendEmail(email: string, token: string) {
+    return transporter.sendMail(
+      {
+        from: process.env.EMAIL,
+        to: email,
+        subject: 'Verify your email',
+        html: `<h1>${token}</h1>`,
+      },
+      (err, info) => {
+        if (err) {
+          console.log(err);
+        }
+        return info;
+      },
+    );
   }
 }
