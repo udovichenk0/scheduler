@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { RefreshService } from './refreshToken/refresh.service';
 import { UserDto } from '../user/dto/user.dto';
 import { JWTService } from './jwtToken/jwt.service';
-import { userNotAuthorized } from './constant/tokenErrorMessages';
+import { USER_IS_NOT_AUTHORIZED } from './constant/tokenErrorMessages';
 import { UserService } from '../user/user.service';
 @Injectable()
 export class TokenService {
@@ -28,7 +28,7 @@ export class TokenService {
     const userData = await this.refreshService.verifyRefresh(refreshToken);
     if (!userData) {
       session['refresh_token'] = null;
-      throw new UnauthorizedException(userNotAuthorized);
+      throw new UnauthorizedException(USER_IS_NOT_AUTHORIZED);
     }
     const user = await this.userService.findOne({ id: userData.id });
     const { access_token } = await this.issueTokens(UserDto.create(user));

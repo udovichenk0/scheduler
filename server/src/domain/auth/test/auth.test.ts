@@ -9,8 +9,8 @@ import * as mod from 'src/nodemailer/send-email';
 import { UserDto } from 'src/domain/user/dto/user.dto';
 import { encryptPassword } from 'src/lib/hash-password/encrypt';
 import {
-  codeNotValid,
-  passwordNotCorrect,
+  CODE_IS_NOT_VALID,
+  PASSWORD_IS_NOT_CORRECT,
   userNotFound,
 } from '../constant/authErrorMessages';
 let mockCtx: MockContext;
@@ -121,7 +121,7 @@ test('should not verify user if the hash is not valid', async () => {
       email: 'denzeldenisq@gmail.com',
       password: '123',
     }),
-  ).rejects.toThrow(passwordNotCorrect);
+  ).rejects.toThrow(PASSWORD_IS_NOT_CORRECT);
 });
 //verify email
 test('should verify email', async () => {
@@ -222,5 +222,5 @@ test('should not verify email if verification code is wrong', async () => {
       code: wrongCode,
       email: unverifiedUser.email,
     }),
-  ).rejects.toThrow(codeNotValid);
+  ).rejects.toThrow(CODE_IS_NOT_VALID);
 });
