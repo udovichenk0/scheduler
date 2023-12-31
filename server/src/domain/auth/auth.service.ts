@@ -13,7 +13,6 @@ import {
   userNotFound,
 } from './constant/authErrorMessages';
 import { compareHash } from 'src/lib/hash-password/compareHash';
-import { sendEmail } from 'src/nodemailer/send-email';
 import { UserService } from '../user/user.service';
 import { randomCode } from 'src/lib/random-code';
 import { ConfirmationService } from '../email-confirmation/confirmation.service';
@@ -35,7 +34,7 @@ export class AuthService {
     const code = randomCode();
     const user = await this.userService.createOne(data);
     await this.confirmationService.createOne({ code, user_id: user.id });
-    await sendEmail(data.email, code);
+    await this.confirmationService.sendEmail(data.email, code);
     return user;
   }
   async verifyUser({ email, password }: AuthCredentialsDto) {
