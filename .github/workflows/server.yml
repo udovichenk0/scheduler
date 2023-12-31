@@ -1,35 +1,38 @@
-name: Scheduler-server
+name: Scheduler CI
 
-on: 
+on:
   push:
-    branches: ["develop"]
+    branches: [ "develop" ]
 
 jobs:
-  Build:
+  build:
+
     runs-on: ubuntu-latest
-    defaults:
-      run: 
+    defaults: 
+      run:
         working-directory: './server'
-    strategy: 
-      matrix: 
+    strategy:
+      matrix:
         node-version: [16.x, 18.x]
-    steps: 
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install yarn
-        run: npm install -g yarn
-      - name: Setup node with yarn cache
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: yarn
-          cache-dependency-path: './server/yarn.lock'
-      - name: Install dependencies
-        run: yarn
-      - name: Build
-        run: yarn build
-      - name: Unit tests
-        run: yarn test
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install yarn
+      run: npm install -g yarn
+    - name: Setup node with yarn cache
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: yarn
+        cache-dependency-path: './server/yarn.lock'
+    - name: Install dependencies
+      run: yarn
+    - name: Generate build
+      run: yarn build
+    - name: Run tests
+      run: yarn test
