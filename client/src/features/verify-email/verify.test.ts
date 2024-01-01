@@ -7,7 +7,7 @@ import { authApi } from "@/shared/api/auth"
 
 import { $email } from "../authentication/check-email"
 
-import { $code, codeChanged } from "./verify.model"
+import { $code, codeChanged, submitTriggered } from "./verify.model"
 const userDto = {
   user: {
     id: "1",
@@ -32,6 +32,7 @@ test("verify email", async () => {
     params: "123456",
   })
   expect(scope.getState($code)).toBe("123456")
+  await allSettled(submitTriggered, { scope })
   expect(mock).toHaveBeenCalledOnce()
   expect(scope.getState($$session.$user)).not.toBeNull()
 })
