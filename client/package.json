@@ -22,7 +22,6 @@
     "dayjs": "^1.11.7",
     "effector": "23.0.0",
     "effector-react": "^23.0.0",
-    "effector-storage": "^6.0.1",
     "history": "^5.3.0",
     "i18next": "^23.5.1",
     "i18next-browser-languagedetector": "^7.1.0",
