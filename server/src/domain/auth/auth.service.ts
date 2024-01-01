@@ -85,4 +85,15 @@ export class AuthService {
       refresh_token,
     };
   }
+  async resendEmail(email: string) {
+    const user = await this.userService.findOne({ email });
+    if (!user) {
+      throw new NotFoundException(userNotFound(email));
+    }
+    const code = randomCode();
+    await this.confirmationService.deleteOne(user.id);
+    await this.confirmationService.createOne({ code, user_id: user.id });
+    await this.confirmationService.sendEmail(email, code);
+    return;
+  }
 }
