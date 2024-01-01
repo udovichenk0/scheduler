@@ -13,7 +13,7 @@ import { onMount } from "@/shared/lib/react"
 interface CodeInputProps {
   length: number
   onChange: (value: string) => void
-  value: string
+  value: Nullable<string>
   label?: string
   autoFocus?: boolean
   containerStyle?: string
@@ -52,9 +52,7 @@ export const CodeInput = forwardRef(
     })
     const sendValue = () => {
       const value = inputRefs.current.map((input) => input.value).join("")
-      if (value.length === length) {
-        onChange(value)
-      }
+      onChange(value)
     }
     const onChangeValue = (event: ChangeEvent<HTMLInputElement>) => {
       const {
@@ -63,12 +61,12 @@ export const CodeInput = forwardRef(
       if (value.length > 1) {
         event.target.value = value.charAt(0)
         if (nextElementSibling) {
-          ;(nextElementSibling as HTMLInputElement).focus()
+          (nextElementSibling as HTMLInputElement).focus()
         }
       } else {
         if (value.match("[0-9]{1}")) {
           if (nextElementSibling) {
-            ;(nextElementSibling as HTMLInputElement).focus()
+            (nextElementSibling as HTMLInputElement).focus()
           }
         } else {
           event.target.value = ""
