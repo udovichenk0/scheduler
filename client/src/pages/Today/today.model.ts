@@ -9,7 +9,7 @@ import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
 import { $$task, createSorting } from "@/entities/task/task-item"
 
-import { cookiePersist } from "@/shared/lib/effector/cookie-persist"
+import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
 import { getNextTaskId } from "@/shared/lib/effector"
 import { TaskId } from "@/shared/api/task"
 export const $$trashTask = trashTaskFactory()
