@@ -1,5 +1,6 @@
 import { createEvent, sample } from "effector"
 
+import { $$task } from '@/entities/task/task-item';
 import { $$themeSettings } from "@/entities/settings/theme/main-theme"
 import { $$accentSettings } from "@/entities/settings/theme/icon-theme"
 
@@ -10,6 +11,7 @@ export const appInitializer = () => {
   const init = createEvent()
   const $$routerHistory = createHistory()
   const theme = $$themeSettings
+  const listen = $$task
   sample({
     clock: init,
     target: [
@@ -17,6 +19,7 @@ export const appInitializer = () => {
       $$routerHistory.init,
       $$i18n.init,
       theme.init,
+      listen.init
     ],
   })
   return {

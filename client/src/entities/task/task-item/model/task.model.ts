@@ -1,4 +1,4 @@
-import { createEvent, createStore, sample } from "effector"
+import { createEffect, createEvent, createStore, sample, scopeBind } from "effector"
 import { not } from "patronum"
 
 import { $$session } from "@/entities/session"
@@ -12,6 +12,7 @@ import { addTaskToKv, removeTaskFromKv, transformTasksToKv } from "../lib"
 
 export const $$dateModal = createModal({})
 export const $$modal = createIdModal()
+
 export const $$task = singleton(() => {
   const $taskKv = createStore<Nullable<TaskKv>>(null)
   const setTaskKvTriggered = createEvent<Task[]>()
@@ -19,6 +20,17 @@ export const $$task = singleton(() => {
   const getTasksTriggered = createEvent()
   const taskDeleted = createEvent<TaskId>()
   const reset = createEvent()
+  const init = createEvent()
+
+  const listenFx = createEffect(() => {
+    const setTaskKvTriggeredScoped = scopeBind(setTaskKvTriggered)
+    addEventListener('storage', (event) => {
+      if(event.newValue && event.key == 'tasks'){
+        setTaskKvTriggeredScoped(JSON.parse(event.newValue))
+      }
+    })
+  })
+
   sample({
     clock: taskApi.getTasksQuery.finished.success,
     fn: ({ result }) => transformTasksToKv(result),
@@ -64,12 +76,17 @@ export const $$task = singleton(() => {
     target: $taskKv.reinit!,
   })
 
+  sample({
+    clock: init,
+    target: listenFx
+  })
   return {
     $taskKv: $taskKv.map((kv) => kv),
     setTaskTriggered,
     reset,
     getTasksTriggered,
     taskDeleted,
+    init,
     _: {
       $taskKv,
     },
