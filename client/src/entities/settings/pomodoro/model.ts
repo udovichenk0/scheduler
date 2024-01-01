@@ -1,6 +1,6 @@
 import { createEvent, createStore, sample, Event } from "effector"
 
-import { cookiePersist } from "@/shared/lib/effector/cookie-persist"
+import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
 import { singleton } from "@/shared/lib/effector/singleton"
 import { bridge } from "@/shared/lib/effector"
 

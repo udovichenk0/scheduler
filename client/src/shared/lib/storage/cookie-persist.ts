@@ -7,7 +7,7 @@ import {
 } from "effector"
 import { combineEvents } from "patronum"
 
-import { parseCookieValue } from "../storage/parse-cookie-value"
+import { parseCookieValue } from "./parse-cookie-value"
 
 export const cookiePersist = <T>({
   source,
