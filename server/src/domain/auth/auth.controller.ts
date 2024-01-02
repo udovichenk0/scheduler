@@ -1,7 +1,12 @@
 import { UserDto } from './../user/dto/user.dto';
 import { Body, Controller, Post, Req, UsePipes, Session } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthCredentialsDto, AuthDto } from './dto/auth.dto';
+import {
+  AuthCredentialsDto,
+  AuthDto,
+  ResendCodeDto,
+  VerifyEmailDto,
+} from './dto/auth.dto';
 import { Request } from 'express';
 @Controller('auth')
 export class AuthController {
@@ -28,6 +33,7 @@ export class AuthController {
     return { message: 'The user session has ended' };
   }
   @Post('verify-email')
+  @UsePipes(VerifyEmailDto)
   async verifyEmail(
     @Body() creds: { code: string; email: string },
     @Session() session: Record<string, any>,
@@ -38,6 +44,7 @@ export class AuthController {
     return AuthDto.create(verified);
   }
   @Post('resend')
+  @UsePipes(ResendCodeDto)
   async resend(@Body() data: { email: string }) {
     await this.authService.resendEmail(data.email);
     return {
