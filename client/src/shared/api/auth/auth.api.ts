@@ -60,7 +60,7 @@ export const logoutQuery = createQuery({
 
 export const resendCodeQuery = createQuery({
   effect: createEffect(async (email: string) => {
-    const data = await fetch(import.meta.env.VITE_ORIGIN_URL + "auth/resend", {
+    const data = await fetch(import.meta.env.VITE_ORIGIN_URL + "otp/resend", {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",

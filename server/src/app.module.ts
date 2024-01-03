@@ -5,7 +5,7 @@ import { AuthModule } from './domain/auth/auth.module';
 import { UserModule } from './domain/user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { TaskModule } from './domain/task/task.module';
-import { EmailConfirmationModule } from './domain/email-confirmation/confirmation.module';
+import { EmailConfirmationModule } from './domain/otp/otp.module.';
 const ENV = process.env.NODE_ENV;
 @Module({
   imports: [
