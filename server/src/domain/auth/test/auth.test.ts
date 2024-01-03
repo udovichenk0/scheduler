@@ -4,17 +4,15 @@ import { MockContext, createMockContext } from '../../../database/client.mock';
 import { UserService } from 'src/domain/user/user.service';
 import { JWTService } from 'src/domain/token/jwtToken/jwt.service';
 import { RefreshService } from 'src/domain/token/refreshToken/refresh.service';
-import { ConfirmationService } from 'src/domain/email-confirmation/confirmation.service';
+import { OTPService } from 'src/domain/otp/otp.service';
 import { UserDto } from 'src/domain/user/dto/user.dto';
 import { encryptPassword } from 'src/lib/hash-password/encrypt';
-import {
-  CODE_IS_NOT_VALID,
-  PASSWORD_IS_NOT_CORRECT,
-  userNotFound,
-} from '../constant/authErrorMessages';
+import { PASSWORD_IS_NOT_CORRECT } from '../constant/errors';
+import { userNotFound } from 'src/domain/user/constants/userErrorMessages';
+import { CODE_IS_NOT_VALID } from 'src/domain/otp/constants/constants';
 let mockCtx: MockContext;
 let authService: AuthService;
-let emailConfirmationService: ConfirmationService;
+let emailConfirmationService: OTPService;
 beforeEach(() => {
   mockCtx = createMockContext();
   const jwtService = new JWTService();
@@ -25,7 +23,7 @@ beforeEach(() => {
     userService,
     jwtService,
   );
-  emailConfirmationService = new ConfirmationService(mockCtx.prisma);
+  emailConfirmationService = new OTPService(mockCtx.prisma, userService);
   authService = new AuthService(
     tokenService,
     userService,
