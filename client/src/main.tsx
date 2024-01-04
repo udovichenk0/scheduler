@@ -27,7 +27,6 @@ sample({
   clock: init,
   target: tokenApi.refreshQuery.start,
 })
-
 sample({
   clock: tokenApi.refreshQuery.finished.failure,
   target: taskApi.getTasksFromLocalStorageFx,
