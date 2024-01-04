@@ -2,7 +2,7 @@ name: Scheduler CI Server
 
 on:
   push:
-    paths: "server/**"
+    paths: "./server/**"
     branches: [ "develop" ]
 env:
   JWT_SECRET: 'jwt_secret'
