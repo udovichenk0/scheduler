@@ -38,3 +38,13 @@ jobs:
       run: yarn build
     - name: Run tests
       run: yarn test
+    - name: Install playwright browsers
+      run: yarn add playwright install --with-deps
+    - name: Run playwright
+      run: yarn test:e2e
+    - uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
