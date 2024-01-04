@@ -2,6 +2,7 @@ name: Scheduler CI
 
 on:
   push:
+    paths: "client/**"
     branches: [ "develop" ]
 
 env:
