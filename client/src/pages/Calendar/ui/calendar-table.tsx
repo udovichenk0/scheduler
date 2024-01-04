@@ -29,14 +29,14 @@ export const Calendar = memo(
     date,
   }: CalendarProps) => {
     const [calendar, setCalendar] = useState(generateCalendar)
-    const changeMonth = (month: number) => {
-      setDate(dayjs().month(month))
-      setCalendar(generateCalendar(month))
+    const changeMonth = (date: Dayjs) => {
+      setDate(date)
+      setCalendar(generateCalendar(date.year(), date.month()))
     }
     return (
       <>
         <MonthSwitcher
-          displayedMonth={date.month()}
+          date={date}
           changeMonth={changeMonth}
         />
         <WeekNames />
