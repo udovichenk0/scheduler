@@ -13,6 +13,8 @@ export default defineConfig({
   fullyParallel: true,
   testMatch: "**/*.spec.ts",
   reporter: "html",
+  //@ts-ignore
+  forbidOnly: process.env.CI,
   use: {
     baseURL: 'http://localhost:5173',
 

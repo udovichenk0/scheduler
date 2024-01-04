@@ -18,7 +18,7 @@ test("Create task with empty title", async ({ page }) => {
   await expect(item).not.toBeVisible()
 })
 
-test.only("should move task from inbox to today section if we set a date to it", async ({
+test("should move task from inbox to today section if we set a date to it", async ({
   page,
 }) => {
   //create new task
