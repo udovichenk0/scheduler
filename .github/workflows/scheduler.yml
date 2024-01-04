@@ -6,6 +6,7 @@ on:
 
 env:
   VITE_ORIGIN_URL: http://localhost:3000/
+  CI: true
 jobs:
   build:
 
