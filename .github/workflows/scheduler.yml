@@ -38,7 +38,7 @@ jobs:
     - name: Run tests
       run: yarn test
     - name: Install playwright browsers
-      run: yarn add playwright install --with-deps
+      run: yarn add playwright --with-deps
     - name: Run playwright
       run: yarn test:e2e
     - uses: actions/upload-artifact@v3
