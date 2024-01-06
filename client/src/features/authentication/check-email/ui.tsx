@@ -35,7 +35,7 @@ export const CheckEmailForm = ({ goBack }: { goBack: () => void }) => {
         onChange={(e) => changeEmail(e.target.value)}
         error={error}
         autoFocus
-        className="mb-10"
+        className="mb-5"
         ref={ref}
         value={email}
         label={t("setting.synchronization.byEmail.label")}

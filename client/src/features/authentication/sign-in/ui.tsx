@@ -38,7 +38,7 @@ export const Signin = ({ goBack }: { goBack: () => void }) => {
         onChange={(e) => changePassword(e.target.value)}
         error={error ? t(error) : null}
         ref={ref}
-        className="mb-10"
+        className="mb-5"
         value={password}
         autoFocus
         label={t("setting.synchronization.signin.label")}

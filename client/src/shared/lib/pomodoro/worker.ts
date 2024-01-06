@@ -1,4 +1,4 @@
-let timer: NodeJS.Timer
+let timer: any
 onmessage = function (e) {
   switch (e.data.command) {
     case "start":

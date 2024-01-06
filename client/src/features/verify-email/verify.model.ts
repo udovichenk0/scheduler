@@ -70,6 +70,13 @@ sample({
   }),
 })
 sample({
+  clock: authApi.verifyQuery.finished.failure,
+  //!FIX
+  //@ts-ignore
+  fn: ({ error }) => error.response.message,
+  target: $error
+})
+sample({
   clock: FormGate.close,
   target: resetVerifyTriggered
 })
@@ -89,5 +96,5 @@ bridge(() => {
 
 sample({
   clock: resetVerifyTriggered,
-  target: $time.reinit, timerStopped
+  target: [$time.reinit, timerStopped, $error.reinit]
 })

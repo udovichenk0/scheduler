@@ -1,12 +1,13 @@
 import { useRef } from "react"
 import { useUnit, useGate } from "effector-react"
 import { useTranslation } from "react-i18next"
+import { StoreWritable } from "effector"
 
 import { CodeInput } from "@/shared/ui/data-entry/code-input"
 import { AuthTemplate } from "@/shared/ui/templates/auth"
 import { Button } from "@/shared/ui/buttons/main-button"
 
-import { $code, $isRunning, $time, CODE_LENGTH, FormGate, codeChanged, resent, submitTriggered } from "./verify.model"
+import { $code, $error, $isRunning, $time, CODE_LENGTH, FormGate, codeChanged, resent, submitTriggered } from "./verify.model"
 
 export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
   const { t } = useTranslation()
@@ -14,7 +15,7 @@ export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
 
   const code = useUnit($code)
   const isRunning = useUnit($isRunning)
-  const time = useUnit($time)
+  const error = useUnit($error)
 
   const changeCode = useUnit(codeChanged)
   const onSubmit = useUnit(submitTriggered)
@@ -32,7 +33,7 @@ export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
       <div className="flex justify-center mb-4">
         <CodeInput
           label={t("setting.synchronization.verify.label")}
-          inputStyle="focus:border-cHover bg-transparent border-b p-1 mx-0 w-6 border-cSecondBorder"
+          inputStyle={`focus:border-cHover bg-transparent border-b p-1 mx-0 w-6 border-cSecondBorder ${error && "border-error"}`}
           containerStyle="gap-2"
           length={CODE_LENGTH}
           value={code}
@@ -40,8 +41,9 @@ export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
           ref={ref}
         />
       </div>
-      <div className="flex justify-end gap-5 items-center">
-        <span>Try again in {time}s.</span>
+      <Error error={error}/>
+      <div className="flex justify-end gap-5 pt-3 items-center">
+        <ResendTimer $time={$time}/>
         <span>
           <Button 
             type="button"
@@ -64,5 +66,23 @@ export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
         </span>
       </div>
     </AuthTemplate>
+  )
+}
+
+
+const Error = ({ error }:{error: Nullable<string>}) => {
+  return (
+      <div className="h-5">
+        {error && (
+          <div className="text-sm text-error">{error}</div>
+        )}
+      </div>
+  )
+}
+
+const ResendTimer = ({ $time }: { $time: StoreWritable<number>}) => {
+  const time = useUnit($time)
+  return (
+    <span>Try again in {time}s.</span>
   )
 }
