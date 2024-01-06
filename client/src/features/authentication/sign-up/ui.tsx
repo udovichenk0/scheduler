@@ -37,7 +37,7 @@ export const Signup = ({ goBack }: { goBack: () => void }) => {
         error={error ? t(error) : null}
         value={password}
         label={t("setting.synchronization.signup.label")}
-        className="mb-10"
+        className="mb-5"
         autoFocus
         ref={ref}
         type={isPasswordShown ? "text" : "password"}
