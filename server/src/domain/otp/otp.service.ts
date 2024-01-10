@@ -1,15 +1,17 @@
-import {
-  Injectable,
-  NotAcceptableException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
-import { transporter } from 'src/nodemailer';
+import { transporter } from 'src/infrastructure/nodemailer/client';
 import { UserService } from '../user/user.service';
-import { randomCode } from 'src/lib/random-code';
+import { generateCode } from 'src/infrastructure/session/generate-code';
 import { userNotFound } from '../user/constants/userErrorMessages';
 import { VerifyOTPDto } from './dto/dto';
-import { CODE_IS_NOT_VALID } from './constants/constants';
+import { CODE_IS_INVALID, OTP_CODE_IS_NOT_FOUND } from './constants/errors';
+import {
+  invalid,
+  notAcceptableException,
+  notFoundException,
+  not_found,
+} from 'src/infrastructure/err/errors';
 
 @Injectable()
 export class OTPService {
@@ -25,7 +27,7 @@ export class OTPService {
     });
   }
   createOne(user_id: string) {
-    const code = randomCode();
+    const code = generateCode();
     return this.prismaService.emailConfirmation.create({
       data: {
         user_id,
@@ -60,7 +62,10 @@ export class OTPService {
   async resendOTP(email: string) {
     const user = await this.userService.findOne({ email });
     if (!user) {
-      throw new NotFoundException(userNotFound(email));
+      throw notFoundException({
+        description: userNotFound(email),
+        error: not_found,
+      });
     }
     await this.deleteOne(user.id);
     const otp = await this.createOne(user.id);
@@ -76,15 +81,24 @@ export class OTPService {
       email,
     });
     if (!user) {
-      throw new NotFoundException(userNotFound(email));
+      throw notFoundException({
+        description: userNotFound(email),
+        error: not_found,
+      });
     }
     const confirmation = await this.findOne(user.id);
     if (!confirmation) {
-      throw new NotFoundException(userNotFound(email));
+      throw notFoundException({
+        description: OTP_CODE_IS_NOT_FOUND,
+        error: not_found,
+      });
     }
     const isValid = confirmation.code === code;
     if (!isValid) {
-      throw new NotAcceptableException(CODE_IS_NOT_VALID);
+      throw notAcceptableException({
+        description: CODE_IS_INVALID,
+        error: invalid,
+      });
     }
     await this.deleteOne(user.id);
 

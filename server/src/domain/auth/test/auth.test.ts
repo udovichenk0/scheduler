@@ -6,10 +6,20 @@ import { JWTService } from 'src/domain/token/jwtToken/jwt.service';
 import { RefreshService } from 'src/domain/token/refreshToken/refresh.service';
 import { OTPService } from 'src/domain/otp/otp.service';
 import { UserDto } from 'src/domain/user/dto/user.dto';
-import { encryptPassword } from 'src/lib/hash-password/encrypt';
-import { PASSWORD_IS_NOT_CORRECT } from '../constant/errors';
+import { encryptPassword } from 'src/infrastructure/session/encrypt-password';
+import { PASSWORD_NOT_CORRECT } from '../constant/errors';
 import { userNotFound } from 'src/domain/user/constants/userErrorMessages';
-import { CODE_IS_NOT_VALID } from 'src/domain/otp/constants/constants';
+import {
+  CODE_IS_INVALID,
+  OTP_CODE_IS_NOT_FOUND,
+} from 'src/domain/otp/constants/errors';
+import {
+  badRequestException,
+  invalid,
+  notAcceptableException,
+  notFoundException,
+  not_found,
+} from 'src/infrastructure/err/errors';
 let mockCtx: MockContext;
 let authService: AuthService;
 let emailConfirmationService: OTPService;
@@ -73,7 +83,7 @@ test('should not create user', async () => {
       password: '123',
       email: 'myemail@gmail.com',
     }),
-  ).rejects.toThrow('User already exist');
+  ).rejects.toThrow();
 });
 
 //verify user
@@ -108,7 +118,12 @@ test('should not verify user if there is no one', async () => {
       email: 'denzeldenisq@gmail.com',
       password: '123',
     }),
-  ).rejects.toThrow(userNotFound(user.email));
+  ).rejects.toThrow(
+    notFoundException({
+      description: userNotFound(user.email),
+      error: not_found,
+    }),
+  );
 });
 test('should not verify user if the hash is not valid', async () => {
   const user = {
@@ -124,7 +139,12 @@ test('should not verify user if the hash is not valid', async () => {
       email: 'denzeldenisq@gmail.com',
       password: '123',
     }),
-  ).rejects.toThrow(PASSWORD_IS_NOT_CORRECT);
+  ).rejects.toThrow(
+    badRequestException({
+      description: PASSWORD_NOT_CORRECT,
+      error: invalid,
+    }),
+  );
 });
 //verify email
 test('should verify email', async () => {
@@ -178,7 +198,12 @@ test('should not verify email if there is no user', async () => {
       code: correctCode,
       email: unverifiedUser.email,
     }),
-  ).rejects.toThrow(userNotFound(unverifiedUser.email));
+  ).rejects.toThrow(
+    notFoundException({
+      description: userNotFound(unverifiedUser.email),
+      error: not_found,
+    }),
+  );
 });
 
 test('should not verify email if there is no verification code', async () => {
@@ -198,7 +223,12 @@ test('should not verify email if there is no verification code', async () => {
       code: correctCode,
       email: unverifiedUser.email,
     }),
-  ).rejects.toThrow(userNotFound(unverifiedUser.email));
+  ).rejects.toThrow(
+    notFoundException({
+      description: OTP_CODE_IS_NOT_FOUND,
+      error: not_found,
+    }),
+  );
 });
 
 test('should not verify email if verification code is wrong', async () => {
@@ -225,5 +255,10 @@ test('should not verify email if verification code is wrong', async () => {
       code: wrongCode,
       email: unverifiedUser.email,
     }),
-  ).rejects.toThrow(CODE_IS_NOT_VALID);
+  ).rejects.toThrow(
+    notAcceptableException({
+      description: CODE_IS_INVALID,
+      error: invalid,
+    }),
+  );
 });

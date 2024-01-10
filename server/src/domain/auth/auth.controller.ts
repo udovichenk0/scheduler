@@ -25,7 +25,7 @@ export class AuthController {
   @Post('logout')
   async logout(@Req() req: Request) {
     req.session['refresh_token'] = null;
-    return { message: 'The user session has ended' };
+    return { description: 'The user session has ended' };
   }
   @Post('verify-email')
   @UsePipes(VerifyEmailDto)

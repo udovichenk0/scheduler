@@ -1,16 +1,20 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth.dto';
 import { TokenService } from '../token/token.service';
 import { UserDto } from '../user/dto/user.dto';
-import { PASSWORD_IS_NOT_CORRECT } from './constant/errors';
-import { compareHash } from 'src/lib/hash-password/compareHash';
+import { PASSWORD_NOT_CORRECT, USER_EXISTS } from './constant/errors';
+import { compareHash } from 'src/infrastructure/session/compare-hash';
 import { UserService } from '../user/user.service';
 import { OTPService } from '../otp/otp.service';
 import { userNotFound } from '../user/constants/userErrorMessages';
+import {
+  badRequestException,
+  conflict,
+  conflictException,
+  invalid,
+  notFoundException,
+  not_found,
+} from 'src/infrastructure/err/errors';
 @Injectable()
 export class AuthService {
   constructor(
@@ -24,7 +28,10 @@ export class AuthService {
       email: data.email,
     });
     if (potentialUser) {
-      throw new ConflictException('User already exist');
+      throw conflictException({
+        description: USER_EXISTS,
+        error: conflict,
+      });
     }
     const user = await this.userService.createOne(data);
     const otp = await this.otpService.createOne(user.id);
@@ -36,11 +43,17 @@ export class AuthService {
       email,
     });
     if (!user) {
-      throw new NotFoundException(userNotFound(email));
+      throw notFoundException({
+        description: userNotFound(email),
+        error: not_found,
+      });
     }
     const compared = await compareHash(user.hash, password);
     if (!compared) {
-      throw new NotFoundException(PASSWORD_IS_NOT_CORRECT);
+      throw badRequestException({
+        description: PASSWORD_NOT_CORRECT,
+        error: invalid,
+      });
     }
     const userDto = UserDto.create(user);
     const { access_token, refresh_token } = await this.tokenService.issueTokens(
