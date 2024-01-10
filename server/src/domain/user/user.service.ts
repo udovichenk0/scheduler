@@ -2,7 +2,7 @@ import { UserDto } from './dto/user.dto';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { Prisma } from '@prisma/client';
-import { encryptPassword } from 'src/lib/hash-password/encrypt';
+import { encryptPassword } from 'src/infrastructure/session/encrypt-password';
 
 @Injectable()
 export class UserService {

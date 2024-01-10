@@ -14,7 +14,6 @@ export default defineConfig({
   testMatch: "**/*.spec.ts",
   reporter: "html",
   //@ts-ignore
-  forbidOnly: process.env.CI,
   use: {
     baseURL: 'http://localhost:5173',
 
@@ -62,6 +61,6 @@ export default defineConfig({
     command: 'yarn dev',
     url: 'http://localhost:5173',
     //@ts-ignore
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
   },
 })

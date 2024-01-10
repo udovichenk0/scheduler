@@ -1,5 +1,5 @@
 import { createZodDto } from 'nestjs-zod';
-import { CODE_LENGTH } from 'src/domain/otp/constants/constants';
+import { CODE_LENGTH } from 'src/domain/otp/constants/common';
 import { EmailSchema, userDtoSchema } from 'src/domain/user/dto/user.dto';
 import { z } from 'zod';
 

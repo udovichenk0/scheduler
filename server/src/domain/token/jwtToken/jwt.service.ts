@@ -1,14 +1,20 @@
-import { UserDto } from './../../user/dto/user.dto';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { UserDto } from 'src/domain/user/dto/user.dto';
+import { Injectable } from '@nestjs/common';
 import { sign, verify } from 'jsonwebtoken';
-import { jwtExpiredError, jwtInvalidError } from './constant/jwtError';
 import {
-  jwtExpiredMessage,
-  jwtInvalidMessage,
-} from './constant/jwtErrorMessages';
+  expired,
+  invalid,
+  unauthorizedException,
+} from 'src/infrastructure/err/errors';
+import {
+  JWT_EXPIRED,
+  JWT_EXPIRED_ERROR,
+  JWT_INVALID,
+  JWT_INVALID_ERROR,
+} from '../constant/errors';
 @Injectable()
 export class JWTService {
-  async signToken(userData: UserDto): Promise<string> {
+  async signToken(userData: UserDto) {
     const token = await sign(userData, process.env.JWT_SECRET, {
       expiresIn: '30m',
     });
@@ -18,11 +24,17 @@ export class JWTService {
     try {
       return await verify(token, process.env.JWT_SECRET);
     } catch (err: any) {
-      if (err?.message == jwtExpiredError) {
-        throw new UnauthorizedException(jwtExpiredMessage);
+      if (err?.message == JWT_EXPIRED_ERROR) {
+        throw unauthorizedException({
+          description: JWT_EXPIRED,
+          error: expired,
+        });
       }
-      if (err.message == jwtInvalidError) {
-        throw new UnauthorizedException(jwtInvalidMessage);
+      if (err.message == JWT_INVALID_ERROR) {
+        throw unauthorizedException({
+          description: JWT_INVALID,
+          error: invalid,
+        });
       }
     }
   }
