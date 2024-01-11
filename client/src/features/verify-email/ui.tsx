@@ -22,7 +22,6 @@ export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
   const onResend = useUnit(resent)
   useGate(FormGate)
   const isDisabled = code?.length != CODE_LENGTH
-  useGate
   return (
     <AuthTemplate
       title={t("setting.synchronization.verify.title")}
@@ -30,7 +29,7 @@ export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
       onArrowClick={goBack}
       onSubmit={onSubmit}
     >
-      <div className="flex justify-center mb-4">
+      <div className="flex justify-center mb-2">
         <CodeInput
           label={t("setting.synchronization.verify.label")}
           inputStyle={`focus:border-cHover bg-transparent border-b p-1 mx-0 w-6 border-cSecondBorder ${error && "border-error"}`}
@@ -42,7 +41,7 @@ export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
         />
       </div>
       <Error error={error}/>
-      <div className="flex justify-end gap-5 pt-3 items-center">
+      <div className="flex justify-end gap-5 pt-5 items-center">
         <ResendTimer $time={$time}/>
         <span>
           <Button 

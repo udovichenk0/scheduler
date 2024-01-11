@@ -11,7 +11,7 @@ const UserContract = zodContract(UserSchema)
 
 const signinFx = createEffect(
   async (body: { email: string; password: string }) => {
-    const data = await fetch(import.meta.env.VITE_ORIGIN_URL + "auth/sign-in", {
+    const response = await fetch(import.meta.env.VITE_ORIGIN_URL + "auth/sign-in", {
       credentials: "include",
       method: "POST",
       headers: {
@@ -19,8 +19,11 @@ const signinFx = createEffect(
       },
       body: JSON.stringify(body),
     })
-    const res = await data.json()
-    return res
+    const data = await response.json()
+    if(!response.ok){
+      throw data
+    }
+    return data
   },
 )
 export const signinQuery = createQuery({
@@ -30,7 +33,7 @@ export const signinQuery = createQuery({
 
 export const signupFx = createEffect(
   async (body: { email: string; password: string }) => {
-    const data = await fetch(import.meta.env.VITE_ORIGIN_URL + "auth/sign-up", {
+    const response = await fetch(import.meta.env.VITE_ORIGIN_URL + "auth/sign-up", {
       credentials: "include",
       method: "POST",
       headers: {
@@ -38,8 +41,8 @@ export const signupFx = createEffect(
       },
       body: JSON.stringify(body),
     })
-    const res = await data.json()
-    return res
+    const data = await response.json()
+    return data
   },
 )
 export const signupQuery = createQuery({
@@ -49,26 +52,26 @@ export const signupQuery = createQuery({
 
 export const logoutQuery = createQuery({
   effect: createEffect(async () => {
-    const data = await fetch(import.meta.env.VITE_ORIGIN_URL + "auth/logout", {
+    const response = await fetch(import.meta.env.VITE_ORIGIN_URL + "auth/logout", {
       method: "POST",
       credentials: "include",
     })
-    const res = await data.json()
-    return res
+    const data = await response.json()
+    return data
   }),
 })
 
 export const resendCodeQuery = createQuery({
   effect: createEffect(async (email: string) => {
-    const data = await fetch(import.meta.env.VITE_ORIGIN_URL + "otp/resend", {
+    const response = await fetch(import.meta.env.VITE_ORIGIN_URL + "otp/resend", {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
       },
       body: JSON.stringify({ email })
     })
-    const res = await data.json()
-    return res
+    const data = await response.json()
+    return data
   }),
 })
 
@@ -76,7 +79,7 @@ export const resendCodeQuery = createQuery({
 export const verifyQuery = createQuery({
   effect: createEffect<{ code: string; email: string }, AuthDto>(
     async ({ code, email }) => {
-      const result = await fetch(
+      const response = await fetch(
         import.meta.env.VITE_ORIGIN_URL + "auth/verify-email",
         {
           method: "POST",
@@ -87,7 +90,11 @@ export const verifyQuery = createQuery({
           body: JSON.stringify({ code, email }),
         },
       )
-      return result.json()
+      const data = await response.json()
+      if(!response.ok){
+        throw await data
+      }
+      return data
     },
   ),
   contract: AuthContract,

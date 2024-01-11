@@ -16,7 +16,7 @@ export const emailChanged = createEvent<string>()
 export const submitTriggered = createEvent()
 export const resetEmailTriggered = createEvent()
 
-export const $email = createStore("")
+export const $email = createStore<string>("")
 export const $emailError = createStore<Nullable<string>>(null)
 const emailSchema = z.string().email().min(MIN_LENGTH).max(MAX_LENGTH)
 
@@ -28,7 +28,8 @@ sample({
 sample({
   clock: submitTriggered,
   source: $email,
-  filter: (email) => emailSchema.safeParse(email).success,
+  filter: (email: Nullable<string>): email is string => 
+    emailSchema.safeParse(email).success,
   fn: (email) => ({ email }),
   target: userApi.getUserQuery.start,
 })
@@ -46,8 +47,8 @@ sample({
   target: [$emailError.reinit!, $email.reinit!],
 })
 
-function checkError(value: string) {
-  if (value.length < MIN_LENGTH) {
+function checkError(value: Nullable<string>) {
+  if (!value || value.length < MIN_LENGTH) {
     return t(TOO_SHORT_MESSAGE)
   }
   if (value.length > MAX_LENGTH) {

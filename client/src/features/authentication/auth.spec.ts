@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test'
 
+import { invalid_code } from '@/shared/lib/error'
+
 test.beforeEach( async ({ page }) => {
   await page.goto('/')
   await page.getByTitle("Settings").click()
@@ -96,13 +98,13 @@ test('Show error if verification code is not correct', async ({ page }) => {
     const json = {id: 'user_id', email: 'mytestemail@gmail.com', verified: false}
     return route.fulfill({json})
   })
+  const error_description = "Confirmation Code is invalid"
   await page.route("http://localhost:3000/auth/verify-email", async (route) => {
     const json = {
-      statusCode: 406,
-      message: "Code is not valid",
-      error:"Not Acceptable"
+      description: error_description,
+      error: invalid_code
     }
-    return route.fulfill({json})
+    return route.fulfill({json, status: 400})
   })
   await page.getByRole('textbox').fill("mytestemail@gmail.com")
   await page.getByRole("button", { name: "Continue"}).click()
@@ -130,7 +132,7 @@ test('Show error if verification code is not correct', async ({ page }) => {
   await expect(submit).toBeEnabled()
   await submit.click()
 
-  await expect(page.getByText("Code is not valid")).toBeVisible()
+  await expect(page.getByText(error_description)).toBeVisible()
 })
 //
 
