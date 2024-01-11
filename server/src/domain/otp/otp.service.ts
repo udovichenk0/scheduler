@@ -7,8 +7,8 @@ import { userNotFound } from '../user/constants/userErrorMessages';
 import { VerifyOTPDto } from './dto/dto';
 import { CODE_IS_INVALID, OTP_CODE_IS_NOT_FOUND } from './constants/errors';
 import {
+  badRequestException,
   invalid,
-  notAcceptableException,
   notFoundException,
   not_found,
 } from 'src/infrastructure/err/errors';
@@ -95,7 +95,7 @@ export class OTPService {
     }
     const isValid = confirmation.code === code;
     if (!isValid) {
-      throw notAcceptableException({
+      throw badRequestException({
         description: CODE_IS_INVALID,
         error: invalid,
       });

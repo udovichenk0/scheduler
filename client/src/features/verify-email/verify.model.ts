@@ -1,14 +1,18 @@
 import { createEvent, createStore, sample } from "effector"
 import { interval, spread, equals } from "patronum"
 import { createGate } from "effector-react"
+import { t } from "i18next"
 
 import { $$session } from "@/entities/session"
 
 import { authApi } from "@/shared/api/auth"
 import { tokenService } from "@/shared/api/token"
 import { bridge } from "@/shared/lib/effector"
+import { UNEXPECTED_ERROR_MESSAGE, invalid_code, isHttpErrorType } from "@/shared/lib/error"
 
-import { $email } from "../authentication/check-email"
+import { $email, resetEmailTriggered } from "../authentication/check-email"
+
+import { INVALID_CODE_MESSAGE } from "./constants"
 export const CODE_LENGTH = 6
 export const codeChanged = createEvent<string>()
 export const submitTriggered = createEvent()
@@ -70,16 +74,26 @@ sample({
   }),
 })
 sample({
+  clock: authApi.verifyQuery.finished.success,
+  target: resetEmailTriggered
+})
+
+sample({
   clock: authApi.verifyQuery.finished.failure,
-  //!FIX
-  //@ts-ignore
-  fn: ({ error }) => error.response.message,
+  fn: ({ error }) => {
+    console.log(error)
+    return isHttpErrorType(error, invalid_code) 
+      ? t(INVALID_CODE_MESSAGE) 
+      : t(UNEXPECTED_ERROR_MESSAGE)
+  },
   target: $error
 })
+
 sample({
   clock: FormGate.close,
   target: resetVerifyTriggered
 })
+
 bridge(() => {
   sample({
     clock: resent,

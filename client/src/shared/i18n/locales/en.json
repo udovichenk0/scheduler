@@ -133,7 +133,10 @@
       "verify": {
         "title": "Verification",
         "description": "Enter the verification code to authenticate your account",
-        "label": "Code"
+        "label": "Code",
+        "error": {
+          "invalid": "Confirmation Code is invalid"
+        }
       },
       "validationError": {
         "longPassword": "Password should consist of 50 or less symbols",
@@ -142,6 +145,9 @@
         "longEmail": "Entered email is too long",
         "shortEmail": "Entered email is too short",
         "invalidEmail": "Entered email is not valid"
+      },
+      "error": {
+        "unexpected": "An unexpected error occurred. Please try again"
       }
     },
     "theme": {

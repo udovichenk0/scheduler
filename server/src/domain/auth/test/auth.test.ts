@@ -16,7 +16,6 @@ import {
 import {
   badRequestException,
   invalid,
-  notAcceptableException,
   notFoundException,
   not_found,
 } from 'src/infrastructure/err/errors';
@@ -256,7 +255,7 @@ test('should not verify email if verification code is wrong', async () => {
       email: unverifiedUser.email,
     }),
   ).rejects.toThrow(
-    notAcceptableException({
+    badRequestException({
       description: CODE_IS_INVALID,
       error: invalid,
     }),

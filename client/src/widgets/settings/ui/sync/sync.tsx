@@ -20,7 +20,7 @@ export const Authentication = () => {
   useGate(gate)
   return (
     <div className="flex justify-center">
-      <div className="w-[391px] text-primary">
+      <div className="w-[420px] text-primary">
         {currentFlow === Flow.email && (
           <CheckEmailForm goBack={() => selectForm(Flow.options)} />
         )}
