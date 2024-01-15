@@ -22,7 +22,7 @@ test('Successful login', async ({ page }) => {
     return route.fulfill({json})
   })
   //signin
-
+  
   await page.getByRole('textbox').fill("mytestemail@gmail.com")
 
   await page.getByRole("button", { name: "Continue"}).click()
@@ -72,13 +72,7 @@ test('Sign up flow', async ({ page }) => {
 
   await expect(submit).toBeDisabled()
   //enter code
-  await page.keyboard.press("1")
-  await page.keyboard.press("2")
-  await page.keyboard.press("3")
-  await page.keyboard.press("4")
-  await page.keyboard.press("5")
-  await page.keyboard.press("6")
-
+  await input.pressSequentially('123456')
   await expect(submit).toBeEnabled()
   await submit.click()
 
@@ -122,12 +116,7 @@ test('Show error if verification code is not correct', async ({ page }) => {
 
   await expect(submit).toBeDisabled()
   //enter code
-  await page.keyboard.press("1")
-  await page.keyboard.press("2")
-  await page.keyboard.press("3")
-  await page.keyboard.press("4")
-  await page.keyboard.press("5")
-  await page.keyboard.press("6")
+  await input.pressSequentially('123456')
 
   await expect(submit).toBeEnabled()
   await submit.click()
