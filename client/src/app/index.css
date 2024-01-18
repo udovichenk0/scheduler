@@ -201,3 +201,12 @@ input {
   background: rgba(var(--accent), 0.1);
   border-radius: 15px;
 }
+
+.noScroll {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  
+}
+.noScroll::-webkit-scrollbar {
+  display: none;
+}

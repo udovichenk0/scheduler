@@ -34,7 +34,6 @@ export const Cell = ({
       } 
         flex items-center justify-center rounded-[5px] text-cCalendarFont 
         ${isPast && "text-cSecondBorder"} 
-        ${isTaskDate && "bg-accent/20"}
         `}
     >
       {isToday ? (
@@ -44,6 +43,7 @@ export const Cell = ({
           {date === 1 || isTaskDate ? (
             <div className="grid text-[9px] leading-[9px]">
               <div>{date}</div>
+              <div>{year}</div>
               <span>{t(SHORT_MONTHS_NAMES[month])}</span>
             </div>
           ) : (
