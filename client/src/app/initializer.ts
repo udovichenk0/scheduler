@@ -1,3 +1,4 @@
+import { $$pomodoroSettings } from '@/entities/settings/pomodoro';
 import { createEvent, sample } from "effector"
 
 import { $$task } from '@/entities/task/task-item';
@@ -12,6 +13,7 @@ export const appInitializer = () => {
   const $$routerHistory = createHistory()
   const theme = $$themeSettings
   const listen = $$task
+  const pomodoro = $$pomodoroSettings
   sample({
     clock: init,
     target: [
@@ -19,7 +21,8 @@ export const appInitializer = () => {
       $$routerHistory.init,
       $$i18n.init,
       theme.init,
-      listen.init
+      listen.init,
+      pomodoro.init
     ],
   })
   return {

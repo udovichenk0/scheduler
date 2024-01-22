@@ -1,12 +1,14 @@
-let timer: any
+import { Timer } from "./config"
+let timer: NodeJS.Timeout
+
 onmessage = function (e) {
   switch (e.data.command) {
-    case "start":
+    case Timer.START:
       timer = setInterval(() => {
         self.postMessage({ isRunning: true })
       }, 1000)
       break
-    case "stop":
+    case Timer.STOP:
       clearInterval(timer)
       self.postMessage({ isRunning: false })
       break

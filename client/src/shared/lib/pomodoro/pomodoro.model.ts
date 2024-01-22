@@ -8,7 +8,7 @@ import {
 } from "effector"
 import { not, condition } from "patronum"
 
-import { bridge } from "../effector"
+import { bridge, prepend } from "../effector"
 
 import { createTimer } from "./timer"
 
@@ -49,28 +49,28 @@ export const createPomodoro = ({
     },
   }
   const init = createEvent()
-
   const workDone = createEvent()
   const breakDone = createEvent()
-
+  
   const longBreakTriggered = createEvent()
   const shortBreakTriggered = createEvent()
-
+  
   const shortBreakPassed = createEvent()
   const longBreakPassed = createEvent()
-
+  
   const toggleTimerState = createEvent()
   const timePassed = createEvent()
   const activeIdChanged = createEvent()
   const timeSelected = createEvent<number>()
-
+  
   const resetTimerTriggered = createEvent()
 
   const $kvStages = createStore(defaultStages)
   const $stages = $kvStages.map((stages) => {
     return Object.values(stages)
   })
-
+  
+  const $isInited = createStore(false)
   const $activeStageId = createStore(0)
 
   const $currentStaticTime = createStore(DEFAULT_WORK_TIME)
@@ -130,11 +130,18 @@ export const createPomodoro = ({
   })
 
   sample({
-    clock: [init, $workDuration],
+    clock: $workDuration,
     source: $workDuration,
     filter: (duration) => !!Number(duration),
     fn: (duration) => duration * 60,
     target: [$currentStaticTime, setTimer],
+  })
+  sample({
+    clock: init,
+    source: {d: $workDuration, i: $isInited},
+    filter: ({ d, i }) => !!Number(d) && !i,
+    fn: ({ d }) => d * 60,
+    target: [prepend($isInited, true), setTimer, $currentStaticTime]
   })
   sample({
     clock: resetTimerTriggered,
@@ -270,8 +277,8 @@ export const createPomodoro = ({
     )
     return { ...kv, ...newStagesIntoKv }
   }
-  init()
   return {
+    init,
     startTimerTriggered: startTimer,
     stopTimerTriggered: stopTimer,
     $isPomodoroRunning: $isRunning,
@@ -284,4 +291,4 @@ export const createPomodoro = ({
     resetTimerTriggered,
   }
 }
-export type CreatePomodoro = ReturnType<typeof createPomodoro>
+export type PomodoroFactory = ReturnType<typeof createPomodoro>
