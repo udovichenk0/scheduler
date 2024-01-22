@@ -2,13 +2,11 @@ import { useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
-import { onMount } from "@/shared/lib/react"
 
 import { $$pomodoroSettings } from "./model"
 import { PomodoroInput } from "./ui/input"
 
 const {
-  init,
   $longBreakDuration,
   $isEnabledNotificationSound,
   $shortBreakDuration,
@@ -40,8 +38,6 @@ const SettingsWithInputs = () => {
   const shortBreak = useUnit($shortBreakDuration)
   const longBreak = useUnit($longBreakDuration)
   const applySettings = useUnit(settingsApplied)
-  const onInit = useUnit(init)
-  onMount(onInit)
   return (
     <div className="mb-6 space-y-3">
       <div className="flex items-center justify-end">

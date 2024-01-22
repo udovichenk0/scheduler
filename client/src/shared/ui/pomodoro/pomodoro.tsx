@@ -2,7 +2,7 @@ import { ReactNode } from "react"
 import { Store } from "effector"
 import { useUnit } from "effector-react"
 
-import { CreatePomodoro } from "@/shared/lib/pomodoro"
+import { PomodoroFactory } from "@/shared/lib/pomodoro"
 
 import { Button } from "../buttons/main-button"
 import { Icon } from "../icon"
@@ -10,6 +10,7 @@ import { Icon } from "../icon"
 import { StartButton } from "./ui/start-button"
 import { PomodoroDurations } from "./ui/work-durations"
 import { ProgressCircle } from "./ui/circle-progress"
+import { onMount } from "@/shared/lib/react"
 
 export const Pomodoro = ({
   leftSlot,
@@ -18,7 +19,7 @@ export const Pomodoro = ({
 }: {
   leftSlot: ReactNode
   $customDuration: Store<number>
-  pomodoroModel: CreatePomodoro
+  pomodoroModel: PomodoroFactory
 }) => {
   const {
     timeSelected,
@@ -31,12 +32,15 @@ export const Pomodoro = ({
     startTimerTriggered,
     stopTimerTriggered,
     resetTimerTriggered,
+    init
   } = pomodoroModel
-  const { start, stop, reset } = useUnit({
+  const { start, stop, reset, onInit } = useUnit({
     start: startTimerTriggered,
     stop: stopTimerTriggered,
     reset: resetTimerTriggered,
+    onInit: init 
   })
+  onMount(onInit)
   return (
     <div className="px-4">
       <PomodoroDurations

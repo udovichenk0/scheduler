@@ -5,6 +5,7 @@ import {
   sample,
   createEvent,
 } from "effector"
+import { Timer } from "./config"
 
 export const createTimer = ({
   defaultTimerDuration = 1500,
@@ -19,7 +20,7 @@ export const createTimer = ({
 
   const $timer = createStore(defaultTimerDuration)
   const $isRunning = createStore(false)
-  const $worker = createStore(new Worker("src/shared/lib/pomodoro/worker.ts"))
+  const $worker = createStore(new Worker("src/shared/lib/pomodoro/worker-interval.ts", {type: 'module'}))
 
   const startListeningFx = createEffect((worker: Worker) => {
     const scopedWorkerTick = scopeBind(workerEvent)
@@ -44,10 +45,10 @@ export const createTimer = ({
   })
 
   const startTimerFx = createEffect((worker: Worker) => {
-    worker.postMessage({ command: "start" })
+    worker.postMessage({ command: Timer.START })
   })
   const stopTimerFx = createEffect((worker: Worker) => {
-    worker.postMessage({ command: "stop" })
+    worker.postMessage({ command: Timer.STOP })
   })
   sample({
     clock: startTimer,

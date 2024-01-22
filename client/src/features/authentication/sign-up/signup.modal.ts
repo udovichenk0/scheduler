@@ -26,7 +26,7 @@ export const $password = createStore("").on(
   (_, password) => password,
 )
 
-export const $passwordError = createStore<Nullable<string>>(null)
+export const $passwordError = createStore<string>("")
 
 const signupSchema = z.string().min(8).max(50).trim()
 

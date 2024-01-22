@@ -38,7 +38,6 @@ export const Header = ({
   const openPomodoroModal = useUnit($$pomodoroModal.open)
   const openSettingsModal = useUnit($$settingsModal.open)
   const isPomodoroRunning = useUnit($$pomodoro.$isPomodoroRunning)
-
   useClickOutside({
     ref: r,
     callback: () => setIsSortingOpened(false),

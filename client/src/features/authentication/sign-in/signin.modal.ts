@@ -26,7 +26,7 @@ export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()
 export const resetSigninPasswordTriggered = createEvent()
 
-export const $password = createStore<Nullable<string>>(null).on(
+export const $password = createStore<string>("").on(
   passwordChanged,
   (_, password) => password,
 )
@@ -39,28 +39,13 @@ const getTasksFromLsFxAttached = attach({
 })
 
 bridge(() => {
-  type CredsInp = {
-    email: string,
-    password: Nullable<string>
-  }
-  type CredsOut = {
-    email: string,
-    password: string
-  }
   sample({
     clock: submitTriggered,
     source: { email: $email, password: $password },
-    filter: (creds: CredsInp): creds is CredsOut => {
-      return signinSchema.safeParse(creds.password).success
+    filter: ({ password }) => {
+      return signinSchema.safeParse(password).success
     },
     target: authApi.signinQuery.start,
-  })
-  sample({
-    clock: submitTriggered,
-    source: $password,
-    filter: (password) => !signinSchema.safeParse(password).success,
-    fn: checkError,
-    target: $passwordError,
   })
   sample({
     clock: submitTriggered,
