@@ -11,7 +11,7 @@ export const TaskSorting = ({
   active: SortType
 }) => {
   return (
-    <div className="absolute right-0 z-[15] flex w-[215px] flex-col bg-menuBg">
+    <div className="absolute right-0 z-[1000] flex w-[215px] flex-col bg-main">
       {config.map(({ value, label }) => {
         return (
           <button
