@@ -1,11 +1,10 @@
 import { useUnit } from "effector-react"
-import { ReactNode, useRef, useState } from "react"
+import { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Settings } from "@/widgets/settings"
 
 import { $$pomodoroSettings } from "@/entities/settings/pomodoro"
-import { SortConfig, SortType, TaskSorting } from "@/entities/task/task-item"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
@@ -13,36 +12,28 @@ import { Icon, IconName } from "@/shared/ui/icon"
 import { Container } from "@/shared/ui/general/container"
 import { Pomodoro } from "@/shared/ui/pomodoro"
 import { MainModal } from "@/shared/ui/modals/main"
-import { useClickOutside } from "@/shared/lib/react/on-click-outside"
 
 import { $$pomodoroModal, $$settingsModal, $$pomodoro } from "./header.model"
 import { PomodoroProgressBar } from "./ui/progress-bar"
+import { Sort, SortProps } from "./ui/sort"
+
+
+type HeaderProps = {
+  iconName: IconName,
+  title: string | ReactNode,
+  sorting: SortProps
+}
 
 export const Header = ({
   iconName,
   title,
   sorting,
-}: {
-  iconName: IconName
-  title: string | ReactNode
-  sorting?: {
-    config: SortConfig[]
-    active: SortType
-    onChange: (value: SortType) => SortType
-  }
-}) => {
-  const [isSortingOpened, setIsSortingOpened] = useState(false)
-  const r = useRef<HTMLDivElement>(null)
+}: HeaderProps) => {
 
   const { t } = useTranslation()
   const openPomodoroModal = useUnit($$pomodoroModal.open)
   const openSettingsModal = useUnit($$settingsModal.open)
   const isPomodoroRunning = useUnit($$pomodoro.$isPomodoroRunning)
-  useClickOutside({
-    ref: r,
-    callback: () => setIsSortingOpened(false),
-    deps: [isSortingOpened],
-  })
 
   return (
     <Container padding="xl" className="relative mb-4 text-primary">
@@ -97,32 +88,7 @@ export const Header = ({
           <Icon name={iconName} className="fill-cIconDefault text-2xl" />
           <Typography.Heading size="lg">{title}</Typography.Heading>
         </div>
-        <div className="relative pr-1">
-          {sorting && (
-            <div ref={r}>
-              <Button
-                intent={"primary"}
-                size={"xs"}
-                onClick={() => setIsSortingOpened((prev) => !prev)}
-              >
-                <Icon
-                  name={`sort/${sorting.active}`}
-                  className="text-2xl text-cIconDefault"
-                />
-              </Button>
-              {isSortingOpened && (
-                <TaskSorting
-                  onChange={(value) => {
-                    setIsSortingOpened(false)
-                    sorting.onChange(value)
-                  }}
-                  config={sorting.config}
-                  active={sorting.active}
-                />
-              )}
-            </div>
-          )}
-        </div>
+        <Sort sorting={sorting}/>
       </div>
     </Container>
   )
