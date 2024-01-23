@@ -107,7 +107,7 @@ describe("GetJsonBody", () => {
 })
 
 describe("GetUrl", () => {
-  test.only("Should return url with url as string", () => {
+  test("Should return url with url as string", () => {
     const url = getUrl("/user").href
     expect(url).toBe(import.meta.env.VITE_ORIGIN_URL + 'user')
   })
@@ -115,7 +115,7 @@ describe("GetUrl", () => {
     const url = getUrl(() => "user").href
     expect(url).toBe(import.meta.env.VITE_ORIGIN_URL + 'user')
   })
-  test.only("Should return url with params", () => {
+  test("Should return url with params", () => {
     const params = {
       userId: "1"
     }
