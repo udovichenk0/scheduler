@@ -51,12 +51,18 @@ export function setQuery<P>(url: URL, query?: (d: P) => Record<string, unknown>,
 }
 export function getUrl<T>(url: string | ((p: T) => string) | (() => string), params?: T){
   if(typeof url == 'string') {
-    return new URL(`${import.meta.env.VITE_ORIGIN_URL}${url}`)
+    const path = extractSlash(url)
+    return new URL(`${import.meta.env.VITE_ORIGIN_URL}${path}`)
   }
   else if(url.length && params) {
-    const withParams = url(params)
-    return new URL(`${import.meta.env.VITE_ORIGIN_URL}${withParams}`)
+    const path = extractSlash(url(params))
+    return new URL(`${import.meta.env.VITE_ORIGIN_URL}${path}`)
   }
-  const u = (url as (() => string))()
-  return new URL(`${import.meta.env.VITE_ORIGIN_URL}${u}`)
+  const path = extractSlash((url as (() => string))())
+  return new URL(`${import.meta.env.VITE_ORIGIN_URL}${path}`)
+}
+
+function extractSlash (path: string){
+  if(path[0] == '/') return path.slice(1)
+  return path
 }
