@@ -58,7 +58,7 @@ sample({
   clock: getTasksFromLsAttached.doneData,
   source: $$session.$user,
   filter: (user, data) => Boolean(user) && data.length > 0,
-  fn: (user, data) => ({ body: { user_id: user!.id, tasks: data } }),
+  fn: (_, data) => ({ tasks: data }),
   target: taskApi.createTasksQuery.start,
 })
 

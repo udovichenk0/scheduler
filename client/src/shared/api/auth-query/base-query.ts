@@ -1,20 +1,22 @@
-import { createEffect } from "effector"
+import { Request } from "./type"
 
-import { HttpRequestType, Request, UrlFuncTypeWithParams } from "./type"
-export const baseQuery = createEffect(
-  async ({
+
+
+export const baseQueryTest = async <T>({
+    params,
     request,
     token,
   }: {
-    request: Request & HttpRequestType
+    params?: T
+    request: Request<T>
     token: Nullable<string>
   }) => {
-    const { method, url, headers, body, params, query } = request
+    const { method, url, headers, body, query } = request
 
-    const urlWithParams = setUrlParams(url, params)
-    const urlWithQueryAndParams = setQuery(urlWithParams, query)
-
-    const response = await fetch(urlWithQueryAndParams, {
+    const newUrl = getUrl(url, params)
+    const urlWithQuery = setQuery(newUrl, query, params)
+    const jsonBody = getJsonBody(body, params)
+    const response = await fetch(urlWithQuery, {
       credentials: "include",
       method,
       headers: {
@@ -22,33 +24,39 @@ export const baseQuery = createEffect(
         Authorization: `Bearer ${token}`,
         ...headers,
       },
-      body: JSON.stringify(body),
+      body: jsonBody,
     })
     const data = await response.json()
     return data
-  },
-)
+  }
 
-export function setUrlParams(
-  url: UrlFuncTypeWithParams | string,
-  params?: Record<string, unknown>,
-) {
-  if (typeof url == "string") {
-    return new URL(`${import.meta.env.VITE_ORIGIN_URL}${url}`)
-  }
-  if (typeof url === "function" && params) {
-    const urlWithParams = url(params)
-    return new URL(`${import.meta.env.VITE_ORIGIN_URL}${urlWithParams}`)
-  }
-  return new URL(`${import.meta.env.VITE_ORIGIN_URL}${url({})}`)
+export function getJsonBody<T>(body?: ((data: T) => Record<string, unknown>), params?: T){
+  if(!body) return
+  if(!params) throw Error("There is no params")
+  const data = body(params)
+  return JSON.stringify(data)
 }
 
-export function setQuery(url: URL, query?: Record<string, string | number>) {
+export function setQuery<P>(url: URL, query?: (d: P) => Record<string, unknown>, params?: P) {
   const urlWithQuery = new URL(url)
-  if (query) {
-    for (const [key, value] of Object.entries(query)) {
-      urlWithQuery.searchParams.set(key, value.toString())
+  if (query && params) {
+    const a = query(params)
+    for (const [key, value] of Object.entries(a)) {
+      if(typeof value == 'string' || typeof value == 'number'){
+        urlWithQuery.searchParams.set(key, value.toString())
+      }
     }
   }
   return urlWithQuery
+}
+export function getUrl<T>(url: string | ((p: T) => string) | (() => string), params?: T){
+  if(typeof url == 'string') {
+    return new URL(`${import.meta.env.VITE_ORIGIN_URL}${url}`)
+  }
+  else if(url.length && params) {
+    const withParams = url(params)
+    return new URL(`${import.meta.env.VITE_ORIGIN_URL}${withParams}`)
+  }
+  const u = (url as (() => string))()
+  return new URL(`${import.meta.env.VITE_ORIGIN_URL}${u}`)
 }

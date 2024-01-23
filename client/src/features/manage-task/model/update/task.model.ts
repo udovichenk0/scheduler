@@ -66,7 +66,7 @@ export const updateTaskFactory = () => {
       fn: (kv, { date, id }) => {
         const task = kv![id]
         const type = switchTaskType(task.type, date)
-        return { body: { start_date: date, type }, params: { id } }
+        return { data: { start_date: date, type }, id }
       },
       target: attachUpdateTaskDate.start,
     })
@@ -89,7 +89,7 @@ export const updateTaskFactory = () => {
       fn: ({ id, status }) => {
         const changedStatus =
           status === "INPROGRESS" ? "FINISHED" : "INPROGRESS"
-        return { body: { status: changedStatus as TaskStatus }, params: { id } }
+        return { data: { status: changedStatus as TaskStatus }, id }
       },
       target: attachUpdateStatusQuery.start,
     })
@@ -101,7 +101,7 @@ export const updateTaskFactory = () => {
       clock: updateTaskTriggeredById,
       source: $fields,
       filter: and($isAllowToSubmit, $$session.$isAuthenticated),
-      fn: (fields, id) => ({ body: fields, params: { id } }),
+      fn: (fields, id) => ({ data: fields, id }),
       target: attachUpdateTaskQuery.start,
     })
     sample({

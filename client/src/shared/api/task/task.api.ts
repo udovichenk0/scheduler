@@ -17,22 +17,25 @@ import {
   LocalStorageTaskDto,
   TaskType,
   LocalStorageTasksDto,
+  CreateTasksDto,
+  UpdateDateDto,
 } from "./task.dto"
 
 const TaskContract = zodContract(TaskSchemaDto)
-export const createTaskQuery = authQuery<TaskDto, { body: CreateTaskDto }>({
+export const createTaskQuery = authQuery<TaskDto, CreateTaskDto>({
   request: {
     url: "tasks",
     method: "POST",
+    body: (data) => data
   },
   response: {
     contract: TaskContract,
     mapData: (data) => data.result,
   },
-})
+});
 
 const GetTasksContract = zodContract(TasksSchemaDto)
-export const getTasksQuery = authQuery<TaskDto[], void>({
+export const getTasksQuery = authQuery<TaskDto[]>({
   request: {
     url: "tasks",
     method: "GET",
@@ -45,11 +48,12 @@ export const getTasksQuery = authQuery<TaskDto[], void>({
 
 export const updateTaskQuery = authQuery<
   TaskDto,
-  { body: UpdateTaskDto; params: { id: TaskId } }
+  UpdateTaskDto
 >({
   request: {
     url: ({ id }) => `tasks/${id}`,
     method: "PATCH",
+    body: ({ data }) => data
   },
   response: {
     contract: TaskContract,
@@ -57,13 +61,11 @@ export const updateTaskQuery = authQuery<
   },
 })
 
-export const updateStatusQuery = authQuery<
-  TaskDto,
-  { body: UpdateStatusDto; params: { id: TaskId } }
->({
+export const updateStatusQuery = authQuery<TaskDto, UpdateStatusDto>({
   request: {
     url: ({ id }) => `tasks/${id}/status`,
     method: "POST",
+    body: ({ data }) => data
   },
   response: {
     contract: TaskContract,
@@ -71,9 +73,9 @@ export const updateStatusQuery = authQuery<
   },
 })
 
-export const deleteTaskQuery = authQuery<TaskDto, { params: { id: TaskId } }>({
+export const deleteTaskQuery = authQuery<TaskDto, TaskId>({
   request: {
-    url: ({ id }) => `tasks/${id}`,
+    url: (id) => `tasks/${id}`,
     method: "DELETE",
   },
   response: {
@@ -81,9 +83,9 @@ export const deleteTaskQuery = authQuery<TaskDto, { params: { id: TaskId } }>({
     mapData: (data) => data.result,
   },
 })
-export const trashTaskQuery = authQuery<TaskDto, { params: { id: TaskId } }>({
+export const trashTaskQuery = authQuery<TaskDto, TaskId>({
   request: {
-    url: ({ id }) => `tasks/${id}/trash`,
+    url: (id) => `tasks/${id}/trash`,
     method: "PATCH",
   },
   response: {
@@ -92,13 +94,11 @@ export const trashTaskQuery = authQuery<TaskDto, { params: { id: TaskId } }>({
   },
 })
 
-export const createTasksQuery = authQuery<
-  TaskDto[],
-  { body: { tasks: CreateTaskDto[] } }
->({
+export const createTasksQuery = authQuery<TaskDto[], CreateTasksDto>({
   request: {
     url: "tasks/batch",
     method: "POST",
+    body: (data) => data 
   },
   response: {
     contract: GetTasksContract,
@@ -106,13 +106,11 @@ export const createTasksQuery = authQuery<
   },
 })
 
-export const updateDateQuery = authQuery<
-  TaskDto,
-  { body: { start_date: Date; type: TaskType }; params: { id: TaskId } }
->({
+export const updateDateQuery = authQuery<TaskDto, UpdateDateDto>({
   request: {
     url: ({ id }) => `tasks/${id}/date`,
     method: "PATCH",
+    body: ({ data }) => data
   },
   response: {
     contract: TaskContract,

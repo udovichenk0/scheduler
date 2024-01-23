@@ -34,7 +34,6 @@ export const createTaskFactory = ({
       clock: createTaskTriggered,
       source: $fields,
       filter: and($isAllowToSubmit, $$session.$isAuthenticated),
-      fn: (fields) => ({ body: fields }),
       target: attachCreateTaskQuery.start,
     })
     sample({
