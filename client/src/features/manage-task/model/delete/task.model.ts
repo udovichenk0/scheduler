@@ -23,7 +23,6 @@ export const removeTaskFactory = () => {
   sample({
     clock: taskDeletedById,
     filter: $$session.$isAuthenticated,
-    fn: (id) => ({ params: { id } }),
     target: attachDeleteTaskQuery.start,
   })
   sample({

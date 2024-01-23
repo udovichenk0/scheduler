@@ -25,9 +25,27 @@ export type CreateTaskDto = {
   start_date: Nullable<Date>
 }
 
-export type UpdateTaskDto = CreateTaskDto
+export type CreateTasksDto = {
+  tasks: CreateTaskDto[]
+}
+export type UpdateDateDto = { 
+  data: { 
+    start_date: Date; 
+    type: TaskType 
+  }
+  id: TaskId 
+}
+
+
+export type UpdateTaskDto = {
+  data: CreateTaskDto,
+  id: TaskId
+}
 export type UpdateStatusDto = {
-  status: TaskStatus
+  data: {
+    status: TaskStatus
+  }
+  id: TaskId
 }
 export const LocalStorageTaskDto = z.object({
   id: z.string(),
