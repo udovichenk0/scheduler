@@ -1,13 +1,13 @@
 import { Contract, DynamicallySourcedField } from "@farfetched/core"
 
-export type UrlFuncTypeWithParams = (params: Record<string, unknown>) => string
+export type DataRecord<P> = ((data: P) => Record<string, unknown>)
 
 export interface Request <P>{
   method: "GET" | "POST" | "PATCH" | "PUT" | "DELETE"
   url: string | ((data: P) => string) | (() => string)
   headers?: Record<string, string | string[]>
-  body?: ((data: P) => Record<string, unknown>)
-  query?: ((data: P) => Record<string, unknown>)
+  body?: DataRecord<P>
+  query?: DataRecord<P>
 }
 export interface Response<Resp , Params> {
   contract: Contract<unknown, Resp>

@@ -3,7 +3,7 @@ import { attach, createEffect } from "effector"
 
 import { tokenService, tokenApi, TokenDto } from "@/shared/api/token"
 
-import { baseQueryTest } from "./base-query"
+import { baseQuery } from "./base-query"
 import { Request, Response } from "./type"
 
 let refreshPromiseQueue: Nullable<Promise<TokenDto>> = null
@@ -31,7 +31,7 @@ export const authQuery = <Resp, P = void>({
         params?: P 
         token: Nullable<string>
       }) => {
-        const response = await baseQueryTest({
+        const response = await baseQuery({
           params,
           request: { ...request },
           token,
@@ -41,7 +41,7 @@ export const authQuery = <Resp, P = void>({
             refreshPromiseQueue = tokenApi.refreshFx()
             const { access_token } = await refreshPromiseQueue
             if (access_token) {
-              return retrySetTokenAndResetQueueWithParams(
+              return retrySetTokenAndResetQueue(
                 request,
                 access_token,
                 params,
@@ -50,7 +50,7 @@ export const authQuery = <Resp, P = void>({
               throw new Error()
             }
           } else {
-            return retryAfterTokenRefreshWithParams(request, params)
+            return retryAfterTokenRefresh(request, params)
           }
         }
         return response
@@ -65,10 +65,10 @@ export const authQuery = <Resp, P = void>({
   return headlessQuery
 }
 
-function retryAfterTokenRefreshWithParams<P>(request: Request<P>, params?: P) {
+function retryAfterTokenRefresh<P>(request: Request<P>, params?: P) {
   if (refreshPromiseQueue) {
     refreshPromiseQueue.then(({ access_token }) => {
-      return baseQueryTest({
+      return baseQuery({
         params,
         request,
         token: access_token,
@@ -76,39 +76,16 @@ function retryAfterTokenRefreshWithParams<P>(request: Request<P>, params?: P) {
     })
   }
 }
-function retrySetTokenAndResetQueueWithParams<P>(
+function retrySetTokenAndResetQueue<P>(
   request: Request<P>,
   access_token: string,
   params?: P,
 ) {
   refreshPromiseQueue = null
   tokenService.setTokenTriggered(access_token)
-  return baseQueryTest({
+  return baseQuery({
     request,
     params,
     token: access_token,
   })
 }
-
-
-// function retryAfterTokenRefresh(request: Request & HttpRequestType) {
-//   if (refreshPromiseQueue) {
-//     refreshPromiseQueue.then(({ access_token }) => {
-//       return baseQuery({
-//         request,
-//         token: access_token,
-//       })
-//     })
-//   }
-// }
-// function retrySetTokenAndResetQueue(
-//   request: Request & HttpRequestType,
-//   access_token: string,
-// ) {
-//   refreshPromiseQueue = null
-//   tokenService.setTokenTriggered(access_token)
-//   return baseQuery({
-//     request: request,
-//     token: access_token,
-//   })
-// }

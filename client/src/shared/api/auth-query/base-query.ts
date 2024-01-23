@@ -1,14 +1,15 @@
+import { getUrl, setQuery, getJsonBody } from "./lib"
 import { Request } from "./type"
 
 
 
-export const baseQueryTest = async <T>({
+export const baseQuery = async <P>({
     params,
     request,
     token,
   }: {
-    params?: T
-    request: Request<T>
+    params?: P
+    request: Request<P>
     token: Nullable<string>
   }) => {
     const { method, url, headers, body, query } = request
@@ -29,40 +30,3 @@ export const baseQueryTest = async <T>({
     const data = await response.json()
     return data
   }
-
-export function getJsonBody<T>(body?: ((data: T) => Record<string, unknown>), params?: T){
-  if(!body) return
-  if(!params) throw Error("There is no params")
-  const data = body(params)
-  return JSON.stringify(data)
-}
-
-export function setQuery<P>(url: URL, query?: (d: P) => Record<string, unknown>, params?: P) {
-  const urlWithQuery = new URL(url)
-  if (query && params) {
-    const a = query(params)
-    for (const [key, value] of Object.entries(a)) {
-      if(typeof value == 'string' || typeof value == 'number'){
-        urlWithQuery.searchParams.set(key, value.toString())
-      }
-    }
-  }
-  return urlWithQuery
-}
-export function getUrl<T>(url: string | ((p: T) => string) | (() => string), params?: T){
-  if(typeof url == 'string') {
-    const path = extractSlash(url)
-    return new URL(`${import.meta.env.VITE_ORIGIN_URL}${path}`)
-  }
-  else if(url.length && params) {
-    const path = extractSlash(url(params))
-    return new URL(`${import.meta.env.VITE_ORIGIN_URL}${path}`)
-  }
-  const path = extractSlash((url as (() => string))())
-  return new URL(`${import.meta.env.VITE_ORIGIN_URL}${path}`)
-}
-
-function extractSlash (path: string){
-  if(path[0] == '/') return path.slice(1)
-  return path
-}
