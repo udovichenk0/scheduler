@@ -85,13 +85,11 @@ describe("create task", () => {
     await allSettled(createTaskTriggered, { scope })
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toBeCalledWith({
-      body: {
-        title: "sixth",
-        description: "my note",
-        type: "inbox",
-        status: "FINISHED",
-        start_date: null,
-      },
+      title: "sixth",
+      description: "my note",
+      type: "inbox",
+      status: "FINISHED",
+      start_date: null,
     })
     expect(mock).toReturnWith(returnedTask)
     // expect(scope.getState($$task.$taskKv)).toStrictEqual(resultedTasks)

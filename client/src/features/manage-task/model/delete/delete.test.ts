@@ -46,7 +46,7 @@ describe("delete task", () => {
       params: "1",
     })
     expect(mock).toBeCalled()
-    expect(mock).toBeCalledWith({ params: { id: "1" } })
+    expect(mock).toBeCalledWith("1")
     expect(mock).toReturnWith(returnedTask)
     expect(scope.getState($$task.$taskKv)).toStrictEqual({})
   })
