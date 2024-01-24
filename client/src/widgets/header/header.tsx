@@ -21,7 +21,7 @@ import { Sort, SortProps } from "./ui/sort"
 type HeaderProps = {
   iconName: IconName,
   title: string | ReactNode,
-  sorting: SortProps
+  sorting?: SortProps
 }
 
 export const Header = ({

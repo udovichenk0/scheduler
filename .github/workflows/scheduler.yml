@@ -3,6 +3,8 @@ name: Scheduler CI
 on:
   push:
     branches: [ "develop" ]
+    paths-ignore:
+      - "server/**"
 
 env:
   VITE_ORIGIN_URL: http://localhost:3000/
