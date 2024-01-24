@@ -7,5 +7,6 @@ import { UserService } from '../user/user.service';
 @Module({
   providers: [PrismaService, OTPService, UserService],
   controllers: [OTPController],
+  exports: [OTPService]
 })
-export class EmailConfirmationModule {}
+export class OTPModule {}

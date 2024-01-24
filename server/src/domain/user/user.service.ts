@@ -1,8 +1,9 @@
 import { UserDto } from './dto/user.dto';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { encryptPassword } from 'src/infrastructure/session/encrypt-password';
+import { job } from 'cron';
 
 @Injectable()
 export class UserService {
@@ -50,5 +51,27 @@ export class UserService {
       error: 'not_found',
       message: 'User is not created',
     };
+  }
+  static userCollector(){
+    const prismaClient = new PrismaClient();
+    job(
+      '0 */24 * * *',
+      async function () {
+        await prismaClient.user.deleteMany({
+          where: {
+            AND: [
+              { verified: false },
+              {
+                created_at: {
+                  lte: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+                },
+              },
+            ],
+          },
+        });
+      },
+      null,
+      true,
+    );
   }
 }

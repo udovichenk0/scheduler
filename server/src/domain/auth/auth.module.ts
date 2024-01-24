@@ -3,12 +3,12 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { PrismaService } from 'src/database/prisma.service';
 import { TokenModule } from '../token/token.module';
-import { UserService } from '../user/user.service';
-import { OTPService } from '../otp/otp.service';
+import { UserModule } from '../user/user.module';
+import { OTPModule } from '../otp/otp.module.';
 
 @Module({
-  imports: [TokenModule],
-  providers: [AuthService, PrismaService, UserService, OTPService],
+  imports: [TokenModule, UserModule, OTPModule],
+  providers: [AuthService, PrismaService],
   controllers: [AuthController],
   exports: [AuthService],
 })
