@@ -9,7 +9,7 @@ export type SortProps = {
   active: SortType
   onChange: (value: SortType) => SortType
 }
-export const Sort = ({ sorting }: { sorting: SortProps }) => {
+export const Sort = ({ sorting }: { sorting?: SortProps }) => {
   const r = useRef<HTMLDivElement>(null)
   const [isSortingOpened, setIsSortingOpened] = useState(false)  
   useClickOutside({
