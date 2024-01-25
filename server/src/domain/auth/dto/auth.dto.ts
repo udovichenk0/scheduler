@@ -1,6 +1,6 @@
 import { createZodDto } from 'nestjs-zod';
 import { CODE_LENGTH } from 'src/domain/otp/constants/common';
-import { EmailSchema, userDtoSchema } from 'src/domain/user/dto/user.dto';
+import { EmailSchema, UserDtoSchema } from 'src/domain/user/dto/user.dto';
 import { z } from 'zod';
 
 const AuthCredentialSchema = z.object({
@@ -9,7 +9,7 @@ const AuthCredentialSchema = z.object({
 });
 
 const AuthDtoSchema = z.object({
-  user: userDtoSchema,
+  user: UserDtoSchema,
   access_token: z.string(),
 });
 

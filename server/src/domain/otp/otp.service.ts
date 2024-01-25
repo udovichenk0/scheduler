@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { transporter } from 'src/infrastructure/nodemailer/client';
 import { UserService } from '../user/user.service';
 import { generateCode } from 'src/infrastructure/session/generate-code';
 import { userNotFound } from '../user/constants/userErrorMessages';
-import { VerifyOTPDto } from './dto/dto';
+import { Confirmation, VerifyOTPDto } from './dto/dto';
 import { CODE_IS_INVALID, OTP_CODE_IS_NOT_FOUND } from './constants/errors';
 import {
   badRequestException,
@@ -12,6 +12,8 @@ import {
   notFoundException,
   not_found,
 } from 'src/infrastructure/err/errors';
+import { User, UserSchema } from '../user/dto/user.dto';
+import { z } from 'zod';
 
 @Injectable()
 export class OTPService {
@@ -77,23 +79,27 @@ export class OTPService {
   }
 
   async verifyOTP({ email, code }: VerifyOTPDto) {
-    const user = await this.userService.findOne({
-      email,
-    });
+    const res = await this.prismaService.$queryRaw<Confirmation[]>`
+      SELECT code, user.* FROM emailConfirmation e JOIN user ON e.user_id = user.id;`
+
+    const confirmation = res[0]
+
+    const user = User.create(confirmation)
+    const confirmationCode = confirmation.code
+
     if (!user) {
       throw notFoundException({
         description: userNotFound(email),
         error: not_found,
       });
     }
-    const confirmation = await this.findOne(user.id);
-    if (!confirmation) {
+    if (!confirmationCode) {
       throw notFoundException({
         description: OTP_CODE_IS_NOT_FOUND,
         error: not_found,
       });
     }
-    const isValid = confirmation.code === code;
+    const isValid = confirmationCode === code;
     if (!isValid) {
       throw badRequestException({
         description: CODE_IS_INVALID,
