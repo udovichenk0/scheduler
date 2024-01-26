@@ -142,11 +142,9 @@ export const createPomodoro = ({
       }
     },
     target: spread({
-      targets: {
-        time: $currentStaticTime,
-        state: $state,
-        stages: $stages
-      }
+      time: $currentStaticTime,
+      state: $state,
+      stages: $stages
     })
   })
   sample({

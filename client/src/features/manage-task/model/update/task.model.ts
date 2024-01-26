@@ -119,13 +119,11 @@ export const updateTaskFactory = () => {
     filter: (tasks: Nullable<TaskKv>): tasks is TaskKv => !!tasks,
     fn: (tasks, id) => tasks[id],
     target: spread({
-      targets: {
-        title: $title,
-        description: $description,
-        status: $status,
-        start_date: $startDate,
-        type: $type,
-      },
+      title: $title,
+      description: $description,
+      status: $status,
+      start_date: $startDate,
+      type: $type,
     }),
   })
   // Update the client store after response and reset fields
