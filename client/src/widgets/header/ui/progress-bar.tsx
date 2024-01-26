@@ -3,23 +3,24 @@ import { Store } from "effector"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { normalizeSeconds } from "@/shared/lib/date"
+import { State } from "@/shared/lib/pomodoro"
 
 export const PomodoroProgressBar = ({
   onClick,
   $currentStaticTime,
   $tickingTime,
-  $isWorkTime,
+  $state,
 }: {
   onClick: () => void
   $currentStaticTime: Store<number>
   $tickingTime: Store<number>
-  $isWorkTime: Store<boolean>
+  $state: Store<State>
   $isPomodoroRunning: Store<boolean>
 }) => {
   const pickedTime = useUnit($currentStaticTime)
   const passingTime = useUnit($tickingTime)
-  const isWorkTime = useUnit($isWorkTime)
-
+  const state = useUnit($state)
+  const isWorkTime = state == 'work'
   const CIRCLE_SIZE = 565
   const progress =
     CIRCLE_SIZE - ((pickedTime - passingTime) / pickedTime) * CIRCLE_SIZE

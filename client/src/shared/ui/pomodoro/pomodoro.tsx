@@ -25,9 +25,9 @@ export const Pomodoro = ({
     timeSelected,
     $workDuration,
     $currentStaticTime,
-    $isWorkTime,
     $tickingTime,
     $stages,
+    $state,
     $isPomodoroRunning,
     startTimerTriggered,
     stopTimerTriggered,
@@ -51,7 +51,7 @@ export const Pomodoro = ({
       />
       <ProgressCircle
         $staticTime={$currentStaticTime}
-        $isWorkTime={$isWorkTime}
+        $state={$state}
         $time={$tickingTime}
         $stages={$stages}
       />
@@ -59,7 +59,7 @@ export const Pomodoro = ({
         {leftSlot}
 
         <StartButton
-          $isWorkTime={$isWorkTime}
+          $state={$state}
           stop={stop}
           start={start}
           $isTicking={$isPomodoroRunning}

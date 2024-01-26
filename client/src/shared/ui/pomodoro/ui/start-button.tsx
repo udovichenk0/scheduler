@@ -1,19 +1,20 @@
+import { State } from "@/shared/lib/pomodoro"
 import { Store } from "effector"
 import { useUnit } from "effector-react"
 export const StartButton = ({
   start,
   stop,
   $isTicking,
-  $isWorkTime,
+  $state,
 }: {
   start: () => void
   stop: () => void
   $isTicking: Store<boolean>
-  $isWorkTime: Store<boolean>
+  $state: Store<State>
 }) => {
   const isTicking = useUnit($isTicking)
-  const isWorkTime = useUnit($isWorkTime)
-
+  const state = useUnit($state)
+  const isWorkTime = state == 'work'
   return (
     <button
       className={`flex h-8 w-8 justify-center rounded-full outline-none ${
