@@ -64,10 +64,8 @@ bridge(() => {
       token: result.access_token,
     }),
     target: spread({
-      targets: {
-        user: $$session.sessionSet,
-        token: tokenService.setTokenTriggered,
-      },
+      user: $$session.sessionSet,
+      token: tokenService.setTokenTriggered,
     }),
   })
   sample({

@@ -3003,10 +3003,10 @@ pathval@^1.1.1:
   resolved "https://registry.yarnpkg.com/pathval/-/pathval-1.1.1.tgz#8534e77a77ce7ac5a2512ea21e0fdb8fcf6c3d8d"
   integrity sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==
 
-patronum@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/patronum/-/patronum-2.0.0.tgz#1d5bc37f41feb675e48e7bd8390d2907b0f701f4"
-  integrity sha512-qNlLpXXE9ULVEH6+Tj7pQeHgiRNBL1ibE8kScD89ZysW9yQym+xUQXPJzC1XZlCK4olkTHFhmFLK/mks8r/3fQ==
+patronum@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/patronum/-/patronum-2.1.0.tgz#7165cb5e8ad5a88745e7d1734bdb51846e35947c"
+  integrity sha512-IpJnxftf79NA43BqZuFjB3f2B5SOHo9YRqDbSl4wKH0wvW3LoYBngC/mUIVaq2XMpheHf+5D4xy2pNDXQpLa5g==
 
 picocolors@^1.0.0:
   version "1.0.0"
