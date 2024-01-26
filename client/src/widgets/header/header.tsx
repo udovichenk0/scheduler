@@ -43,7 +43,7 @@ export const Header = ({
             onClick={openPomodoroModal}
             $currentStaticTime={$$pomodoro.$currentStaticTime}
             $tickingTime={$$pomodoro.$tickingTime}
-            $isWorkTime={$$pomodoro.$isWorkTime}
+            $state={$$pomodoro.$state}
             $isPomodoroRunning={$$pomodoro.$isPomodoroRunning}
           />
         ) : (

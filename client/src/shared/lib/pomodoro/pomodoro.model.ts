@@ -6,15 +6,16 @@ import {
   createEffect,
   StoreWritable,
 } from "effector"
-import { not, condition } from "patronum"
+import { spread, debug } from "patronum"
 
-import { bridge, prepend } from "../effector"
+import { prepend } from "../effector"
 
 import { createTimer } from "./timer"
+import { State, defaultStgs } from "./config"
 
 const DEFAULT_WORK_TIME = 1500 // 25mins
-const LAST_STAGE = 4
 const MAX_STAGES_LENGTH = 12
+
 
 type PomodoroProps = {
   notificationSound: HTMLAudioElement
@@ -26,6 +27,8 @@ type PomodoroProps = {
 }
 
 export type Stage = { fulfilled: boolean }
+export type State = typeof State[keyof typeof State]
+
 export const createPomodoro = ({
   notificationSound,
   $workDuration,
@@ -34,104 +37,64 @@ export const createPomodoro = ({
   $isEnabledNotificationSound,
   $isEnabledAutomaticStart,
 }: PomodoroProps) => {
-  const defaultStages: Record<number, Stage> = {
-    0: {
-      fulfilled: false,
-    },
-    1: {
-      fulfilled: false,
-    },
-    2: {
-      fulfilled: false,
-    },
-    3: {
-      fulfilled: false,
-    },
-  }
-  const init = createEvent()
-  const workDone = createEvent()
-  const breakDone = createEvent()
-  
-  const longBreakTriggered = createEvent()
-  const shortBreakTriggered = createEvent()
-  
-  const shortBreakPassed = createEvent()
-  const longBreakPassed = createEvent()
-  
-  const toggleTimerState = createEvent()
-  const timePassed = createEvent()
-  const activeIdChanged = createEvent()
-  const timeSelected = createEvent<number>()
-  
-  const resetTimerTriggered = createEvent()
 
-  const $kvStages = createStore(defaultStages)
-  const $stages = $kvStages.map((stages) => {
-    return Object.values(stages)
+  const $audio = createStore(notificationSound)
+  const finishTimerFx = attach({
+    source: $audio,
+    effect: createEffect((autio: HTMLAudioElement) => {
+      autio.play()
+    }),
   })
-  
-  const $isInited = createStore(false)
-  const $activeStageId = createStore(0)
-
-  const $currentStaticTime = createStore(DEFAULT_WORK_TIME)
-  const $isWorkTime = createStore(true).on(
-    toggleTimerState,
-    (isWorkTime) => !isWorkTime,
-  )
-
   const { $timer, stopTimer, startTimer, setTimer, $isRunning } = createTimer({
     defaultTimerDuration: DEFAULT_WORK_TIME,
   })
+  const timerEnded = createEvent() 
+  
+  const $state = createStore<State>('work')
+  const $stages = createStore(defaultStgs)
+  const $currentStaticTime = createStore(DEFAULT_WORK_TIME)
+  const $isInited = createStore(false)
 
-  const $audio = createStore(notificationSound)
-  bridge(() => {
-    sample({
-      clock: activeIdChanged,
-      source: { activeStageId: $activeStageId, kv: $kvStages },
-      fn: ({ activeStageId, kv }) => ({
-        ...kv,
-        [activeStageId]: { fulfilled: true },
-      }),
-      target: $kvStages,
-    })
+  const $tempTime = createStore(0)
 
-    sample({
-      clock: activeIdChanged,
-      source: $activeStageId,
-      fn: (activeStageId) => activeStageId + 1,
-      target: $activeStageId,
-    })
-  })
+  const init = createEvent()
+  const resetTimerTriggered = createEvent()
+  const timeSelected = createEvent<number>()  
 
-  const finishTimerFx = attach({
-    source: $audio,
-    effect: createEffect((timer: HTMLAudioElement) => {
-      timer.play()
-    }),
-  })
-
-  bridge(() => {
+  const $a = createStore(0)
+  debug($a)
     sample({
       clock: timeSelected,
       target: [
         setTimer,
         $currentStaticTime,
         stopTimer,
-        $isWorkTime.reinit,
-        $activeStageId.reinit,
-        $kvStages.reinit,
+        $stages.reinit,
+        prepend($workDuration, (_, time:number) => time/60)
       ],
     })
-    sample({
-      clock: timeSelected,
-      fn: (time) => time / 60,
-      target: $workDuration,
-    })
+  sample({
+    source: $timer,
+    filter: (timer) => timer <= 0,
+    target: timerEnded,
   })
-
+  sample({
+    clock: resetTimerTriggered,
+    target: [
+      $stages.reinit,
+      stopTimer,
+      $state.reinit,
+      $tempTime.reinit
+    ],
+  })
+  sample({
+    clock: resetTimerTriggered,
+    source: $workDuration,
+    fn: (duration) => duration * 60,
+    target: [$currentStaticTime, setTimer],
+  })
   sample({
     clock: $workDuration,
-    source: $workDuration,
     filter: (duration) => !!Number(duration),
     fn: (duration) => duration * 60,
     target: [$currentStaticTime, setTimer],
@@ -143,149 +106,84 @@ export const createPomodoro = ({
     fn: ({ d }) => d * 60,
     target: [prepend($isInited, true), setTimer, $currentStaticTime]
   })
+
   sample({
-    clock: resetTimerTriggered,
-    target: [
-      $isWorkTime.reinit,
-      $kvStages.reinit,
-      $activeStageId.reinit,
-      stopTimer,
-    ],
-  })
-  sample({
-    clock: resetTimerTriggered,
-    source: $workDuration,
-    fn: (duration) => duration * 60,
-    target: [$currentStaticTime, setTimer],
+    clock: timerEnded,
+    filter: $isEnabledNotificationSound,
+    target: finishTimerFx,
   })
 
   sample({
-    source: $timer,
-    filter: (timer) => timer <= 0,
-    target: timePassed,
-  })
-  bridge(() => {
-    sample({
-      clock: timePassed,
-      filter: $isEnabledNotificationSound,
-      target: finishTimerFx,
-    })
+    clock: timerEnded,
+    source: {
+      s: $state,
+      stages: $stages,
+      long: $longBreakDuration,
+      short: $shortBreakDuration,
+      work: $workDuration
+    },
+    fn: ({ s, stages, long, short, work }) => {
+      if(s == State.WORK){
+        const shouldLongBreak = stages[stages.length-2].fulfilled
+        const newStages = updateStage(stages)
 
-    sample({
-      clock: timePassed,
-      filter: $isWorkTime,
-      batch: false,
-      target: [toggleTimerState, activeIdChanged, workDone],
-    })
-    sample({
-      clock: timePassed,
-      filter: not($isWorkTime),
-      batch: false,
-      target: [breakDone, toggleTimerState],
-    })
-  })
-
-  bridge(() => {
-    condition({
-      source: sample({
-        clock: workDone,
-        source: $activeStageId,
-      }),
-      if: (activeStageId) => Boolean(activeStageId % LAST_STAGE),
-      then: shortBreakTriggered,
-      else: longBreakTriggered,
-    })
-
-    sample({
-      clock: shortBreakTriggered,
-      source: $shortBreakDuration,
-      fn: (shortBreakDuration) => shortBreakDuration * 60,
-      target: [$currentStaticTime, setTimer],
-    })
-    sample({
-      clock: longBreakTriggered,
-      source: $longBreakDuration,
-      fn: (longBreakDuration) => longBreakDuration * 60,
-      target: [$currentStaticTime, setTimer],
+        const time = shouldLongBreak ? long : short
+        const state = shouldLongBreak ? State.LONG : State.SHORT
+        return {
+          time: time * 60,
+          state: state,
+          stages: newStages
+        }
+      }
+      return {
+        time: work * 60,
+        state: State.WORK,
+        stages: s == State.SHORT ? stages : addStages(stages)
+      }
+    },
+    target: spread({
+      targets: {
+        time: $currentStaticTime,
+        state: $state,
+        stages: $stages
+      }
     })
   })
-
-  condition({
-    source: sample({
-      clock: breakDone,
-      source: $activeStageId,
-    }),
-    if: (activeStageId) => Boolean(activeStageId % LAST_STAGE),
-    then: shortBreakPassed,
-    else: longBreakPassed,
+  sample({
+    clock: $state,
+    source: $isEnabledAutomaticStart,
+    filter: (isAuto, state) => state == State.WORK && !isAuto,
+    target: stopTimer
+  })
+  sample({
+    clock: $stages,
+    filter: (s) => s.length > MAX_STAGES_LENGTH,
+    target: resetTimerTriggered
   })
 
-  bridge(() => {
-    sample({
-      clock: shortBreakPassed,
-      source: $isEnabledAutomaticStart,
-      filter: (startAutomatically) => !startAutomatically,
-      target: stopTimer,
-    })
-    sample({
-      clock: shortBreakPassed,
-      source: $workDuration,
-      fn: (workDuration) => workDuration * 60,
-      target: [setTimer, $currentStaticTime],
-    })
+  sample({
+    clock: $currentStaticTime,
+    filter: Boolean,
+    target: setTimer
   })
 
-  bridge(() => {
-    sample({
-      clock: longBreakPassed,
-      source: $shortBreakDuration,
-      fn: (shortBreakDuration) => shortBreakDuration * 60,
-      target: [$isWorkTime.reinit, $currentStaticTime, setTimer],
-    })
-    sample({
-      clock: longBreakPassed,
-      source: $stages,
-      filter: (stages) => stages.length === MAX_STAGES_LENGTH,
-      target: resetTimerTriggered,
-    })
-    sample({
-      clock: longBreakPassed,
-      source: { kv: $kvStages, activeStageId: $activeStageId },
-      fn: addStagesToKv,
-      target: $kvStages,
-    })
-  })
-
-  function addStagesToKv({
-    kv,
-    activeStageId,
-  }: {
-    kv: Record<number, Stage>
-    activeStageId: number
-  }) {
-    let lastActiveStageId = activeStageId
-    const newStages: Stage[] = new Array(4).fill({
-      fulfilled: false,
-    })
-    const newStagesIntoKv = newStages.reduce(
-      (acc, stage) => {
-        acc[lastActiveStageId] = stage
-        lastActiveStageId += 1
-        return acc
-      },
-      {} as Record<number, Stage>,
-    )
-    return { ...kv, ...newStagesIntoKv }
+  function updateStage(stages: Stage[]){
+    const lastFulfilled = stages.findLastIndex((value) => value.fulfilled) + 1
+    return stages.map((s, ind) => ind == lastFulfilled ? { fulfilled: true } : s)
   }
+  function addStages(stages: Stage[]){
+    return stages.concat(defaultStgs)
+  }
+
   return {
     init,
     startTimerTriggered: startTimer,
     stopTimerTriggered: stopTimer,
     $isPomodoroRunning: $isRunning,
-    $isWorkTime,
     $workDuration,
     $tickingTime: $timer,
     $stages,
+    $state,
     $currentStaticTime,
     timeSelected,
     resetTimerTriggered,

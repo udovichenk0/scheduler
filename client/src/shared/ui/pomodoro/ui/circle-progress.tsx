@@ -3,25 +3,27 @@ import { Store } from "effector"
 import { useUnit } from "effector-react"
 
 import { normalizeSeconds } from "@/shared/lib/date"
+import { State } from "@/shared/lib/pomodoro"
 
 const DEFAULT_PROGRESS_BAR = 848 // if 848 then progress is 0% otherwise its 100%
 
 export const ProgressCircle = ({
   $time,
-  $isWorkTime,
+  $state,
   $stages,
   $staticTime,
 }: {
   $time: Store<number>
-  $isWorkTime: Store<boolean>
+  $state: Store<State>
   $stages: Store<{ fulfilled: boolean }[]>
   $staticTime: Store<number>
 }) => {
   const time = useUnit($time)
-  const isWorkTime = useUnit($isWorkTime)
+  const state = useUnit($state)
   const staticTime = useUnit($staticTime)
   const stages = useUnit($stages)
 
+  const isWorkTime = state == 'work'
   const progress =
     DEFAULT_PROGRESS_BAR -
     ((staticTime - time) / staticTime) * DEFAULT_PROGRESS_BAR
