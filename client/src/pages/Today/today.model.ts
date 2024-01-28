@@ -16,7 +16,7 @@ export const $$trashTask = trashTaskFactory()
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
   defaultType: "unplaced",
-  defaultDate: new Date(),
+  defaultDate: dayjs(new Date()).startOf('date').toDate(),
 })
 export const $$taskDisclosure = disclosureTask({
   tasks: $$task.$taskKv,
