@@ -2,7 +2,6 @@ import dayjs from "dayjs"
 import { createEvent, createStore, sample } from "effector"
 import { and, not } from "patronum"
 
-import { removeTaskFactory } from "@/features/manage-task/model/delete"
 import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
 
@@ -10,8 +9,9 @@ import { $$task, Task } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
 import { bridge } from "@/shared/lib/effector/bridge"
+import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
-export const $$deleteTask = removeTaskFactory()
+export const $$trashTask = trashTaskFactory()
 
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
@@ -32,7 +32,7 @@ export const $mappedTasks = $$task.$taskKv.map((kv) => {
   return Object.values(kv).reduce(
     (acc, task) => {
       const date = dayjs(task.start_date).format("YYYY-MM-DD")
-      if (!task.start_date) {
+      if (!task.start_date || task.is_deleted) {
         return acc
       }
       if (!acc[date]) {
@@ -106,7 +106,7 @@ bridge(() => {
     clock: [
       $$createTask.taskSuccessfullyCreated,
       $$updateTask.taskSuccessfullyUpdated,
-      $$deleteTask.taskSuccessfullyDeleted,
+      $$trashTask.taskSuccessfullyDeleted,
       canceled,
     ],
     target: taskFormModalClosed,
