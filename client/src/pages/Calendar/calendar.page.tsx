@@ -39,7 +39,7 @@ const CalendarPage = () => {
   const openUpdatedTask = useUnit(updateTaskModalOpened)
   const updatedTaskId = useUnit($updatedTask)
   const createdTask = useUnit($createdTask)
-
+  const updateStatus = useUnit($$updateTask.statusChangedAndUpdated)
   return (
     <Layout>
       <Layout.Header iconName="common/calendar" title={<Title date={date} />} />
@@ -51,6 +51,7 @@ const CalendarPage = () => {
           date={date}
           setDate={setDate}
           tasks={mappedTasks}
+          onUpdateStatus={updateStatus}
         />
         <TaskFormModal
           className="w-[600px]"

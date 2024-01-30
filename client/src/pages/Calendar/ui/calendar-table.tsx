@@ -6,7 +6,7 @@ import { Task } from "@/entities/task/task-item"
 import { generateCalendar } from "@/shared/lib/date/generate-calendar"
 import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
 import { ModalType } from "@/shared/lib/modal"
-import { TaskId } from "@/shared/api/task"
+import { TaskId, TaskStatus } from "@/shared/api/task"
 
 import { MonthSwitcher } from "./month-switcher"
 import { Cell } from "./cell"
@@ -16,6 +16,7 @@ type CalendarProps = {
   tasks: Nullable<Record<string, Task[]>>
   openUpdatedTask: (taskId: TaskId) => void
   openCreatedTask: (date: Date) => void
+  onUpdateStatus: ({ id, status }: { id: TaskId, status: TaskStatus }) => void
   setDate: (date: Dayjs) => void
   date: Dayjs
   modal: ModalType
@@ -25,6 +26,7 @@ export const Calendar = memo(
     tasks,
     openUpdatedTask,
     openCreatedTask,
+    onUpdateStatus,
     setDate,
     date,
   }: CalendarProps) => {
@@ -52,6 +54,7 @@ export const Calendar = memo(
                   key={date}
                   updateTaskOpened={openUpdatedTask}
                   createTaskOpened={openCreatedTask}
+                  onUpdateStatus={onUpdateStatus}
                   cell={cell}
                   tasks={t}
                 />
