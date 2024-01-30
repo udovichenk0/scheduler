@@ -1,0 +1,17 @@
+.tooltip {
+  position: absolute;
+  z-index: 1000;
+  border-radius: 5px;
+  &[data-dir="top"]{
+    @apply left-1/2 -top-[170%] -translate-x-1/2
+  }
+  &[data-dir="right"]{
+    @apply left-[110%]
+  }
+  &[data-dir="left"]{
+    @apply right-[110%]
+  }
+  &[data-dir="bottom"]{
+    @apply left-1/2 -bottom-[170%] -translate-x-1/2
+  }
+}

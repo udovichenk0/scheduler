@@ -9,6 +9,7 @@ import { SHORT_MONTHS_NAMES } from "@/shared/config/constants"
 import { TaskId } from "@/shared/api/task"
 
 import { AllTasksModal } from "./all-tasks-modal"
+import { Tooltip } from "@/shared/ui/general/tooltip"
 
 type CellProps = {
   date: number
@@ -30,37 +31,36 @@ export const Cell = ({
   const cellRef = useRef<HTMLDivElement>(null)
 
   const [showMore, setShowMore] = useState(false)
-  const [modalState, setModalState] = useState(false)
-
-  const clickOnCell = (e: MouseEvent) => {
-    if (taskContainerRef.current === e.target) {
-      createTaskOpened(new Date(cell.year, cell.month, cell.date))
-    }
-  }
 
   const { date, month, year } = cell
+  const clickOnCell = (e: MouseEvent) => {
+    if (taskContainerRef.current === e.target) {
+      createTaskOpened(new Date(year, month, date))
+    }
+  }
   const isToday = dayjs(new Date(year, month, date)).isSame(dayjs(), "date")
-  const isPast = dayjs(new Date(year, month, date)).isBefore(dayjs(), "date")
-  const isFirstDate = cell.date === 1
-  const { t } = useTranslation()
+
   function shouldShowMore() {
-    const taskHeight = 24
-    const tasksLength =
-      (taskContainerRef.current as HTMLDivElement)?.children.length * taskHeight
-    const cellHeight = (taskContainerRef.current as HTMLDivElement)
-      ?.clientHeight
-    const shouldShowMore = tasksLength > cellHeight
-    setShowMore(shouldShowMore)
+    const taskContainer = taskContainerRef.current as HTMLDivElement
+    const tasksAmount = taskContainer?.children.length
+    
+    const TASK_HEIGHT = 24
+
+    //                  sum of the tasks          + gaps between them
+    const tasksHeight = tasksAmount * TASK_HEIGHT + (tasksAmount - 1) * 4
+
+    const cellHeight = taskContainer?.clientHeight
+    setShowMore(tasksHeight >= cellHeight)
   }
 
   // resize to detect if some tasks are hidden with overflow:hidden
   useEffect(() => {
     if (tasks?.length) {
       shouldShowMore()
-      window.addEventListener("resize", shouldShowMore)
+      window.addEventListener('resize', shouldShowMore)
     }
     return () => {
-      window.removeEventListener("resize", shouldShowMore)
+      document.removeEventListener("resize", shouldShowMore)
     }
   }, [tasks?.length])
 
@@ -72,56 +72,81 @@ export const Cell = ({
         isToday && "border-t border-t-accent"
       } border-r border-cBorder p-2 text-cCalendarFont`}
     >
-      <div className="mb-1 flex items-center justify-end gap-1">
-        {isFirstDate && (
-          <span className="text-sm">{t(SHORT_MONTHS_NAMES[month])}</span>
-        )}
-        <div
-          className={`${isPast && "opacity-30"} text-end ${
-            isToday &&
-            "flex h-6 w-6 items-center justify-center rounded-full bg-cFocus p-2"
-          }`}
-        >
-          <span>{date}</span>
-        </div>
-      </div>
+      <CellHeader cell={cell}/>
       <div
         ref={taskContainerRef}
         className="flex h-[calc(100%-3rem)] w-full flex-col flex-wrap gap-x-2 gap-y-1 overflow-x-clip"
       >
         {tasks?.map((task) => {
           return (
-            <div
+            <Tooltip
+              text={task.title}
               onClick={() => updateTaskOpened(task.id)}
               key={task.id}
               className={`
-              group relative w-full cursor-pointer
-              rounded-[5px] bg-[#607d8b] px-1 text-start text-white`}
-            >
-              <span className="absolute left-[2px] top-[2px] hidden group-hover:block">
-                <Checkbox
-                  iconClassName="fill-white"
-                  className="border-white bg-[#607d8b]"
-                  onChange={() => console.log(1)}
-                  checked
-                />
-              </span>
-              <div
-                className="absolute -top-12 left-1/2 z-[1000] hidden max-w-[150px] -translate-x-1/2 text-ellipsis rounded-[5px] bg-cCalendarTooltip px-3 py-1 after:absolute
-                after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:translate-y-full after:border-x-[7px] after:border-t-[7px] after:border-x-transparent after:border-t-cCalendarTooltip group-hover:block"
-              >
-                <div className="truncate text-primary">{task.title}</div>
-              </div>
-
-              <div className="truncate">{task.title}</div>
-            </div>
+              w-full cursor-pointer flex items-center rounded-[5px] bg-[#607d8b] px-1 text-start text-white`}>
+              <Checkbox
+                iconClassName="fill-white"
+                className="absolute left-[2px] top-[2px]"
+                borderClassName="border-white bg-[#607d8b] hidden group-hover:flex"
+                onChange={() => console.log(1)}
+                checked
+              />
+              <span className="truncate">{task.title}</span>
+            </Tooltip>
           )
         })}
       </div>
-      {showMore && (
+      <CellFooter 
+        updateTaskOpened={updateTaskOpened} 
+        showMoreVisible={showMore} 
+        tasks={tasks}/>
+    </div>
+  )
+}
+
+const CellHeader = ({ cell }: { cell: CellProps}) => {
+  const { t } = useTranslation()
+  const { date, month, year } = cell
+  const isToday = dayjs(new Date(year, month, date)).isSame(dayjs(), "date")
+  const isPast = dayjs(new Date(year, month, date)).isBefore(dayjs(), "date")
+  const isFirstDate = cell.date === 1
+
+  return (
+    <div className="mb-1 flex items-center justify-end gap-1">
+      {isFirstDate && (
+        <span className="text-sm">{t(SHORT_MONTHS_NAMES[month])}</span>
+      )}
+      <div
+        className={`${isPast && "opacity-30"} text-end ${
+          isToday &&
+          "flex h-6 w-6 items-center justify-center rounded-full bg-cFocus p-2"
+        }`}
+      >
+        <span>{date}</span>
+      </div>
+    </div>
+  )
+}
+
+const CellFooter = ({ 
+  updateTaskOpened,
+  showMoreVisible,
+  tasks
+}: { 
+  updateTaskOpened: (taskId: TaskId) => void
+  showMoreVisible: boolean,
+  tasks?: Task[]
+}) => {
+  const { t } = useTranslation()
+
+  const [modalState, setModalState] = useState(false)
+  return (
+    <div className="h-5">
+      {showMoreVisible && (
         <button
           onClick={() => setModalState(true)}
-          className="w-full text-start text-cIconDefault hover:text-primary"
+          className="w-full text-start text-sm text-cIconDefault hover:text-primary"
         >
           {t("calendar.showAll")}
         </button>
@@ -133,5 +158,5 @@ export const Cell = ({
         onTaskUpdate={updateTaskOpened}
       />
     </div>
-  )
+  ) 
 }
