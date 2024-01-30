@@ -79,20 +79,19 @@ export const Cell = ({
       >
         {tasks?.map((task) => {
           return (
-            <Tooltip
-              text={task.title}
-              onClick={() => updateTaskOpened(task.id)}
-              key={task.id}
-              className={`
-              w-full cursor-pointer flex items-center rounded-[5px] bg-[#607d8b] px-1 text-start text-white`}>
-              <Checkbox
-                iconClassName="fill-white"
-                className="absolute left-[2px] top-[2px]"
-                borderClassName="border-white bg-[#607d8b] hidden group-hover:flex"
-                onChange={() => console.log(1)}
-                checked
-              />
-              <span className="truncate">{task.title}</span>
+            <Tooltip text={task.title} key={task.id}>
+                <div 
+                  onClick={() => updateTaskOpened(task.id)}
+                  className="bg-[#607d8b] rounded-[5px] text-start text-white px-1 flex items-center cursor-pointer">
+                  <Checkbox
+                    iconClassName="fill-white"
+                      className="absolute left-[2px] top-[2px]"
+                      borderClassName="border-white bg-[#607d8b] hidden group-hover:flex"
+                      onChange={() => console.log(1)}
+                      checked
+                    />
+                    <span className="truncate">{task.title}</span>
+                </div>
             </Tooltip>
           )
         })}
