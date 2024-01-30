@@ -14,7 +14,7 @@ import { useDocumentTitle } from "@/shared/lib/react"
 
 import {
   $$createTask,
-  $$deleteTask,
+  $$trashTask,
   $$moreTasksModal,
   $$updateTask,
   $createdTask,
@@ -92,11 +92,11 @@ const Title = ({ date }: { date: Dayjs }) => {
   )
 }
 const UpdateActionsButtons = ({ taskId }: { taskId: TaskId }) => {
-  const deleteTaskById = useUnit($$deleteTask.taskDeletedById)
+  const trashTaskById = useUnit($$trashTask.taskTrashedById)
   return (
     <div className="flex items-center">
       <Button
-        onClick={() => deleteTaskById(taskId)}
+        onClick={() => trashTaskById(taskId)}
         size={"xs"}
         className="mr-2"
         intent={"primary"}

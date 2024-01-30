@@ -1,7 +1,6 @@
 import dayjs, { Dayjs } from "dayjs"
 import { memo, useState } from "react"
 import { useTranslation } from "react-i18next"
-
 import { Task } from "@/entities/task/task-item"
 
 import { generateCalendar } from "@/shared/lib/date/generate-calendar"
@@ -11,6 +10,7 @@ import { TaskId } from "@/shared/api/task"
 
 import { MonthSwitcher } from "./month-switcher"
 import { Cell } from "./cell"
+import { Grid } from "@/shared/ui/general/grid"
 
 type CalendarProps = {
   tasks: Nullable<Record<string, Task[]>>
@@ -40,38 +40,29 @@ export const Calendar = memo(
           changeMonth={changeMonth}
         />
         <WeekNames />
-        <div className="grid h-full auto-rows-[minmax(140px,_1fr)]">
-          {calendar.map((row, rowId) => {
-            return (
-              <div
-                className="grid auto-rows-[minmax(140px,_1fr)] grid-cols-7 border-cBorder text-primary first:border-t"
-                key={rowId}
-              >
-                {row.map((cell) => {
-                  const date = dayjs(
-                    new Date(cell.year, cell.month, cell.date),
-                  ).format("YYYY-MM-DD")
-                  const t = tasks?.[date]
-                  const key = `${cell.date}/${cell.month}/${cell.year}`
+        <Grid columns={7} rows={5} className="h-full">
+          {calendar.map(( cell ) => {
+              const date = dayjs(
+                new Date(cell.year, cell.month, cell.date),
+              ).format("YYYY-MM-DD")
+              const t = tasks?.[date]
 
-                  return (
-                    <Cell
-                      key={key}
-                      updateTaskOpened={openUpdatedTask}
-                      createTaskOpened={openCreatedTask}
-                      cell={cell}
-                      tasks={t}
-                    />
-                  )
-                })}
-              </div>
-            )
+              return (
+                <Cell
+                  key={date}
+                  updateTaskOpened={openUpdatedTask}
+                  createTaskOpened={openCreatedTask}
+                  cell={cell}
+                  tasks={t}
+                />
+              )
           })}
-        </div>
+        </Grid>
       </>
     )
   },
 )
+
 
 export const WeekNames = () => {
   const { t } = useTranslation()

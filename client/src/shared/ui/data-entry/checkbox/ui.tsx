@@ -6,26 +6,27 @@ export function Checkbox({
   onChange,
   checked,
   className,
+  borderClassName,
   iconClassName,
 }: {
   onChange: () => void
   checked: boolean
   className?: string
+  borderClassName?: string
   iconClassName?: string
 }) {
   return (
-    <label className="group relative flex">
+    <label className={clsx(className, "flex")}>
       <input
         onChange={onChange}
         type="checkbox"
-        className="checkbox_input appearance-none"
+        className="checkbox_input appearance-none h-0"
       />
       <span
-        className={clsx(
-          className,
-          "checkbox flex h-5 w-5 items-center justify-center rounded-[3px] border-[2px] border-cTaskEditDefault",
-        )}
-      >
+      className={clsx(
+        borderClassName,
+        "checkbox flex h-5 w-5 items-center justify-center rounded-[3px] border-[2px] border-cTaskEditDefault",
+      )}>
         {checked && <DoneSvg className={clsx(iconClassName, "checker")} />}
       </span>
     </label>
