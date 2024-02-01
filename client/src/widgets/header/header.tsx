@@ -39,7 +39,7 @@ export const Header = ({
   return (
     <Container padding="xl" className="relative mb-4 text-primary">
       <div className="mb-2 flex h-[40px] items-center justify-end">
-        <Tooltip text={t("pomodoro.title")} dir="tr">
+        <Tooltip text={t("pomodoro.title")} dir="bl">
           {isPomodoroRunning ? (
             <PomodoroProgressBar
               onClick={openPomodoroModal}

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { TaskId } from "@/shared/api/task"
+import { Tooltip } from "@/shared/ui/general/tooltip"
 
 export const Footer = ({
   onCreateTask,
@@ -15,7 +16,7 @@ export const Footer = ({
 }) => {
   const { t } = useTranslation()
   return (
-    <div className="h-14 p-2" onMouseDown={(e) => e.preventDefault()}>
+    <div className="h-14 p-2 flex items-center" onMouseDown={(e) => e.preventDefault()}>
       <Button
         onClick={onCreateTask}
         disabled={!onCreateTask}
@@ -26,20 +27,22 @@ export const Footer = ({
         <Icon name="common/plus" className="mr-4" />
         {t("footer.newTask")}
       </Button>
-      <Button
-        title={t("delete")}
-        disabled={!selectedTaskId}
-        onClick={() => onDeleteTask(selectedTaskId!)}
-        intent={"primary"}
-        size={"xs"}
-      >
-        <Icon
-          name="common/trash-can"
-          className={`text-[20px] ${
-            selectedTaskId ? "opacity-70" : "opacity-40"
-          }`}
-        />
-      </Button>
+      <Tooltip text={t("delete")}>
+        <Button
+          title={t("delete")}
+          disabled={!selectedTaskId}
+          onClick={() => onDeleteTask(selectedTaskId!)}
+          intent={"primary"}
+          size={"xs"}
+        >
+          <Icon
+            name="common/trash-can"
+            className={`text-[20px] ${
+              selectedTaskId ? "opacity-70" : "opacity-40"
+            }`}
+          />
+        </Button>
+      </Tooltip>
     </div>
   )
 }

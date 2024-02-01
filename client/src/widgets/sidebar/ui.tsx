@@ -10,13 +10,18 @@ import { Container } from "@/shared/ui/general/container"
 
 import { $inboxTasksCount, $todayTasksCount, $$modal } from "./sidebar.modal"
 import { Logo } from "./ui/logo"
+import { SidebarFooter } from "./ui/footer"
 
 export const Sidebar = () => {
   const { t } = useTranslation()
   const inboxTasksCount = useUnit($inboxTasksCount)
   const todayTasksCount = useUnit($todayTasksCount)
   const openSettingsModal = useUnit($$modal.open)
-
+  const sidebar_footer_buttons = [
+    {title: "setting.title", onClick: openSettingsModal, type: 'button' as const, iconName: "common/settings" as const},
+    {title: "task.unplaced", type: 'link' as const, route: routes.unplaced, iconName: "common/cross-arrows" as const},
+    {title: "task.trash", type: 'link' as const, route: routes.trash, iconName: "common/trash-can" as const},
+  ]
   return (
     <aside className={`border-r-[1px] border-cBorder bg-brand text-primary`}>
       <div className="grid h-full w-[250px] grid-rows-[auto_1fr_auto] flex-col">
@@ -104,38 +109,10 @@ export const Sidebar = () => {
             </span>
           </Button>
         </Container>
+        
+        <SidebarFooter config={sidebar_footer_buttons}/>
 
-        <Container className="flex gap-2 border-t-[1px] border-cBorder text-cIconDefault">
-          <Button
-            title={t("setting.title")}
-            onClick={openSettingsModal}
-            intent={"primary"}
-            size={"xs"}
-          >
-            <Icon name="common/settings" className="text-[24px]" />
-          </Button>
-          <Button
-            activeClassName="bg-cFocus"
-            as="link"
-            to={routes.unplaced}
-            title={t("task.unplaced")}
-            intent={"primary"}
-            size={"xs"}
-          >
-            <Icon name="common/cross-arrows" className="text-[24px]" />
-          </Button>
-          <Button
-            activeClassName="bg-cFocus"
-            as="link"
-            to={routes.trash}
-            title={t("task.trash")}
-            intent={"primary"}
-            size={"xs"}
-          >
-            <Icon name="common/trash-can" className="text-[24px]" />
-          </Button>
-          <Settings modal={$$modal} defaultTab="general" />
-        </Container>
+        <Settings modal={$$modal} defaultTab="general" />
       </div>
     </aside>
   )
