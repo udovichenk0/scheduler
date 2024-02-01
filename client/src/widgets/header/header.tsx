@@ -16,6 +16,7 @@ import { MainModal } from "@/shared/ui/modals/main"
 import { $$pomodoroModal, $$settingsModal, $$pomodoro } from "./header.model"
 import { PomodoroProgressBar } from "./ui/progress-bar"
 import { Sort, SortProps } from "./ui/sort"
+import { Tooltip } from "@/shared/ui/general/tooltip"
 
 
 type HeaderProps = {
@@ -38,24 +39,26 @@ export const Header = ({
   return (
     <Container padding="xl" className="relative mb-4 text-primary">
       <div className="mb-2 flex h-[40px] items-center justify-end">
-        {isPomodoroRunning ? (
-          <PomodoroProgressBar
-            onClick={openPomodoroModal}
-            $currentStaticTime={$$pomodoro.$currentStaticTime}
-            $tickingTime={$$pomodoro.$tickingTime}
-            $state={$$pomodoro.$state}
-            $isPomodoroRunning={$$pomodoro.$isPomodoroRunning}
-          />
-        ) : (
-          <Button
-            title={t("setting.tab.pomodoro")}
-            intent={"primary"}
-            size={"xs"}
-            onClick={openPomodoroModal}
-          >
-            <Icon className="text-2xl text-cIconDefault" name="common/timer" />
-          </Button>
-        )}
+        <Tooltip text={t("pomodoro.title")} dir="tr">
+          {isPomodoroRunning ? (
+            <PomodoroProgressBar
+              onClick={openPomodoroModal}
+              $currentStaticTime={$$pomodoro.$currentStaticTime}
+              $tickingTime={$$pomodoro.$tickingTime}
+              $state={$$pomodoro.$state}
+              $isPomodoroRunning={$$pomodoro.$isPomodoroRunning}
+            />
+          ) : (
+            <Button
+              title={t("setting.tab.pomodoro")}
+              intent={"primary"}
+              size={"xs"}
+              onClick={openPomodoroModal}
+            >
+              <Icon className="text-2xl text-cIconDefault" name="common/timer" />
+            </Button>
+          )}
+        </Tooltip>
       </div>
 
       <MainModal
