@@ -2,6 +2,7 @@
   position: absolute;
   z-index: 1000;
   border-radius: 5px;
+  pointer-events: none;
   &[data-dir="top"]{
     @apply left-1/2 -top-[170%] -translate-x-1/2
   }
@@ -13,5 +14,40 @@
   }
   &[data-dir="bottom"]{
     @apply left-1/2 -bottom-[170%] -translate-x-1/2
+  }
+}
+.tooltip:after { 
+  position: absolute;
+  content: "";
+  transform: translateX(50%);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  
+  &[data-pointer="bl"] {
+    @apply top-full left-0 border-t-[4px] border-t-cCalendarTooltip
+  };
+  &[data-pointer="br"]{
+    @apply top-full right-[10px] border-t-[4px] border-t-cCalendarTooltip
+  };
+  &[data-pointer="bc"]{
+    @apply top-full right-1/2 border-t-[4px] border-t-cCalendarTooltip
+  };
+  &[data-pointer="tl"] {
+    @apply bottom-full left-0 border-b-[4px] border-b-cCalendarTooltip
+  };
+  &[data-pointer="tr"]{
+    @apply bottom-full right-[10px] border-b-[4px] border-b-cCalendarTooltip
+  };
+  &[data-pointer="tc"]{
+    @apply bottom-full right-1/2 border-b-[4px] border-b-cCalendarTooltip
+  };
+}
+
+.size {
+  &[data-size="base"]{
+    @apply text-sm
+  }
+  &[data-size="md"]{
+    @apply text-base
   }
 }

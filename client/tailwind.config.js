@@ -47,6 +47,7 @@ export default {
         cPomodoroGreen: "var(--cPomodoroGreen)",
         cCalendarFont: "var(--cCalendarFont)",
         cCalendarTooltip: "var(--cCalendarTooltip)",
+        cTooltipFont: "var(--cTooltipFont)",
         menuBg: "var(--menuBg)",
       },
     },
