@@ -1,6 +1,7 @@
 import { SortConfig, SortType, TaskSorting } from "@/entities/task/task-item"
 import { useClickOutside } from "@/shared/lib/react/on-click-outside"
 import { Button } from "@/shared/ui/buttons/main-button"
+import { Tooltip } from "@/shared/ui/general/tooltip"
 import { Icon } from "@/shared/ui/icon"
 import { useRef, useState } from "react"
 
@@ -21,16 +22,18 @@ export const Sort = ({ sorting }: { sorting?: SortProps }) => {
     <div className="relative">
       {sorting && (
         <div ref={r}>
-          <Button
-            intent={"primary"}
-            size={"xs"}
-            onClick={() => setIsSortingOpened((prev) => !prev)}
-          >
-            <Icon
-              name={`sort/${sorting.active}`}
-              className="text-2xl text-cIconDefault"
-            />
-          </Button>
+          <Tooltip text="Sorting" dir="bl">
+            <Button
+              intent={"primary"}
+              size={"xs"}
+              onClick={() => setIsSortingOpened((prev) => !prev)}
+            >
+              <Icon
+                name={`sort/${sorting.active}`}
+                className="text-2xl text-cIconDefault"
+              />
+            </Button>
+          </Tooltip>
           {isSortingOpened && (
             <TaskSorting
               onChange={(value) => {
