@@ -173,6 +173,7 @@
     "description": "Press + icon to create a new task"
   },
   "sort": {
+    "title": "Sorting",
     "custom_sort": "Custom sort",
     "alph_asc": "By alphabet(asc)",
     "alph_desc": "By alphabet(desc)",

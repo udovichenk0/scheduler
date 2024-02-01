@@ -4,6 +4,7 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Tooltip } from "@/shared/ui/general/tooltip"
 import { Icon } from "@/shared/ui/icon"
 import { useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 export type SortProps = {
   config: SortConfig[]
@@ -12,6 +13,7 @@ export type SortProps = {
 }
 export const Sort = ({ sorting }: { sorting?: SortProps }) => {
   const r = useRef<HTMLDivElement>(null)
+  const { t } = useTranslation()
   const [isSortingOpened, setIsSortingOpened] = useState(false)  
   useClickOutside({
     ref: r,
@@ -22,7 +24,7 @@ export const Sort = ({ sorting }: { sorting?: SortProps }) => {
     <div className="relative">
       {sorting && (
         <div ref={r}>
-          <Tooltip text="Sorting" dir="bl">
+          <Tooltip text={t("sort.title")} dir="bl">
             <Button
               intent={"primary"}
               size={"xs"}
