@@ -45,6 +45,7 @@ html {
     --cPomodoroGreen: #62c554;
     --cCalendarFont: #fff;
     --cCalendarTooltip: #76899b;
+    --cTooltipFont: #272839;
     --menuBg: #120c1e;
   }
 
@@ -79,6 +80,7 @@ html {
     --cPomodoroGreen: #62c554;
     --cCalendarFont: #fff;
     --cCalendarTooltip: #76899b;
+    --cTooltipFont: var(--brand);
     --menuBg: #1d1e24;
   }
   html[data-theme="dark"] {
@@ -110,7 +112,8 @@ html {
     --cPomodoroRed: #ff5f58;
     --cPomodoroGreen: #62c554;
     --cCalendarFont: hsla(0, 0%, 100%, 0.8);
-    --cCalendarTooltip: #1c1c1c;
+    --cTooltipFont: var(--cTaskEdit);
+    --cCalendarTooltip: #d0d0d0;
   }
   html[data-theme="light"] {
     --main: #f9f9f9;
@@ -142,6 +145,7 @@ html {
     --cPomodoroGreen: #62c554;
     --cCalendarFont: #76899b;
     --cCalendarTooltip: #4683cb;
+    --cTooltipFont: var(--cTaskEdit);
     --menuBg: #f5f7fb;
   }
   html[data-theme="grey"] {
@@ -174,6 +178,7 @@ html {
     --cPomodoroGreen: #62c554;
     --cCalendarFont: rgba(51, 51, 51, 0.8);
     --cCalendarTooltip: #e1e1e1;
+    --cTooltipFont: var(--cTooltipFont);
     --menuBg: #f4f4f4;
   }
 }

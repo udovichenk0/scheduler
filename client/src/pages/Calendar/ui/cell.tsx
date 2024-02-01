@@ -81,7 +81,7 @@ export const Cell = ({
         {tasks?.map((task) => {
           const { id, status } = task
           return (
-            <Tooltip text={task.title} key={task.id}>
+            <Tooltip text={task.title} size="md" key={task.id}>
                 <div 
                   onClick={() => updateTaskOpened(task.id)}
                   className="bg-[#607d8b] rounded-[5px] text-start text-white px-1 flex items-center cursor-pointer">
