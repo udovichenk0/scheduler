@@ -67,6 +67,7 @@ export const Pomodoro = ({
 
         <Button intent={"primary"} size={"xs"} onClick={reset}>
           <Icon name="common/reset" className="text-[24px] text-cIconDefault" />
+          <span className="sr-only">Reset the timer</span>
         </Button>
       </div>
     </div>

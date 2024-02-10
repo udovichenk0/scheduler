@@ -117,15 +117,15 @@ const Calendar= ({
         {addLeadingZero(sectionDate.month() + 1)}
       </div>
       {
-        rows.map((item, rowId) => {
+        rows.map((row, rowId) => {
           return (
             <li className="flex justify-around" key={rowId}>
-              {item.map(({ date, month, year }, id) => {
+              {row.map((cellDate, id) => {
                 const isTopDateBigger =
                   rowId != rows.length - 1 &&
                   rows[rowId][id].date > rows[rowId + 1][id].date
                 const isLeftDateBigger =
-                  id != item.length - 1 &&
+                  id != row.length - 1 &&
                   rows[rowId][id].date > rows[rowId][id + 1].date
                 const isBottomDateBigger = !rows[rowId-1] && rows[rowId][id].date <=7
 
@@ -136,13 +136,11 @@ const Calendar= ({
                     ${isTopDateBigger && "border-b-[1px]"} 
                     ${isLeftDateBigger && "border-b-[1px] border-r-[1px]"}`
                   }
-                    key={`${date}/${month}/${year}`}
+                    key={`${cellDate.date}/${cellDate.month}/${cellDate.year}`}
                   >
                     <Cell
                       onDateChange={onDateChange}
-                      year={year}
-                      month={month}
-                      date={date}
+                      cellDate={cellDate}
                       currentDate={currentDate}
                     />
                   </div>

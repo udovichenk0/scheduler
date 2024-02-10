@@ -56,6 +56,7 @@ export const Header = ({
               onClick={openPomodoroModal}
             >
               <Icon className="text-2xl text-cIconDefault" name="common/timer" />
+              <span className="sr-only">Open pomodoro</span>
             </Button>
           )}
         </Tooltip>
@@ -80,6 +81,7 @@ export const Header = ({
                   className="text-[24px] text-cIconDefault"
                   name="common/settings"
                 />
+                <span className="sr-only">Open settings</span>
               </Button>
               <Settings modal={$$settingsModal} defaultTab="pomodoro" />
             </>

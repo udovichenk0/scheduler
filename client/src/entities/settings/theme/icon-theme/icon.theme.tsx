@@ -32,6 +32,7 @@ const AccentThemeBox = ({ accent }: { accent: Accent }) => {
   const isActive = activeAccent == accent
   return (
     <button
+      title={accent}
       onClick={() => changeAccent(accent)}
       key={accent}
       data-active={isActive}

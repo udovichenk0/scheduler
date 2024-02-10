@@ -46,8 +46,9 @@ export const PomodoroDurations = ({
       {durations.map(({ time }) => {
         const timeInSecond = time * 60
         const activeTimer = workDuration === time
+        const diameter = calculateCircleDiameter(time)
         return (
-          <div
+          <button
             key={time}
             className="flex h-[60px] cursor-pointer flex-col items-center justify-between"
             onClick={() => selectTime(timeInSecond)}
@@ -55,8 +56,8 @@ export const PomodoroDurations = ({
             <div className="flex h-10 items-center">
               <div
                 style={{
-                  width: calculateCircleDiameter(time),
-                  height: calculateCircleDiameter(time),
+                  width: diameter,
+                  height: diameter,
                 }}
                 className={`${
                   activeTimer && "border-cPomodoroRed bg-cPomodoroRed"
@@ -65,8 +66,9 @@ export const PomodoroDurations = ({
                 {activeTimer && <Icon name="common/done" className="w-[7px]" />}
               </div>
             </div>
-            <span className="text-[12px] text-cIconDefault">{time}</span>
-          </div>
+            <span className="sr-only">{time} minutes</span>
+            <span aria-hidden="true" className="text-[12px] text-cIconDefault">{time}</span>
+          </button>
         )
       })}
     </div>
