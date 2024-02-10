@@ -1,23 +1,29 @@
 import dayjs from "dayjs"
 import { useTranslation } from "react-i18next"
 
-import { SHORT_MONTHS_NAMES } from "@/shared/config/constants"
+import { LONG_MONTHS_NAMES, LONG_WEEKS_NAMES, SHORT_MONTHS_NAMES } from "@/shared/config/constants"
 
 import { Icon } from "../../icon"
+import { useEffect, useRef } from "react"
+import { onMount } from "@/shared/lib/react"
+
 
 export const Cell = ({
   onDateChange,
-  year,
-  month,
-  date,
+  cellDate,
   currentDate,
 }: {
   onDateChange: (date: Date) => void
-  year: number
-  month: number
-  date: number
+  cellDate: {
+    day: number
+    year: number
+    month: number
+    date: number
+  }
   currentDate: Date
 }) => {
+  const focusRef = useRef<HTMLButtonElement>(null)
+  const { year, month, date, day } = cellDate
   const isToday = dayjs(new Date(year, month, date)).isSame(dayjs(), "date")
   const isPast = dayjs(new Date(year, month, date)).isBefore(dayjs(), "date")
   const isTaskDate = dayjs(new Date(year, month, date)).isSame(
@@ -25,8 +31,14 @@ export const Cell = ({
     "date",
   )
   const { t } = useTranslation()
+  onMount(() => {
+    if(isToday){
+      focusRef.current && focusRef.current.focus()
+    }
+  })
   return (
     <button
+      ref={focusRef}
       onClick={() => onDateChange(new Date(year, month, date))}
       disabled={isPast || isTaskDate}
       className={`h-[35px] w-[35px] text-[13px] ${
@@ -39,7 +51,7 @@ export const Cell = ({
       {isToday ? (
         <Icon name="common/filled-star" className="text-accent" />
       ) : (
-        <div>
+        <div aria-hidden>
           {date === 1 || isTaskDate ? (
             <div className="grid text-[9px] leading-[9px]">
               <div>{date}</div>
@@ -51,6 +63,7 @@ export const Cell = ({
           )}
         </div>
       )}
+      <span className="sr-only">{t(LONG_WEEKS_NAMES[day])} {t(LONG_MONTHS_NAMES[month])} {date} {year}</span>
     </button>
   )
 }

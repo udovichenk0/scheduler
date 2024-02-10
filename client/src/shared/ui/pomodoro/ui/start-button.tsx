@@ -27,13 +27,13 @@ export const StartButton = ({
           className={`h-0 w-0 rotate-90 ${
             isWorkTime ? "border-cPomodoroRed" : "border-cPomodoroGreen"
           } border-style translate-x border-x-[6px] border-b-[12px] border-t-0`}
-        />
+        ><span className="sr-only">Stop the timer</span></span>
       ) : (
         <span
           className={`h-0 w-0 rotate-90 ${
             isWorkTime ? "border-cPomodoroRed" : "border-cPomodoroGreen"
           } border-style translate-x border-x-[6px] border-b-[12px] border-t-0 border-x-transparent`}
-        />
+        ><span className="sr-only">Start the timer</span></span>
       )}
     </button>
   )

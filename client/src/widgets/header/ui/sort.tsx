@@ -34,6 +34,7 @@ export const Sort = ({ sorting }: { sorting?: SortProps }) => {
                 name={`sort/${sorting.active}`}
                 className="text-2xl text-cIconDefault"
               />
+              <span className="sr-only">Open sorting</span>
             </Button>
           </Tooltip>
           {isSortingOpened && (
