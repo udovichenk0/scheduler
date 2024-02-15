@@ -43,8 +43,8 @@ const $tasks = combine($$task.$taskKv, $$sort.$sortType, (kv, sortType) => {
 export const $overdueTasks = $tasks.map((tasks) => {
   return (
     tasks?.filter(
-      ({ start_date }) =>
-        start_date && dayjs(start_date).isBefore(dayjs(), "date"),
+      ({ start_date, is_deleted }) =>
+        !is_deleted && start_date && dayjs(start_date).isBefore(dayjs(), "date"),
     ) || []
   )
 })
