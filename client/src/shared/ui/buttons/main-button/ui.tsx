@@ -32,12 +32,15 @@ export const Button = ({
 }: ButtonOrLinkProps) => {
   if (props.as == "link") {
     return (
-      <Link
-        {...props}
-        to={props.to}
-        className={clsx(className, buttonCva({ size, intent }))}
+    <Link
+      {...props}
+      to={props.to}
       >
-        {children}
+        <div 
+        className={clsx(className, buttonCva({ size, intent }))}
+        >
+            {children}
+        </div>
       </Link>
     )
   }
