@@ -80,7 +80,7 @@ export class OTPService {
 
   async verifyOTP({ email, code }: VerifyOTPDto) {
     const res = await this.prismaService.$queryRaw<Confirmation[]>`
-      SELECT code, user.* FROM emailConfirmation e JOIN user ON e.user_id = user.id;`
+      SELECT code, user.* FROM emailConfirmation e JOIN user ON e.user_id = user.id WHERE user.email = ${email};`
 
     const confirmation = res[0]
 
