@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 import { LONG_MONTHS_NAMES, LONG_WEEKS_NAMES, SHORT_MONTHS_NAMES } from "@/shared/config/constants"
 
 import { Icon } from "../../icon"
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import { onMount } from "@/shared/lib/react"
 
 
