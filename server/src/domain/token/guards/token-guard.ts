@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { JWTService } from 'src/domain/token/jwtToken/jwt.service';
-import { getTokenFromHeader } from 'src/infrastructure/session/get-token-from-header';
+import { getTokenFromHeader } from 'src/services/session/get-token-from-header';
 import { TOKEN_IS_NOT_FOUND, USER_IS_NOT_AUTHORIZED } from '../constant/errors';
 import { Request } from 'express';
 import { UserDto } from 'src/domain/user/dto/user.dto';
@@ -8,7 +8,7 @@ import {
   not_found,
   unauthorized,
   unauthorizedException,
-} from 'src/infrastructure/err/errors';
+} from 'src/services/err/errors';
 
 @Injectable()
 export class TokenGuard implements CanActivate {

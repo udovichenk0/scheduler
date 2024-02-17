@@ -1,8 +1,8 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
-import { transporter } from 'src/infrastructure/nodemailer/client';
+import { PrismaService } from 'src/services/clients/prisma/prisma.client';
+import { transporter } from 'src/services/nodemailer/client';
 import { UserService } from '../user/user.service';
-import { generateCode } from 'src/infrastructure/session/generate-code';
+import { generateCode } from 'src/services/session/generate-code';
 import { userNotFound } from '../user/constants/userErrorMessages';
 import { Confirmation, VerifyOTPDto } from './dto/dto';
 import { CODE_IS_INVALID, OTP_CODE_IS_NOT_FOUND } from './constants/errors';
@@ -11,7 +11,7 @@ import {
   invalid,
   notFoundException,
   not_found,
-} from 'src/infrastructure/err/errors';
+} from 'src/services/err/errors';
 import { User, UserSchema } from '../user/dto/user.dto';
 import { z } from 'zod';
 

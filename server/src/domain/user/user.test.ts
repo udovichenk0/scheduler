@@ -1,4 +1,4 @@
-import { createMockContext, MockContext } from '../../database/client.mock';
+import { MockContext, createMockContext } from 'src/services/clients/prisma';
 import { UserService } from '../user/user.service';
 let mockCtx: MockContext;
 let userService: UserService;

@@ -1,8 +1,8 @@
 import { UserDto } from './dto/user.dto';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from 'src/services/clients/prisma/prisma.client';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { encryptPassword } from 'src/infrastructure/session/encrypt-password';
+import { encryptPassword } from 'src/services/session/encrypt-password';
 import { job } from 'cron';
 
 @Injectable()

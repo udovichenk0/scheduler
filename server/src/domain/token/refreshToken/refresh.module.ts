@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { RefreshService } from './refresh.service';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from 'src/services/clients/prisma/prisma.client';
 
 @Module({
   providers: [RefreshService],

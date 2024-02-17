@@ -7,7 +7,7 @@ import { UserService } from '../user/user.service';
 import {
   unauthorized,
   unauthorizedException,
-} from 'src/infrastructure/err/errors';
+} from 'src/services/err/errors';
 @Injectable()
 export class TokenService {
   constructor(
