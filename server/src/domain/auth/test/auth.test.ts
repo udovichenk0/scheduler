@@ -1,12 +1,11 @@
 import { TokenService } from 'src/domain/token/token.service';
 import { AuthService } from '../auth.service';
-import { MockContext, createMockContext } from '../../../database/client.mock';
 import { UserService } from 'src/domain/user/user.service';
 import { JWTService } from 'src/domain/token/jwtToken/jwt.service';
 import { RefreshService } from 'src/domain/token/refreshToken/refresh.service';
 import { OTPService } from 'src/domain/otp/otp.service';
 import { UserDto } from 'src/domain/user/dto/user.dto';
-import { encryptPassword } from 'src/infrastructure/session/encrypt-password';
+import { encryptPassword } from 'src/services/session/encrypt-password';
 import { PASSWORD_NOT_CORRECT } from '../constant/errors';
 import { userNotFound } from 'src/domain/user/constants/userErrorMessages';
 import {
@@ -18,7 +17,8 @@ import {
   invalid,
   notFoundException,
   not_found,
-} from 'src/infrastructure/err/errors';
+} from 'src/services/err/errors';
+import { MockContext, createMockContext } from 'src/services/clients/prisma';
 let mockCtx: MockContext;
 let authService: AuthService;
 let emailConfirmationService: OTPService;

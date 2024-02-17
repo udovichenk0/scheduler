@@ -3,7 +3,7 @@ import { AuthCredentialsDto } from './dto/auth.dto';
 import { TokenService } from '../token/token.service';
 import { UserDto } from '../user/dto/user.dto';
 import { PASSWORD_NOT_CORRECT, USER_EXISTS } from './constant/errors';
-import { compareHash } from 'src/infrastructure/session/compare-hash';
+import { compareHash } from 'src/services/session/compare-hash';
 import { UserService } from '../user/user.service';
 import { OTPService } from '../otp/otp.service';
 import { userNotFound } from '../user/constants/userErrorMessages';
@@ -14,7 +14,7 @@ import {
   invalid,
   notFoundException,
   not_found,
-} from 'src/infrastructure/err/errors';
+} from 'src/services/err/errors';
 @Injectable()
 export class AuthService {
   constructor(

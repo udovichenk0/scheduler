@@ -5,7 +5,7 @@ import {
   expired,
   invalid,
   unauthorizedException,
-} from 'src/infrastructure/err/errors';
+} from 'src/services/err/errors';
 import {
   JWT_EXPIRED,
   JWT_EXPIRED_ERROR,

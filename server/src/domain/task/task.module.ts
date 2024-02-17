@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from 'src/services/clients/prisma/prisma.client';
 import { TaskService } from './task.service';
 import { TaskController } from './task.controller';
 import { TokenGuard } from '../token/guards/token-guard';
