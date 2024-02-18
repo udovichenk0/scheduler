@@ -33,7 +33,7 @@ export class TaskController {
   @Get()
   async getTasks(@Req() req: Request) {
     const user = req.session['user'] as UserDto;
-    const tasks = await this.taskService.findMany({ id: user.id });
+    const tasks = await this.taskService.findManyByUserId(user.id);
     return tasks;
   }
 

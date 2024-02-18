@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth.dto';
 import { TokenService } from '../token/token.service';
 import { UserDto } from '../user/dto/user.dto';
-import { PASSWORD_NOT_CORRECT, USER_EXISTS } from './constant/errors';
+import { PASSWORD_NOT_CORRECT, USER_EXISTS } from './infrastructure/constant/errors';
 import { compareHash } from 'src/services/session/compare-hash';
 import { UserService } from '../user/user.service';
 import { OTPService } from '../otp/otp.service';
@@ -24,9 +24,7 @@ export class AuthService {
   ) {}
 
   async createUser(data: AuthCredentialsDto) {
-    const potentialUser = await this.userService.findOne({
-      email: data.email,
-    });
+    const potentialUser = await this.userService.findByEmail(data.email);
     if (potentialUser) {
       throw conflictException({
         description: USER_EXISTS,
@@ -34,14 +32,12 @@ export class AuthService {
       });
     }
     const user = await this.userService.createOne(data);
-    const otp = await this.otpService.createOne(user.id);
+    const otp = await this.otpService.create(user.id);
     await this.otpService.sendEmail(data.email, otp.code);
     return user;
   }
   async verifyUser({ email, password }: AuthCredentialsDto) {
-    const user = await this.userService.findOne({
-      email,
-    });
+    const user = await this.userService.findByEmail(email);
     if (!user) {
       throw notFoundException({
         description: userNotFound(email),
@@ -66,13 +62,13 @@ export class AuthService {
     };
   }
   async verifyEmail({ code, email }: { code: string; email: string }) {
-    const { user } = await this.otpService.verifyOTP({ email, code });
-    const verifiedUser = await this.userService.verify(user.id);
+    const result = await this.otpService.verifyOTP({ email, code });
+    if(!result) return null
+    const verifiedUser = await this.userService.verify(result.user.id);
 
     const userDto = UserDto.create(verifiedUser);
-
     const { access_token, refresh_token } = await this.tokenService.issueTokens(
-      userDto,
+      userDto
     );
 
     return {

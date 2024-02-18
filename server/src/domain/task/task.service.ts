@@ -1,41 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/services/clients/prisma/prisma.client';
 import { Prisma } from '@prisma/client';
+import { TaskRepository } from './repository/task.repository';
 @Injectable()
 export class TaskService {
-  constructor(private prismaService: PrismaService) {}
-  async findMany({ id }: Prisma.taskWhereInput) {
-    const tasks = this.prismaService.task.findMany({
-      where: {
-        user_id: id,
-      },
-    });
-    return tasks;
+  constructor(private taskRepository: TaskRepository) {}
+  async findManyByUserId(user_id: string) {
+    return this.taskRepository.findManyByUserId(user_id);
   }
   createOne(data: Prisma.taskCreateInput) {
-    const task = this.prismaService.task.create({
-      data: {
-        ...data,
-      },
-    });
-    return task;
+    return this.taskRepository.create(data);
   }
   updateOne(data: Prisma.taskUpdateInput, id: string) {
-    const task = this.prismaService.task.update({
-      data,
-      where: {
-        id,
-      },
-    });
-    return task;
+    return this.taskRepository.updateById(data, id);
   }
   deleteOne(id: string) {
-    const task = this.prismaService.task.delete({
-      where: {
-        id,
-      },
-    });
-    return task;
+    return this.taskRepository.deleteById(id);
   }
   async createMany({
     user_id,
@@ -47,14 +26,10 @@ export class TaskService {
     if (!data.length) {
       return [];
     }
-    const result = await this.prismaService.task.createMany({
-      data: data.map((task) => ({
-        ...task,
-        user_id,
-      })),
-    });
+
+    const result = await this.taskRepository.createManyByUserId({ user_id, data });
     if (result.count) {
-      return await this.findMany({ id: user_id });
+      return await this.findManyByUserId(user_id);
     }
     return null;
   }

@@ -1,10 +1,13 @@
 import { MockContext, createMockContext } from 'src/services/clients/prisma';
-import { UserService } from '../user/user.service';
+import { UserService } from '../../user.service';
+import { UserRepository } from '../repository/user.repository';
 let mockCtx: MockContext;
 let userService: UserService;
+let userRepository: UserRepository
 beforeEach(() => {
   mockCtx = createMockContext();
-  userService = new UserService(mockCtx.prisma);
+  userRepository = new UserRepository(mockCtx.prisma)
+  userService = new UserService(userRepository);
 });
 const user = {
   id: '123',
@@ -15,7 +18,7 @@ const user = {
 };
 test('should find a user', async () => {
   mockCtx.prisma.user.findUnique.mockResolvedValue(user);
-  await expect(userService.findOne({ id: '123' })).resolves.toEqual(user);
+  await expect(userService.findById('123')).resolves.toEqual(user);
 });
 
 test('should create user', async () => {
@@ -32,7 +35,7 @@ test('find verified user', async () => {
     email: 'hello@prisma.io',
     verified: true,
   };
-  expect(await userService.findVerifiedUser({ id: '123' })).toEqual(
+  expect(await userService.findVerifiedUserByEmail('123')).toEqual(
     returnedValue,
   );
 });
@@ -50,7 +53,7 @@ test('find unverified user', async () => {
     error: 'not_found',
     message: 'User is not created',
   };
-  expect(await userService.findVerifiedUser({ id: '123' })).toEqual(
+  expect(await userService.findVerifiedUserByEmail('123')).toEqual(
     returnedValue,
   );
 });
