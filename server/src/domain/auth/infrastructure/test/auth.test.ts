@@ -1,24 +1,25 @@
 import { TokenService } from 'src/domain/token/token.service';
-import { AuthService } from '../auth.service';
 import { UserService } from 'src/domain/user/user.service';
 import { JWTService } from 'src/domain/token/jwtToken/jwt.service';
 import { RefreshService } from 'src/domain/token/refreshToken/refresh.service';
 import { OTPService } from 'src/domain/otp/otp.service';
 import { UserDto } from 'src/domain/user/dto/user.dto';
 import { encryptPassword } from 'src/services/session/encrypt-password';
-import { PASSWORD_NOT_CORRECT } from '../constant/errors';
 import { userNotFound } from 'src/domain/user/constants/userErrorMessages';
-import {
-  CODE_IS_INVALID,
-  OTP_CODE_IS_NOT_FOUND,
-} from 'src/domain/otp/constants/errors';
+
 import {
   badRequestException,
   invalid,
   notFoundException,
   not_found,
 } from 'src/services/err/errors';
+
 import { MockContext, createMockContext } from 'src/services/clients/prisma';
+import { UserRepository } from 'src/domain/user/infrastructure/repository/user.repository';
+import { OTPRepository } from 'src/domain/otp/infrastructure/repository/otp.repository';
+import { AuthService } from '../../auth.service';
+import { PASSWORD_NOT_CORRECT } from '../constant/errors';
+
 let mockCtx: MockContext;
 let authService: AuthService;
 let emailConfirmationService: OTPService;
@@ -26,13 +27,15 @@ beforeEach(() => {
   mockCtx = createMockContext();
   const jwtService = new JWTService();
   const refreshService = new RefreshService();
-  const userService = new UserService(mockCtx.prisma);
+  const userRepository = new UserRepository(mockCtx.prisma)
+  const userService = new UserService(userRepository);
   const tokenService = new TokenService(
     refreshService,
     userService,
     jwtService,
   );
-  emailConfirmationService = new OTPService(mockCtx.prisma, userService);
+  const otpRepository = new OTPRepository(mockCtx.prisma)
+  emailConfirmationService = new OTPService(userService, otpRepository);
   authService = new AuthService(
     tokenService,
     userService,

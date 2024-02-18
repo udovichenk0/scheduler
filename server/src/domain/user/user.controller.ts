@@ -7,6 +7,6 @@ export class UserController {
   @Get('user')
   @UsePipes(UserCredentials)
   async getUser(@Query('email') email: string) {
-    return await this.userService.findVerifiedUser({ email });
+    return await this.userService.findVerifiedUserByEmail(email);
   }
 }

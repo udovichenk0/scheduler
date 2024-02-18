@@ -1,7 +1,7 @@
 import { createZodDto } from 'nestjs-zod';
 import { EmailSchema, UserSchema } from 'src/domain/user/dto/user.dto';
 import { z } from 'zod';
-import { CODE_LENGTH } from '../constants/common';
+import { CODE_LENGTH } from '../infrastructure/constants/common';
 
 const ResendCodeSchema = z.object({
   email: EmailSchema,

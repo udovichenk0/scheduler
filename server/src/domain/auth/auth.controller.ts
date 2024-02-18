@@ -33,8 +33,9 @@ export class AuthController {
     @Body() creds: { code: string; email: string },
     @Session() session: Record<string, any>,
   ) {
-    const { code, email } = creds;
-    const verified = await this.authService.verifyEmail({ code, email });
+    const verified = await this.authService.verifyEmail(creds);
+    //! FIX(BETTER ERROR HANDLING)
+    if(!verified) return null
     session.refresh_token = verified.refresh_token;
     return AuthDto.create(verified);
   }

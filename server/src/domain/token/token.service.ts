@@ -37,7 +37,7 @@ export class TokenService {
         error: unauthorized,
       });
     }
-    const user = await this.userService.findOne({ id: userData.id });
+    const user = await this.userService.findById(userData.id);
     const { access_token } = await this.issueTokens(UserDto.create(user));
     return {
       access_token,

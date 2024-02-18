@@ -1,57 +1,51 @@
 import { UserDto } from './dto/user.dto';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/services/clients/prisma/prisma.client';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { encryptPassword } from 'src/services/session/encrypt-password';
 import { job } from 'cron';
+import { UserRepository } from './infrastructure/repository/user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private prismaService: PrismaService) {}
-  async findOne(where: Prisma.userWhereUniqueInput) {
-    const user = await this.prismaService.user.findUnique({
-      where,
-    });
-    return user;
+  constructor(private userRepository: UserRepository) {}
+  async findById(id: string) {
+    return await this.userRepository.findById(id);
   }
+
+  async findByEmail(email: string) {
+    return await this.userRepository.findByEmail(email);
+  }
+
   async createOne(data: { password: string; email: string }) {
     const hash = await encryptPassword(data.password);
-    const user = await this.prismaService.user.create({
-      data: {
-        email: data.email,
-        hash,
-      },
-    });
-    return user;
-  }
-  async deleteOne(where: Prisma.userWhereUniqueInput) {
-    await this.prismaService.user.delete({
-      where,
+    return await this.userRepository.create({
+      email: data.email,
+      hash,
     });
   }
+
+  async deleteById(id: string) {
+    await this.userRepository.deleteById(id);
+  }
+
   async verify(id: string) {
-    return await this.prismaService.user.update({
-      where: {
-        id,
-      },
-      data: {
-        verified: true,
-      },
-    });
+    return await this.userRepository.verifyById(id);
   }
-  async findVerifiedUser(where: Prisma.userWhereUniqueInput) {
-    const user = await this.findOne(where);
+
+  async findVerifiedUserByEmail(email: string) {
+    const user = await this.findByEmail(email);
     if (user && user.verified) {
       return UserDto.create(user);
     }
     if (user && !user.verified) {
-      await this.deleteOne(where);
+      await this.deleteById(email);
     }
     return {
       error: 'not_found',
       message: 'User is not created',
     };
   }
+
   static userCollector(){
     const prismaClient = new PrismaClient();
     job(

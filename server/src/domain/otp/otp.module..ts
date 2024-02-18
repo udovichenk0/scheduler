@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
-import { PrismaService } from 'src/services/clients/prisma/prisma.client';
 import { OTPService } from './otp.service';
 import { OTPController } from './otp.controller';
-import { UserService } from '../user/user.service';
+import { OTPRepository } from './infrastructure/repository/otp.repository';
+import { UserModule } from '../user/user.module';
+import { OTPRepositoryModule } from './infrastructure/repository/otp.module';
 
 @Module({
-  providers: [PrismaService, OTPService, UserService],
+  imports: [UserModule, OTPRepositoryModule],
+  providers: [OTPService, OTPRepository],
   controllers: [OTPController],
   exports: [OTPService]
 })
