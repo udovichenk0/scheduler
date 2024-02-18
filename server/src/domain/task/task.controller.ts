@@ -38,6 +38,7 @@ export class TaskController {
   }
 
   @Post()
+  @UseGuards(TokenGuard)
   @UsePipes(new ZodValidationPipe(CreateTaskDto))
   async createTask(@Req() req: Request, @Body() body: CreateTaskDto) {
     const user = req.session['user'] as UserDto;
@@ -53,6 +54,7 @@ export class TaskController {
     return TaskDto.create(task);
   }
   @Patch(':id')
+  @UseGuards(TokenGuard)
   @UseZodGuard('body', CreateTaskDto)
   @UseZodGuard('params', TaskIdParam)
   async updateTask(@Body() data: CreateTaskDto, @Param('id') id: string) {
@@ -61,6 +63,7 @@ export class TaskController {
   }
 
   @Post(':id/status')
+  @UseGuards(TokenGuard)
   @UseZodGuard('params', TaskIdParam)
   @UseZodGuard('body', UpdateStatusDto)
   async updateStatus(@Body() data: UpdateStatusDto, @Param('id') id: string) {
@@ -69,6 +72,7 @@ export class TaskController {
   }
 
   @Patch(':id/date')
+  @UseGuards(TokenGuard)
   @UseZodGuard('params', TaskIdParam)
   @UseZodGuard('body', UpdateDateDto)
   async updateDate(@Body() data: UpdateDateDto, @Param('id') id: string) {
@@ -77,12 +81,14 @@ export class TaskController {
   }
 
   @Delete(':id')
+  @UseGuards(TokenGuard)
   @UseZodGuard('params', TaskIdParam)
   async deleteTask(@Param('id') id: string) {
     const task = await this.taskService.deleteOne(id);
     return TaskDto.create(task);
   }
   @Post('batch')
+  @UseGuards(TokenGuard)
   @UsePipes(CreateTasksDto)
   async createMany(@Body() data: CreateTasksDto, @Req() req: Request) {
     const user = req.session['user'] as UserDto;
@@ -94,6 +100,7 @@ export class TaskController {
   }
 
   @Patch(':id/trash')
+  @UseGuards(TokenGuard)
   @UseZodGuard('params', TaskIdParam)
   async trash(@Param('id') id: string) {
     const task = await this.taskService.updateOne({ is_deleted: true }, id);
