@@ -3,14 +3,18 @@ import { Body, Controller, Post, Req, UsePipes, Session } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto, AuthDto, VerifyEmailDto } from './dto/auth.dto';
 import { Request } from 'express';
+import { handleError, isError } from 'src/services/err/errors';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('sign-up')
   @UsePipes(AuthCredentialsDto)
   async Signup(@Body() body: AuthCredentialsDto) {
-    const data = await this.authService.createUser(body);
-    return UserDto.create(data);
+    const user = await this.authService.createUser(body);
+    if(isError(user)){
+      return handleError(user)
+    }
+    return UserDto.create(user);
   }
   @Post('sign-in')
   @UsePipes(AuthCredentialsDto)
@@ -18,9 +22,12 @@ export class AuthController {
     @Body() body: AuthCredentialsDto,
     @Session() session: Record<string, any>,
   ) {
-    const data = await this.authService.verifyUser(body);
-    session.refresh_token = data.refresh_token;
-    return AuthDto.create(data);
+    const user = await this.authService.verifyUser(body);
+    if(isError(user)){
+      return handleError(user)
+    }
+    session.refresh_token = user.refresh_token;
+    return AuthDto.create(user);
   }
   @Post('logout')
   async logout(@Req() req: Request) {
@@ -33,10 +40,11 @@ export class AuthController {
     @Body() creds: { code: string; email: string },
     @Session() session: Record<string, any>,
   ) {
-    const verified = await this.authService.verifyEmail(creds);
-    //! FIX(BETTER ERROR HANDLING)
-    if(!verified) return null
-    session.refresh_token = verified.refresh_token;
-    return AuthDto.create(verified);
+    const user = await this.authService.verifyEmail(creds);
+    if(isError(user)){
+      return handleError(user)
+    }
+    session.refresh_token = user.refresh_token;
+    return AuthDto.create(user);
   }
 }

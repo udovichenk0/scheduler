@@ -1,20 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { TaskRepository } from './repository/task.repository';
+import { Errors } from 'src/services/err/errors';
 @Injectable()
 export class TaskService {
   constructor(private taskRepository: TaskRepository) {}
   async findManyByUserId(user_id: string) {
-    return this.taskRepository.findManyByUserId(user_id);
+    try {
+      return await this.taskRepository.findManyByUserId(user_id);
+    } catch (error) {
+      return Errors.InternalServerError() 
+    }
   }
   createOne(data: Prisma.taskCreateInput) {
-    return this.taskRepository.create(data);
+    try {
+      return this.taskRepository.create(data);
+    } catch (error) {
+      return Errors.InternalServerError() 
+    }
   }
   updateOne(data: Prisma.taskUpdateInput, id: string) {
-    return this.taskRepository.updateById(data, id);
+    try {
+      return this.taskRepository.updateById(data, id);
+    } catch (error) {
+      return Errors.InternalServerError() 
+    }
   }
   deleteOne(id: string) {
-    return this.taskRepository.deleteById(id);
+    try {
+      return this.taskRepository.deleteById(id);
+    } catch (error) {
+      return Errors.InternalServerError() 
+    }
   }
   async createMany({
     user_id,
@@ -23,14 +40,18 @@ export class TaskService {
     user_id: string;
     data: Omit<Prisma.taskCreateManyInput, 'user_id' | 'id'>[];
   }) {
-    if (!data.length) {
-      return [];
+    try {
+      if (!data.length) {
+        return [];
+      }
+  
+      const result = await this.taskRepository.createManyByUserId({ user_id, data });
+      if (result.count) {
+        return await this.findManyByUserId(user_id);
+      }
+      return null;
+    } catch (error) {
+      return Errors.InternalServerError() 
     }
-
-    const result = await this.taskRepository.createManyByUserId({ user_id, data });
-    if (result.count) {
-      return await this.findManyByUserId(user_id);
-    }
-    return null;
   }
 }

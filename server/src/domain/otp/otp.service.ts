@@ -1,16 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/services/clients/prisma/prisma.client';
 import { transporter } from 'src/services/nodemailer/client';
 import { UserService } from '../user/user.service';
 import { generateCode } from 'src/services/session/generate-code';
-import { userNotFound } from '../user/constants/userErrorMessages';
 import { VerifyOTPDto } from './dto/dto';
-import { CODE_IS_INVALID, OTP_CODE_IS_NOT_FOUND } from './infrastructure/constants/errors';
 import {
-  badRequestException,
-  invalid,
-  notFoundException,
-  not_found,
+  Errors,
+  isError,
 } from 'src/services/err/errors';
 import { OTPRepository } from './infrastructure/repository/otp.repository';
 
@@ -21,78 +16,88 @@ export class OTPService {
     private otpRepository: OTPRepository
   ) {}
   deletByUserId(userId: string) {
-    return this.otpRepository.deleteByUserId(userId);
+    try {
+      return this.otpRepository.deleteByUserId(userId);
+    } catch (error) {
+      return Errors.InternalServerError() 
+    }
   }
   create(user_id: string) {
-    const code = generateCode();
-    return this.otpRepository.create(code, user_id);
+    try {
+      const code = generateCode();
+      return this.otpRepository.create(code, user_id);
+    } catch (error) {
+      return Errors.InternalServerError() 
+    }
   }
 
-  findByUserId(user_id: string) {
-    return this.otpRepository.findByUserId(user_id);
+  async findByUserId(user_id: string) {
+    try {
+      const confirmation = await this.otpRepository.findByUserId(user_id);
+
+      if(!confirmation) return Errors.ConfirmationNotFound()
+
+      return confirmation
+    } catch (error) {
+      return Errors.InternalServerError() 
+    }
   }
   sendEmail(email: string, token: string) {
-    return transporter.sendMail(
-      {
-        from: process.env.EMAIL,
-        to: email,
-        subject: 'Verify your email',
-        html: `<h1>${token}</h1>`,
-      },
-      (err, info) => {
-        if (err) {
-          console.log(err);
-        }
-        return info;
-      },
-    );
+    try {
+      return transporter.sendMail(
+        {
+          from: process.env.EMAIL,
+          to: email,
+          subject: 'Verify your email',
+          html: `<h1>${token}</h1>`,
+        },
+        (err, info) => {
+          if (err) {
+            console.log(err);
+          }
+          return info;
+        },
+      );
+    } catch (error) {
+      return Errors.InternalServerError() 
+    }
   }
   async resendOTP(email: string) {
-    const user = await this.userService.findByEmail(email);
-    if (!user) {
-      throw notFoundException({
-        description: userNotFound(email),
-        error: not_found,
-      });
+    try {
+      const user = await this.userService.findByEmail(email);
+
+      if (isError(user)) return user
+      await this.deletByUserId(user.id);
+
+      const otp = await this.create(user.id);
+      if(isError(otp)) return otp 
+      await this.sendEmail(email, otp.code);
+      
+    } catch (error) {
+      return Errors.InternalServerError()
     }
-    await this.deletByUserId(user.id);
-    const otp = await this.create(user.id);
-    if (!otp.code) {
-      throw Error('Error occured');
-    }
-    await this.sendEmail(email, otp.code);
-    return;
   }
 
   async verifyOTP({ email, code: inputCode }: VerifyOTPDto) {
-    const result = await this.otpRepository.findByUserEmail({ email, code: inputCode })
-    if(!result) return null
-    const { code, user } = result
-
-    if (!user) {
-      throw notFoundException({
-        description: userNotFound(email),
-        error: not_found,
-      });
+    try {
+      const result = await this.otpRepository.findByUserEmail({ email, code: inputCode })
+      if(!result) {
+        return Errors.ConfirmationNotFound()
+      }
+      const { code, user } = result
+  
+      const isValid = inputCode === code;
+      if (!isValid) {
+        return Errors.GeneralInvalid('Password', code)
+      }
+      await this.deletByUserId(user.id);
+  
+      return {
+        user,
+        code,
+      };
+    } catch (error) {
+      return Errors.InternalServerError()
     }
-    if (!code) {
-      throw notFoundException({
-        description: OTP_CODE_IS_NOT_FOUND,
-        error: not_found,
-      });
-    }
-    const isValid = inputCode === code;
-    if (!isValid) {
-      throw badRequestException({
-        description: CODE_IS_INVALID,
-        error: invalid,
-      });
-    }
-    await this.deletByUserId(user.id);
-
-    return {
-      user,
-      code,
-    };
   }
 }

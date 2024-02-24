@@ -25,6 +25,7 @@ import {
   TasksDto,
 } from './dto/task.dto';
 import { UseZodGuard, ZodValidationPipe } from 'nestjs-zod';
+import { handleError, isError } from 'src/services/err/errors';
 
 @Controller('tasks')
 @UseGuards(TokenGuard)
@@ -34,6 +35,9 @@ export class TaskController {
   async getTasks(@Req() req: Request) {
     const user = req.session['user'] as UserDto;
     const tasks = await this.taskService.findManyByUserId(user.id);
+    if(isError(tasks)){
+      return handleError(tasks)
+    }
     return tasks;
   }
 
@@ -51,6 +55,9 @@ export class TaskController {
         },
       },
     });
+    if(isError(task)){
+      return handleError(task)
+    }
     return TaskDto.create(task);
   }
   @Patch(':id')
@@ -58,8 +65,11 @@ export class TaskController {
   @UseZodGuard('body', CreateTaskDto)
   @UseZodGuard('params', TaskIdParam)
   async updateTask(@Body() data: CreateTaskDto, @Param('id') id: string) {
-    const updatedTask = await this.taskService.updateOne(data, id);
-    return TaskDto.create(updatedTask);
+    const task = await this.taskService.updateOne(data, id);
+    if(isError(task)){
+      return handleError(task)
+    }
+    return TaskDto.create(task);
   }
 
   @Post(':id/status')
@@ -68,6 +78,9 @@ export class TaskController {
   @UseZodGuard('body', UpdateStatusDto)
   async updateStatus(@Body() data: UpdateStatusDto, @Param('id') id: string) {
     const task = await this.taskService.updateOne(data, id);
+    if(isError(task)){
+      return handleError(task)
+    }
     return TaskDto.create(task);
   }
 
@@ -77,6 +90,9 @@ export class TaskController {
   @UseZodGuard('body', UpdateDateDto)
   async updateDate(@Body() data: UpdateDateDto, @Param('id') id: string) {
     const task = await this.taskService.updateOne(data, id);
+    if(isError(task)){
+      return handleError(task)
+    }
     return TaskDto.create(task);
   }
 
@@ -85,6 +101,9 @@ export class TaskController {
   @UseZodGuard('params', TaskIdParam)
   async deleteTask(@Param('id') id: string) {
     const task = await this.taskService.deleteOne(id);
+    if(isError(task)){
+      return handleError(task)
+    }
     return TaskDto.create(task);
   }
   @Post('batch')
@@ -96,6 +115,9 @@ export class TaskController {
       user_id: user.id,
       data: data.tasks,
     });
+    if(isError(tasks)){
+      return handleError(tasks)
+    }
     return TasksDto.create(tasks);
   }
 
@@ -104,6 +126,9 @@ export class TaskController {
   @UseZodGuard('params', TaskIdParam)
   async trash(@Param('id') id: string) {
     const task = await this.taskService.updateOne({ is_deleted: true }, id);
+    if(isError(task)){
+      return handleError(task)
+    }
     return TaskDto.create(task);
   }
 }

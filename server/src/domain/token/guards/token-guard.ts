@@ -1,33 +1,24 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { JWTService } from 'src/domain/token/jwtToken/jwt.service';
 import { getTokenFromHeader } from 'src/services/session/get-token-from-header';
-import { TOKEN_IS_NOT_FOUND, USER_IS_NOT_AUTHORIZED } from '../constant/errors';
 import { Request } from 'express';
 import { UserDto } from 'src/domain/user/dto/user.dto';
 import {
-  not_found,
-  unauthorized,
-  unauthorizedException,
+  Errors,
 } from 'src/services/err/errors';
 
 @Injectable()
 export class TokenGuard implements CanActivate {
   constructor(private jwtService: JWTService) {}
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  canActivate(context: ExecutionContext):any {
     const req = context.switchToHttp().getRequest() as Request;
     const token = getTokenFromHeader(req);
     if (!token) {
-      throw unauthorizedException({
-        description: TOKEN_IS_NOT_FOUND,
-        error: not_found,
-      });
+      return new UnauthorizedException(Errors.Unauthorized())
     }
-    const userDto = await this.jwtService.verifyToken(token);
+    const userDto = this.jwtService.verifyToken(token);
     if (!userDto) {
-      throw unauthorizedException({
-        description: USER_IS_NOT_AUTHORIZED,
-        error: unauthorized,
-      });
+      return new UnauthorizedException(Errors.Unauthorized())
     }
     req.session['user'] = UserDto.create(userDto);
     return userDto;

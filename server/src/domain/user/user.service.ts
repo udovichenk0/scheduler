@@ -4,46 +4,79 @@ import { PrismaClient } from '@prisma/client';
 import { encryptPassword } from 'src/services/session/encrypt-password';
 import { job } from 'cron';
 import { UserRepository } from './infrastructure/repository/user.repository';
+import { Errors, isError } from 'src/services/err/errors';
 
 @Injectable()
 export class UserService {
   constructor(private userRepository: UserRepository) {}
   async findById(id: string) {
-    return await this.userRepository.findById(id);
+    try {
+      const user = await this.userRepository.findById(id);
+      if(!user){
+        return Errors.GeneralNotFound('User', id)
+      }
+      return user
+    } catch (error) {
+      return Errors.InternalServerError() 
+    }
   }
 
   async findByEmail(email: string) {
-    return await this.userRepository.findByEmail(email);
+    try {
+      const user = await this.userRepository.findByEmail(email);
+      if(!user){
+        return Errors.UserNotFound(email)
+      }
+      return user
+    } catch (error) {
+      return Errors.InternalServerError() 
+    }
   }
 
   async createOne(data: { password: string; email: string }) {
-    const hash = await encryptPassword(data.password);
-    return await this.userRepository.create({
-      email: data.email,
-      hash,
-    });
+    try {
+      const hash = await encryptPassword(data.password);
+      return await this.userRepository.create({
+        email: data.email,
+        hash,
+      });
+    } catch (error) {
+      return Errors.InternalServerError()
+    }
   }
 
   async deleteById(id: string) {
-    await this.userRepository.deleteById(id);
+    try {
+      return await this.userRepository.deleteById(id);
+    } catch (error) {
+      return Errors.InternalServerError() 
+    }
   }
 
   async verify(id: string) {
-    return await this.userRepository.verifyById(id);
+    try {
+      return await this.userRepository.verifyById(id);
+    } catch (error) {
+      return Errors.InternalServerError() 
+    }
   }
 
   async findVerifiedUserByEmail(email: string) {
-    const user = await this.findByEmail(email);
-    if (user && user.verified) {
-      return UserDto.create(user);
+    try {
+      const user = await this.findByEmail(email);
+      if(isError(user)) return user
+      if (user.verified) {
+        return UserDto.create(user);
+      } else {
+        await this.deleteById(email);
+      }
+      return {
+        error: 'not_found',
+        message: 'User is not created',
+      };
+    } catch (error) {
+      return Errors.InternalServerError() 
     }
-    if (user && !user.verified) {
-      await this.deleteById(email);
-    }
-    return {
-      error: 'not_found',
-      message: 'User is not created',
-    };
   }
 
   static userCollector(){
