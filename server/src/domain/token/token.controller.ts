@@ -1,6 +1,7 @@
 import { Controller, Get, Req, Session } from '@nestjs/common';
 import { TokenService } from './token.service';
 import { Request } from 'express';
+import { handleError, isError } from 'src/services/err/errors';
 
 @Controller()
 export class TokenController {
@@ -8,10 +9,10 @@ export class TokenController {
   @Get('refresh')
   async refresh(@Req() req: Request, @Session() session: Record<string, any>) {
     const refreshToken = req.session['refresh_token'];
-    return await this.tokenService.refresh(refreshToken, session);
-  }
-  @Get('')
-  async test() {
-    return 'asldfkjasldkf';
+    const result = await this.tokenService.refresh(refreshToken, session);
+    if(isError(result)){
+      return handleError(result)
+    }
+    return result
   }
 }
