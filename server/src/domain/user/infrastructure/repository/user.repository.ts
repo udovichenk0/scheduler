@@ -8,34 +8,34 @@ export class UserRepository {
     return await this.prismaService.user.findUnique({
       where: {
         id
-      },
+      }
     });
   }
   async findByEmail(email: string) {
     return await this.prismaService.user.findUnique({
       where: {
         email
-      },
+      }
     });
   }
   async create(data: { hash: string; email: string }) {
     return await this.prismaService.user.create({
-      data,
+      data
     });
   }
   async deleteById(id: string) {
     return await this.prismaService.user.delete({
-      where: {id},
+      where: { id }
     });
   }
   async verifyById(id: string) {
     return await this.prismaService.user.update({
       where: {
-        id,
+        id
       },
       data: {
-        verified: true,
-      },
+        verified: true
+      }
     });
   }
 }
