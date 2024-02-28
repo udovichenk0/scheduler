@@ -9,6 +9,7 @@ import {
   Errors,
   isError,
 } from 'src/services/err/errors';
+import { encryptPassword } from 'src/services/session/encrypt-password';
 @Injectable()
 export class AuthService {
   constructor(
@@ -17,20 +18,19 @@ export class AuthService {
     private otpService: OTPService,
   ) {}
 
-  async createUser(data: AuthCredentialsDto) {
+  async createUser({email, password}: AuthCredentialsDto) {
     try {
-      const potentialUser = await this.userService.findByEmail(data.email);
-      console.log(potentialUser)
+      const potentialUser = await this.userService.findByEmail(email);
       if (!isError(potentialUser) && potentialUser.id){
-        return Errors.EmailIsTaken(data.email)
+        return Errors.EmailIsTaken(email)
       }
-
-      const user = await this.userService.createOne(data);
+      const hash = await encryptPassword(password);
+      const user = await this.userService.createOne({email, hash});
       if(isError(user)) return user
       const otp = await this.otpService.create(user.id);
 
       if(isError(otp)) return otp
-      await this.otpService.sendEmail(data.email, otp.code);
+      await this.otpService.sendEmail({email, code: otp.code});
 
       return user;
     } catch (error) {
@@ -70,7 +70,7 @@ export class AuthService {
       const verifiedUser = await this.userService.verify(result.user.id);
   
       const userDto = UserDto.create(verifiedUser);
-      const { access_token, refresh_token } = await this.tokenService.issueTokens(
+      const { access_token, refresh_token } = this.tokenService.issueTokens(
         userDto
       );
   

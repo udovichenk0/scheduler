@@ -1,5 +1,6 @@
+import { EmailSchema } from './../user/dto/user.dto';
 import { Injectable } from '@nestjs/common';
-import { transporter } from 'src/services/nodemailer/client';
+import { EmailTransporter } from 'src/services/nodemailer/client';
 import { UserService } from '../user/user.service';
 import { generateCode } from 'src/services/session/generate-code';
 import { VerifyOTPDto } from './dto/dto';
@@ -13,27 +14,37 @@ import { OTPRepository } from './infrastructure/repository/otp.repository';
 export class OTPService {
   constructor(
     private userService: UserService,
-    private otpRepository: OTPRepository
+    private otpRepository: OTPRepository,
+    private emailTransporter: EmailTransporter
   ) {}
   deletByUserId(userId: string) {
     try {
+      if(!userId){
+        return Errors.Missing('User id')
+      }
       return this.otpRepository.deleteByUserId(userId);
     } catch (error) {
       return Errors.InternalServerError() 
     }
   }
-  create(user_id: string) {
+  create(userId: string) {
     try {
+      if(!userId){
+        return Errors.Missing('User id')
+      }
       const code = generateCode();
-      return this.otpRepository.create(code, user_id);
+      return this.otpRepository.create(code, userId);
     } catch (error) {
       return Errors.InternalServerError() 
     }
   }
 
-  async findByUserId(user_id: string) {
+  async findByUserId(userId: string) {
     try {
-      const confirmation = await this.otpRepository.findByUserId(user_id);
+      if(!userId){
+        return Errors.Missing('User id')
+      }
+      const confirmation = await this.otpRepository.findByUserId(userId);
 
       if(!confirmation) return Errors.ConfirmationNotFound()
 
@@ -42,28 +53,26 @@ export class OTPService {
       return Errors.InternalServerError() 
     }
   }
-  sendEmail(email: string, token: string) {
-    try {
-      return transporter.sendMail(
-        {
-          from: process.env.EMAIL,
-          to: email,
-          subject: 'Verify your email',
-          html: `<h1>${token}</h1>`,
-        },
-        (err, info) => {
-          if (err) {
-            console.log(err);
-          }
-          return info;
-        },
-      );
-    } catch (error) {
-      return Errors.InternalServerError() 
+  sendEmail({email, code}:{email: string, code: string}) {
+    if(!email){
+      return Errors.Missing("Email")
     }
+    if(!EmailSchema.safeParse(email).success){
+      return Errors.GeneralInvalid('Email', email)
+    }
+    if(!code){
+      return Errors.Missing('Code')
+    }
+    return this.emailTransporter.sendEmail({to: email, code, subject: 'Verify your email'});
   }
   async resendOTP(email: string) {
     try {
+      if(!email){
+        return Errors.Missing("Email")
+      }
+      if(!EmailSchema.safeParse(email).success){
+        return Errors.GeneralInvalid("Email", email)
+      }
       const user = await this.userService.findByEmail(email);
 
       if (isError(user)) return user
@@ -71,7 +80,7 @@ export class OTPService {
 
       const otp = await this.create(user.id);
       if(isError(otp)) return otp 
-      await this.sendEmail(email, otp.code);
+      await this.sendEmail({email, code: otp.code});
       
     } catch (error) {
       return Errors.InternalServerError()
@@ -80,6 +89,15 @@ export class OTPService {
 
   async verifyOTP({ email, code: inputCode }: VerifyOTPDto) {
     try {
+      if(!email){
+        return Errors.Missing("Email")
+      }
+      if(!EmailSchema.safeParse(email).success){
+        return Errors.GeneralInvalid('Email', email)
+      }
+      if(!inputCode){
+        return Errors.Missing('Code')
+      }
       const result = await this.otpRepository.findByUserEmail({ email, code: inputCode })
       if(!result) {
         return Errors.ConfirmationNotFound()
@@ -88,7 +106,7 @@ export class OTPService {
   
       const isValid = inputCode === code;
       if (!isValid) {
-        return Errors.GeneralInvalid('Password', code)
+        return Errors.GeneralInvalid('Code', code)
       }
       await this.deletByUserId(user.id);
   

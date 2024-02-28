@@ -34,6 +34,9 @@ export class Errors {
   static Unauthorized(){
     return new Err(401, "User is not Authorized")
   }
+  static Missing(entity: string){
+    return new Err(400, `${entity} is missing`)
+  }
   static InternalServerError(){
     return new Err(503, 'Internal server error')
   }
