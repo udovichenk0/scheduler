@@ -1,2 +1,2 @@
-export * from './prisma.client'
-export * from './prisma.mock'
+export * from "./prisma.client";
+export * from "./prisma.mock";

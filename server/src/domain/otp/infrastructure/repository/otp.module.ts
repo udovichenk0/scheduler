@@ -6,5 +6,4 @@ import { OTPRepository } from "./otp.repository";
   providers: [PrismaService, OTPRepository],
   exports: [OTPRepository, PrismaService]
 })
-
 export class OTPRepositoryModule {}

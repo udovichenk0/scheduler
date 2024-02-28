@@ -1,8 +1,8 @@
-import { createZodDto } from 'nestjs-zod';
-import { z } from 'zod';
+import { createZodDto } from "nestjs-zod";
+import { z } from "zod";
 
-const TaskStatusSchema = z.enum(['FINISHED', 'CANCELED', 'INPROGRESS']);
-const TaskTypeSchema = z.enum(['inbox', 'unplaced']);
+const TaskStatusSchema = z.enum(["FINISHED", "CANCELED", "INPROGRESS"]);
+const TaskTypeSchema = z.enum(["inbox", "unplaced"]);
 const TaskIdSchema = z.string();
 
 export type TaskStatus = z.infer<typeof TaskStatusSchema>;
@@ -10,7 +10,7 @@ export type TaskType = z.infer<typeof TaskTypeSchema>;
 export type TaskId = z.infer<typeof TaskIdSchema>;
 
 export const TaskIdParam = z.object({
-  id: TaskIdSchema,
+  id: TaskIdSchema
 });
 
 const CreateTaskSchema = z.object({
@@ -18,23 +18,23 @@ const CreateTaskSchema = z.object({
   description: z.string(),
   status: TaskStatusSchema,
   type: TaskTypeSchema,
-  start_date: z.string().pipe(z.coerce.date()).nullable(),
+  start_date: z.string().pipe(z.coerce.date()).nullable()
 });
 export class CreateTaskDto extends createZodDto(CreateTaskSchema) {}
 
 const UpdateTaskDateSchema = z.object({
   start_date: z.string().pipe(z.coerce.date()).nullable(),
-  type: TaskTypeSchema,
+  type: TaskTypeSchema
 });
 export class UpdateDateDto extends createZodDto(UpdateTaskDateSchema) {}
 
 export const UpdateTaskStatusSchema = z.object({
-  status: TaskStatusSchema,
+  status: TaskStatusSchema
 });
 export class UpdateStatusDto extends createZodDto(UpdateTaskStatusSchema) {}
 
 const CreateTasksSchema = z.object({
-  tasks: CreateTaskSchema.array(),
+  tasks: CreateTaskSchema.array()
 });
 export class CreateTasksDto extends createZodDto(CreateTasksSchema) {}
 
@@ -47,7 +47,7 @@ const TaskDtoSchema = z.object({
   id: z.string(),
   user_id: z.string(),
   is_deleted: z.boolean(),
-  date_created: z.date(),
+  date_created: z.date()
 });
 
 export class TaskDto extends createZodDto(TaskDtoSchema) {}

@@ -1,22 +1,22 @@
-import { createZodDto } from 'nestjs-zod';
-import { EmailSchema, UserSchema } from 'src/domain/user/dto/user.dto';
-import { z } from 'zod';
-import { CODE_LENGTH } from '../infrastructure/constants/common';
+import { createZodDto } from "nestjs-zod";
+import { EmailSchema, UserSchema } from "src/domain/user/dto/user.dto";
+import { z } from "zod";
+import { CODE_LENGTH } from "../infrastructure/constants/common";
 
 const ResendCodeSchema = z.object({
-  email: EmailSchema,
+  email: EmailSchema
 });
 
-const CodeSchema = z.string().min(CODE_LENGTH).max(CODE_LENGTH)
+const CodeSchema = z.string().min(CODE_LENGTH).max(CODE_LENGTH);
 
 const VerifyEmailSchema = z.object({
   code: CodeSchema,
-  email: EmailSchema,
+  email: EmailSchema
 });
 
 export type Confirmation = z.infer<typeof UserSchema> & {
-  code: z.infer<typeof CodeSchema>,
-}
+  code: z.infer<typeof CodeSchema>;
+};
 
 export class ResendCodeDto extends createZodDto(ResendCodeSchema) {}
 

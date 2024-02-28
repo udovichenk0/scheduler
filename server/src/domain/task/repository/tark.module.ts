@@ -6,5 +6,4 @@ import { PrismaService } from "src/services/clients/prisma";
   providers: [TaskRepository, PrismaService],
   exports: [TaskRepository, PrismaService]
 })
-
 export class TaskRepositoryModule {}
