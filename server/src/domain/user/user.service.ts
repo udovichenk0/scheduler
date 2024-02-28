@@ -1,4 +1,4 @@
-import { UserDto } from './dto/user.dto';
+import { EmailSchema, UserDto } from './dto/user.dto';
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { encryptPassword } from 'src/services/session/encrypt-password';
@@ -11,6 +11,7 @@ export class UserService {
   constructor(private userRepository: UserRepository) {}
   async findById(id: string) {
     try {
+      if(!id) return Errors.Missing("User id")
       const user = await this.userRepository.findById(id);
       if(!user){
         return Errors.GeneralNotFound('User', id)
@@ -23,6 +24,8 @@ export class UserService {
 
   async findByEmail(email: string) {
     try {
+      if(!email) return Errors.Missing("Email")
+      if(!EmailSchema.safeParse(email).success) return Errors.GeneralInvalid("Email", email)
       const user = await this.userRepository.findByEmail(email);
       if(!user){
         return Errors.UserNotFound(email)
@@ -33,11 +36,14 @@ export class UserService {
     }
   }
 
-  async createOne(data: { password: string; email: string }) {
+  async createOne({hash,email}: { hash: string; email: string }) {
+
     try {
-      const hash = await encryptPassword(data.password);
+      if(!email) return Errors.Missing("Email")
+      if(!hash) return Errors.Missing("Hash")
+      if(!EmailSchema.safeParse(email)) return Errors.GeneralInvalid("Email", email)
       return await this.userRepository.create({
-        email: data.email,
+        email,
         hash,
       });
     } catch (error) {
@@ -47,6 +53,7 @@ export class UserService {
 
   async deleteById(id: string) {
     try {
+      if(!id) return Errors.Missing("User id")
       return await this.userRepository.deleteById(id);
     } catch (error) {
       return Errors.InternalServerError() 
@@ -55,6 +62,7 @@ export class UserService {
 
   async verify(id: string) {
     try {
+      if(!id) return Errors.Missing("User id")
       return await this.userRepository.verifyById(id);
     } catch (error) {
       return Errors.InternalServerError() 
@@ -63,6 +71,8 @@ export class UserService {
 
   async findVerifiedUserByEmail(email: string) {
     try {
+      if(!email) return Errors.Missing("Email")
+      if(!EmailSchema.safeParse(email)) return Errors.GeneralInvalid("Email", email)
       const user = await this.findByEmail(email);
       if(isError(user)) return user
       if (user.verified) {
@@ -70,10 +80,7 @@ export class UserService {
       } else {
         await this.deleteById(email);
       }
-      return {
-        error: 'not_found',
-        message: 'User is not created',
-      };
+      return Errors.UserNotFound(email)
     } catch (error) {
       return Errors.InternalServerError() 
     }

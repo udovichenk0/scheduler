@@ -1,59 +1,56 @@
-import { MockContext, createMockContext } from 'src/services/clients/prisma';
+import { createMockContext } from 'src/services/clients/prisma';
 import { UserService } from '../../user.service';
 import { UserRepository } from '../repository/user.repository';
-let mockCtx: MockContext;
-let userService: UserService;
+import { Errors } from 'src/services/err/errors';
+
 let userRepository: UserRepository
+let userService: UserService;
+
+
 beforeEach(() => {
-  mockCtx = createMockContext();
-  userRepository = new UserRepository(mockCtx.prisma)
+  userRepository = new UserRepository(createMockContext().prisma)
   userService = new UserService(userRepository);
 });
 const user = {
   id: '123',
-  email: 'hello@prisma.io',
+  email: 'user@gmail.com',
   verified: true,
   hash: 'hash',
-  created_at: new Date(),
+  created_at: new Date("2024-02-27T16:52:53.877Z"),
 };
 test('should find a user', async () => {
-  mockCtx.prisma.user.findUnique.mockResolvedValue(user);
-  await expect(userService.findById('123')).resolves.toEqual(user);
+  jest.spyOn(userRepository, 'findById').mockResolvedValue(user)
+  await expect(userService.findById('123')).resolves.toStrictEqual(user);
 });
+test('should return not found user error object', async () => {
+  jest.spyOn(userRepository, 'findById').mockResolvedValue(null)
+  const expected = Errors.GeneralNotFound('User', '123')
 
-test('should create user', async () => {
-  mockCtx.prisma.user.create.mockResolvedValue(user);
-  await expect(
-    userService.createOne({ email: 'hello@prisma.io', password: '123' }),
-  ).resolves.toEqual(user);
-});
+  await expect(userService.findById('123')).resolves.toStrictEqual(expected);
+})
 
 test('find verified user', async () => {
-  mockCtx.prisma.user.findUnique.mockResolvedValue(user);
-  const returnedValue = {
+  jest.spyOn(userRepository, 'findByEmail').mockResolvedValue(user)
+  const expected = {
     id: '123',
-    email: 'hello@prisma.io',
+    email: 'user@gmail.com',
     verified: true,
   };
-  expect(await userService.findVerifiedUserByEmail('123')).toEqual(
-    returnedValue,
-  );
+  await expect(userService.findVerifiedUserByEmail('user@gmail.com'))
+    .resolves.toStrictEqual(expected);
 });
 
 test('find unverified user', async () => {
   const unverifiedUser = {
     id: '123',
-    email: 'hello@prisma.io',
+    email: 'user@gmail.com',
     verified: false,
     hash: 'hash',
     created_at: new Date(),
   };
-  mockCtx.prisma.user.findUnique.mockResolvedValue(unverifiedUser);
-  const returnedValue = {
-    error: 'not_found',
-    message: 'User is not created',
-  };
-  expect(await userService.findVerifiedUserByEmail('123')).toEqual(
-    returnedValue,
+  jest.spyOn(userRepository, 'findByEmail').mockResolvedValue(unverifiedUser)
+  const expected = Errors.UserNotFound('user@gmail.com');
+  expect(await userService.findVerifiedUserByEmail('user@gmail.com')).toEqual(
+    expected,
   );
 });
