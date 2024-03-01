@@ -47,4 +47,9 @@ export class TaskRepository {
       }))
     });
   }
+  deleteMany(where: Prisma.taskWhereInput){
+    return this.prismaService.task.deleteMany({
+      where
+    })
+  }
 }

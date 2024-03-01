@@ -57,4 +57,19 @@ export class TaskService {
       return Errors.InternalServerError();
     }
   }
+  deleteTrashedTasks(userId: string){
+    try {
+      if(!userId){
+        return Errors.Missing("User id")
+      }
+      return this.taskRepository.deleteMany({
+        user_id: userId,
+        AND: {
+          is_deleted: true
+        }
+      })
+    } catch (error) {
+      return Errors.InternalServerError()
+    }
+  }
 }

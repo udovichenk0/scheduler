@@ -96,6 +96,17 @@ export class TaskController {
     return TaskDto.create(task);
   }
 
+  @Delete('all')
+  @UseGuards(TokenGuard)
+  async deleteTrashedTasks(@Req() req){
+    const user = req.session["user"] as UserDto;
+    const response = await this.taskService.deleteTrashedTasks(user.id)
+    if(isError(response)){
+      return handleError(response)
+    }
+    return response
+  }
+
   @Delete(":id")
   @UseGuards(TokenGuard)
   @UseZodGuard("params", TaskIdParam)
