@@ -150,7 +150,7 @@ const TypePicker = ({
         return (
           <Button
             key={id}
-            size={"xs"}
+            size={'xs'}
             onClick={() => changeType(type)}
             className={`text-left ${
               active && "pointer-events-none block w-full bg-cFocus"

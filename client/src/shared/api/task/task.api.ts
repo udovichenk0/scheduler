@@ -19,6 +19,7 @@ import {
   LocalStorageTasksDto,
   CreateTasksDto,
   UpdateDateDto,
+  BatchedSchemaDto,
 } from "./task.dto"
 
 const TaskContract = zodContract(TaskSchemaDto)
@@ -92,6 +93,16 @@ export const trashTaskQuery = authQuery<TaskDto, TaskId>({
     contract: TaskContract,
     mapData: (data) => data.result,
   },
+})
+export const deleteAllTasksQuery = authQuery<{count: number}>({
+  request: {
+    url: 'tasks/all',
+    method: 'DELETE',
+  },
+  response: {
+    contract: zodContract(BatchedSchemaDto),
+    mapData: (data) => data.result,
+  }
 })
 
 export const createTasksQuery = authQuery<TaskDto[], CreateTasksDto>({
@@ -197,6 +208,7 @@ export const updateDateInLocalStorageFx = createEffect(
   },
 )
 
+
 function updateTaskStatus(
   tasks: LocalStorageTaskDto[],
   id: TaskId,
@@ -275,5 +287,16 @@ export const trashTaskFromLocalStorageFx = createEffect((id: TaskId) => {
 
   return {
     result: trashedTask!,
+  }
+})
+export const deleteTrashTasksFromLocalStorageFx = createEffect(() => {
+  const tasksFromLs = localStorage.getItem("tasks")
+  console.log("here")
+  const tasks = JSON.parse(tasksFromLs!) as LocalStorageTaskDto[]
+  const updated = tasks.filter((task) => !task.is_deleted)
+  if (updated.length) {
+    localStorage.setItem("tasks", JSON.stringify(updated))
+  } else {
+    localStorage.removeItem("tasks")
   }
 })

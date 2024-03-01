@@ -28,6 +28,7 @@ import { TasksByDate } from "./sections/tasks-by-date"
 import { HeaderTitle } from "./ui/header-title"
 import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer/variant-changer"
 import { SORT_CONFIG } from "./config"
+import { Sort } from "@/entities/task/task-item"
 const Upcoming = () => {
   const expandedTaskRef = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
@@ -56,11 +57,11 @@ const Upcoming = () => {
   return (
     <Layout>
       <Layout.Header
-        sorting={{
-          config: SORT_CONFIG,
-          active: activeSort,
+        slot={<Sort sorting={{
           onChange: onSortChange,
-        }}
+          active: activeSort,
+          config: SORT_CONFIG,
+        }}/>}
         iconName="common/upcoming"
         title={<HeaderTitle variant={variant} />}
       />

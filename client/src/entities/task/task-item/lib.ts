@@ -8,6 +8,12 @@ export const removeTaskFromKv = (kv: TaskKv, taskId: TaskId) => {
   const updatedTasks = Object.entries(kv).filter(([key]) => key !== taskId)
   return Object.fromEntries(updatedTasks)
 }
+export const removeTasksFromKvByFilter = (func: (task: Task) => boolean) => {
+  return (kv: TaskKv) => {
+    const updated = Object.entries(kv).filter(([_, value]) => func(value))
+    return Object.fromEntries(updated)
+  }
+}
 
 export const transformTasksToKv = (tasks: Task[]) => {
   return tasks.reduce((kv, task) => ({ ...kv, [task.id]: task }), {})
