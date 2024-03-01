@@ -8,7 +8,7 @@ import { singleton } from "@/shared/lib/effector/singleton"
 import { createIdModal, createModal } from "@/shared/lib/modal"
 
 import { Task, TaskKv } from "../type"
-import { addTaskToKv, removeTaskFromKv, transformTasksToKv } from "../lib"
+import { addTaskToKv, removeTaskFromKv, removeTasksFromKvByFilter, transformTasksToKv } from "../lib"
 
 export const $$dateModal = createModal({})
 export const $$modal = createIdModal()
@@ -19,6 +19,7 @@ export const $$task = singleton(() => {
   const setTaskTriggered = createEvent<Task>()
   const getTasksTriggered = createEvent()
   const taskDeleted = createEvent<TaskId>()
+  const trashTasksDeleted = createEvent()
   const reset = createEvent()
   const init = createEvent()
 
@@ -49,6 +50,13 @@ export const $$task = singleton(() => {
     filter: (kv: Nullable<TaskKv>): kv is TaskKv => !!kv,
     fn: removeTaskFromKv,
     target: $taskKv,
+  })
+  sample({
+    clock: trashTasksDeleted,
+    source: $taskKv,
+    filter: (kv: Nullable<TaskKv>): kv is TaskKv => !!kv,
+    fn: removeTasksFromKvByFilter((task) => !task.is_deleted),
+    target: $taskKv
   })
   sample({
     clock: setTaskKvTriggered,
@@ -85,6 +93,7 @@ export const $$task = singleton(() => {
     setTaskTriggered,
     reset,
     getTasksTriggered,
+    trashTasksDeleted,
     taskDeleted,
     init,
     _: {

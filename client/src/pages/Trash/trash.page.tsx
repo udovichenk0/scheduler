@@ -15,6 +15,7 @@ import {
   $trashTasks,
   selectTaskId,
 } from "./trash.model"
+import { Button } from "@/shared/ui/buttons/main-button"
 
 const Trash = () => {
   const taskItemRef = useRef<HTMLDivElement>(null)
@@ -25,10 +26,23 @@ const Trash = () => {
 
   const onSelectTaskId = useUnit(selectTaskId)
   const onDeleteTask = useUnit($$deleteTask.taskDeletedById)
+  const onDeleteAllTasks = useUnit($$deleteTask.allTasksDeleted)
   return (
     <Suspense fallback={<div>inbox loading...</div>}>
       <Layout>
-        <Layout.Header iconName="common/inbox" title={t("task.trash")} />
+        <Layout.Header
+          slot={
+            <Button 
+              onClick={onDeleteAllTasks}
+              intent={"accent"} 
+              size={'sm'} 
+              className="text-[12px] flex items-center gap-x-2">
+              <Cross/>
+              Clear the bucket
+            </Button>
+          }
+          iconName="common/inbox" 
+          title={t("task.trash")} />
         <Layout.Content
           contentRef={taskItemRef}
           className="flex flex-col"
@@ -60,5 +74,12 @@ const Trash = () => {
     </Suspense>
   )
 }
-
+const Cross = () => {
+  return (
+    <div className="w-[10px] h-[10px] relative 
+      after:content-[''] after:left-1/2 after:bottom-0 after:absolute after:w-[2px] after:h-3 after:bg-accent after:rotate-45
+      before:content-[''] before:left-1/2 before:bottom-0 before:absolute before:w-[2px] before:h-3 before:bg-accent before:-rotate-45
+    "></div>
+  )
+}
 export default Trash

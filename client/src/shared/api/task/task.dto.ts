@@ -11,6 +11,7 @@ export const TaskSchemaDto = z.object({
   date_created: z.coerce.date(),
   is_deleted: z.boolean(),
 })
+export const BatchedSchemaDto = z.object({count: z.number()})
 export const TasksSchemaDto = z.array(TaskSchemaDto)
 
 export type TaskId = string

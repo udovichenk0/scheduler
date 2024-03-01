@@ -15,20 +15,18 @@ import { MainModal } from "@/shared/ui/modals/main"
 
 import { $$pomodoroModal, $$settingsModal, $$pomodoro } from "./header.model"
 import { PomodoroProgressBar } from "./ui/progress-bar"
-import { Sort, SortProps } from "./ui/sort"
 import { Tooltip } from "@/shared/ui/general/tooltip"
-
 
 type HeaderProps = {
   iconName: IconName,
   title: string | ReactNode,
-  sorting?: SortProps
+  slot?: ReactNode
 }
 
 export const Header = ({
   iconName,
   title,
-  sorting,
+  slot
 }: HeaderProps) => {
 
   const { t } = useTranslation()
@@ -93,7 +91,9 @@ export const Header = ({
           <Icon name={iconName} className="fill-cIconDefault text-2xl" />
           <Typography.Heading size="lg">{title}</Typography.Heading>
         </div>
-        <Sort sorting={sorting}/>
+        <div className="relative">
+          {slot}
+        </div>
       </div>
     </Container>
   )

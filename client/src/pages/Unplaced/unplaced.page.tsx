@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { Layout } from "@/widgets/layout/main"
 
-import { TaskItem } from "@/entities/task/task-item"
+import { Sort, TaskItem } from "@/entities/task/task-item"
 
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { useDocumentTitle, onClickOutside } from "@/shared/lib/react"
@@ -47,11 +47,11 @@ const Unplaced = () => {
       <Layout.Header
         iconName="common/cross-arrows"
         title={t("task.unplaced")}
-        sorting={{
+        slot={<Sort sorting={{
           onChange: onSortChange,
           active: activeSort,
           config: SORT_CONFIG,
-        }}
+        }}/>}
       />
       <Layout.Content
         onClick={(e) => onClickOutside(taskRef, e, onCloseTaskForm)}
