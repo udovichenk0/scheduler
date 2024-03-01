@@ -20,11 +20,11 @@ export const Footer = ({
       <Button
         onClick={onCreateTask}
         disabled={!onCreateTask}
-        intent={"primary"}
+        intent={"accent"}
         size={"base"}
-        className={`!text-accent ${!onCreateTask && "opacity-40"}`}
+        className={`text-sm ${!onCreateTask && "opacity-40"}`}
       >
-        <Icon name="common/plus" className="mr-4" />
+        <Icon name="common/plus" className="mr-4 text-lg" />
         {t("footer.newTask")}
       </Button>
       <Tooltip text={t("delete")}>
@@ -37,7 +37,7 @@ export const Footer = ({
         >
           <Icon
             name="common/trash-can"
-            className={`text-[20px] ${
+            className={`text-[24px] ${
               selectedTaskId ? "opacity-70" : "opacity-40"
             }`}
           />

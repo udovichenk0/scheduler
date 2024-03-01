@@ -11,7 +11,7 @@ export const buttonCva = cva(
         filled: ["bg-cButtonBg", "hover:bg-cButtunHover", "text-cButtonText"],
       },
       size: {
-        xs: ["p-1"],
+        xs: ["p-1 text-[14px]"],
         sm: ["py-1", "px-2"],
         base: ["py-2", "px-4"],
         m: ["py-2", "px-5"],
