@@ -35,8 +35,8 @@ const Trash = () => {
             <Button 
               onClick={onDeleteAllTasks}
               intent={"accent"} 
-              size={'sm'} 
-              className="text-[12px] flex items-center gap-x-2">
+              size={'xs'} 
+              className="flex items-center gap-x-2">
               <Cross/>
               Clear the bucket
             </Button>
@@ -76,7 +76,7 @@ const Trash = () => {
 }
 const Cross = () => {
   return (
-    <div className="w-[10px] h-[10px] relative 
+    <div className="w-[10px] h-[10px] mt-[2px] relative
       after:content-[''] after:left-1/2 after:bottom-0 after:absolute after:w-[2px] after:h-3 after:bg-accent after:rotate-45
       before:content-[''] before:left-1/2 before:bottom-0 before:absolute before:w-[2px] before:h-3 before:bg-accent before:-rotate-45
     "></div>

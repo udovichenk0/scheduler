@@ -14,7 +14,7 @@ interface Props extends HTMLAttributes<HTMLElement> {
 
 export const Tooltip = ({ text, dir = 'tc', size = 'base', children }: Props) => {
   return (
-    <div className="relative group">
+    <div className="relative group sdf">
       {children}
       <span
         data-dir={dir}

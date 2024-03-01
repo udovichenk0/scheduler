@@ -33,9 +33,9 @@ export const Sidebar = () => {
             </div>
             <div>... {/* make a popup*/}</div>
           </div>
-          <div className="space-y-2">
+          <div className="flex flex-col gap-y-2">
             <Button
-              activeClassName="bg-cFocus"
+              activeClassName="bg-cFocus rounded-[5px]"
               as="link"
               to={routes.inbox}
               intent={"primary"}
@@ -53,7 +53,7 @@ export const Sidebar = () => {
             </Button>
 
             <Button
-              activeClassName="bg-cFocus"
+              activeClassName="bg-cFocus rounded-[5px]"
               as="link"
               to={routes.home}
               intent={"primary"}
@@ -71,7 +71,7 @@ export const Sidebar = () => {
             </Button>
 
             <Button
-              activeClassName="bg-cFocus"
+              activeClassName="bg-cFocus rounded-[5px]"
               as="link"
               to={routes.upcoming}
               intent={"primary"}
@@ -86,7 +86,7 @@ export const Sidebar = () => {
             </Button>
 
             <Button
-              activeClassName="bg-cFocus"
+              activeClassName="bg-cFocus rounded-[5px]"
               as="link"
               to={routes.calendar}
               intent={"primary"}
