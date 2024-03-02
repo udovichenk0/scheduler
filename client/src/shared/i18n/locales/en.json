@@ -183,5 +183,8 @@
   "prev_week": "Previous week",
   "next_week": "Next week",
 
-  "delete": "Delete"
+  "action": {
+    "delete": "Delete",
+    "clearBucket": "Clear the bucket"
+  }
 }
