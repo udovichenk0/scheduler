@@ -27,9 +27,9 @@ export const Footer = ({
         <Icon name="common/plus" className="mr-4 text-lg" />
         {t("footer.newTask")}
       </Button>
-      <Tooltip text={t("delete")}>
+      <Tooltip text={t("action.delete")}>
         <Button
-          title={t("delete")}
+          title={t("action.delete")}
           disabled={!selectedTaskId}
           onClick={() => onDeleteTask(selectedTaskId!)}
           intent={"primary"}

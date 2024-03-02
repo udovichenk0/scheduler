@@ -38,7 +38,7 @@ const Trash = () => {
               size={'xs'} 
               className="flex items-center gap-x-2">
               <Cross/>
-              Clear the bucket
+              {t("action.clearBucket")}
             </Button>
           }
           iconName="common/inbox" 
