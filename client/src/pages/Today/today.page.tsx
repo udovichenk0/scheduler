@@ -27,8 +27,7 @@ import {
   $$updateTask,
   $$createTask,
   $$sort,
-  $selectedTaskId,
-  selectTaskId,
+  $$selectTask,
 } from "./today.model"
 import { SORT_CONFIG } from "./config"
 
@@ -41,13 +40,13 @@ const Today = () => {
   const createdTask = useUnit($$taskDisclosure.$createdTask)
   const overdueTasks = useUnit($overdueTasks)
   const todayTasks = useUnit($todayTasks)
-  const selectedTaskId = useUnit($selectedTaskId)
+  const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
   const activeSort = useUnit($$sort.$sortType)
 
   const onCloseTaskForm = useUnit($$taskDisclosure.closeTaskTriggered)
   const onCreateTaskFormOpen = useUnit($$taskDisclosure.createdTaskOpened)
   const onDeleteTask = useUnit($$trashTask.taskTrashedById)
-  const onSelectTaskId = useUnit(selectTaskId)
+  const onSelectTaskId = useUnit($$selectTask.selectTaskId)
   const onSortChange = useUnit($$sort.sort)
 
   return (

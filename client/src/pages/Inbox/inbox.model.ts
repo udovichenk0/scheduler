@@ -1,4 +1,4 @@
-import { combine, createEvent, createStore, sample } from "effector"
+import { combine, sample } from "effector"
 
 import { disclosureTask } from "@/widgets/expanded-task/model"
 
@@ -8,8 +8,7 @@ import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
 import { $$task, createSorting } from "@/entities/task/task-item"
 
-import { getNextTaskId } from "@/shared/lib/effector/task-selection"
-import { TaskId } from "@/shared/api/task"
+import { selectTaskFactory } from "@/shared/lib/effector/task-selection"
 
 export const $$trashTask = trashTaskFactory()
 
@@ -36,24 +35,10 @@ export const $$taskDisclosure = disclosureTask({
   updateTaskModel: $$updateTask,
   createTaskModel: $$createTask,
 })
-export const selectTaskId = createEvent<Nullable<TaskId>>()
-export const selectNextId = createEvent<TaskId>()
-export const $selectedTaskId = createStore<Nullable<TaskId>>(null).on(
-  selectTaskId,
-  (_, id) => id,
-)
+
+export const $$selectTask = selectTaskFactory($inboxTasks)
 
 sample({
-  clock: selectNextId,
-  source: $inboxTasks,
-  fn: (t, id) => {
-    const tId = getNextTaskId(t!, id)
-    if (tId) return tId
-    return null
-  },
-  target: $selectedTaskId,
-})
-sample({
   clock: $$trashTask.taskTrashedById,
-  target: selectNextId,
+  target: $$selectTask.selectNextId,
 })

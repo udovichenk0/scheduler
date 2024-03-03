@@ -10,17 +10,17 @@ import { TaskId } from "@/shared/api/task"
 import { SectionRoot } from "../../ui/date-section/root"
 
 export const AllUpcomingTasks = ({
+  onChangeDate,
+  onSelectTaskId,
   $selectedDate,
-  changeDate,
   taskRef,
   tasks,
-  selectTaskId,
   selectedTaskId,
 }: {
+  onChangeDate: (date: Date) => void
+  onSelectTaskId: (args: {taskId: TaskId, section: string}) => void
   $selectedDate: Store<Date>
-  changeDate: (date: Date) => void
   taskRef: RefObject<HTMLDivElement>
-  selectTaskId: (taskId: Nullable<TaskId>) => void
   tasks: {
     tasks: Task[]
     title: string
@@ -36,16 +36,17 @@ export const AllUpcomingTasks = ({
         return (
           <SectionRoot key={title}>
             <SectionRoot.Header
-              action={() => changeDate(new Date(date.toISOString()))}
+              action={() => onChangeDate(new Date(date.toISOString()))}
               isNextSelectedTask={dayjs(selectedDate).isSame(date, "day")}
             >
               {title}
             </SectionRoot.Header>
             <SectionRoot.Content
-              selectedTaskId={selectedTaskId}
-              selectTaskId={selectTaskId}
-              taskRef={taskRef}
+              onSelectTaskId={onSelectTaskId}
               isSelected={date.isSame(selectedDate, "day")}
+              selectedTaskId={selectedTaskId}
+              section={title}
+              taskRef={taskRef}
               tasks={tasks}
             />
           </SectionRoot>

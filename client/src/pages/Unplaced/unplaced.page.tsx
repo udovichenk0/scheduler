@@ -16,9 +16,8 @@ import {
   $$sort,
   $$taskDisclosure,
   $$updateTask,
-  $selectedTaskId,
+  $$selectTask,
   $unplacedTasks,
-  selectTaskId,
 } from "./unplaced.model"
 import { SORT_CONFIG } from "./config"
 
@@ -30,10 +29,10 @@ const Unplaced = () => {
   const unplacedTasks = useUnit($unplacedTasks)
   const createdTask = useUnit($$taskDisclosure.$createdTask)
   const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
-  const selectedTaskId = useUnit($selectedTaskId)
-  const onSelectTaskId = useUnit(selectTaskId)
+  const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
   const activeSort = useUnit($$sort.$sortType)
-
+  
+  const onSelectTaskId = useUnit($$selectTask.selectTaskId)
   const onCloseTaskForm = useUnit($$taskDisclosure.closeTaskTriggered)
   const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpenedById)
   const onCreateTaskFormOpen = useUnit($$taskDisclosure.createdTaskOpened)

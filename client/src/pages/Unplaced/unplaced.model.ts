@@ -1,4 +1,4 @@
-import { combine, createEvent, createStore, sample } from "effector"
+import { combine, sample } from "effector"
 
 import { disclosureTask } from "@/widgets/expanded-task/model"
 
@@ -8,8 +8,7 @@ import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
 import { $$task, createSorting } from "@/entities/task/task-item"
 
-import { getNextTaskId } from "@/shared/lib/effector"
-import { TaskId } from "@/shared/api/task"
+import { selectTaskFactory } from "@/shared/lib/effector"
 
 export const $$sort = createSorting()
 export const $unplacedTasks = combine(
@@ -35,37 +34,9 @@ export const $$taskDisclosure = disclosureTask({
   updateTaskModel: $$updateTask,
   createTaskModel: $$createTask,
 })
-export const selectTaskId = createEvent<Nullable<TaskId>>()
-export const selectNextId = createEvent<TaskId>()
-export const $selectedTaskId = createStore<Nullable<TaskId>>(null).on(
-  selectTaskId,
-  (_, id) => id,
-)
-
-sample({
-  clock: selectNextId,
-  source: $unplacedTasks,
-  fn: (t, id) => {
-    const tId = getNextTaskId(t!, id)
-    if (tId) return tId
-    return null
-  },
-  target: $selectedTaskId,
-})
+export const $$selectTask = selectTaskFactory($unplacedTasks)
 
 sample({
   clock: $$trashTask.taskTrashedById,
-  target: selectNextId,
+  target: $$selectTask.selectNextId,
 })
-/**
- *  !should not trigger when page is closed
- */
-
-//create filter config(you can't sort by date in inbox )
-/**
- * filters:
- * By time - when the task was created
- * Custom sorting - in order user created a task(base)
- * Alphabetical sorting
- * By date
- */

@@ -4,36 +4,42 @@ import { Task } from "@/entities/task/task-item"
 
 import { TaskId } from "@/shared/api/task"
 
-export const selectTaskFactory = ($tasks: Store<Task[]>) => {
-  const reset = createEvent()
-  const taskIdSelected = createEvent<Nullable<TaskId>>()
-  const nextTaskIdSelected = createEvent()
-  const $selectedTaskId = createStore<Nullable<TaskId>>(null).reset(reset)
+export const selectTaskFactory = ($tasks: Store<Nullable<Task[] | Task[][]>>) => {
+  const selectTaskId = createEvent<Nullable<TaskId>>()
+  const selectNextId = createEvent<TaskId>()
+  const $selectedTaskId = createStore<Nullable<TaskId>>(null).on(
+    selectTaskId,
+    (_, id) => id,
+  )
+
   sample({
-    clock: taskIdSelected,
-    target: $selectedTaskId,
-  })
-  type ArgInp = {
-    tasks: Task[]
-    selectedTaskId: Nullable<TaskId>
-  }
-  type ArgOut = {
-    tasks: Task[]
-    selectedTaskId: TaskId
-  }
-  sample({
-    clock: nextTaskIdSelected,
-    source: { tasks: $tasks, selectedTaskId: $selectedTaskId },
-    filter: (params: ArgInp): params is ArgOut => !!params.selectedTaskId,
-    fn: ({ tasks, selectedTaskId }) => getNextTaskId(tasks, selectedTaskId),
+    clock: selectNextId,
+    source: $tasks,
+    filter: (tasks: Nullable<Task[] | Task[][]>):tasks is Task[] | Task[][] => tasks != null,
+    fn: (tasks, id) => {
+      if(Array.isArray(tasks[0])){
+        //@ts-ignore
+        return getNextTaskIdFromMultipleSource(tasks, id)
+      }
+      //@ts-ignore
+      const tId = getNextTaskId(tasks, id)
+      if (tId) return tId
+      return null
+    },
     target: $selectedTaskId,
   })
   return {
-    taskIdSelected,
-    nextTaskIdSelected,
-    $selectedTaskId,
-    reset,
+    selectTaskId,
+    selectNextId,
+    $selectedTaskId
   }
+}
+export function getNextTaskIdFromMultipleSource(source: Task[][], selectedTaskId: TaskId){
+  for(let i = 0; i < source.length; i++){
+    const taskId = getNextTaskId(source[i], selectedTaskId)
+    if(taskId) return taskId
+  }
+  return null
 }
 export function getNextTaskId(tasks: Task[], selectedTaskId: TaskId) {
   if (!selectedTaskId || !tasks) return null

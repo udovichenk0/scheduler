@@ -10,8 +10,7 @@ import { trashTaskFactory } from "@/features/manage-task/model/trash"
 import { $$task, createSorting } from "@/entities/task/task-item"
 
 import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
-import { getNextTaskId } from "@/shared/lib/effector"
-import { TaskId } from "@/shared/api/task"
+import { selectTaskFactory } from "@/shared/lib/effector"
 export const $$trashTask = trashTaskFactory()
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
@@ -24,7 +23,8 @@ export const $$taskDisclosure = disclosureTask({
   createTaskModel: $$createTask,
 })
 export const $$sort = createSorting()
-const $tasks = combine($$task.$taskKv, $$sort.$sortType, (kv, sortType) => {
+
+const $sortedTasks = combine($$task.$taskKv, $$sort.$sortType, (kv, sortType) => {
   if (!kv) return null
   const tasks = Object.values(kv).filter(
     ({ start_date, is_deleted }) =>
@@ -40,7 +40,7 @@ const $tasks = combine($$task.$taskKv, $$sort.$sortType, (kv, sortType) => {
  * !make "Today" task type
  * !Overdue task only can be if it was created as "Today" previously
  */
-export const $overdueTasks = $tasks.map((tasks) => {
+export const $overdueTasks = $sortedTasks.map((tasks) => {
   return (
     tasks?.filter(
       ({ start_date, is_deleted }) =>
@@ -48,7 +48,7 @@ export const $overdueTasks = $tasks.map((tasks) => {
     ) || []
   )
 })
-export const $todayTasks = $tasks.map((tasks) => {
+export const $todayTasks = $sortedTasks.map((tasks) => {
   return (
     tasks?.filter(({ start_date }) =>
       dayjs(start_date).isSame(dayjs(), "day"),
@@ -56,25 +56,10 @@ export const $todayTasks = $tasks.map((tasks) => {
   )
 })
 
-export const selectTaskId = createEvent<Nullable<TaskId>>()
-export const selectNextId = createEvent<TaskId>()
-export const $selectedTaskId = createStore<Nullable<TaskId>>(null).on(
-  selectTaskId,
-  (_, id) => id,
-)
-
-sample({
-  clock: selectNextId,
-  source: { t: $todayTasks, o: $overdueTasks },
-  fn: ({ t, o }, id) => {
-    const tId = getNextTaskId(t, id)
-    if (tId) return tId
-    const oId = getNextTaskId(o, id)
-    if (oId) return oId
-    return null
-  },
-  target: $selectedTaskId,
+const $tasks = combine($todayTasks, $overdueTasks, (todayTasks, overdueTasks) => {
+  return [todayTasks, overdueTasks] 
 })
+export const $$selectTask = selectTaskFactory($tasks)
 
 export const $isOverdueTasksOpened = createStore(false)
 export const toggleOverdueTasksOpened = createEvent()
@@ -92,5 +77,5 @@ cookiePersist({
 
 sample({
   clock: $$trashTask.taskTrashedById,
-  target: selectNextId,
+  target: $$selectTask.selectNextId,
 })

@@ -10,17 +10,19 @@ import { TaskId } from "@/shared/api/task"
 import { TaskManagerContext } from "../../upcoming.model"
 
 export const Content = ({
+  onSelectTaskId,
   taskRef,
+  section,
   tasks,
   isSelected,
-  selectTaskId,
   selectedTaskId,
 }: {
+  onSelectTaskId: (args: {taskId: TaskId, section: string}) => void
   taskRef: RefObject<HTMLDivElement>
+  section: string,
   tasks: Task[]
   title?: ReactNode
   isSelected: boolean
-  selectTaskId: (taskId: Nullable<TaskId>) => void
   selectedTaskId: Nullable<TaskId>
 }) => {
   const { $$createTask, $$updateTask, $$taskDisclosure } =
@@ -49,7 +51,7 @@ export const Content = ({
                   onUpdateDate={changeDateAndUpdate}
                   onUpdateStatus={changeStatusAndUpdate}
                   isTaskSelected={selectedTaskId === task.id}
-                  onClick={() => selectTaskId(task.id)}
+                  onClick={() => onSelectTaskId({ taskId: task.id, section })}
                   onDoubleClick={() => openUpdatedTaskById(task.id)}
                   task={task}
                 />
