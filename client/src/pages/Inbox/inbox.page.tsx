@@ -21,8 +21,7 @@ import {
   $$updateTask,
   $$createTask,
   $$sort,
-  selectTaskId,
-  $selectedTaskId,
+  $$selectTask
 } from "./inbox.model"
 import { SORT_CONFIG } from "./config"
 
@@ -36,16 +35,16 @@ const Inbox = () => {
   const tasks = useUnit($inboxTasks)
   const createdTask = useUnit($$taskDisclosure.$createdTask)
   const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
-  const selectedTaskId = useUnit($selectedTaskId)
+  const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
   const activeSort = useUnit($$sort.$sortType)
 
-  const onCloseTaskForm = useUnit($$taskDisclosure.closeTaskTriggered)
   const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpenedById)
   const onCreateTaskFormOpen = useUnit($$taskDisclosure.createdTaskOpened)
-  const onDeleteTask = useUnit($$trashTask.taskTrashedById)
   const onChangeTaskStatus = useUnit($$updateTask.statusChangedAndUpdated)
   const onChangeTaskDate = useUnit($$updateTask.dateChangedAndUpdated)
-  const onSelectTaskId = useUnit(selectTaskId)
+  const onCloseTaskForm = useUnit($$taskDisclosure.closeTaskTriggered)
+  const onSelectTaskId = useUnit($$selectTask.selectTaskId)
+  const onDeleteTask = useUnit($$trashTask.taskTrashedById)
   const onSortChange = useUnit($$sort.sort)
 
   return (

@@ -11,9 +11,8 @@ import { NoTasks } from "@/shared/ui/no-tasks"
 
 import {
   $$deleteTask,
-  $selectedTaskId,
   $trashTasks,
-  selectTaskId,
+  $$selectTask
 } from "./trash.model"
 import { Button } from "@/shared/ui/buttons/main-button"
 
@@ -22,9 +21,9 @@ const Trash = () => {
   useDocumentTitle(t("task.trash"))
 
   const tasks = useUnit($trashTasks)
-  const selectedTaskId = useUnit($selectedTaskId)
+  const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
 
-  const onSelectTaskId = useUnit(selectTaskId)
+  const onSelectTaskId = useUnit($$selectTask.selectTaskId)
   const onDeleteTask = useUnit($$deleteTask.taskDeletedById)
   const onDeleteAllTasks = useUnit($$deleteTask.allTasksDeleted)
   return (

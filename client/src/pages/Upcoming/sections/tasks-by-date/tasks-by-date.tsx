@@ -13,13 +13,13 @@ import { TaskManagerContext } from "../../upcoming.model"
 
 export const TasksByDate = ({
   taskRef,
-  selectTaskId,
+  onSelectTaskId,
   selectedTaskId,
   tasks,
   date,
 }: {
   taskRef: RefObject<HTMLDivElement>
-  selectTaskId: (task: Nullable<TaskId>) => void
+  onSelectTaskId: (task: Nullable<TaskId>) => void
   selectedTaskId: Nullable<TaskId>
   tasks: Task[]
   date: Dayjs
@@ -52,7 +52,7 @@ export const TasksByDate = ({
                 onUpdateDate={onChangeDate}
                 onUpdateStatus={onChangeStatus}
                 isTaskSelected={selectedTaskId === task.id}
-                onClick={() => selectTaskId(task.id)}
+                onClick={() => onSelectTaskId(task.id)}
                 onDoubleClick={() => onUpdateTaskFormOpen(task.id)}
                 task={task}
               />

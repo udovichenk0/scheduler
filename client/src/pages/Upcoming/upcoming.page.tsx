@@ -20,9 +20,9 @@ import {
   $tasksByDateKv,
   $upcomingTasks,
   $tasksByDate,
-  selectTaskId,
-  $selectedTaskId,
+  $$selectTask,
   $$sort,
+  selectTaskIdWithSectionTitle,
 } from "./upcoming.model"
 import { TasksByDate } from "./sections/tasks-by-date"
 import { HeaderTitle } from "./ui/header-title"
@@ -37,7 +37,7 @@ const Upcoming = () => {
   const upcomingTasks = useUnit($upcomingTasks)
   const tasksByDate = useUnit($tasksByDate)
   const variant = useUnit($variant)
-  const selectedTaskId = useUnit($selectedTaskId)
+  const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
   const activeSort = useUnit($$sort.$sortType)
 
   const onCloseTaskForm = useUnit($$taskDisclosure.closeTaskTriggered)
@@ -45,13 +45,14 @@ const Upcoming = () => {
   const onChangeDate = useUnit(currentDateSelected)
   const onDeleteTask = useUnit($$trashTask.taskTrashedById)
   const onSelectViewVariant = useUnit(variantSelected)
-  const onSelectUpcomingTaskId = useUnit(selectTaskId)
+  const onSelectTaskId = useUnit($$selectTask.selectTaskId)
+  const onSelectTaskIdWithSection = useUnit(selectTaskIdWithSectionTitle)
   const onSortChange = useUnit($$sort.sort)
 
   const resetSelectedTaskId = (e: MouseEvent) => {
     const t = e.target as HTMLDivElement
     if (t.id != "task") {
-      onSelectUpcomingTaskId(null)
+      onSelectTaskId(null)
     }
   }
   return (
@@ -86,28 +87,28 @@ const Upcoming = () => {
         >
           {variant === "upcoming" ? (
             <AllUpcomingTasks
+              onSelectTaskId={onSelectTaskIdWithSection}
+              onChangeDate={onChangeDate}
               tasks={upcomingTasks}
-              selectTaskId={onSelectUpcomingTaskId}
               selectedTaskId={selectedTaskId}
-              changeDate={onChangeDate}
               $selectedDate={$selectedDate}
               taskRef={expandedTaskRef}
             />
           ) : (
             <TasksByDate
+              onSelectTaskId={onSelectTaskId}
               date={variant}
               tasks={tasksByDate}
               taskRef={expandedTaskRef}
-              selectTaskId={onSelectUpcomingTaskId}
               selectedTaskId={selectedTaskId}
             />
           )}
         </TaskManagerContext.Provider>
       </Layout.Content>
       <Layout.Footer
-        selectedTaskId={selectedTaskId}
         onDeleteTask={onDeleteTask}
         onCreateTask={onCreateTaskFormOpen}
+        selectedTaskId={selectedTaskId}
       />
     </Layout>
   )
