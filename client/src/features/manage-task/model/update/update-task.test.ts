@@ -10,8 +10,8 @@ import { updateTaskFactory } from "./task.model"
 
 const updateTaskModel = updateTaskFactory()
 
-const tasks = {
-  "1": {
+const tasks = [
+  {
     id: "1",
     title: "without date",
     description: "",
@@ -22,10 +22,10 @@ const tasks = {
     date_created: "2023-12-03T11:11:51.227Z",
     is_deleted: false,
   },
-}
+]
 
-const updatedTasks = {
-  "1": {
+const updatedTasks = [
+  {
     id: "1",
     title: "title",
     description: "my description",
@@ -36,7 +36,7 @@ const updatedTasks = {
     date_created: "2023-12-03T11:11:51.227Z",
     is_deleted: false,
   },
-}
+]
 
 const returnedValue = {
   id: "1",
@@ -63,7 +63,7 @@ describe("update task", () => {
     } = updateTaskModel
     const scope = fork({
       values: [
-        [$$task._.$taskKv, tasks],
+        [$$task.$tasks, tasks],
         [$title, "title"],
         [$description, "my description"],
         [$status, "FINISHED"],
@@ -78,7 +78,7 @@ describe("update task", () => {
 
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toReturnWith(returnedValue)
-    expect(scope.getState($$task.$taskKv)).toStrictEqual(updatedTasks)
+    expect(scope.getState($$task.$tasks)).toStrictEqual(updatedTasks)
     expect(scope.getState($isAllowToSubmit)).toBeFalsy()
     expect(scope.getState($title)).toBe("")
     expect(scope.getState($description)).toBe("")
@@ -99,7 +99,7 @@ describe("update task", () => {
     } = updateTaskModel
     const scope = fork({
       values: [
-        [$$task._.$taskKv, tasks],
+        [$$task.$tasks, tasks],
         [$title, "title"],
         [$description, "my description"],
         [$status, "FINISHED"],
@@ -125,7 +125,7 @@ describe("update task", () => {
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toReturnWith({ result: returnedValue })
     expect(mock).toBeCalledWith(null, fields)
-    expect(scope.getState($$task.$taskKv)).toStrictEqual(updatedTasks)
+    expect(scope.getState($$task.$tasks)).toStrictEqual(updatedTasks)
     expect(scope.getState($isAllowToSubmit)).toBeFalsy()
     expect(scope.getState($title)).toBe("")
     expect(scope.getState($description)).toBe("")

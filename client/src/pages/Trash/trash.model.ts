@@ -7,8 +7,8 @@ import { $$task } from "@/entities/task/task-item"
 import { selectTaskFactory } from "@/shared/lib/effector"
 
 export const $$deleteTask = removeTaskFactory()
-export const $trashTasks = $$task.$taskKv.map((kv) => {
-  if (kv) return Object.values(kv).filter(({ is_deleted }) => is_deleted)
+export const $trashTasks = $$task.$tasks.map((tasks) => {
+  if (tasks) return tasks.filter(({ is_deleted }) => is_deleted)
   return null
 })
 

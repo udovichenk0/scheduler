@@ -27,9 +27,9 @@ export const $isTaskFormModalOpened = createStore(false)
   .on(taskFormModalOpened, () => true)
   .on(taskFormModalClosed, () => false)
 
-export const $mappedTasks = $$task.$taskKv.map((kv) => {
-  if (!kv) return null
-  return Object.values(kv).reduce(
+export const $mappedTasks = $$task.$tasks.map((tasks) => {
+  if (!tasks) return null
+  return tasks.reduce(
     (acc, task) => {
       const date = dayjs(task.start_date).format("YYYY-MM-DD")
       if (!task.start_date || task.is_deleted) {

@@ -27,7 +27,7 @@ test("logout", async () => {
   const mock = vi.fn()
   const scope = fork({
     values: [
-      [$$task._.$taskKv, tasks],
+      [$$task.$tasks, tasks],
       [$$session.$user, fakeUser],
       [$$session.$isAuthenticated, true],
     ],
@@ -39,7 +39,7 @@ test("logout", async () => {
   await allSettled(submitTriggered, { scope })
 
   expect(mock).toHaveBeenCalled()
-  expect(scope.getState($$task.$taskKv)).toStrictEqual(null)
+  expect(scope.getState($$task.$tasks)).toStrictEqual(null)
   expect(scope.getState($$session.$isAuthenticated)).toBeFalsy()
   expect(scope.getState($$session.$user)).toBeNull()
 })

@@ -1,4 +1,4 @@
-import { combine, createEvent, sample, createStore } from "effector"
+import { combine, createEvent, sample, createStore, StoreWritable } from "effector"
 import { not, spread } from "patronum"
 import dayjs, { Dayjs } from "dayjs"
 import { createContext } from "react"
@@ -24,7 +24,7 @@ export const $$createTask = createTaskFactory({
   defaultDate: dayjs(new Date()).startOf('date').toDate(),
 })
 export const $$taskDisclosure = disclosureTask({
-  tasks: $$task.$taskKv,
+  $tasks: $$task.$tasks,
   updateTaskModel: $$updateTask,
   createTaskModel: $$createTask,
 })
@@ -48,10 +48,10 @@ export const $variant = createStore<Variant>("upcoming").on(
   (_, variant) => variant,
 )
 
-const $sortedTasks = combine($$task.$taskKv, $$sort.$sortType, (kv, sortType) => {
-  if (!kv) return []
-  const tasks = Object.values(kv).filter(({ is_deleted }) => !is_deleted)
-  return $$sort.sortBy(sortType, tasks)
+const $sortedTasks = combine($$task.$tasks, $$sort.$sortType, (tasks, sortType) => {
+  if (!tasks) return []
+  const upcomingTasks = tasks.filter(({ is_deleted }) => !is_deleted)
+  return $$sort.sortBy(sortType, upcomingTasks)
 })
 export const $upcomingTasks = combine($sortedTasks, $variant, (tasks, variant) => {
   if (variant == "upcoming" && tasks) {
@@ -97,9 +97,9 @@ sample({
   })
 })
 
-export const $tasksByDateKv = combine($$task.$taskKv, (kv) => {
-  if (!kv) return null
-  return Object.values(kv).reduce(
+export const $tasksByDateKv = combine($$task.$tasks, (tasks) => {
+  if (!tasks) return null
+  return tasks.reduce(
     (acc, item) => {
       const date = dayjs(item.start_date).format("YYYY-MM-DD")
       if (!item.start_date) return acc

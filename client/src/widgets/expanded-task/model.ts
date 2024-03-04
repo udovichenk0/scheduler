@@ -4,11 +4,12 @@ import { spread, and, not, or } from "patronum"
 import { CreateTaskType } from "@/features/manage-task/model/create"
 import { UpdateTaskType } from "@/features/manage-task/model/update"
 
-import { TaskKv } from "@/entities/task/task-item"
+import { Task } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
 import { TaskId } from "@/shared/api/task"
 import { bridge } from "@/shared/lib/effector/bridge"
+import { findTaskById, tasksNotNull } from "@/entities/task/task-item/lib"
 
 export const pomodoroModal = createModal({})
 export const settingsModal = createModal({})
@@ -17,11 +18,11 @@ export const dateModal = createModal({})
 export const disclosureTask = ({
   updateTaskModel,
   createTaskModel,
-  tasks,
+  $tasks,
 }: {
   updateTaskModel: UpdateTaskType
   createTaskModel: CreateTaskType
-  tasks: Store<Nullable<TaskKv>>
+  $tasks: Store<Nullable<Task[]>>
 }) => {
   const {
     $title,
@@ -56,9 +57,9 @@ export const disclosureTask = ({
 
   sample({
     clock: updatedTaskOpenedById,
-    source: tasks,
-    filter: (tasks: Nullable<TaskKv>): tasks is TaskKv => tasks != null,
-    fn: (tasks, id) => tasks[id],
+    source: $tasks,
+    filter: tasksNotNull,
+    fn: findTaskById,
     target: spread({
       title: $title,
       description: $description,

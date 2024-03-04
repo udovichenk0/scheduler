@@ -14,14 +14,14 @@ export const $$trashTask = trashTaskFactory()
 
 export const $$sort = createSorting()
 export const $inboxTasks = combine(
-  $$task.$taskKv,
+  $$task.$tasks,
   $$sort.$sortType,
-  (kv, sortType) => {
-    if (!kv) return null
-    const tasks = Object.values(kv).filter(
+  (tasks, sortType) => {
+    if (!tasks) return null
+    const inboxTasks = tasks.filter(
       ({ type, is_deleted }) => type == "inbox" && !is_deleted,
     )
-    return $$sort.sortBy(sortType, tasks)
+    return $$sort.sortBy(sortType, inboxTasks)
   },
 )
 
@@ -31,7 +31,7 @@ export const $$createTask = createTaskFactory({
   defaultDate: null,
 })
 export const $$taskDisclosure = disclosureTask({
-  tasks: $$task.$taskKv,
+  $tasks: $$task.$tasks,
   updateTaskModel: $$updateTask,
   createTaskModel: $$createTask,
 })

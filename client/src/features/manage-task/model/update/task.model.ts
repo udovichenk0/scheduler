@@ -2,12 +2,12 @@ import { attach, createEvent, merge, sample } from "effector"
 import { spread, and, not } from "patronum"
 import { attachOperation } from "@farfetched/core"
 
-import { switchTaskType } from "@/entities/task/task-item/lib"
+import { findTaskById, switchTaskType, tasksNotNull } from "@/entities/task/task-item/lib"
 import { $$session } from "@/entities/session"
-import { $$task, TaskKv } from "@/entities/task/task-item"
+import { $$task, Task } from "@/entities/task/task-item"
 import { modifyTaskFactory } from "@/entities/task/task-form"
 
-import { taskApi, TaskStatus } from "@/shared/api/task"
+import { taskApi, TaskId, TaskStatus } from "@/shared/api/task"
 import { bridge } from "@/shared/lib/effector/bridge"
 
 export const updateTaskFactory = () => {
@@ -48,24 +48,27 @@ export const updateTaskFactory = () => {
 
   //updatae task date from localstorage or from the server
   bridge(() => {
+    function getType(tasks: Task[], id: TaskId, date: Date){
+      const task = tasks?.find((task) => task.id == id)!
+      const type = switchTaskType(task.type, date)
+      return type
+    }
     sample({
       clock: dateChangedAndUpdated,
-      source: $$task.$taskKv,
+      source: $$task.$tasks,
       filter: not($$session.$isAuthenticated),
-      fn: (kv, { date, id }) => {
-        const task = kv![id]
-        const type = switchTaskType(task.type, date)
+      fn: (tasks, { date, id }) => {
+        const type = getType(tasks!, id, date)
         return { id, date, type }
       },
       target: attachUpdateTaskDateFromLsFx,
     })
     sample({
       clock: dateChangedAndUpdated,
-      source: $$task.$taskKv,
+      source: $$task.$tasks,
       filter: $$session.$isAuthenticated,
-      fn: (kv, { date, id }) => {
-        const task = kv![id]
-        const type = switchTaskType(task.type, date)
+      fn: (tasks, { date, id }) => {
+        const type = getType(tasks!, id, date)
         return { data: { start_date: date, type }, id }
       },
       target: attachUpdateTaskDate.start,
@@ -115,9 +118,9 @@ export const updateTaskFactory = () => {
 
   sample({
     clock: setFieldsTriggeredById,
-    source: $$task.$taskKv,
-    filter: (tasks: Nullable<TaskKv>): tasks is TaskKv => !!tasks,
-    fn: (tasks, id) => tasks[id],
+    source: $$task.$tasks,
+    filter: tasksNotNull,
+    fn: findTaskById,
     target: spread({
       title: $title,
       description: $description,
@@ -136,8 +139,9 @@ export const updateTaskFactory = () => {
       attachUpdateTaskDateFromLsFx.doneData,
       attachUpdateStatusFromLocalStorageFx.doneData,
     ],
-    fn: ({ result }) => result,
-    target: [$$task.setTaskTriggered, resetFieldsTriggered],
+    source: $$task.$tasks,
+    fn: (tasks, { result }) => tasks!.map((task) => task.id == result.id ? result : task),
+    target: [$$task.$tasks, resetFieldsTriggered],
   })
   return {
     updateTaskTriggeredById,

@@ -210,11 +210,11 @@
     regenerator-runtime "^0.14.0"
 
 "@babel/runtime@^7.7.6":
-  version "7.21.5"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.21.5.tgz#8492dddda9644ae3bda3b45eabe87382caee7200"
-  integrity sha512-8jI69toZqqcsnqGGqwGS4Qb1VwLOEp4hz+CXPywcvjs60u3B4Pom/U/7rm4W8tMOYEB+E9wgD0mW1l3r8qlI9Q==
+  version "7.24.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.24.0.tgz#584c450063ffda59697021430cb47101b085951e"
+  integrity sha512-Chk32uHMg6TnQdvw2e9IlqPpFX/6NLuK0Ys2PqLb7/gL5uFn9mXvK715FGLlOLQrcO4qIkNHkvPGktzzXexsFw==
   dependencies:
-    regenerator-runtime "^0.13.11"
+    regenerator-runtime "^0.14.0"
 
 "@babel/template@^7.20.7":
   version "7.20.7"
@@ -954,17 +954,17 @@ assertion-error@^1.1.0:
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.1.0.tgz#e60b6b0e8f301bd97e5375215bda406c85118c0b"
   integrity sha512-jgsaNduz+ndvGyFt3uSuWqvy4lCnIJiovtouQN5JZHOKCS2QuhEdbcQHFhVksz2N2U9hXJo8odG7ETyWlEeuDw==
 
-atomic-router-react@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/atomic-router-react/-/atomic-router-react-0.9.0.tgz#db423416ecb52d4a35990119c8e51cb4cbe71376"
-  integrity sha512-PqRij7NB+K3FUHhtLzf4UdbK1R5wUBIfhB3/g9YVuAxE2CBoQR51llekxsjv58zh2pg+xPNPDngr+gOak7YbJw==
+atomic-router-react@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/atomic-router-react/-/atomic-router-react-0.10.0.tgz#88e872058f917414d488a3436e92e7cee473a554"
+  integrity sha512-9EM3n1eLDbuYQjWijiHMjA2l5UPvM2pt4O7Z0TUupuDz6KF00HNMd/iBIUq7uCyDwmyctgqqR5bHIeqRlXVUAQ==
   dependencies:
     clsx "^1.1.1"
 
-atomic-router@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/atomic-router/-/atomic-router-0.9.0.tgz#bb9bb66c1bbcfd2f7782fed4a621ba6dfa71ae77"
-  integrity sha512-OrFdtF0glxV9L7vVEfRlpjlr5gLRO1D+pm3KJEgYwnkUCHDMHVnMLbiNjG9S0CJJU9nihjP2WrD8CL9xCKzSQA==
+atomic-router@^0.10.1:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/atomic-router/-/atomic-router-0.10.1.tgz#8b022d26efabd599b73a93f56d3e7efaccf03cee"
+  integrity sha512-u7XV+gOBgIAO84T58eXBkL3J4ARaHsltW7GuG01307BjvFfFGdE0yAVGm/JmMhBbIGhwTLHkalPbf8mudJIV3A==
   dependencies:
     path-to-regexp "^6.2.0"
 
@@ -3184,11 +3184,6 @@ readdirp@~3.6.0:
   integrity sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==
   dependencies:
     picomatch "^2.2.1"
-
-regenerator-runtime@^0.13.11:
-  version "0.13.11"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz#f6dca3e7ceec20590d07ada785636a90cdca17f9"
-  integrity sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==
 
 regenerator-runtime@^0.14.0:
   version "0.14.0"

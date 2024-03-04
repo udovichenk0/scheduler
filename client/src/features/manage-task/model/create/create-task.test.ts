@@ -12,8 +12,8 @@ const createTaskModel = createTaskFactory({
   defaultDate: null,
 })
 
-const tasks = {
-  "1": {
+const tasks = [
+  {
     id: "1",
     title: "without date",
     description: "",
@@ -21,11 +21,12 @@ const tasks = {
     status: "INPROGRESS",
     start_date: null,
     user_id: "1",
-    date_created: "2023-12-03T11:11:51.227Z",
+    is_deleted: false,
+    date_created: new Date(2024, 10, 10),
   },
-}
-const resultedTasks = {
-  "1": {
+]
+const resultedTasks = [
+  {
     id: "1",
     title: "without date",
     description: "",
@@ -33,9 +34,10 @@ const resultedTasks = {
     status: "INPROGRESS",
     start_date: null,
     user_id: "1",
-    date_created: "2023-12-03T11:11:51.227Z",
+    is_deleted: false,
+    date_created: new Date(2024,10, 10),
   },
-  "2": {
+  {
     id: "2",
     title: "second",
     description: "my note",
@@ -43,9 +45,10 @@ const resultedTasks = {
     status: "FINISHED",
     start_date: null,
     user_id: "1",
-    date_created: "2023-13-03T11:11:51.227Z",
+    is_deleted: false,
+    date_created: new Date(2024, 10, 10),
   },
-}
+]
 const returnedTask = {
   id: "2",
   title: "second",
@@ -54,7 +57,8 @@ const returnedTask = {
   status: "FINISHED",
   start_date: null,
   user_id: "1",
-  date_created: "2023-13-03T11:11:51.227Z",
+  is_deleted: false,
+  date_created: new Date(2024,10,10),
 }
 
 describe("create task", () => {
@@ -78,7 +82,7 @@ describe("create task", () => {
         [$type, "inbox"],
         [$$session.$isAuthenticated, true],
         [$isAllowToSubmit, true],
-        [$$task._.$taskKv, tasks],
+        [$$task.$tasks, tasks],
       ],
       handlers: [[taskApi.createTaskQuery.__.executeFx, mock]],
     })
@@ -92,11 +96,11 @@ describe("create task", () => {
       start_date: null,
     })
     expect(mock).toReturnWith(returnedTask)
-    // expect(scope.getState($$task.$taskKv)).toStrictEqual(resultedTasks)
-    // expect(scope.getState($title)).toBe("")
-    // expect(scope.getState($description)).toBe("")
-    // expect(scope.getState($status)).toBe("INPROGRESS")
-    // expect(scope.getState($isAllowToSubmit)).toBeFalsy()
+    expect(scope.getState($$task.$tasks)).toStrictEqual(resultedTasks)
+    expect(scope.getState($title)).toBe("")
+    expect(scope.getState($description)).toBe("")
+    expect(scope.getState($status)).toBe("INPROGRESS")
+    expect(scope.getState($isAllowToSubmit)).toBeFalsy()
   })
   test("Create task in localStorage if user is not authenticated", async () => {
     const mock = vi.fn(() => ({ result: returnedTask }))
@@ -119,7 +123,7 @@ describe("create task", () => {
         [$type, "inbox"],
         [$$session.$isAuthenticated, false],
         [$isAllowToSubmit, true],
-        [$$task._.$taskKv, tasks],
+        [$$task.$tasks, tasks],
       ],
       handlers: [[_.setTaskToLocalStorageFx, mock]],
     })
@@ -135,7 +139,7 @@ describe("create task", () => {
       },
     })
     expect(mock).toReturnWith({ result: returnedTask })
-    expect(scope.getState($$task.$taskKv)).toStrictEqual(resultedTasks)
+    expect(scope.getState($$task.$tasks)).toStrictEqual(resultedTasks)
     expect(scope.getState($title)).toBe("")
     expect(scope.getState($description)).toBe("")
     expect(scope.getState($status)).toBe("INPROGRESS")
