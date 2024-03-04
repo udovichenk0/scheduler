@@ -12,14 +12,14 @@ import { selectTaskFactory } from "@/shared/lib/effector"
 
 export const $$sort = createSorting()
 export const $unplacedTasks = combine(
-  $$task.$taskKv,
+  $$task.$tasks,
   $$sort.$sortType,
-  (kv, sortType) => {
-    if (!kv) return null
-    const tasks = Object.values(kv).filter(
+  (tasks, sortType) => {
+    if (!tasks) return null
+    const unplacedTasks = tasks.filter(
       ({ type, is_deleted }) => type == "unplaced" && !is_deleted,
     )
-    return $$sort.sortBy(sortType, tasks)
+    return $$sort.sortBy(sortType, unplacedTasks)
   },
 )
 
@@ -30,7 +30,7 @@ export const $$createTask = createTaskFactory({
   defaultDate: new Date(),
 })
 export const $$taskDisclosure = disclosureTask({
-  tasks: $$task.$taskKv,
+  $tasks: $$task.$tasks,
   updateTaskModel: $$updateTask,
   createTaskModel: $$createTask,
 })

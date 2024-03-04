@@ -7,16 +7,16 @@ import { TaskId, taskApi } from "@/shared/api/task"
 import { singleton } from "@/shared/lib/effector/singleton"
 import { createIdModal, createModal } from "@/shared/lib/modal"
 
-import { Task, TaskKv } from "../type"
-import { addTaskToKv, removeTaskFromKv, removeTasksFromKvByFilter, transformTasksToKv } from "../lib"
+import { Task } from "../type"
+import { deleteById, tasksNotNull } from "../lib"
 
 export const $$dateModal = createModal({})
 export const $$modal = createIdModal()
 
 export const $$task = singleton(() => {
-  const $taskKv = createStore<Nullable<TaskKv>>(null)
-  const setTaskKvTriggered = createEvent<Task[]>()
+  const $tasks = createStore<Nullable<Task[]>>(null)
   const setTaskTriggered = createEvent<Task>()
+  const setTasksTriggered = createEvent<Task[]>()
   const getTasksTriggered = createEvent()
   const taskDeleted = createEvent<TaskId>()
   const trashTasksDeleted = createEvent()
@@ -24,54 +24,55 @@ export const $$task = singleton(() => {
   const init = createEvent()
 
   const listenFx = createEffect(() => {
-    const setTaskKvTriggeredScoped = scopeBind(setTaskKvTriggered)
+    const setTaskTriggeredScoped = scopeBind(setTasksTriggered)
     addEventListener('storage', (event) => {
       if(event.newValue && event.key == 'tasks'){
-        setTaskKvTriggeredScoped(JSON.parse(event.newValue))
+        setTaskTriggeredScoped(JSON.parse(event.newValue))
       }
     })
   })
-
+  //tasks
   sample({
     clock: taskApi.getTasksQuery.finished.success,
-    fn: ({ result }) => transformTasksToKv(result),
-    target: $taskKv,
+    fn: ({ result }) => result,
+    target: $tasks,
   })
   sample({
     clock: setTaskTriggered,
-    source: $taskKv,
-    filter: (kv: Nullable<TaskKv>): kv is TaskKv => !!kv,
-    fn: addTaskToKv,
-    target: $taskKv,
+    source: $tasks,
+    filter: tasksNotNull,
+    fn: (oldTasks, newTask) => [...oldTasks, newTask],
+    target: $tasks,
+  })
+  sample({
+    clock: setTasksTriggered,
+    target: $tasks
   })
   sample({
     clock: taskDeleted,
-    source: $taskKv,
-    filter: (kv: Nullable<TaskKv>): kv is TaskKv => !!kv,
-    fn: removeTaskFromKv,
-    target: $taskKv,
+    source: $tasks,
+    filter: tasksNotNull,
+    fn: deleteById,
+    target: $tasks,
   })
   sample({
     clock: trashTasksDeleted,
-    source: $taskKv,
-    filter: (kv: Nullable<TaskKv>): kv is TaskKv => !!kv,
-    fn: removeTasksFromKvByFilter((task) => !task.is_deleted),
-    target: $taskKv
+    source: $tasks,
+    filter: tasksNotNull,
+    fn: (tasks) => tasks.filter(task => !task.is_deleted),
+    target: $tasks
   })
-  sample({
-    clock: setTaskKvTriggered,
-    fn: transformTasksToKv,
-    target: $taskKv,
-  })
-  sample({
+
+  sample({ //!move to create task model 
     clock: taskApi.createTasksQuery.finished.success,
     fn: ({result}) => result,
-    target: [setTaskKvTriggered, taskApi.deleteTasksFromLocalStorageFx],
+    target: [$tasks, taskApi.deleteTasksFromLocalStorageFx],
   })
+
   sample({
     clock: taskApi.getTasksFromLocalStorageFx.doneData,
     filter: not($$session.$isAuthenticated),
-    target: setTaskKvTriggered,
+    target: $tasks,
   })
 
   sample({
@@ -81,7 +82,7 @@ export const $$task = singleton(() => {
 
   sample({
     clock: reset,
-    target: $taskKv.reinit!,
+    target: $tasks.reinit,
   })
 
   sample({
@@ -89,15 +90,12 @@ export const $$task = singleton(() => {
     target: listenFx
   })
   return {
-    $taskKv: $taskKv.map((kv) => kv),
+    $tasks,
     setTaskTriggered,
     reset,
     getTasksTriggered,
     trashTasksDeleted,
     taskDeleted,
     init,
-    _: {
-      $taskKv,
-    },
   }
 })

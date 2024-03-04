@@ -6,8 +6,8 @@ import { $$task } from "@/entities/task/task-item"
 
 import { trashTaskFactory } from "./task.model"
 
-const tasks = {
-  "1": {
+const tasks = [
+  {
     id: "1",
     title: "without date",
     description: "",
@@ -18,7 +18,7 @@ const tasks = {
     date_created: "2023-12-03T11:11:51.227Z",
     is_deleted: false,
   },
-}
+]
 const returnedTask = {
   id: "1",
   title: "without date",
@@ -38,7 +38,7 @@ describe("delete task", () => {
     const scope = fork({
       values: [
         [$$session.$isAuthenticated, true],
-        [$$task._.$taskKv, tasks],
+        [$$task.$tasks, tasks],
       ],
       handlers: [[_.trashTaskQuery.__.executeFx, mock]],
     })
@@ -49,7 +49,7 @@ describe("delete task", () => {
     expect(mock).toBeCalled()
     expect(mock).toBeCalledWith("1")
     expect(mock).toReturnWith(returnedTask)
-    expect(scope.getState($$task.$taskKv)).toStrictEqual({ "1": returnedTask })
+    expect(scope.getState($$task.$tasks)).toStrictEqual([returnedTask])
   })
   test("delete task from localstorage if user is not authenticated", async () => {
     const { taskTrashedById, _ } = $$trashTask
@@ -57,7 +57,7 @@ describe("delete task", () => {
     const scope = fork({
       values: [
         [$$session.$isAuthenticated, false],
-        [$$task._.$taskKv, tasks],
+        [$$task.$tasks, tasks],
       ],
       handlers: [[_.trashTaskFromLsFx, mock]],
     })
@@ -68,6 +68,6 @@ describe("delete task", () => {
     expect(mock).toHaveBeenCalledOnce()
     expect(mock).toBeCalledWith(null, "1")
     expect(mock).toReturnWith({ result: returnedTask })
-    expect(scope.getState($$task.$taskKv)).toStrictEqual({ "1": returnedTask })
+    expect(scope.getState($$task.$tasks)).toStrictEqual([returnedTask])
   })
 })

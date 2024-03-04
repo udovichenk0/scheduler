@@ -18,22 +18,22 @@ export const $$createTask = createTaskFactory({
   defaultDate: dayjs(new Date()).startOf('date').toDate(),
 })
 export const $$taskDisclosure = disclosureTask({
-  tasks: $$task.$taskKv,
+  $tasks: $$task.$tasks,
   updateTaskModel: $$updateTask,
   createTaskModel: $$createTask,
 })
 export const $$sort = createSorting()
 
-const $sortedTasks = combine($$task.$taskKv, $$sort.$sortType, (kv, sortType) => {
-  if (!kv) return null
-  const tasks = Object.values(kv).filter(
+const $sortedTasks = combine($$task.$tasks, $$sort.$sortType, (tasks, sortType) => {
+  if (!tasks) return null
+  const todayTasks = tasks.filter(
     ({ start_date, is_deleted }) =>
       !is_deleted && (
         dayjs(start_date).isSame(dayjs(), "day") 
         || dayjs(start_date).isBefore(dayjs(), "date")
       )
   )
-  return $$sort.sortBy(sortType, tasks)
+  return $$sort.sortBy(sortType, todayTasks)
 })
 
 /**

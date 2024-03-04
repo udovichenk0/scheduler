@@ -17,5 +17,3 @@ export type SortConfig = {
   label: string
   value: SortType
 }
-
-export type TaskKv = Record<TaskId, Task>

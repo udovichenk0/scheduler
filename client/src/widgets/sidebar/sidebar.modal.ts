@@ -3,20 +3,19 @@ import dayjs from "dayjs"
 import { $$task } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
-import { debug } from "patronum"
 
 export const $$modal = createModal({ closeOnClickOutside: true })
 
-export const $inboxTasksCount = $$task.$taskKv.map((kv) => {
-  if (!kv) return 0
-  return Object.values(kv).filter(
+export const $inboxTasksCount = $$task.$tasks.map((tasks) => {
+  if (!tasks) return 0
+  return tasks.filter(
     ({ type, is_deleted }) => type == "inbox" && !is_deleted,
   ).length
 })
-debug($$modal.$isOpened)
-export const $todayTasksCount = $$task.$taskKv.map((kv) => {
-  if (!kv) return 0
-  return Object.values(kv).filter(
+
+export const $todayTasksCount = $$task.$tasks.map((tasks) => {
+  if (!tasks) return 0
+  return tasks.filter(
     ({ start_date, is_deleted }) =>
       dayjs(start_date).isSame(dayjs(), "date") && !is_deleted,
   ).length

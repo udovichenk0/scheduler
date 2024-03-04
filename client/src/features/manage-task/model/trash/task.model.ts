@@ -6,6 +6,7 @@ import { $$session } from "@/entities/session"
 import { $$task } from "@/entities/task/task-item"
 
 import { taskApi } from "@/shared/api/task"
+
 export const trashTaskFactory = () => {
   const taskTrashedById = createEvent<string>()
 
@@ -35,8 +36,9 @@ export const trashTaskFactory = () => {
       attachTrashTaskQuery.finished.success,
       attachTrashTaskFromLsFx.doneData,
     ],
-    fn: ({ result }) => result,
-    target: $$task.setTaskTriggered,
+    source: $$task.$tasks,
+    fn: (tasks, { result }) => tasks!.map((task) => task.id == result.id ? result : task),
+    target: $$task.$tasks,
   })
   return {
     taskTrashedById,

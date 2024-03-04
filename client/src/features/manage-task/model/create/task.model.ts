@@ -52,7 +52,6 @@ export const createTaskFactory = ({
     fn: ({ result }) => result,
     target: [$$task.setTaskTriggered, resetFieldsTriggered],
   })
-
   return {
     ...$$modifyTask,
     taskSuccessfullyCreated,
