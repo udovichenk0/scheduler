@@ -2,12 +2,12 @@ import { deleteById } from './../lib';
 import { describe, expect, test } from "vitest";
 
 describe("test task libs", () => {
-  test.only("should delete task by id", () => {
+  test("should delete task by id", () => {
     const { data, expected } = testConf.deleteById
     const result = deleteById(data, '3')
     expect(result).toEqual(expected)
   })
-  test.only("should delete task by id", () => {
+  test("should delete task by id", () => {
     const { data, expected } = testConf.deleteById
     const result = deleteById(data, '3')
     expect(result).toEqual(expected)
