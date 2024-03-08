@@ -4,7 +4,7 @@ import { SpritesMap } from "@/shared/ui/icon/sprite.h"
 export type Task = {
   id: TaskId
   title: string
-  description: string
+  description: Nullable<string>
   status: TaskStatus
   type: TaskType
   start_date: Nullable<Date>
