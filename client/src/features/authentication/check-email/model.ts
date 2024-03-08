@@ -28,9 +28,7 @@ sample({
 sample({
   clock: submitTriggered,
   source: $email,
-  filter: (email: Nullable<string>): email is string => 
-    emailSchema.safeParse(email).success,
-  fn: (email) => ({ email }),
+  filter: (email) => emailSchema.safeParse(email).success,
   target: userApi.getUserQuery.start,
 })
 

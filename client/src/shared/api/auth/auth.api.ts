@@ -20,7 +20,7 @@ const signinFx = createEffect(
       body: JSON.stringify(body),
     })
     const data = await response.json()
-    if(!response.ok){
+    if(data.status >= 400){
       throw data
     }
     return data
@@ -42,6 +42,9 @@ export const signupFx = createEffect(
       body: JSON.stringify(body),
     })
     const data = await response.json()
+    if(data.status >= 400){
+      throw data
+    }
     return data
   },
 )
@@ -57,6 +60,9 @@ export const logoutQuery = createQuery({
       credentials: "include",
     })
     const data = await response.json()
+    if(data.status >= 400){
+      throw data
+    }
     return data
   }),
 })
@@ -71,6 +77,9 @@ export const resendCodeQuery = createQuery({
       body: JSON.stringify({ email })
     })
     const data = await response.json()
+    if(data.status >= 400){
+      throw data
+    }
     return data
   }),
 })
@@ -91,11 +100,12 @@ export const verifyQuery = createQuery({
         },
       )
       const data = await response.json()
-      if(!response.ok){
-        throw await data
+      if(data.status >= 400){
+        throw data
       }
       return data
     },
   ),
   contract: AuthContract,
 })
+

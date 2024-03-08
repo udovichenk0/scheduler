@@ -1,4 +1,4 @@
-import { createEvent, createStore, sample } from "effector"
+import { createEvent, createStore, sample, split } from "effector"
 import { interval, spread, equals } from "patronum"
 import { createGate } from "effector-react"
 import { t } from "i18next"
@@ -8,7 +8,7 @@ import { $$session } from "@/entities/session"
 import { authApi } from "@/shared/api/auth"
 import { tokenService } from "@/shared/api/token"
 import { bridge } from "@/shared/lib/effector"
-import { UNEXPECTED_ERROR_MESSAGE, invalid_code, isHttpErrorType } from "@/shared/lib/error"
+import { UNEXPECTED_ERROR_MESSAGE, isHttpError } from "@/shared/lib/error"
 
 import { $email, resetEmailTriggered } from "../authentication/check-email"
 
@@ -76,14 +76,27 @@ sample({
   target: resetEmailTriggered
 })
 
-sample({
-  clock: authApi.verifyQuery.finished.failure,
-  fn: ({ error }) => {
-    console.log(error)
-    return isHttpErrorType(error, invalid_code) 
-      ? t(INVALID_CODE_MESSAGE) 
-      : t(UNEXPECTED_ERROR_MESSAGE)
+const invalidCodeError = createEvent()
+const unexpectedError = createEvent()
+split({
+  source: authApi.verifyQuery.finished.failure,
+  match: {
+    invalidCode: isHttpError(400),
   },
+  cases: {
+    invalidCode: invalidCodeError,
+    __: unexpectedError
+  }
+})
+sample({
+  clock: invalidCodeError,
+  fn: () => t(INVALID_CODE_MESSAGE),
+  target: $error
+})
+
+sample({
+  clock: unexpectedError,
+  fn: () => t(UNEXPECTED_ERROR_MESSAGE),
   target: $error
 })
 

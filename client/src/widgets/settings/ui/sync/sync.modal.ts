@@ -1,4 +1,4 @@
-import { createEvent, createStore, sample } from "effector"
+import { createEvent, createStore, sample, split } from "effector"
 import { createGate } from "effector-react"
 import { not } from "patronum"
 
@@ -11,6 +11,7 @@ import { $$session } from "@/entities/session"
 import { authApi } from "@/shared/api/auth"
 import { tokenService } from "@/shared/api/token"
 import { userApi } from "@/shared/api/user"
+import { isHttpError, isNoError } from "@/shared/lib/error"
 
 export enum Flow {
   email = "email",
@@ -38,19 +39,31 @@ sample({
   target: $flow,
 })
 
+const notFoundError = createEvent()
+const noError = createEvent()
+
+split({
+  source: userApi.getUserQuery.finished.finally,
+  match: {
+    isNoError: isNoError,
+    isHttpError: isHttpError(404),
+  },
+  cases: {
+    isNoError: noError,
+    isHttpError: notFoundError,
+  }
+})
 sample({
-  clock: userApi.getUserQuery.finished.success,
-  filter: ({result}) => 'id' in result,
+  clock: noError,
   fn: () => Flow.login,
   target: $flow,
 })
-
 sample({
-  clock: userApi.getUserQuery.finished.success,
-  filter: ({result}) => 'error' in result,
+  clock: notFoundError,
   fn: () => Flow.register,
-  target: $flow,
+  target: $flow
 })
+
 sample({
   clock: authApi.logoutQuery.finished.success,
   fiilter: Boolean,
@@ -77,3 +90,4 @@ sample({
     resetSignupPasswordTriggered,
   ],
 })
+

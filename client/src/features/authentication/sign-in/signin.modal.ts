@@ -1,4 +1,4 @@
-import { attach, createEvent, createStore, sample } from "effector"
+import { attach, createEvent, createStore, sample, split } from "effector"
 import { spread } from "patronum"
 import { z } from "zod"
 import { t } from "i18next"
@@ -10,7 +10,7 @@ import { authApi } from "@/shared/api/auth"
 import { tokenService } from "@/shared/api/token"
 import { taskApi } from "@/shared/api/task"
 import { bridge } from "@/shared/lib/effector/bridge"
-import { UNEXPECTED_ERROR_MESSAGE, invalid_password, isHttpErrorType } from "@/shared/lib/error"
+import { UNEXPECTED_ERROR_MESSAGE, isHttpError } from "@/shared/lib/error"
 
 import { $email, resetEmailTriggered } from "../check-email"
 
@@ -69,21 +69,33 @@ bridge(() => {
     }),
   })
   sample({
-    clock: authApi.signinQuery.finished.failure,
+    clock: authApi.signinQuery.finished.success,
+    target: getTasksFromLsFxAttached,
+  })
+  
+  const wrongPassword = createEvent()
+  const internalError = createEvent()
+  split({
+    source: authApi.signinQuery.finished.failure,
+    match: {
+      isWrongPassword: isHttpError(400),
+    },
+    cases: {
+      isWrongPassword: wrongPassword,
+      __: internalError
+    }
+  })
+
+  sample({
+    clock: wrongPassword,
     fn: () => t(INVALID_PASSWORD_MESSAGE),
     target: $passwordError,
   })
+
   sample({
-    clock: authApi.signinQuery.finished.failure,
-    fn: ({ error }) => {
-      return isHttpErrorType(error, invalid_password)
-        ? t(INVALID_PASSWORD_MESSAGE)
-        : t(UNEXPECTED_ERROR_MESSAGE)
-    }
-  })
-  sample({
-    clock: authApi.signinQuery.finished.success,
-    target: getTasksFromLsFxAttached,
+    clock: internalError,
+    fn: () => t(UNEXPECTED_ERROR_MESSAGE),
+    target: $passwordError
   })
 })
 

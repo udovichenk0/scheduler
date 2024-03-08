@@ -1,26 +1,36 @@
-import { Query } from "@farfetched/core"
-import { sample } from "effector"
-
-type Error = {
-  error: string,
-  description: string
-}
-
 export const UNEXPECTED_ERROR_MESSAGE = 'setting.synchronization.error.unexpected'
 
-export const 
-  invalid_code = 'invalid',
-  invalid_password = 'invalid',
-  invalid = 'invalid', 
-  expired = 'expired'
-
-export const getErrorMessage = <P,D,E>(api: Query<P, D, E>, errorType: string) => {
-  return (
-    sample({
-      clock: api.finished.failure,
-      filter: ({ error }) => (error as Error).error == errorType,
-      fn: ({ error }) => (error as Error).description
-    })
-  )
+type Response = {
+  error: {
+    response: {
+      code: number,
+      message: string
+    }
+  }
 }
-export const isHttpErrorType = (error: any, errorType: string) => error.error == errorType
+export function isHttpError(error: number){
+  return (response: any) => {
+    const r = response as Response
+    return r.error?.response?.code ? r.error.response.code == error : false
+  }
+}
+
+export function isError(response: any){
+  return !!response.error
+}
+
+export function isNoError(response: any){
+  return !isError(response)
+}
+
+export function generateError(code: number, message: string){
+  return {
+    response: {
+        code,
+        message
+    },
+    status: code,
+    options: {},
+    message,
+  }
+}
