@@ -1,4 +1,4 @@
-import { combine, createEvent, sample, createStore, StoreWritable } from "effector"
+import { combine, createEvent, sample, createStore } from "effector"
 import { not, spread } from "patronum"
 import dayjs, { Dayjs } from "dayjs"
 import { createContext } from "react"
