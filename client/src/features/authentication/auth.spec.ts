@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 
-import { invalid_code } from '@/shared/lib/error'
+import { UserDto } from '@/shared/api/user'
+import { generateError } from '@/shared/lib/error'
 
 test.beforeEach( async ({ page }) => {
   await page.goto('/')
@@ -9,9 +10,8 @@ test.beforeEach( async ({ page }) => {
   await page.getByRole("button", { name: "Continue With Email"}).click()
 })
 test('Successful login', async ({ page }) => {
-
-  await page.route("http://localhost:3000/user?email=mytestemail%40gmail.com", async (route) => {
-    const json = {id: 'user_id', email: 'mytestemail@gmail.com', verified: true}
+  await page.route("http://localhost:3000/user?email=mytestemail@gmail.com", async (route) => {
+    const json:UserDto = {id: 'user_id', email: 'mytestemail@gmail.com', verified: true}
     return route.fulfill({json})
   })
   await page.route("http://localhost:3000/auth/sign-in", async (route) => {
@@ -38,11 +38,8 @@ test('Successful login', async ({ page }) => {
 
 test('Sign up flow', async ({ page }) => {
 
-  await page.route("http://localhost:3000/user?email=mytestemail%40gmail.com", async (route) => {
-    const json = {
-      message: "User not found",
-      error: "not_found"
-    }
+  await page.route("http://localhost:3000/user?email=mytestemail@gmail.com", async (route) => {
+    const json = generateError(404, "User not found")
     return route.fulfill({json})
   })
   await page.route("http://localhost:3000/auth/sign-up", async (route) => {
@@ -81,11 +78,8 @@ test('Sign up flow', async ({ page }) => {
 })
 test('Show error if verification code is not correct', async ({ page }) => {
 
-  await page.route("http://localhost:3000/user?email=mytestemail%40gmail.com", async (route) => {
-    const json = {
-      message: "User not found",
-      error: "not_found"
-    }
+  await page.route("http://localhost:3000/user?email=mytestemail@gmail.com", async (route) => {
+    const json = generateError(404, "User not found")
     return route.fulfill({json})
   })
   await page.route("http://localhost:3000/auth/sign-up", async (route) => {
@@ -94,11 +88,8 @@ test('Show error if verification code is not correct', async ({ page }) => {
   })
   const error_description = "Confirmation Code is invalid"
   await page.route("http://localhost:3000/auth/verify-email", async (route) => {
-    const json = {
-      description: error_description,
-      error: invalid_code
-    }
-    return route.fulfill({json, status: 400})
+    const json = generateError(400, "Invalid confirmation code")
+    return route.fulfill({json})
   })
   await page.getByRole('textbox').fill("mytestemail@gmail.com")
   await page.getByRole("button", { name: "Continue"}).click()
@@ -126,18 +117,13 @@ test('Show error if verification code is not correct', async ({ page }) => {
 //
 
 test("Show error if password is not correct", async ({ page }) => {
-  await page.route("http://localhost:3000/user?email=mytestemail%40gmail.com", async (route) => {
+  await page.route("http://localhost:3000/user?email=mytestemail@gmail.com", async (route) => {
     const json = {id: 'user_id', email: 'mytestemail@gmail.com', verified: true}
     return route.fulfill({json})
   })
   await page.route("http://localhost:3000/auth/sign-in", async (route) => {
-    const json = {
-      statusCode: 404,
-      message: "Entered password is not correct!",
-      error: "Not Found"
-    }
+    const json = generateError(400, "Wrong login or password")
     return route.fulfill({
-      status: 404,
       json 
     })
   })

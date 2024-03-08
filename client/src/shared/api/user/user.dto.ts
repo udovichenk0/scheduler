@@ -5,10 +5,6 @@ export const UserSchema = z.object({
   email: z.string().email(),
   verified: z.boolean(),
 })
-export const GetUserDto = UserSchema.or(z.object({
-  error: z.string(),
-  message: z.string()
-}))
+
 
 export type UserDto = z.infer<typeof UserSchema>
-export type GetUserDto = z.infer<typeof GetUserDto>
