@@ -3,7 +3,7 @@ import { z } from "zod"
 export const TaskSchemaDto = z.object({
   id: z.string(),
   title: z.string(),
-  description: z.string(),
+  description: z.string().nullable(),
   status: z.enum(["FINISHED", "INPROGRESS"]),
   start_date: z.coerce.date().nullable(),
   user_id: z.string(),
