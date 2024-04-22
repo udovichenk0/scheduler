@@ -18,14 +18,14 @@ import { UserDto } from "../user/dto/user.dto";
 import {
   CreateTasksDto,
   CreateTaskDto,
-  TaskDto,
   TaskIdParam,
   UpdateDateDto,
-  UpdateStatusDto,
-  TasksDto
-} from "./dto/task.dto";
+  UpdateStatusDto
+} from "./dto/request";
 import { UseZodGuard, ZodValidationPipe } from "nestjs-zod";
 import { handleError, isError } from "src/services/err/errors";
+import { TaskDto } from "./dto/response";
+import { CreateTasksMapper } from "./dto/mapper";
 
 @Controller("tasks")
 @UseGuards(TokenGuard)
@@ -35,6 +35,87 @@ export class TaskController {
   async getTasks(@Req() req: Request) {
     const user = req.session["user"] as UserDto;
     const tasks = await this.taskService.findManyByUserId(user.id);
+    if (isError(tasks)) {
+      return handleError(tasks);
+    }
+    return tasks;
+  }
+  @Get("inbox")
+  @UseGuards(TokenGuard)
+  async getInboxTasks(@Req() req: Request) {
+    const user = req.session["user"] as UserDto;
+    const tasks = await this.taskService.findInboxTasks(user.id);
+    if (isError(tasks)) {
+      return handleError(tasks);
+    }
+    return tasks;
+  }
+  @Get("inbox/count")
+  @UseGuards(TokenGuard)
+  async getInboxTasksCount(@Req() req: Request) {
+    const user = req.session["user"] as UserDto;
+    const count = await this.taskService.findInboxTaskCount(user.id);
+    if (isError(count)) {
+      return handleError(count);
+    }
+    return { count };
+  }
+  @Get("overdue")
+  @UseGuards(TokenGuard)
+  async getOverdueTasks(@Req() req: Request) {
+    const user = req.session["user"] as UserDto;
+    const tasks = await this.taskService.findOverdueTasks(user.id);
+    if (isError(tasks)) {
+      return handleError(tasks);
+    }
+    return tasks;
+  }
+  @Get("trash")
+  @UseGuards(TokenGuard)
+  async getTrashTasks(@Req() req: Request) {
+    const user = req.session["user"] as UserDto;
+    const tasks = await this.taskService.findTrashTasks(user.id);
+    if (isError(tasks)) {
+      return handleError(tasks);
+    }
+    return tasks;
+  }
+
+  @Get("unplaced")
+  @UseGuards(TokenGuard)
+  async getUnplacedTasks(@Req() req: Request) {
+    const user = req.session["user"] as UserDto;
+    const tasks = await this.taskService.findUnplacedTasks(user.id);
+    if (isError(tasks)) {
+      return handleError(tasks);
+    }
+    return tasks;
+  }
+  @Get("today")
+  @UseGuards(TokenGuard)
+  async getTodaytasks(@Req() req: Request) {
+    const user = req.session["user"] as UserDto;
+    const tasks = await this.taskService.findTodayTasks(user.id);
+    if (isError(tasks)) {
+      return handleError(tasks);
+    }
+    return tasks;
+  }
+  @Get("today/count")
+  @UseGuards(TokenGuard)
+  async getTodayTasksCount(@Req() req: Request) {
+    const user = req.session["user"] as UserDto;
+    const count = await this.taskService.findTodayTaskCount(user.id);
+    if (isError(count)) {
+      return handleError(count);
+    }
+    return { count };
+  }
+  @Get("upcoming")
+  @UseGuards(TokenGuard)
+  async getUpcomingTasks(@Req() req: Request) {
+    const user = req.session["user"] as UserDto;
+    const tasks = await this.taskService.findUpcomingTasks(user.id);
     if (isError(tasks)) {
       return handleError(tasks);
     }
@@ -71,7 +152,6 @@ export class TaskController {
     }
     return TaskDto.create(task);
   }
-
   @Post(":id/status")
   @UseGuards(TokenGuard)
   @UseZodGuard("params", TaskIdParam)
@@ -83,7 +163,6 @@ export class TaskController {
     }
     return TaskDto.create(task);
   }
-
   @Patch(":id/date")
   @UseGuards(TokenGuard)
   @UseZodGuard("params", TaskIdParam)
@@ -96,15 +175,15 @@ export class TaskController {
     return TaskDto.create(task);
   }
 
-  @Delete('all')
+  @Delete("all")
   @UseGuards(TokenGuard)
-  async deleteTrashedTasks(@Req() req){
+  async deleteTrashedTasks(@Req() req) {
     const user = req.session["user"] as UserDto;
-    const response = await this.taskService.deleteTrashedTasks(user.id)
-    if(isError(response)){
-      return handleError(response)
+    const response = await this.taskService.deleteTrashedTasks(user.id);
+    if (isError(response)) {
+      return handleError(response);
     }
-    return response
+    return response;
   }
 
   @Delete(":id")
@@ -122,14 +201,14 @@ export class TaskController {
   @UsePipes(CreateTasksDto)
   async createMany(@Body() data: CreateTasksDto, @Req() req: Request) {
     const user = req.session["user"] as UserDto;
-    const tasks = await this.taskService.createMany({
+    const result = await this.taskService.createMany({
       user_id: user.id,
-      data: data.tasks
+      data: CreateTasksMapper.create(data.tasks)
     });
-    if (isError(tasks)) {
-      return handleError(tasks);
+    if (isError(result)) {
+      return handleError(result);
     }
-    return TasksDto.create(tasks);
+    return result;
   }
 
   @Patch(":id/trash")
