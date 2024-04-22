@@ -17,12 +17,12 @@ import { formatTaskDate } from "./lib/normalize-date"
 
 type ModifyTaskFormType = {
   $title: Store<string>
-  $description: Store<string>
+  $description: Store<Nullable<string>>
   $status: Store<"FINISHED" | "INPROGRESS">
   $type: Store<"inbox" | "unplaced">
   $startDate: Store<Nullable<Date>>
   statusChanged: EventCallable<"FINISHED" | "INPROGRESS">
-  descriptionChanged: EventCallable<string>
+  descriptionChanged: EventCallable<Nullable<string>>
   titleChanged: EventCallable<string>
   typeChanged: EventCallable<"inbox" | "unplaced">
   dateChanged: EventCallable<Date>
@@ -150,7 +150,7 @@ const TypePicker = ({
         return (
           <Button
             key={id}
-            size={'xs'}
+            size={"xs"}
             onClick={() => changeType(type)}
             className={`text-left ${
               active && "pointer-events-none block w-full bg-cFocus"

@@ -1,39 +1,39 @@
-import dayjs, { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs"
 
 export type SectionRow = {
-    date: number;
-    month: number;
-    year: number;
-    day: number
-}[];
+  date: number
+  month: number
+  year: number
+  day: number
+}[]
 type CalendarSections = {
-  date: Dayjs,
+  date: Dayjs
   rows: SectionRow[]
 }[]
 export const generateCalendar = (dayjsDate: Dayjs = dayjs()) => {
   const result: CalendarSections = []
-  for(let i = 0; i < 5; i++){
-    const startOfDate = dayjsDate.startOf('month').add(i, 'month')
+  for (let i = 0; i < 5; i++) {
+    const startOfDate = dayjsDate.startOf("month").add(i, "month")
     const day = startOfDate.day()
-    const startOfTheDate = startOfDate.add(-day, 'day')
-    const endOfTheDate = startOfDate.endOf('month')
+    const startOfTheDate = startOfDate.add(-day, "day")
+    const endOfTheDate = startOfDate.endOf("month")
     let row: SectionRow = []
     let rows: SectionRow[] = []
 
     //           all dates of month + days from the prev month that are on the same row
     const sectionsDatesLength = endOfTheDate.date() + day
-    for(let k = 0; k < sectionsDatesLength; k++){
-      const d = startOfTheDate.add(k, 'day')
+    for (let k = 0; k < sectionsDatesLength; k++) {
+      const d = startOfTheDate.add(k, "day")
       const date = d.date()
       const month = d.month()
       const year = d.year()
       const day = d.day()
-      row.push({date,month,year,day})
-      if(row.length == 7){
-        if(row[row.length-1].date > 24){
+      row.push({ date, month, year, day })
+      if (row.length == 7) {
+        if (row[row.length - 1].date > 24) {
           rows.push(row)
           row = []
-          break;
+          break
         }
         rows.push(row)
         row = []
@@ -41,7 +41,7 @@ export const generateCalendar = (dayjsDate: Dayjs = dayjs()) => {
     }
     result.push({
       date: startOfDate,
-      rows: rows
+      rows: rows,
     })
     rows = []
   }

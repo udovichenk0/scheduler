@@ -1,12 +1,13 @@
 import { t } from "i18next"
-
-import { SortConfig, SortType } from "../type"
 import { useRef, useState } from "react"
-import { useClickOutside } from "@/shared/lib/react/on-click-outside"
 import { useTranslation } from "react-i18next"
+
+import { useClickOutside } from "@/shared/lib/react/on-click-outside"
 import { Tooltip } from "@/shared/ui/general/tooltip"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
+
+import { SortConfig, SortType } from "../type"
 export type SortProps = {
   config: SortConfig[]
   active: SortType
@@ -15,7 +16,7 @@ export type SortProps = {
 export const Sort = ({ sorting }: { sorting?: SortProps }) => {
   const r = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
-  const [isSortingOpened, setIsSortingOpened] = useState(false)  
+  const [isSortingOpened, setIsSortingOpened] = useState(false)
   useClickOutside({
     ref: r,
     callback: () => setIsSortingOpened(false),

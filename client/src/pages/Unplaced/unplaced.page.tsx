@@ -18,6 +18,8 @@ import {
   $$updateTask,
   $$selectTask,
   $unplacedTasks,
+  $$dateModal,
+  $$idModal,
 } from "./unplaced.model"
 import { SORT_CONFIG } from "./config"
 
@@ -26,15 +28,15 @@ const Unplaced = () => {
   useDocumentTitle(t("task.unplaced"))
   const taskRef = useRef<HTMLDivElement>(null)
 
-  const unplacedTasks = useUnit($unplacedTasks)
+  const unplacedTasks = useUnit($unplacedTasks.$tasks)
   const createdTask = useUnit($$taskDisclosure.$createdTask)
   const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
   const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
   const activeSort = useUnit($$sort.$sortType)
-  
+
   const onSelectTaskId = useUnit($$selectTask.selectTaskId)
   const onCloseTaskForm = useUnit($$taskDisclosure.closeTaskTriggered)
-  const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpened)
   const onCreateTaskFormOpen = useUnit($$taskDisclosure.createdTaskOpened)
   const onDeleteTask = useUnit($$trashTask.taskTrashedById)
   const onChangeStatus = useUnit($$updateTask.statusChangedAndUpdated)
@@ -46,11 +48,15 @@ const Unplaced = () => {
       <Layout.Header
         iconName="common/cross-arrows"
         title={t("task.unplaced")}
-        slot={<Sort sorting={{
-          onChange: onSortChange,
-          active: activeSort,
-          config: SORT_CONFIG,
-        }}/>}
+        slot={
+          <Sort
+            sorting={{
+              onChange: onSortChange,
+              active: activeSort,
+              config: SORT_CONFIG,
+            }}
+          />
+        }
       />
       <Layout.Content
         onClick={(e) => onClickOutside(taskRef, e, onCloseTaskForm)}
@@ -60,17 +66,19 @@ const Unplaced = () => {
             <div className="px-3 pb-2" key={id}>
               {task.id === updatedTaskId ? (
                 <ExpandedTask
+                  dateModal={$$dateModal}
                   modifyTaskModel={$$updateTask}
                   taskRef={taskRef}
                 />
               ) : (
                 <TaskItem
+                  idModal={$$idModal}
                   dateLabel
                   onUpdateDate={onChangeDate}
                   onUpdateStatus={onChangeStatus}
                   isTaskSelected={selectedTaskId === task.id}
                   onClick={() => onSelectTaskId(task.id)}
-                  onDoubleClick={() => onUpdateTaskFormOpen(task.id)}
+                  onDoubleClick={() => onUpdateTaskFormOpen(task)}
                   task={task}
                 />
               )}
@@ -81,6 +89,7 @@ const Unplaced = () => {
         <div className="mx-3">
           {createdTask && (
             <ExpandedTask
+              dateModal={$$dateModal}
               modifyTaskModel={$$createTask}
               dateModifier={false}
               taskRef={taskRef}

@@ -11,16 +11,19 @@ const UserContract = zodContract(UserSchema)
 
 const signinFx = createEffect(
   async (body: { email: string; password: string }) => {
-    const response = await fetch(import.meta.env.VITE_ORIGIN_URL + "auth/sign-in", {
-      credentials: "include",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
+    const response = await fetch(
+      import.meta.env.VITE_ORIGIN_URL + "auth/sign-in",
+      {
+        credentials: "include",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify(body),
       },
-      body: JSON.stringify(body),
-    })
+    )
     const data = await response.json()
-    if(data.status >= 400){
+    if (data.status >= 400) {
       throw data
     }
     return data
@@ -33,16 +36,19 @@ export const signinQuery = createQuery({
 
 export const signupFx = createEffect(
   async (body: { email: string; password: string }) => {
-    const response = await fetch(import.meta.env.VITE_ORIGIN_URL + "auth/sign-up", {
-      credentials: "include",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
+    const response = await fetch(
+      import.meta.env.VITE_ORIGIN_URL + "auth/sign-up",
+      {
+        credentials: "include",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify(body),
       },
-      body: JSON.stringify(body),
-    })
+    )
     const data = await response.json()
-    if(data.status >= 400){
+    if (data.status >= 400) {
       throw data
     }
     return data
@@ -55,12 +61,15 @@ export const signupQuery = createQuery({
 
 export const logoutQuery = createQuery({
   effect: createEffect(async () => {
-    const response = await fetch(import.meta.env.VITE_ORIGIN_URL + "auth/logout", {
-      method: "POST",
-      credentials: "include",
-    })
+    const response = await fetch(
+      import.meta.env.VITE_ORIGIN_URL + "auth/logout",
+      {
+        method: "POST",
+        credentials: "include",
+      },
+    )
     const data = await response.json()
-    if(data.status >= 400){
+    if (data.status >= 400) {
       throw data
     }
     return data
@@ -69,21 +78,23 @@ export const logoutQuery = createQuery({
 
 export const resendCodeQuery = createQuery({
   effect: createEffect(async (email: string) => {
-    const response = await fetch(import.meta.env.VITE_ORIGIN_URL + "otp/resend", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
+    const response = await fetch(
+      import.meta.env.VITE_ORIGIN_URL + "otp/resend",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify({ email }),
       },
-      body: JSON.stringify({ email })
-    })
+    )
     const data = await response.json()
-    if(data.status >= 400){
+    if (data.status >= 400) {
       throw data
     }
     return data
   }),
 })
-
 
 export const verifyQuery = createQuery({
   effect: createEffect<{ code: string; email: string }, AuthDto>(
@@ -100,7 +111,7 @@ export const verifyQuery = createQuery({
         },
       )
       const data = await response.json()
-      if(data.status >= 400){
+      if (data.status >= 400) {
         throw data
       }
       return data
@@ -108,4 +119,3 @@ export const verifyQuery = createQuery({
   ),
   contract: AuthContract,
 })
-

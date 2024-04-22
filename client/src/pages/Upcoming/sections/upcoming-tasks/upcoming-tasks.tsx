@@ -18,7 +18,7 @@ export const AllUpcomingTasks = ({
   selectedTaskId,
 }: {
   onChangeDate: (date: Date) => void
-  onSelectTaskId: (args: {taskId: TaskId, section: string}) => void
+  onSelectTaskId: (args: { taskId: TaskId; section: string }) => void
   $selectedDate: Store<Date>
   taskRef: RefObject<HTMLDivElement>
   tasks: {

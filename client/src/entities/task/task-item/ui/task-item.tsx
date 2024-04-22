@@ -12,9 +12,9 @@ import { DatePicker } from "@/shared/ui/date-picker"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 import { TaskId, TaskStatus } from "@/shared/api/task"
 import { BaseModal } from "@/shared/ui/modals/base"
+import { IdModalFactory } from "@/shared/lib/modal/id.modal"
 
 import { Task } from "../type"
-import { $$modal } from "../model/task.model"
 
 export const TaskItem = ({
   task,
@@ -26,6 +26,7 @@ export const TaskItem = ({
   onUpdateDate,
   typeLabel = false,
   taskRef,
+  idModal,
 }: {
   task: Task
   onUpdateDate?: ({ date, id }: { date: Date; id: TaskId }) => void
@@ -36,11 +37,12 @@ export const TaskItem = ({
   isTaskSelected: boolean
   typeLabel?: boolean
   taskRef?: React.RefObject<HTMLDivElement> | undefined
+  idModal: IdModalFactory
 }) => {
   const { title, status, start_date } = task
-  const onOpenDateModal = useUnit($$modal.open)
-  const onCloseDateModal = useUnit($$modal.close)
-  const id = useUnit($$modal.$id)
+  const onOpenDateModal = useUnit(idModal.open)
+  const onCloseDateModal = useUnit(idModal.close)
+  const id = useUnit(idModal.$id)
   const onChangeDate = (date: Date) => {
     onCloseDateModal()
     onUpdateDate?.({ date, id: task.id })

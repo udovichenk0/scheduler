@@ -7,7 +7,7 @@ import { signinQuery } from "@/shared/api/auth/auth.api"
 
 import { $email } from "../check-email"
 
-import { $password, $passwordError, passwordChanged, submitTriggered } from "."
+import { $password, passwordChanged, submitTriggered } from "."
 const userDto = {
   user: {
     id: "1",
@@ -51,8 +51,6 @@ describe("signin", () => {
     })
     await allSettled(submitTriggered, { scope })
     // expect(scope.getState($passwordError)).not.toBeNull()
-    console.log("klsjdfkasjlfjlsdfl")
-    console.log(scope.getState($passwordError))
     expect(mock).not.toBeCalled()
   })
 })

@@ -17,20 +17,14 @@ export const authQuery = <Resp, P = void>({
 }) => {
   const queryFx = attach({
     source: tokenService.$accessToken,
-    mapParams: (params:P, token) => {
+    mapParams: (params: P, token) => {
       return {
         token,
         params,
       }
     },
     effect: createEffect(
-      async ({
-        params,
-        token,
-      }: {
-        params?: P 
-        token: Nullable<string>
-      }) => {
+      async ({ params, token }: { params?: P; token: Nullable<string> }) => {
         const response = await baseQuery({
           params,
           request: { ...request },
@@ -41,11 +35,7 @@ export const authQuery = <Resp, P = void>({
             refreshPromiseQueue = tokenApi.refreshFx()
             const { access_token } = await refreshPromiseQueue
             if (access_token) {
-              return retrySetTokenAndResetQueue(
-                request,
-                access_token,
-                params,
-              )
+              return retrySetTokenAndResetQueue(request, access_token, params)
             } else {
               throw new Error()
             }

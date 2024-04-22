@@ -16,7 +16,6 @@ import { State, defaultStgs } from "./config"
 const DEFAULT_WORK_TIME = 1500 // 25mins
 const MAX_STAGES_LENGTH = 12
 
-
 type PomodoroProps = {
   notificationSound: HTMLAudioElement
   $workDuration: StoreWritable<number>
@@ -27,7 +26,7 @@ type PomodoroProps = {
 }
 
 export type Stage = { fulfilled: boolean }
-export type State = typeof State[keyof typeof State]
+export type State = (typeof State)[keyof typeof State]
 
 export const createPomodoro = ({
   notificationSound,
@@ -37,7 +36,6 @@ export const createPomodoro = ({
   $isEnabledNotificationSound,
   $isEnabledAutomaticStart,
 }: PomodoroProps) => {
-
   const $audio = createStore(notificationSound)
   const finishTimerFx = attach({
     source: $audio,
@@ -48,9 +46,9 @@ export const createPomodoro = ({
   const { $timer, stopTimer, startTimer, setTimer, $isRunning } = createTimer({
     defaultTimerDuration: DEFAULT_WORK_TIME,
   })
-  const timerEnded = createEvent() 
-  
-  const $state = createStore<State>('work')
+  const timerEnded = createEvent()
+
+  const $state = createStore<State>("work")
   const $stages = createStore(defaultStgs)
   const $currentStaticTime = createStore(DEFAULT_WORK_TIME)
   const $isInited = createStore(false)
@@ -59,20 +57,20 @@ export const createPomodoro = ({
 
   const init = createEvent()
   const resetTimerTriggered = createEvent()
-  const timeSelected = createEvent<number>()  
+  const timeSelected = createEvent<number>()
 
   const $a = createStore(0)
   debug($a)
-    sample({
-      clock: timeSelected,
-      target: [
-        setTimer,
-        $currentStaticTime,
-        stopTimer,
-        $stages.reinit,
-        prepend($workDuration, (_, time:number) => time/60)
-      ],
-    })
+  sample({
+    clock: timeSelected,
+    target: [
+      setTimer,
+      $currentStaticTime,
+      stopTimer,
+      $stages.reinit,
+      prepend($workDuration, (_, time: number) => time / 60),
+    ],
+  })
   sample({
     source: $timer,
     filter: (timer) => timer <= 0,
@@ -80,12 +78,7 @@ export const createPomodoro = ({
   })
   sample({
     clock: resetTimerTriggered,
-    target: [
-      $stages.reinit,
-      stopTimer,
-      $state.reinit,
-      $tempTime.reinit
-    ],
+    target: [$stages.reinit, stopTimer, $state.reinit, $tempTime.reinit],
   })
   sample({
     clock: resetTimerTriggered,
@@ -101,10 +94,10 @@ export const createPomodoro = ({
   })
   sample({
     clock: init,
-    source: {d: $workDuration, i: $isInited},
+    source: { d: $workDuration, i: $isInited },
     filter: ({ d, i }) => !!Number(d) && !i,
     fn: ({ d }) => d * 60,
-    target: [prepend($isInited, true), setTimer, $currentStaticTime]
+    target: [prepend($isInited, true), setTimer, $currentStaticTime],
   })
 
   sample({
@@ -120,11 +113,11 @@ export const createPomodoro = ({
       stages: $stages,
       long: $longBreakDuration,
       short: $shortBreakDuration,
-      work: $workDuration
+      work: $workDuration,
     },
     fn: ({ s, stages, long, short, work }) => {
-      if(s == State.WORK){
-        const shouldLongBreak = stages[stages.length-2].fulfilled
+      if (s == State.WORK) {
+        const shouldLongBreak = stages[stages.length - 2].fulfilled
         const newStages = updateStage(stages)
 
         const time = shouldLongBreak ? long : short
@@ -132,44 +125,46 @@ export const createPomodoro = ({
         return {
           time: time * 60,
           state: state,
-          stages: newStages
+          stages: newStages,
         }
       }
       return {
         time: work * 60,
         state: State.WORK,
-        stages: s == State.SHORT ? stages : addStages(stages)
+        stages: s == State.SHORT ? stages : addStages(stages),
       }
     },
     target: spread({
       time: $currentStaticTime,
       state: $state,
-      stages: $stages
-    })
+      stages: $stages,
+    }),
   })
   sample({
     clock: $state,
     source: $isEnabledAutomaticStart,
     filter: (isAuto, state) => state == State.WORK && !isAuto,
-    target: stopTimer
+    target: stopTimer,
   })
   sample({
     clock: $stages,
     filter: (s) => s.length > MAX_STAGES_LENGTH,
-    target: resetTimerTriggered
+    target: resetTimerTriggered,
   })
 
   sample({
     clock: $currentStaticTime,
     filter: Boolean,
-    target: setTimer
+    target: setTimer,
   })
 
-  function updateStage(stages: Stage[]){
+  function updateStage(stages: Stage[]) {
     const lastFulfilled = stages.findLastIndex((value) => value.fulfilled) + 1
-    return stages.map((s, ind) => ind == lastFulfilled ? { fulfilled: true } : s)
+    return stages.map((s, ind) =>
+      ind == lastFulfilled ? { fulfilled: true } : s,
+    )
   }
-  function addStages(stages: Stage[]){
+  function addStages(stages: Stage[]) {
     return stages.concat(defaultStgs)
   }
 

@@ -11,7 +11,7 @@ export const TaskSchemaDto = z.object({
   date_created: z.coerce.date(),
   is_deleted: z.boolean(),
 })
-export const BatchedSchemaDto = z.object({count: z.number()})
+export const CountSchemaDto = z.object({ count: z.number() })
 export const TasksSchemaDto = z.array(TaskSchemaDto)
 
 export type TaskId = string
@@ -20,26 +20,25 @@ export type TaskType = z.infer<typeof TaskSchemaDto.shape.type>
 
 export type CreateTaskDto = {
   title: string
-  description: string
+  description: Nullable<string>
   status: TaskStatus
   type: TaskType
   start_date: Nullable<Date>
 }
 
-export type CreateTasksDto = {
-  tasks: CreateTaskDto[]
-}
-export type UpdateDateDto = { 
-  data: { 
-    start_date: Date; 
-    type: TaskType 
+export type CreateTasksDto = CreateTaskDto[]
+export type UpdateDateDto = {
+  data: {
+    start_date: Date
+    type: TaskType
   }
-  id: TaskId 
+  id: TaskId
 }
 
+export type Count = { count: number }
 
 export type UpdateTaskDto = {
-  data: CreateTaskDto,
+  data: CreateTaskDto
   id: TaskId
 }
 export type UpdateStatusDto = {
@@ -51,7 +50,7 @@ export type UpdateStatusDto = {
 export const LocalStorageTaskDto = z.object({
   id: z.string(),
   title: z.string(),
-  description: z.string(),
+  description: z.string().nullable(),
   status: z.enum(["FINISHED", "INPROGRESS"]),
   start_date: z.coerce.date().nullable(),
   user_id: z.null(),

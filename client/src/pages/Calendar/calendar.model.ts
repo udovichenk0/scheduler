@@ -4,14 +4,29 @@ import { and, not } from "patronum"
 
 import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
+import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
-import { $$task, Task } from "@/entities/task/task-item"
+import { taskFactory, Task } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
 import { bridge } from "@/shared/lib/effector/bridge"
-import { trashTaskFactory } from "@/features/manage-task/model/trash"
+import { taskApi } from "@/shared/api/task"
+import { routes } from "@/shared/routing"
+
+export const calendarRoute = routes.calendar
+
+export const $$dateModal = createModal({})
 
 export const $$trashTask = trashTaskFactory()
+
+const $unplacedTasks = taskFactory({
+  filter: ({ type }) => type == "unplaced",
+  route: calendarRoute,
+  api: {
+    taskQuery: taskApi.unplacedTasksQuery,
+    taskStorage: taskApi.unplacedTasksLs,
+  },
+})
 
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
@@ -27,7 +42,7 @@ export const $isTaskFormModalOpened = createStore(false)
   .on(taskFormModalOpened, () => true)
   .on(taskFormModalClosed, () => false)
 
-export const $mappedTasks = $$task.$tasks.map((tasks) => {
+export const $mappedTasks = $unplacedTasks.$tasks.map((tasks) => {
   if (!tasks) return null
   return tasks.reduce(
     (acc, task) => {
@@ -44,6 +59,7 @@ export const $mappedTasks = $$task.$tasks.map((tasks) => {
     [] as unknown as Record<string, Task[]>,
   )
 })
+
 export const canceled = createEvent()
 export const saved = createEvent()
 export const $updatedTask = createStore<string | null>(null)
@@ -65,7 +81,7 @@ bridge(() => {
 
   sample({
     clock: updateTaskModalOpened,
-    target: [$$updateTask.setFieldsTriggeredById, $updatedTask],
+    target: [$$updateTask.setFieldsTriggered, $updatedTask],
   })
   sample({
     clock: [updateTaskModalOpened, createTaskModalOpened],

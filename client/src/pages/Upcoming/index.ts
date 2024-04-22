@@ -1,10 +1,12 @@
 import { lazy } from "react"
 
-import { routes } from "@/shared/routing"
+// import { upcomingRoute } from "./upcoming.model"
+// import { routes } from "@/shared/routing"
+import { upcomingRoute } from "./upcoming.model"
 
 const Upcoming = lazy(() => import("./upcoming.page"))
 
 export const UpcomingRoute = {
-  route: routes.upcoming,
+  route: upcomingRoute,
   view: Upcoming,
 }

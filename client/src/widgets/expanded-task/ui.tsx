@@ -3,21 +3,21 @@ import { ReactNode, RefObject } from "react"
 import { Store, EventCallable } from "effector"
 
 import { ModifyTaskForm } from "@/entities/task/task-form"
-import { $$dateModal } from "@/entities/task/task-item"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { BaseModal } from "@/shared/ui/modals/base"
 import { DatePicker } from "@/shared/ui/date-picker"
+import { ModalFactory } from "@/shared/lib/modal/base.modal"
 
 type ModifyTaskFormType = {
   $title: Store<string>
-  $description: Store<string>
+  $description: Store<Nullable<string>>
   $status: Store<"FINISHED" | "INPROGRESS">
   $type: Store<"inbox" | "unplaced">
   $startDate: Store<Nullable<Date>>
   statusChanged: EventCallable<"FINISHED" | "INPROGRESS">
-  descriptionChanged: EventCallable<string>
+  descriptionChanged: EventCallable<Nullable<string>>
   titleChanged: EventCallable<string>
   typeChanged: EventCallable<"inbox" | "unplaced">
   dateChanged: EventCallable<Date>
@@ -29,18 +29,20 @@ export const ExpandedTask = ({
   modifyTaskModel,
   sideDatePicker = true,
   rightPanelSlot,
+  dateModal,
 }: {
   taskRef?: RefObject<HTMLDivElement>
   dateModifier?: boolean
   modifyTaskModel: ModifyTaskFormType
   sideDatePicker?: boolean
   rightPanelSlot?: ReactNode
+  dateModal: ModalFactory
 }) => {
   const startDate = useUnit(modifyTaskModel.$startDate)
   const changeDate = useUnit(modifyTaskModel.dateChanged)
-  const openDateModal = useUnit($$dateModal.open)
-  const closeDateModal = useUnit($$dateModal.close)
-  const isModalOpened = useUnit($$dateModal.$isOpened)
+  const openDateModal = useUnit(dateModal.open)
+  const closeDateModal = useUnit(dateModal.close)
+  const isModalOpened = useUnit(dateModal.$isOpened)
 
   const onChangeDate = (date: Date) => {
     closeDateModal()

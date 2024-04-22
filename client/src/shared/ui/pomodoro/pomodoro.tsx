@@ -3,6 +3,7 @@ import { Store } from "effector"
 import { useUnit } from "effector-react"
 
 import { PomodoroFactory } from "@/shared/lib/pomodoro"
+import { onMount } from "@/shared/lib/react"
 
 import { Button } from "../buttons/main-button"
 import { Icon } from "../icon"
@@ -10,7 +11,6 @@ import { Icon } from "../icon"
 import { StartButton } from "./ui/start-button"
 import { PomodoroDurations } from "./ui/work-durations"
 import { ProgressCircle } from "./ui/circle-progress"
-import { onMount } from "@/shared/lib/react"
 
 export const Pomodoro = ({
   leftSlot,
@@ -32,13 +32,13 @@ export const Pomodoro = ({
     startTimerTriggered,
     stopTimerTriggered,
     resetTimerTriggered,
-    init
+    init,
   } = pomodoroModel
   const { start, stop, reset, onInit } = useUnit({
     start: startTimerTriggered,
     stop: stopTimerTriggered,
     reset: resetTimerTriggered,
-    onInit: init 
+    onInit: init,
   })
   onMount(onInit)
   return (

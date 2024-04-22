@@ -4,7 +4,9 @@ import { Task } from "@/entities/task/task-item"
 
 import { TaskId } from "@/shared/api/task"
 
-export const selectTaskFactory = ($tasks: Store<Nullable<Task[] | Task[][]>>) => {
+export const selectTaskFactory = (
+  $tasks: Store<Nullable<Task[] | Task[][]>>,
+) => {
   const selectTaskId = createEvent<Nullable<TaskId>>()
   const selectNextId = createEvent<TaskId>()
   const $selectedTaskId = createStore<Nullable<TaskId>>(null).on(
@@ -15,9 +17,10 @@ export const selectTaskFactory = ($tasks: Store<Nullable<Task[] | Task[][]>>) =>
   sample({
     clock: selectNextId,
     source: $tasks,
-    filter: (tasks: Nullable<Task[] | Task[][]>):tasks is Task[] | Task[][] => tasks != null,
+    filter: (tasks: Nullable<Task[] | Task[][]>): tasks is Task[] | Task[][] =>
+      tasks != null,
     fn: (tasks, id) => {
-      if(Array.isArray(tasks[0])){
+      if (Array.isArray(tasks[0])) {
         //@ts-ignore
         return getNextTaskIdFromMultipleSource(tasks, id)
       }
@@ -31,13 +34,16 @@ export const selectTaskFactory = ($tasks: Store<Nullable<Task[] | Task[][]>>) =>
   return {
     selectTaskId,
     selectNextId,
-    $selectedTaskId
+    $selectedTaskId,
   }
 }
-export function getNextTaskIdFromMultipleSource(source: Task[][], selectedTaskId: TaskId){
-  for(let i = 0; i < source.length; i++){
+export function getNextTaskIdFromMultipleSource(
+  source: Task[][],
+  selectedTaskId: TaskId,
+) {
+  for (let i = 0; i < source.length; i++) {
     const taskId = getNextTaskId(source[i], selectedTaskId)
-    if(taskId) return taskId
+    if (taskId) return taskId
   }
   return null
 }

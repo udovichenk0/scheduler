@@ -21,7 +21,7 @@ export const modifyTaskFactory = ({
   const titleChanged = createEvent<string>()
   const typeChanged = createEvent<TaskType>()
   const dateChanged = createEvent<Date>()
-  const descriptionChanged = createEvent<string>()
+  const descriptionChanged = createEvent<Nullable<string>>()
   const statusChangedAndUpdated = createEvent<{
     id: TaskId
     status: TaskStatus
@@ -33,7 +33,7 @@ export const modifyTaskFactory = ({
   const resetFieldsTriggered = createEvent()
 
   const $title = createStore("")
-  const $description = createStore<string>("")
+  const $description = createStore<Nullable<string>>(null)
   const $status = createStore<TaskStatus>("INPROGRESS")
   const $startDate = createStore<Nullable<Date>>(defaultDate)
   const $type = createStore<TaskType>(defaultType)

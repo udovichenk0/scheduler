@@ -12,23 +12,18 @@ import { Icon, IconName } from "@/shared/ui/icon"
 import { Container } from "@/shared/ui/general/container"
 import { Pomodoro } from "@/shared/ui/pomodoro"
 import { MainModal } from "@/shared/ui/modals/main"
+import { Tooltip } from "@/shared/ui/general/tooltip"
 
 import { $$pomodoroModal, $$settingsModal, $$pomodoro } from "./header.model"
 import { PomodoroProgressBar } from "./ui/progress-bar"
-import { Tooltip } from "@/shared/ui/general/tooltip"
 
 type HeaderProps = {
-  iconName: IconName,
-  title: string | ReactNode,
+  iconName: IconName
+  title: string | ReactNode
   slot?: ReactNode
 }
 
-export const Header = ({
-  iconName,
-  title,
-  slot
-}: HeaderProps) => {
-
+export const Header = ({ iconName, title, slot }: HeaderProps) => {
   const { t } = useTranslation()
   const openPomodoroModal = useUnit($$pomodoroModal.open)
   const openSettingsModal = useUnit($$settingsModal.open)
@@ -53,7 +48,10 @@ export const Header = ({
               size={"xs"}
               onClick={openPomodoroModal}
             >
-              <Icon className="text-2xl text-cIconDefault" name="common/timer" />
+              <Icon
+                className="text-2xl text-cIconDefault"
+                name="common/timer"
+              />
               <span className="sr-only">Open pomodoro</span>
             </Button>
           )}
@@ -91,9 +89,7 @@ export const Header = ({
           <Icon name={iconName} className="fill-cIconDefault text-2xl" />
           <Typography.Heading size="lg">{title}</Typography.Heading>
         </div>
-        <div className="relative">
-          {slot}
-        </div>
+        <div className="relative">{slot}</div>
       </div>
     </Container>
   )

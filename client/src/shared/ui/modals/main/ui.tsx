@@ -46,7 +46,7 @@ export const MainModal = ({
         <div className={"m-2 flex justify-end"}>
           <span className="w-full pl-6 text-center text-[12px]">{title}</span>
           <button
-            title={'Close modal'}
+            title={"Close modal"}
             onClick={closeModal}
             className={
               "relative h-[22px]  w-[22px] rounded-[4px] hover:bg-cHover"
@@ -57,9 +57,7 @@ export const MainModal = ({
                 'before:absolute before:left-[5px] before:top-[10px] before:h-[1px] before:w-[12px] before:rotate-[-45deg] before:bg-cFont before:content-[""] after:absolute after:left-[5px] after:top-[10px] after:h-[1px] after:w-[12px] after:rotate-[45deg] after:bg-cFont after:content-[""]'
               }
             ></span>
-            <span className="sr-only">
-              Close the modal
-            </span>
+            <span className="sr-only">Close the modal</span>
           </button>
         </div>
         <div className={"mx-auto pb-6 pt-1"}>{children}</div>

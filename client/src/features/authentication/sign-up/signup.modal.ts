@@ -1,10 +1,7 @@
-import { attach, createEvent, createStore, sample } from "effector"
+import { createEvent, createStore, sample } from "effector"
 import { z } from "zod"
 
-import { $$session } from "@/entities/session"
-
 import { authApi } from "@/shared/api/auth"
-import { taskApi } from "@/shared/api/task"
 import { bridge } from "@/shared/lib/effector/bridge"
 
 import { $email } from "../check-email"
@@ -30,9 +27,6 @@ export const $passwordError = createStore<string>("")
 
 const signupSchema = z.string().min(8).max(50).trim()
 
-const getTasksFromLsAttached = attach({
-  effect: taskApi.getTasksFromLocalStorageFx,
-})
 bridge(() => {
   sample({
     clock: submitTriggered,
@@ -48,18 +42,6 @@ bridge(() => {
     fn: checkError,
     target: $passwordError,
   })
-})
-
-sample({
-  clock: authApi.signupQuery.finished.success,
-  target: getTasksFromLsAttached,
-})
-sample({
-  clock: getTasksFromLsAttached.doneData,
-  source: $$session.$user,
-  filter: (user, data) => Boolean(user) && data.length > 0,
-  fn: (_, data) => ({ tasks: data }),
-  target: taskApi.createTasksQuery.start,
 })
 
 sample({

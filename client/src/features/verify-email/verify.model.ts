@@ -34,29 +34,29 @@ sample({
 })
 sample({
   clock: FormGate.open,
-  target: timerStarted
+  target: timerStarted,
 })
 export const { tick, isRunning: $isRunning } = interval({
   timeout: 1000,
   start: timerStarted,
-  stop: timerStopped
+  stop: timerStopped,
 })
 sample({
   clock: tick,
   source: $time,
   fn: (time) => time - 1,
-  target: $time
+  target: $time,
 })
 sample({
   clock: $time,
   filter: equals($time, 0),
-  target: timerStopped
+  target: timerStopped,
 })
 
 sample({
   clock: submitTriggered,
   source: { code: $code, email: $email },
-  filter: ({code}) => !!code,
+  filter: ({ code }) => !!code,
   fn: ({ code, email }) => ({ code: code!, email }),
   target: authApi.verifyQuery.start,
 })
@@ -73,7 +73,7 @@ sample({
 })
 sample({
   clock: authApi.verifyQuery.finished.success,
-  target: resetEmailTriggered
+  target: resetEmailTriggered,
 })
 
 const invalidCodeError = createEvent()
@@ -85,41 +85,41 @@ split({
   },
   cases: {
     invalidCode: invalidCodeError,
-    __: unexpectedError
-  }
+    __: unexpectedError,
+  },
 })
 sample({
   clock: invalidCodeError,
   fn: () => t(INVALID_CODE_MESSAGE),
-  target: $error
+  target: $error,
 })
 
 sample({
   clock: unexpectedError,
   fn: () => t(UNEXPECTED_ERROR_MESSAGE),
-  target: $error
+  target: $error,
 })
 
 sample({
   clock: FormGate.close,
-  target: resetVerifyTriggered
+  target: resetVerifyTriggered,
 })
 
 bridge(() => {
   sample({
     clock: resent,
     source: $email,
-    filter: Boolean, 
-    target: authApi.resendCodeQuery.start
+    filter: Boolean,
+    target: authApi.resendCodeQuery.start,
   })
-  
+
   sample({
     clock: authApi.resendCodeQuery.finished.success,
-    target: [resetVerifyTriggered, timerStarted]
+    target: [resetVerifyTriggered, timerStarted],
   })
 })
 
 sample({
   clock: resetVerifyTriggered,
-  target: [$time.reinit, timerStopped, $error.reinit]
+  target: [$time.reinit, timerStopped, $error.reinit],
 })

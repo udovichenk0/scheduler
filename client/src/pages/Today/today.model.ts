@@ -7,58 +7,59 @@ import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
 import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
-import { $$task, createSorting } from "@/entities/task/task-item"
+import { taskFactory, createSorting } from "@/entities/task/task-item"
 
 import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
 import { selectTaskFactory } from "@/shared/lib/effector"
+import { taskApi } from "@/shared/api/task"
+import { routes } from "@/shared/routing"
+import { createIdModal, createModal } from "@/shared/lib/modal"
+
+export const homeRoute = routes.home
+export const $$dateModal = createModal({})
+export const $$idModal = createIdModal()
+
 export const $$trashTask = trashTaskFactory()
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
   defaultType: "unplaced",
-  defaultDate: dayjs(new Date()).startOf('date').toDate(),
+  defaultDate: dayjs(new Date()).startOf("date").toDate(),
 })
 export const $$taskDisclosure = disclosureTask({
-  $tasks: $$task.$tasks,
   updateTaskModel: $$updateTask,
   createTaskModel: $$createTask,
 })
 export const $$sort = createSorting()
 
-const $sortedTasks = combine($$task.$tasks, $$sort.$sortType, (tasks, sortType) => {
-  if (!tasks) return null
-  const todayTasks = tasks.filter(
-    ({ start_date, is_deleted }) =>
-      !is_deleted && (
-        dayjs(start_date).isSame(dayjs(), "day") 
-        || dayjs(start_date).isBefore(dayjs(), "date")
-      )
-  )
-  return $$sort.sortBy(sortType, todayTasks)
+export const $todayTasks = taskFactory({
+  sortModel: $$sort,
+  filter: (task) =>
+    task.type == "unplaced" && dayjs(new Date(task.start_date!)).isToday(),
+  route: homeRoute,
+  api: {
+    taskQuery: taskApi.todayTasksQuery,
+    taskStorage: taskApi.todayTasksLs,
+  },
+})
+export const $overdueTasks = taskFactory({
+  sortModel: $$sort,
+  filter: (task) =>
+    task.type == "unplaced" &&
+    dayjs(new Date(task.start_date!)).isBefore(dayjs().startOf("date")),
+  route: homeRoute,
+  api: {
+    taskQuery: taskApi.overdueTasksQuery,
+    taskStorage: taskApi.overdueTasksLs,
+  },
 })
 
-/**
- * !make "Today" task type
- * !Overdue task only can be if it was created as "Today" previously
- */
-export const $overdueTasks = $sortedTasks.map((tasks) => {
-  return (
-    tasks?.filter(
-      ({ start_date, is_deleted }) =>
-        !is_deleted && start_date && dayjs(start_date).isBefore(dayjs(), "date"),
-    ) || []
-  )
-})
-export const $todayTasks = $sortedTasks.map((tasks) => {
-  return (
-    tasks?.filter(({ start_date }) =>
-      dayjs(start_date).isSame(dayjs(), "day"),
-    ) || []
-  )
-})
-
-const $tasks = combine($todayTasks, $overdueTasks, (todayTasks, overdueTasks) => {
-  return [todayTasks, overdueTasks] 
-})
+const $tasks = combine(
+  $todayTasks.$tasks,
+  $overdueTasks.$tasks,
+  (todayTasks, overdueTasks) => {
+    return [todayTasks || [], overdueTasks || []]
+  },
+)
 export const $$selectTask = selectTaskFactory($tasks)
 
 export const $isOverdueTasksOpened = createStore(false)

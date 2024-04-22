@@ -25,6 +25,7 @@ import {
   createTaskModalOpened,
   saved,
   updateTaskModalOpened,
+  $$dateModal,
 } from "./calendar.model"
 import { Calendar } from "./ui/calendar-table"
 import { TaskFormModal } from "./ui/form-modal"
@@ -63,6 +64,7 @@ const CalendarPage = () => {
               modifyTaskModel={$$updateTask}
               dateModifier={true}
               sideDatePicker={false}
+              dateModal={$$dateModal}
               rightPanelSlot={<UpdateActionsButtons taskId={updatedTaskId} />}
             />
           )}
@@ -71,6 +73,7 @@ const CalendarPage = () => {
               modifyTaskModel={$$createTask}
               dateModifier={true}
               sideDatePicker={false}
+              dateModal={$$dateModal}
               rightPanelSlot={<ActionsButton />}
             />
           )}

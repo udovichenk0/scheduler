@@ -28,6 +28,8 @@ import {
   $$createTask,
   $$sort,
   $$selectTask,
+  $$dateModal,
+  $$idModal,
 } from "./today.model"
 import { SORT_CONFIG } from "./config"
 
@@ -38,8 +40,8 @@ const Today = () => {
   const taskItemRef = useRef<HTMLDivElement>(null)
 
   const createdTask = useUnit($$taskDisclosure.$createdTask)
-  const overdueTasks = useUnit($overdueTasks)
-  const todayTasks = useUnit($todayTasks)
+  const overdueTasks = useUnit($overdueTasks.$tasks)
+  const todayTasks = useUnit($todayTasks.$tasks)
   const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
   const activeSort = useUnit($$sort.$sortType)
 
@@ -55,11 +57,15 @@ const Today = () => {
         <Layout.Header
           iconName="common/outlined-star"
           title={t("task.today")}
-          slot={<Sort sorting={{
-            onChange: onSortChange,
-            active: activeSort,
-            config: SORT_CONFIG,
-          }}/>}
+          slot={
+            <Sort
+              sorting={{
+                onChange: onSortChange,
+                active: activeSort,
+                config: SORT_CONFIG,
+              }}
+            />
+          }
         />
         <Layout.Content
           contentRef={taskItemRef}
@@ -81,7 +87,7 @@ const Today = () => {
           />
           <NoTasks
             isTaskListEmpty={
-              !todayTasks.length && !overdueTasks.length && !createdTask
+              !todayTasks?.length && !overdueTasks?.length && !createdTask
             }
           />
         </Layout.Content>
@@ -108,15 +114,15 @@ const OverdueTasks = ({
 
   const updatedTask = useUnit($$taskDisclosure.$updatedTaskId)
   const isOverdueTasksOpened = useUnit($isOverdueTasksOpened)
-  const overdueTasks = useUnit($overdueTasks)
+  const overdueTasks = useUnit($overdueTasks.$tasks)
 
-  const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpened)
   const onToggleVisibility = useUnit(toggleOverdueTasksOpened) // Assuming this is a function
   const onChangeStatus = useUnit($$updateTask.statusChangedAndUpdated)
   const onChangeDate = useUnit($$updateTask.dateChangedAndUpdated)
 
   return (
-    <section className={`${overdueTasks.length > 0 ? "block" : "hidden"}`}>
+    <section className={`${overdueTasks?.length ? "block" : "hidden"}`}>
       <div className="flex items-center gap-1 border-b-2 border-t-2 border-cBorder px-5 py-2">
         <Icon
           name="common/outlined-star"
@@ -131,7 +137,7 @@ const OverdueTasks = ({
           <span className="text-[18px]">{t("today.overdueTasks")}</span>
           <span>
             <span className="mr-3 text-[12px]">
-              {!isOverdueTasksOpened && overdueTasks.length}
+              {!isOverdueTasksOpened && overdueTasks?.length}
             </span>
             <Icon
               name="common/arrow"
@@ -144,24 +150,26 @@ const OverdueTasks = ({
       </div>
       <div>
         {isOverdueTasksOpened &&
-          overdueTasks.map((task, id) => {
+          overdueTasks?.map((task, id) => {
             return (
               <div className="px-3 pb-2" key={id}>
                 {task.id === updatedTask ? (
                   <ExpandedTask
+                    dateModal={$$dateModal}
                     modifyTaskModel={$$updateTask}
                     taskRef={taskRef}
                     dateModifier
                   />
                 ) : (
                   <TaskItem
+                    idModal={$$idModal}
                     dateLabel
                     typeLabel
                     onUpdateDate={onChangeDate}
                     onUpdateStatus={onChangeStatus}
                     isTaskSelected={selectedTaskId === task.id}
                     onClick={() => onSelectTaskId(task.id)}
-                    onDoubleClick={() => onUpdateTaskFormOpen(task.id)}
+                    onDoubleClick={() => onUpdateTaskFormOpen(task)}
                     task={task}
                   />
                 )}
@@ -184,18 +192,18 @@ const TodayTasks = ({
 }) => {
   const { t } = useTranslation()
 
-  const todayTasks = useUnit($todayTasks)
+  const todayTasks = useUnit($todayTasks.$tasks)
   const createdTask = useUnit($$taskDisclosure.$createdTask)
   const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
-  const overdueTasks = useUnit($overdueTasks)
+  const overdueTasks = useUnit($overdueTasks.$tasks)
 
-  const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpened)
   const onChangeStatus = useUnit($$updateTask.statusChangedAndUpdated)
   const onChangeDate = useUnit($$updateTask.dateChangedAndUpdated)
 
   return (
     <section>
-      {!!overdueTasks.length && !!todayTasks.length && (
+      {!!overdueTasks?.length && !!todayTasks?.length && (
         <div
           className={`flex items-center gap-1 border-b-2 border-cBorder px-5 py-2 text-primary `}
         >
@@ -213,22 +221,24 @@ const TodayTasks = ({
         </div>
       )}
       <div>
-        {todayTasks.map((task, id) => {
+        {todayTasks?.map((task, id) => {
           return (
             <div className="px-3 pb-2" key={id}>
               {task.id === updatedTaskId ? (
                 <ExpandedTask
+                  dateModal={$$dateModal}
                   modifyTaskModel={$$updateTask}
                   taskRef={taskRef}
                 />
               ) : (
                 <TaskItem
+                  idModal={$$idModal}
                   typeLabel
                   onUpdateDate={onChangeDate}
                   onUpdateStatus={onChangeStatus}
                   isTaskSelected={selectedTaskId === task.id}
                   onClick={() => onSelectTaskId(task.id)}
-                  onDoubleClick={() => onUpdateTaskFormOpen(task.id)}
+                  onDoubleClick={() => onUpdateTaskFormOpen(task)}
                   task={task}
                 />
               )}
@@ -239,6 +249,7 @@ const TodayTasks = ({
       <div className="mx-3">
         {createdTask && (
           <ExpandedTask
+            dateModal={$$dateModal}
             modifyTaskModel={$$createTask}
             dateModifier={true}
             taskRef={taskRef}

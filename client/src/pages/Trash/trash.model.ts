@@ -2,17 +2,27 @@ import { sample } from "effector"
 
 import { removeTaskFactory } from "@/features/manage-task"
 
-import { $$task } from "@/entities/task/task-item"
+import { taskFactory } from "@/entities/task/task-item"
 
 import { selectTaskFactory } from "@/shared/lib/effector"
+import { routes } from "@/shared/routing"
+import { taskApi } from "@/shared/api/task"
+import { createIdModal } from "@/shared/lib/modal"
 
-export const $$deleteTask = removeTaskFactory()
-export const $trashTasks = $$task.$tasks.map((tasks) => {
-  if (tasks) return tasks.filter(({ is_deleted }) => is_deleted)
-  return null
+export const trashRoute = routes.trash
+export const $$idModal = createIdModal()
+
+export const $trashTasks = taskFactory({
+  filter: ({ is_deleted }) => is_deleted,
+  route: trashRoute,
+  api: {
+    taskQuery: taskApi.trashTaskQuery,
+    taskStorage: taskApi.trashTasksLs,
+  },
 })
+export const $$deleteTask = removeTaskFactory($trashTasks)
 
-export const $$selectTask = selectTaskFactory($trashTasks)
+export const $$selectTask = selectTaskFactory($trashTasks.$tasks)
 
 sample({
   clock: $$deleteTask.taskDeletedById,

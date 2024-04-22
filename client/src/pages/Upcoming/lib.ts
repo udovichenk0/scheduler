@@ -1,9 +1,26 @@
-import { LONG_MONTHS_NAMES, LONG_WEEKS_NAMES } from "@/shared/config/constants"
-import { i18n } from "@/shared/i18n"
-import { lowerCase } from "@/shared/lib/typography"
-import dayjs, { Dayjs } from "dayjs"
-import { generateSequentialDates, MIN_DATES_LENGTH, generateSequentialMonths, MIN_MONTHS_LENGTH } from "./config"
+import dayjs, { Dayjs, extend } from "dayjs"
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter"
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore"
+import isTomorrow from "dayjs/plugin/isTomorrow"
+import isToday from "dayjs/plugin/isToday"
+
 import { Task } from "@/entities/task/task-item"
+
+import { lowerCase } from "@/shared/lib/typography"
+import { i18n } from "@/shared/i18n"
+import { LONG_MONTHS_NAMES, LONG_WEEKS_NAMES } from "@/shared/config/constants"
+
+import {
+  generateSequentialDates,
+  MIN_DATES_LENGTH,
+  generateSequentialMonths,
+  MIN_MONTHS_LENGTH,
+} from "./config"
+
+extend(isSameOrAfter)
+extend(isSameOrBefore)
+extend(isTomorrow)
+extend(isToday)
 
 export function getTasksPerDate(tasks: Task[]) {
   return generateSequentialDates().map((date) => {

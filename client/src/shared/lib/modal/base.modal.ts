@@ -32,4 +32,4 @@ export const createModal = ({
   }
 }
 
-export type ModalType = ReturnType<typeof createModal>
+export type ModalFactory = ReturnType<typeof createModal>

@@ -9,7 +9,11 @@ import { TaskItem, Task } from "@/entities/task/task-item"
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { TaskId } from "@/shared/api/task"
 
-import { TaskManagerContext } from "../../upcoming.model"
+import {
+  $$dateModal,
+  $$idModal,
+  TaskManagerContext,
+} from "../../upcoming.model"
 
 export const TasksByDate = ({
   taskRef,
@@ -30,7 +34,7 @@ export const TasksByDate = ({
   const createdTask = useUnit($$taskDisclosure.$createdTask)
   const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
 
-  const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpened)
   const onChangeUpdateDate = useUnit($$updateTask.dateChanged)
   const onChangeCreateDate = useUnit($$createTask.dateChanged)
   const onChangeStatus = useUnit($$updateTask.statusChangedAndUpdated)
@@ -46,14 +50,19 @@ export const TasksByDate = ({
         return (
           <div className="px-3 pb-2" key={id}>
             {task.id === updatedTaskId ? (
-              <ExpandedTask modifyTaskModel={$$updateTask} taskRef={taskRef} />
+              <ExpandedTask
+                dateModal={$$dateModal}
+                modifyTaskModel={$$updateTask}
+                taskRef={taskRef}
+              />
             ) : (
               <TaskItem
+                idModal={$$idModal}
                 onUpdateDate={onChangeDate}
                 onUpdateStatus={onChangeStatus}
                 isTaskSelected={selectedTaskId === task.id}
                 onClick={() => onSelectTaskId(task.id)}
-                onDoubleClick={() => onUpdateTaskFormOpen(task.id)}
+                onDoubleClick={() => onUpdateTaskFormOpen(task)}
                 task={task}
               />
             )}
@@ -64,6 +73,7 @@ export const TasksByDate = ({
       <div className="mx-3">
         {createdTask && (
           <ExpandedTask
+            dateModal={$$dateModal}
             modifyTaskModel={$$createTask}
             dateModifier={true}
             taskRef={taskRef}

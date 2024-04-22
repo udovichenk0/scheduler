@@ -1,16 +1,19 @@
 import { fork, allSettled } from "effector"
-import { test, expect, vi, describe } from "vitest"
+import { test, expect, vi, describe, beforeEach } from "vitest"
+import { createRoute } from "atomic-router"
 
 import { $$session } from "@/entities/session"
-import { $$task } from "@/entities/task/task-item"
+import { taskFactory, type TaskFactory } from "@/entities/task/task-item"
 
-import { trashTaskFactory } from "./task.model"
+import { taskApi } from "@/shared/api/task"
+
+import { TrashTaskFactory, trashTaskFactory } from "./task.model"
 
 const tasks = [
   {
     id: "1",
     title: "without date",
-    description: "",
+    description: null,
     type: "inbox",
     status: "INPROGRESS",
     start_date: null,
@@ -22,7 +25,7 @@ const tasks = [
 const returnedTask = {
   id: "1",
   title: "without date",
-  description: "",
+  description: null,
   type: "inbox",
   status: "INPROGRESS",
   start_date: null,
@@ -30,44 +33,54 @@ const returnedTask = {
   date_created: "2023-12-03T11:11:51.227Z",
   is_deleted: true,
 }
-const $$trashTask = trashTaskFactory()
-describe("delete task", () => {
-  test("delete task from database if user is authenticated", async () => {
-    const { taskTrashedById, _ } = $$trashTask
+
+let $$trashTask: TrashTaskFactory
+let $$mockTasks: TaskFactory
+beforeEach(() => {
+  $$mockTasks = taskFactory({
+    filter: ({ type }) => type == "inbox",
+    api: {
+      taskQuery: taskApi.inboxTasksQuery,
+      taskStorage: taskApi.inboxTasksLs,
+    },
+    route: createRoute(),
+  })
+  $$trashTask = trashTaskFactory()
+})
+
+describe("trashTask factory", () => {
+  test("should put task to trash if user is authenticated", async () => {
+    const { taskTrashedById } = $$trashTask
     const mock = vi.fn(() => returnedTask)
     const scope = fork({
       values: [
         [$$session.$isAuthenticated, true],
-        [$$task.$tasks, tasks],
+        [$$mockTasks.$tasks, tasks],
       ],
-      handlers: [[_.trashTaskQuery.__.executeFx, mock]],
+      handlers: [[taskApi.trashTaskQuery.__.executeFx, mock]],
     })
     await allSettled(taskTrashedById, {
       scope,
       params: "1",
     })
-    expect(mock).toBeCalled()
     expect(mock).toBeCalledWith("1")
-    expect(mock).toReturnWith(returnedTask)
-    expect(scope.getState($$task.$tasks)).toStrictEqual([returnedTask])
+    expect(scope.getState($$mockTasks.$tasks)).toStrictEqual([])
   })
-  test("delete task from localstorage if user is not authenticated", async () => {
-    const { taskTrashedById, _ } = $$trashTask
+  test("should put task to trash if user is not authenticated", async () => {
+    const { taskTrashedById } = $$trashTask
     const mock = vi.fn(() => ({ result: returnedTask }))
     const scope = fork({
       values: [
         [$$session.$isAuthenticated, false],
-        [$$task.$tasks, tasks],
+        [$$mockTasks.$tasks, tasks],
       ],
-      handlers: [[_.trashTaskFromLsFx, mock]],
+      handlers: [[taskApi.trashTaskLs, mock]],
     })
     await allSettled(taskTrashedById, {
       scope,
       params: "1",
     })
-    expect(mock).toHaveBeenCalledOnce()
-    expect(mock).toBeCalledWith(null, "1")
-    expect(mock).toReturnWith({ result: returnedTask })
-    expect(scope.getState($$task.$tasks)).toStrictEqual([returnedTask])
+
+    expect(scope.getState($$mockTasks.$tasks)).toStrictEqual([])
   })
 })

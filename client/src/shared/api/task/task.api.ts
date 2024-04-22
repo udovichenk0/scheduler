@@ -1,9 +1,12 @@
 import { zodContract } from "@farfetched/zod"
 import { createEffect } from "effector"
 import { v4 as uuidv4 } from "uuid"
+import dayjs from "dayjs"
 
 import { authQuery } from "@/shared/api/auth-query"
 import { parseDto } from "@/shared/lib/parse-dto"
+import { getToday } from "@/shared/lib/date/get-today"
+import { isToday } from "@/shared/lib/date"
 
 import {
   TaskDto,
@@ -19,21 +22,110 @@ import {
   LocalStorageTasksDto,
   CreateTasksDto,
   UpdateDateDto,
-  BatchedSchemaDto,
+  CountSchemaDto,
+  Count,
 } from "./task.dto"
 
 const TaskContract = zodContract(TaskSchemaDto)
-export const createTaskQuery = authQuery<TaskDto, CreateTaskDto>({
+const TasksContract = zodContract(TasksSchemaDto)
+const CountContract = zodContract(CountSchemaDto)
+
+export const inboxTasksQuery = authQuery<TaskDto[]>({
+  request: {
+    url: "tasks/inbox",
+    method: "GET",
+  },
+  response: {
+    contract: TasksContract,
+    mapData: (data) => data.result,
+  },
+})
+export const inboxTasksCountQuery = authQuery<Count>({
+  request: {
+    url: "tasks/inbox/count",
+    method: "GET",
+  },
+  response: {
+    contract: CountContract,
+    mapData: (data) => data.result,
+  },
+})
+export const todayTasksCountQuery = authQuery<Count>({
+  request: {
+    url: "tasks/today/count",
+    method: "GET",
+  },
+  response: {
+    contract: CountContract,
+    mapData: (data) => data.result,
+  },
+})
+export const trashTaskQuery = authQuery<TaskDto[]>({
+  request: {
+    url: "tasks/trash",
+    method: "GET",
+  },
+  response: {
+    contract: TasksContract,
+    mapData: (data) => data.result,
+  },
+})
+
+export const unplacedTasksQuery = authQuery<TaskDto[]>({
+  request: {
+    url: "tasks/unplaced",
+    method: "GET",
+  },
+  response: {
+    contract: TasksContract,
+    mapData: (data) => data.result,
+  },
+})
+
+export const todayTasksQuery = authQuery<TaskDto[]>({
+  request: {
+    url: "tasks/today",
+    method: "GET",
+  },
+  response: {
+    contract: TasksContract,
+    mapData: (data) => data.result,
+  },
+})
+
+export const overdueTasksQuery = authQuery<TaskDto[]>({
+  request: {
+    url: "tasks/overdue",
+    method: "GET",
+  },
+  response: {
+    contract: TasksContract,
+    mapData: (data) => data.result,
+  },
+})
+
+export const upcomingTasksQuery = authQuery<TaskDto[]>({
+  request: {
+    url: "tasks/unplaced",
+    method: "GET",
+  },
+  response: {
+    contract: TasksContract,
+    mapData: (data) => data.result,
+  },
+})
+
+export const createTaskMutation = authQuery<TaskDto, CreateTaskDto>({
   request: {
     url: "tasks",
     method: "POST",
-    body: (data) => data
+    body: (data) => data,
   },
   response: {
     contract: TaskContract,
     mapData: (data) => data.result,
   },
-});
+})
 
 const GetTasksContract = zodContract(TasksSchemaDto)
 export const getTasksQuery = authQuery<TaskDto[]>({
@@ -47,14 +139,11 @@ export const getTasksQuery = authQuery<TaskDto[]>({
   },
 })
 
-export const updateTaskQuery = authQuery<
-  TaskDto,
-  UpdateTaskDto
->({
+export const updateTaskMutation = authQuery<TaskDto, UpdateTaskDto>({
   request: {
     url: ({ id }) => `tasks/${id}`,
     method: "PATCH",
-    body: ({ data }) => data
+    body: ({ data }) => data,
   },
   response: {
     contract: TaskContract,
@@ -62,11 +151,11 @@ export const updateTaskQuery = authQuery<
   },
 })
 
-export const updateStatusQuery = authQuery<TaskDto, UpdateStatusDto>({
+export const updateStatusMutation = authQuery<TaskDto, UpdateStatusDto>({
   request: {
     url: ({ id }) => `tasks/${id}/status`,
     method: "POST",
-    body: ({ data }) => data
+    body: ({ data }) => data,
   },
   response: {
     contract: TaskContract,
@@ -74,7 +163,7 @@ export const updateStatusQuery = authQuery<TaskDto, UpdateStatusDto>({
   },
 })
 
-export const deleteTaskQuery = authQuery<TaskDto, TaskId>({
+export const deleteTaskMutation = authQuery<TaskDto, TaskId>({
   request: {
     url: (id) => `tasks/${id}`,
     method: "DELETE",
@@ -84,7 +173,7 @@ export const deleteTaskQuery = authQuery<TaskDto, TaskId>({
     mapData: (data) => data.result,
   },
 })
-export const trashTaskQuery = authQuery<TaskDto, TaskId>({
+export const trashTaskMutation = authQuery<TaskDto, TaskId>({
   request: {
     url: (id) => `tasks/${id}/trash`,
     method: "PATCH",
@@ -94,34 +183,34 @@ export const trashTaskQuery = authQuery<TaskDto, TaskId>({
     mapData: (data) => data.result,
   },
 })
-export const deleteAllTasksQuery = authQuery<{count: number}>({
+export const deleteAllTasksMutation = authQuery<Count>({
   request: {
-    url: 'tasks/all',
-    method: 'DELETE',
+    url: "tasks/all",
+    method: "DELETE",
   },
   response: {
-    contract: zodContract(BatchedSchemaDto),
+    contract: CountContract,
     mapData: (data) => data.result,
-  }
+  },
 })
 
-export const createTasksQuery = authQuery<TaskDto[], CreateTasksDto>({
+export const createTasksMutation = authQuery<Count, CreateTasksDto>({
   request: {
     url: "tasks/batch",
     method: "POST",
-    body: (data) => data 
+    body: (data) => ({ tasks: data }),
   },
   response: {
-    contract: GetTasksContract,
+    contract: CountContract,
     mapData: (data) => data.result,
   },
 })
 
-export const updateDateQuery = authQuery<TaskDto, UpdateDateDto>({
+export const updateDateMutation = authQuery<TaskDto, UpdateDateDto>({
   request: {
     url: ({ id }) => `tasks/${id}/date`,
     method: "PATCH",
-    body: ({ data }) => data
+    body: ({ data }) => data,
   },
   response: {
     contract: TaskContract,
@@ -141,7 +230,91 @@ export const deleteTasksFromLocalStorageFx = createEffect(() => {
   localStorage.removeItem("tasks")
 })
 
-export const setTaskToLocalStorageFx = createEffect(
+export const inboxTasksLs = createEffect(() => {
+  const tasks = getTasksFromLs()
+  const result = tasks.filter(
+    (task) => task.type == "inbox" && !task.is_deleted,
+  )
+  return {
+    result,
+  }
+})
+export const inboxTasksCountLs = createEffect(
+  (): { result: { count: number } } => {
+    const tasks = getTasksFromLs()
+    const count = tasks.reduce(
+      (count, task) =>
+        task.type == "inbox" && !task.is_deleted ? count + 1 : count,
+      0,
+    )
+    return {
+      result: {
+        count,
+      },
+    }
+  },
+)
+export const unplacedTasksLs = createEffect(() => {
+  const tasks = getTasksFromLs()
+  const result = tasks.filter(
+    (task) => task.type == "unplaced" && !task.is_deleted,
+  )
+  return {
+    result,
+  }
+})
+export const todayTasksLs = createEffect(() => {
+  const tasks = getTasksFromLs()
+  const result = tasks.filter(
+    (task) =>
+      task.start_date && dayjs(task.start_date).isToday() && !task.is_deleted,
+  )
+  return {
+    result,
+  }
+})
+export const todayTasksCountLs = createEffect(() => {
+  const tasks = getTasksFromLs()
+  const count = tasks.reduce((count, { start_date, is_deleted }) => {
+    return start_date && isToday(start_date) && !is_deleted ? count + 1 : count
+  }, 0)
+  return {
+    result: {
+      count,
+    },
+  }
+})
+export const overdueTasksLs = createEffect(() => {
+  const tasks = getTasksFromLs()
+  const today = getToday()
+  const result = tasks.filter(
+    (task) =>
+      task.start_date && new Date(task.start_date) < today && !task.is_deleted,
+  )
+  return {
+    result,
+  }
+})
+export const upcomingTasksLs = createEffect(() => {
+  const tasks = getTasksFromLs()
+  const today = getToday()
+  const result = tasks.filter(
+    (task) =>
+      task.start_date && new Date(task.start_date) >= today && !task.is_deleted,
+  )
+  return {
+    result,
+  }
+})
+export const trashTasksLs = createEffect(() => {
+  const tasks = getTasksFromLs()
+  const result = tasks.filter((task) => task.is_deleted)
+  return {
+    result,
+  }
+})
+
+export const createTaskLs = createEffect(
   ({ body }: { body: CreateTaskDto }) => {
     const tasksFromLs = localStorage.getItem("tasks")
     const task = {
@@ -163,7 +336,7 @@ export const setTaskToLocalStorageFx = createEffect(
   },
 )
 
-function updateTask(
+function updateTaskFunc(
   tasks: LocalStorageTaskDto[],
   id: TaskId,
   data: CreateTaskDto,
@@ -178,12 +351,12 @@ function updateTask(
     updatedTask,
   }
 }
-export const updateTaskFromLocalStorageFx = createEffect(
+export const updateTaskLs = createEffect(
   async ({ id, data }: { id: TaskId; data: CreateTaskDto }) => {
     const tasksFromLs = localStorage.getItem("tasks")
     const parsedTasks = JSON.parse(tasksFromLs!)
 
-    const { updatedTasks, updatedTask } = updateTask(parsedTasks, id, data)
+    const { updatedTasks, updatedTask } = updateTaskFunc(parsedTasks, id, data)
     const parsedTask = parseDto(LocalStorageTaskDto, updatedTask!)
     localStorage.setItem("tasks", JSON.stringify(updatedTasks))
     return {
@@ -192,7 +365,7 @@ export const updateTaskFromLocalStorageFx = createEffect(
   },
 )
 
-export const updateDateInLocalStorageFx = createEffect(
+export const updateDateLs = createEffect(
   ({ date, type, id }: { date: Date; id: TaskId; type: TaskType }) => {
     const tasksFromLs = localStorage.getItem("tasks")
     const parsedTasks = JSON.parse(tasksFromLs!) as LocalStorageTaskDto[]
@@ -208,7 +381,6 @@ export const updateDateInLocalStorageFx = createEffect(
   },
 )
 
-
 function updateTaskStatus(
   tasks: LocalStorageTaskDto[],
   id: TaskId,
@@ -217,7 +389,6 @@ function updateTaskStatus(
   const updatedTasks = tasks.map((task) =>
     task.id === id ? { ...task, status } : task,
   )
-
   const updatedTask = updatedTasks.find((task) => task.id === id)
 
   return {
@@ -226,7 +397,7 @@ function updateTaskStatus(
   }
 }
 
-export const updateStatusInLocalStorageFx = createEffect(
+export const updateStatusLs = createEffect(
   ({ id, status }: { id: TaskId; status: TaskStatus }) => {
     const tasks = localStorage.getItem("tasks")
     const parsedTasks = JSON.parse(tasks!) as LocalStorageTaskDto[]
@@ -255,7 +426,7 @@ function deleteTask(tasks: LocalStorageTaskDto[], id: TaskId) {
   }
 }
 
-export const deleteTaskFromLocalStorageFx = createEffect((id: TaskId) => {
+export const deleteTaskLs = createEffect((id: TaskId) => {
   const tasksFromLs = localStorage.getItem("tasks")
   const parsedTasks = JSON.parse(tasksFromLs!) as LocalStorageTaskDto[]
 
@@ -271,7 +442,7 @@ export const deleteTaskFromLocalStorageFx = createEffect((id: TaskId) => {
   }
 })
 
-export const trashTaskFromLocalStorageFx = createEffect((id: TaskId) => {
+export const trashTaskLs = createEffect((id: TaskId) => {
   const tasksFromLs = localStorage.getItem("tasks")
   const parsedTasks = JSON.parse(tasksFromLs!) as LocalStorageTaskDto[]
 
@@ -289,9 +460,8 @@ export const trashTaskFromLocalStorageFx = createEffect((id: TaskId) => {
     result: trashedTask!,
   }
 })
-export const deleteTrashTasksFromLocalStorageFx = createEffect(() => {
+export const deleteTasksLs = createEffect(() => {
   const tasksFromLs = localStorage.getItem("tasks")
-  console.log("here")
   const tasks = JSON.parse(tasksFromLs!) as LocalStorageTaskDto[]
   const updated = tasks.filter((task) => !task.is_deleted)
   if (updated.length) {
@@ -300,3 +470,8 @@ export const deleteTrashTasksFromLocalStorageFx = createEffect(() => {
     localStorage.removeItem("tasks")
   }
 })
+
+function getTasksFromLs() {
+  const tasksFromLs = localStorage.getItem("tasks")
+  return (JSON.parse(tasksFromLs!) as LocalStorageTaskDto[]) || []
+}

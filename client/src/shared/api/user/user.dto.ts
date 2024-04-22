@@ -6,5 +6,4 @@ export const UserSchema = z.object({
   verified: z.boolean(),
 })
 
-
 export type UserDto = z.infer<typeof UserSchema>

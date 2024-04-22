@@ -1,12 +1,15 @@
 import dayjs from "dayjs"
 import { useTranslation } from "react-i18next"
-
-import { LONG_MONTHS_NAMES, LONG_WEEKS_NAMES, SHORT_MONTHS_NAMES } from "@/shared/config/constants"
-
-import { Icon } from "../../icon"
 import { useRef } from "react"
+
+import {
+  LONG_MONTHS_NAMES,
+  LONG_WEEKS_NAMES,
+  SHORT_MONTHS_NAMES,
+} from "@/shared/config/constants"
 import { onMount } from "@/shared/lib/react"
 
+import { Icon } from "../../icon"
 
 export const Cell = ({
   onDateChange,
@@ -32,7 +35,7 @@ export const Cell = ({
   )
   const { t } = useTranslation()
   onMount(() => {
-    if(isToday){
+    if (isToday) {
       focusRef.current && focusRef.current.focus()
     }
   })
@@ -63,7 +66,9 @@ export const Cell = ({
           )}
         </div>
       )}
-      <span className="sr-only">{t(LONG_WEEKS_NAMES[day])} {t(LONG_MONTHS_NAMES[month])} {date} {year}</span>
+      <span className="sr-only">
+        {t(LONG_WEEKS_NAMES[day])} {t(LONG_MONTHS_NAMES[month])} {date} {year}
+      </span>
     </button>
   )
 }

@@ -9,29 +9,52 @@ import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
 import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
-import { $$task, Task, createSorting } from "@/entities/task/task-item"
+import { taskFactory, Task, createSorting } from "@/entities/task/task-item"
 
-import { TaskId } from "@/shared/api/task"
+import { TaskId, taskApi } from "@/shared/api/task"
 import { selectTaskFactory } from "@/shared/lib/effector"
+import { routes } from "@/shared/routing"
+import { createIdModal, createModal } from "@/shared/lib/modal"
 
-import { getTasksPerDate, getTasksForRemainingMonth, getTasksPerMonth, getTasksForRemainingYear, getTasksPerYear } from "./lib"
+import {
+  getTasksPerDate,
+  getTasksForRemainingMonth,
+  getTasksPerMonth,
+  getTasksForRemainingYear,
+  getTasksPerYear,
+} from "./lib"
+
 type Variant = "upcoming" | Dayjs
 
+export const upcomingRoute = routes.upcoming
+
 //factories
+
+export const $$dateModal = createModal({})
+export const $$idModal = createIdModal()
+
+export const $$sort = createSorting()
+
+export const $upcomingTasks = taskFactory({
+  sortModel: $$sort,
+  route: upcomingRoute,
+  filter: ({ type }) => type == "unplaced",
+  api: {
+    taskQuery: taskApi.upcomingTasksQuery,
+    taskStorage: taskApi.upcomingTasksLs,
+  },
+})
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
   defaultType: "unplaced",
-  defaultDate: dayjs(new Date()).startOf('date').toDate(),
+  defaultDate: dayjs(new Date()).startOf("date").toDate(),
 })
 export const $$taskDisclosure = disclosureTask({
-  $tasks: $$task.$tasks,
   updateTaskModel: $$updateTask,
   createTaskModel: $$createTask,
 })
 
 export const $$trashTask = trashTaskFactory()
-export const $$sort = createSorting()
-
 
 export const TaskManagerContext = createContext({
   $$updateTask,
@@ -48,69 +71,82 @@ export const $variant = createStore<Variant>("upcoming").on(
   (_, variant) => variant,
 )
 
-const $sortedTasks = combine($$task.$tasks, $$sort.$sortType, (tasks, sortType) => {
-  if (!tasks) return []
-  const upcomingTasks = tasks.filter(({ is_deleted }) => !is_deleted)
-  return $$sort.sortBy(sortType, upcomingTasks)
-})
-export const $upcomingTasks = combine($sortedTasks, $variant, (tasks, variant) => {
-  if (variant == "upcoming" && tasks) {
-    const first = getTasksPerDate(tasks)
-    const second = getTasksForRemainingMonth(tasks)
-    const third = getTasksPerMonth(tasks)
-    const fourth = getTasksForRemainingYear(tasks)
-    const fifth = getTasksPerYear(tasks)
-    return first.concat(second, third, fourth, fifth)
-  }
-  return []
-})
+export const $tasks = combine(
+  $upcomingTasks.$tasks,
+  $variant,
+  (tasks, variant) => {
+    if (variant == "upcoming" && tasks) {
+      const tasksPerDate = getTasksPerDate(tasks)
+      const tasksForRemainingMonth = getTasksForRemainingMonth(tasks)
+      const tasksPerMonth = getTasksPerMonth(tasks)
+      const tasksForRemainingYear = getTasksForRemainingYear(tasks)
+      const tasksPerYear = getTasksPerYear(tasks)
+      return tasksPerDate.concat(
+        tasksForRemainingMonth,
+        tasksPerMonth,
+        tasksForRemainingYear,
+        tasksPerYear,
+      )
+    }
+    return []
+  },
+)
 
-export const $tasksByDate = combine($sortedTasks, $variant, (tasks, variant) => {
-  if (variant != "upcoming" && tasks) {
-    return tasks.filter(({ start_date }) => {
-      return dayjs(start_date).startOf("date").isSame(variant.startOf("date"))
-    })
-  }
-  return []
-})
+export const $tasksByDate = combine(
+  $upcomingTasks.$tasks,
+  $variant,
+  (tasks, variant) => {
+    if (variant != "upcoming" && tasks) {
+      return tasks.filter(({ start_date }) => {
+        return dayjs(start_date).startOf("date").isSame(variant.startOf("date"))
+      })
+    }
+    return []
+  },
+)
 
-
-export const selectTaskIdWithSectionTitle = createEvent<{taskId: TaskId, section: string}>()
+export const selectTaskIdWithSectionTitle = createEvent<{
+  taskId: TaskId
+  section: string
+}>()
 const $selectedSection = createStore<Nullable<string>>(null)
 
-const $tasks = combine($upcomingTasks, $tasksByDate, $selectedSection, $variant, 
+const $sectionTasks = combine(
+  $tasks,
+  $tasksByDate,
+  $selectedSection,
+  $variant,
   (upcomingTasks, tasksByDate, selectedUpcomingSection, variant) => {
-    if(variant == 'upcoming'){
-      const a = upcomingTasks.find(task => task.title == selectedUpcomingSection)?.tasks!
-      return a ?? []
+    if (variant == "upcoming") {
+      return (
+        upcomingTasks.find((task) => task.title == selectedUpcomingSection)
+          ?.tasks || []
+      )
     } else {
       return tasksByDate
     }
-})
-export const $$selectTask = selectTaskFactory($tasks)
+  },
+)
+export const $$selectTask = selectTaskFactory($sectionTasks)
 
 sample({
   clock: selectTaskIdWithSectionTitle,
   target: spread({
     taskId: $$selectTask.selectTaskId,
-    section: $selectedSection
-  })
+    section: $selectedSection,
+  }),
 })
 
-export const $tasksByDateKv = combine($$task.$tasks, (tasks) => {
+export const $tasksByDateKv = combine($upcomingTasks.$tasks, (tasks) => {
   if (!tasks) return null
-  return tasks.reduce(
-    (acc, item) => {
-      const date = dayjs(item.start_date).format("YYYY-MM-DD")
-      if (!item.start_date) return acc
-      if (!acc[date]) {
-        acc[date] = []
-      }
-      acc[date].push(item)
-      return acc
-    },
-    {} as unknown as Record<string, Task[]>,
-  )
+  return tasks.reduce((acc: Record<string, Task[]>, item) => {
+    const date = dayjs(item.start_date).format("YYYY-MM-DD")
+    if (!acc[date]) {
+      acc[date] = []
+    }
+    acc[date].push(item)
+    return acc
+  }, {})
 })
 
 sample({
@@ -134,7 +170,7 @@ sample({
   clock: variantSelected,
   fn: (variant) => {
     if (variant == "upcoming") {
-      return dayjs(new Date()).startOf('date').toDate()
+      return dayjs(new Date()).startOf("date").toDate()
     }
     return variant.toDate()
   },
