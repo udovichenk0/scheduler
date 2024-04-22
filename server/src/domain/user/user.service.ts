@@ -1,7 +1,6 @@
 import { EmailSchema, UserDto } from "./dto/user.dto";
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { encryptPassword } from "src/services/session/encrypt-password";
 import { job } from "cron";
 import { UserRepository } from "./infrastructure/repository/user.repository";
 import { Errors, isError } from "src/services/err/errors";

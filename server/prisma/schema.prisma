@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,33 +8,37 @@ datasource db {
 }
 
 model user {
-  id                  String              @id             @default(cuid())
-  email               String              @unique
-  hash                String
-  verified            Boolean             @default(false)
-  task                task[]
-  emailConfirmation   emailConfirmation?
-  created_at          DateTime            @default(now())
+  id                String             @id @default(cuid())
+  email             String             @unique
+  hash              String
+  verified          Boolean            @default(false)
+  created_at        DateTime           @default(now())
+  emailconfirmation emailconfirmation?
+  task              task[]
 }
 
 model task {
-  id            String    @id             @default(cuid())
-  title         String
-  description   String?
-  type          Type
-  status        Status    @default(INPROGRESS)
-  start_date    DateTime?
-  user          user      @relation(fields: [user_id], references: [id])
-  user_id       String
-  date_created  DateTime  @default(now())
-  is_deleted    Boolean   @default(false)
+  id           String    @id @default(cuid())
+  title        String
+  description  String?
+  type         Type
+  status       Status    @default(INPROGRESS)
+  start_date   DateTime? @db.Timestamp(0)
+  user_id      String
+  date_created DateTime  @default(now())
+  is_deleted   Boolean   @default(false)
+  user         user      @relation(fields: [user_id], references: [id])
+
+  @@index([user_id], map: "task_user_id_fkey")
 }
-model emailConfirmation {
-  id          String    @id     @default(cuid())
-  code        String
-  user        user      @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id     String    @unique
+
+model emailconfirmation {
+  id      String @id
+  code    String
+  user_id String @unique(map: "emailConfirmation_user_id_key")
+  user    user   @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "emailConfirmation_user_id_fkey")
 }
+
 enum Status {
   FINISHED
   CANCELED

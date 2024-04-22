@@ -11,6 +11,14 @@ export class TaskRepository {
       }
     });
   }
+  findMany(where: Prisma.taskWhereInput) {
+    return this.prismaService.task.findMany({ where });
+  }
+  findTaskCount(where: Prisma.taskWhereInput) {
+    return this.prismaService.task.count({
+      where
+    });
+  }
   create(data: Prisma.taskCreateInput) {
     return this.prismaService.task.create({
       data: {
@@ -47,9 +55,9 @@ export class TaskRepository {
       }))
     });
   }
-  deleteMany(where: Prisma.taskWhereInput){
+  deleteMany(where: Prisma.taskWhereInput) {
     return this.prismaService.task.deleteMany({
       where
-    })
+    });
   }
 }
