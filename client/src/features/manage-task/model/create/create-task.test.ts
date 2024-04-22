@@ -1,17 +1,13 @@
 import { allSettled, fork } from "effector"
-import { test, expect, vi, describe } from "vitest"
+import { test, expect, vi, describe, beforeEach } from "vitest"
+import { createRoute } from "atomic-router"
 
 import { $$session } from "@/entities/session"
-import { $$task } from "@/entities/task/task-item"
+import { TaskFactory, taskFactory } from "@/entities/task/task-item"
 
 import { taskApi } from "@/shared/api/task"
 
-import { createTaskFactory } from "."
-const createTaskModel = createTaskFactory({
-  defaultType: "inbox",
-  defaultDate: null,
-})
-
+import { CreateTaskFactory, createTaskFactory } from "./"
 const tasks = [
   {
     id: "1",
@@ -35,7 +31,7 @@ const resultedTasks = [
     start_date: null,
     user_id: "1",
     is_deleted: false,
-    date_created: new Date(2024,10, 10),
+    date_created: new Date(2024, 10, 10),
   },
   {
     id: "2",
@@ -58,11 +54,27 @@ const returnedTask = {
   start_date: null,
   user_id: "1",
   is_deleted: false,
-  date_created: new Date(2024,10,10),
+  date_created: new Date(2024, 10, 10),
 }
 
 describe("create task", () => {
-  test("Create task on the server if user is authenticated", async () => {
+  let $$mockTasks: TaskFactory
+  let $$createTask: CreateTaskFactory
+  beforeEach(() => {
+    $$mockTasks = taskFactory({
+      filter: ({ is_deleted, type }) => !is_deleted && type == "inbox",
+      api: {
+        taskQuery: taskApi.inboxTasksQuery,
+        taskStorage: taskApi.inboxTasksLs,
+      },
+      route: createRoute(),
+    })
+    $$createTask = createTaskFactory({
+      defaultDate: null,
+      defaultType: "inbox",
+    })
+  })
+  test("should create task if user is authenticated", async () => {
     const mock = vi.fn(() => returnedTask)
     const {
       $title,
@@ -72,7 +84,7 @@ describe("create task", () => {
       $isAllowToSubmit,
       $type,
       createTaskTriggered,
-    } = createTaskModel
+    } = $$createTask
     const scope = fork({
       values: [
         [$title, "sixth"],
@@ -82,9 +94,9 @@ describe("create task", () => {
         [$type, "inbox"],
         [$$session.$isAuthenticated, true],
         [$isAllowToSubmit, true],
-        [$$task.$tasks, tasks],
+        [$$mockTasks.$tasks, tasks],
       ],
-      handlers: [[taskApi.createTaskQuery.__.executeFx, mock]],
+      handlers: [[taskApi.createTaskMutation.__.executeFx, mock]],
     })
     await allSettled(createTaskTriggered, { scope })
     expect(mock).toHaveBeenCalledOnce()
@@ -96,9 +108,9 @@ describe("create task", () => {
       start_date: null,
     })
     expect(mock).toReturnWith(returnedTask)
-    expect(scope.getState($$task.$tasks)).toStrictEqual(resultedTasks)
+    expect(scope.getState($$mockTasks.$tasks)).toStrictEqual(resultedTasks)
     expect(scope.getState($title)).toBe("")
-    expect(scope.getState($description)).toBe("")
+    expect(scope.getState($description)).toBe(null)
     expect(scope.getState($status)).toBe("INPROGRESS")
     expect(scope.getState($isAllowToSubmit)).toBeFalsy()
   })
@@ -112,8 +124,7 @@ describe("create task", () => {
       $isAllowToSubmit,
       $type,
       createTaskTriggered,
-      _,
-    } = createTaskModel
+    } = $$createTask
     const scope = fork({
       values: [
         [$title, "sixth"],
@@ -123,13 +134,13 @@ describe("create task", () => {
         [$type, "inbox"],
         [$$session.$isAuthenticated, false],
         [$isAllowToSubmit, true],
-        [$$task.$tasks, tasks],
+        [$$mockTasks.$tasks, tasks],
       ],
-      handlers: [[_.setTaskToLocalStorageFx, mock]],
+      handlers: [[taskApi.createTaskLs, mock]],
     })
     await allSettled(createTaskTriggered, { scope })
     expect(mock).toHaveBeenCalledOnce()
-    expect(mock).toBeCalledWith(null, {
+    expect(mock).toBeCalledWith({
       body: {
         title: "sixth",
         description: "my note",
@@ -139,9 +150,9 @@ describe("create task", () => {
       },
     })
     expect(mock).toReturnWith({ result: returnedTask })
-    expect(scope.getState($$task.$tasks)).toStrictEqual(resultedTasks)
+    expect(scope.getState($$mockTasks.$tasks)).toStrictEqual(resultedTasks)
     expect(scope.getState($title)).toBe("")
-    expect(scope.getState($description)).toBe("")
+    expect(scope.getState($description)).toBe(null)
     expect(scope.getState($status)).toBe("INPROGRESS")
     expect(scope.getState($isAllowToSubmit)).toBeFalsy()
   })

@@ -1,22 +1,23 @@
 import dayjs, { Dayjs } from "dayjs"
 import { memo, useState } from "react"
 import { useTranslation } from "react-i18next"
+
 import { Task } from "@/entities/task/task-item"
 
 import { generateCalendar } from "@/shared/lib/date/generate-calendar"
 import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
 import { ModalType } from "@/shared/lib/modal"
 import { TaskId, TaskStatus } from "@/shared/api/task"
+import { Grid } from "@/shared/ui/general/grid"
 
 import { MonthSwitcher } from "./month-switcher"
 import { Cell } from "./cell"
-import { Grid } from "@/shared/ui/general/grid"
 
 type CalendarProps = {
   tasks: Nullable<Record<string, Task[]>>
   openUpdatedTask: (taskId: TaskId) => void
   openCreatedTask: (date: Date) => void
-  onUpdateStatus: ({ id, status }: { id: TaskId, status: TaskStatus }) => void
+  onUpdateStatus: ({ id, status }: { id: TaskId; status: TaskStatus }) => void
   setDate: (date: Dayjs) => void
   date: Dayjs
   modal: ModalType
@@ -37,35 +38,31 @@ export const Calendar = memo(
     }
     return (
       <>
-        <MonthSwitcher
-          date={date}
-          changeMonth={changeMonth}
-        />
+        <MonthSwitcher date={date} changeMonth={changeMonth} />
         <WeekNames />
         <Grid columns={7} rows={5} className="h-full">
-          {calendar.map(( cell ) => {
-              const date = dayjs(
-                new Date(cell.year, cell.month, cell.date),
-              ).format("YYYY-MM-DD")
-              const t = tasks?.[date]
+          {calendar.map((cell) => {
+            const date = dayjs(
+              new Date(cell.year, cell.month, cell.date),
+            ).format("YYYY-MM-DD")
+            const t = tasks?.[date]
 
-              return (
-                <Cell
-                  key={date}
-                  updateTaskOpened={openUpdatedTask}
-                  createTaskOpened={openCreatedTask}
-                  onUpdateStatus={onUpdateStatus}
-                  cell={cell}
-                  tasks={t}
-                />
-              )
+            return (
+              <Cell
+                key={date}
+                updateTaskOpened={openUpdatedTask}
+                createTaskOpened={openCreatedTask}
+                onUpdateStatus={onUpdateStatus}
+                cell={cell}
+                tasks={t}
+              />
+            )
           })}
         </Grid>
       </>
     )
   },
 )
-
 
 export const WeekNames = () => {
   const { t } = useTranslation()

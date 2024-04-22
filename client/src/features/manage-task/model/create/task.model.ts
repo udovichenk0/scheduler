@@ -1,9 +1,7 @@
-import { merge, sample, createEvent, attach } from "effector"
+import { merge, sample, createEvent } from "effector"
 import { not, and } from "patronum"
-import { attachOperation } from "@farfetched/core"
 
 import { modifyTaskFactory } from "@/entities/task/task-form"
-import { $$task } from "@/entities/task/task-item"
 import { $$session } from "@/entities/session"
 
 import { taskApi } from "@/shared/api/task"
@@ -21,47 +19,36 @@ export const createTaskFactory = ({
 
   const createTaskTriggered = createEvent()
 
-  const attachCreateTaskQuery = attachOperation(taskApi.createTaskQuery)
-  const attachSetTaskToLocalStorage = attach({
-    effect: taskApi.setTaskToLocalStorageFx,
-  })
   const taskSuccessfullyCreated = merge([
-    attachSetTaskToLocalStorage.doneData,
-    attachCreateTaskQuery.finished.success,
+    taskApi.createTaskLs.doneData,
+    taskApi.createTaskMutation.finished.success,
   ])
   bridge(() => {
     sample({
       clock: createTaskTriggered,
       source: $fields,
       filter: and($isAllowToSubmit, $$session.$isAuthenticated),
-      target: attachCreateTaskQuery.start,
+      target: taskApi.createTaskMutation.start,
     })
     sample({
       clock: createTaskTriggered,
       source: $fields,
       filter: and($isAllowToSubmit, not($$session.$isAuthenticated)),
       fn: (fields) => ({ body: fields }),
-      target: attachSetTaskToLocalStorage,
+      target: taskApi.createTaskLs,
     })
   })
   sample({
-    clock: [
-      attachCreateTaskQuery.finished.success,
-      attachSetTaskToLocalStorage.doneData,
-    ],
+    clock: taskSuccessfullyCreated,
     fn: ({ result }) => result,
-    target: [$$task.setTaskTriggered, resetFieldsTriggered],
+    target: resetFieldsTriggered,
   })
   return {
     ...$$modifyTask,
     taskSuccessfullyCreated,
     createTaskTriggered,
-    $isCreating: taskApi.createTaskQuery.$pending,
-    _: {
-      setTaskToLocalStorageFx: attachSetTaskToLocalStorage,
-      createTaskQuery: attachCreateTaskQuery,
-    },
+    $isCreating: taskApi.createTaskMutation.$pending,
   }
 }
 
-export type CreateTaskType = ReturnType<typeof createTaskFactory>
+export type CreateTaskFactory = ReturnType<typeof createTaskFactory>

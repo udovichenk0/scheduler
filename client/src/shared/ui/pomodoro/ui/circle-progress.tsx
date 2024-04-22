@@ -23,7 +23,7 @@ export const ProgressCircle = ({
   const staticTime = useUnit($staticTime)
   const stages = useUnit($stages)
 
-  const isWorkTime = state == 'work'
+  const isWorkTime = state == "work"
   const progress =
     DEFAULT_PROGRESS_BAR -
     ((staticTime - time) / staticTime) * DEFAULT_PROGRESS_BAR

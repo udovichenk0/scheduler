@@ -16,7 +16,10 @@ export const Footer = ({
 }) => {
   const { t } = useTranslation()
   return (
-    <div className="h-14 p-2 flex items-center" onMouseDown={(e) => e.preventDefault()}>
+    <div
+      className="flex h-14 items-center p-2"
+      onMouseDown={(e) => e.preventDefault()}
+    >
       <Button
         onClick={onCreateTask}
         disabled={!onCreateTask}

@@ -1,12 +1,12 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(var(--columns), 1fr);
-  grid-template-rows: repeat(var(--rows),1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
   position: relative;
 }
 
 .items {
-  display: contents
+  display: contents;
 }
 
 .item {

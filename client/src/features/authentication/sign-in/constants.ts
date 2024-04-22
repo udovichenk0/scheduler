@@ -5,6 +5,5 @@ export const TOO_LONG_PASSWORD_MESSAGE =
 export const INVALID_PASSWORD_MESSAGE =
   "setting.synchronization.validationError.invalidPassword"
 
-
 export const MAX_LENGTH = 50
 export const MIN_LENGTH = 8

@@ -1,75 +1,73 @@
-import { createEvent, sample, merge, attach } from "effector"
+import { createEvent, sample, merge } from "effector"
 import { not } from "patronum"
-import { attachOperation } from "@farfetched/core"
 
 import { $$session } from "@/entities/session"
-import { $$task } from "@/entities/task/task-item"
+import { TaskFactory } from "@/entities/task/task-item"
 
 import { taskApi } from "@/shared/api/task"
-export const removeTaskFactory = () => {
+export const removeTaskFactory = (taskModel: TaskFactory) => {
   const taskDeletedById = createEvent<string>()
   const allTasksDeleted = createEvent()
 
-  const attachDeleteTaskQuery = attachOperation(taskApi.deleteTaskQuery)
-  const attachDeleteAllTasksQuery = attachOperation(taskApi.deleteAllTasksQuery)
-
-  const attachDeleteTaskFromLsFx = attach({
-    effect: taskApi.deleteTaskFromLocalStorageFx,
-  })
-
-  const attachDeleteAllTasksFromLsFx = attach({
-    effect: taskApi.deleteTrashTasksFromLocalStorageFx,
-  })
-
   const taskSuccessfullyDeleted = merge([
-    attachDeleteTaskFromLsFx.done,
-    attachDeleteTaskQuery.finished.success,
+    taskApi.deleteTaskLs.doneData,
+    taskApi.deleteTaskMutation.finished.success,
   ])
   sample({
     clock: taskDeletedById,
     filter: $$session.$isAuthenticated,
-    target: attachDeleteTaskQuery.start,
+    target: taskApi.deleteTaskMutation.start,
   })
   sample({
     clock: allTasksDeleted,
     filter: $$session.$isAuthenticated,
-    target: attachDeleteAllTasksQuery.start
+    target: taskApi.deleteAllTasksMutation.start,
   })
 
   sample({
     clock: taskDeletedById,
     filter: not($$session.$isAuthenticated),
-    target: attachDeleteTaskFromLsFx,
+    target: taskApi.deleteTaskLs,
   })
   sample({
     clock: allTasksDeleted,
     filter: not($$session.$isAuthenticated),
-    target: attachDeleteAllTasksFromLsFx
+    target: taskApi.deleteTasksFromLocalStorageFx,
   })
 
   sample({
+    clock: taskApi.deleteTaskMutation.finished.success,
+    fn: ({ result }) => result.id,
+    target: taskModel.taskDeleted,
+  })
+  sample({
     clock: [
-      attachDeleteTaskQuery.finished.success,
-      attachDeleteTaskFromLsFx.doneData,
+      taskApi.trashTaskMutation.finished.success,
+      taskApi.trashTaskLs.doneData,
+    ],
+    fn: ({ result }) => result,
+    target: taskModel.addTaskTriggered,
+  })
+  sample({
+    clock: [
+      taskApi.deleteTaskMutation.finished.success,
+      taskApi.deleteTaskLs.doneData,
     ],
     fn: ({ result }) => result.id,
-    target: $$task.taskDeleted,
+    target: taskModel.taskDeleted,
   })
-
   sample({
     clock: [
-      attachDeleteAllTasksQuery.finished.success,
-      attachDeleteAllTasksFromLsFx.done
+      taskApi.deleteAllTasksMutation.finished.success,
+      taskApi.deleteTasksFromLocalStorageFx.done,
     ],
-    target: $$task.trashTasksDeleted
+    target: taskModel.reset,
   })
   return {
     taskDeletedById,
     allTasksDeleted,
     taskSuccessfullyDeleted,
-    _: {
-      deleteTaskFromLsFx: attachDeleteTaskFromLsFx,
-      deleteTaskQuery: attachDeleteTaskQuery,
-    },
   }
 }
+
+export type RemoveTaskFactory = ReturnType<typeof removeTaskFactory>

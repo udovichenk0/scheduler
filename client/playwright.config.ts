@@ -14,7 +14,7 @@ export default defineConfig({
   testMatch: "**/*.spec.ts",
   reporter: "html",
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: "http://localhost:5173",
 
     trace: "on-first-retry",
   },
@@ -37,8 +37,8 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'yarn dev',
-    url: 'http://localhost:5173',
+    command: "yarn dev",
+    url: "http://localhost:5173",
     reuseExistingServer: true,
   },
 })

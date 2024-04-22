@@ -1,16 +1,19 @@
-import { TaskId } from "@/shared/api/task"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { AllTasksModal } from "./all-tasks-modal"
+
 import { Task } from "@/entities/task/task-item"
 
-export const CellFooter = ({ 
+import { TaskId } from "@/shared/api/task"
+
+import { AllTasksModal } from "./all-tasks-modal"
+
+export const CellFooter = ({
   updateTaskOpened,
   showMoreVisible,
-  tasks
-}: { 
+  tasks,
+}: {
   updateTaskOpened: (taskId: TaskId) => void
-  showMoreVisible: boolean,
+  showMoreVisible: boolean
   tasks?: Task[]
 }) => {
   const { t } = useTranslation()
@@ -33,5 +36,5 @@ export const CellFooter = ({
         onTaskUpdate={updateTaskOpened}
       />
     </div>
-  ) 
+  )
 }

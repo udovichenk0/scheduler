@@ -1,15 +1,16 @@
-import { deleteById } from './../lib';
-import { describe, expect, test } from "vitest";
+import { describe, expect, test } from "vitest"
+
+import { deleteById } from "./../lib"
 
 describe("test task libs", () => {
   test("should delete task by id", () => {
     const { data, expected } = testConf.deleteById
-    const result = deleteById(data, '3')
+    const result = deleteById(data, "3")
     expect(result).toEqual(expected)
   })
   test("should delete task by id", () => {
     const { data, expected } = testConf.deleteById
-    const result = deleteById(data, '3')
+    const result = deleteById(data, "3")
     expect(result).toEqual(expected)
   })
 })
@@ -40,11 +41,11 @@ const testConf = {
         date_created: new Date("2023-12-03T11:11:51.227Z"),
         is_deleted: false,
       },
-  ]
-  }
+    ],
+  },
 }
 
-function getTasks(){
+function getTasks() {
   return [
     {
       id: "1",

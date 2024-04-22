@@ -5,8 +5,8 @@ import { Task } from "@/entities/task/task-item"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { TaskId, TaskStatus } from "@/shared/api/task"
-
 import { Tooltip } from "@/shared/ui/general/tooltip"
+
 import { CellFooter } from "./cell-footer"
 import { CellHeader } from "./cell-header"
 
@@ -26,7 +26,7 @@ export const Cell = ({
   tasks?: Task[]
   updateTaskOpened: (taskId: TaskId) => void
   createTaskOpened: (date: Date) => void
-  onUpdateStatus: ({ id, status }:{ id: TaskId, status: TaskStatus}) => void
+  onUpdateStatus: ({ id, status }: { id: TaskId; status: TaskStatus }) => void
 }) => {
   const taskContainerRef = useRef<HTMLDivElement>(null)
   const cellRef = useRef<HTMLDivElement>(null)
@@ -44,7 +44,7 @@ export const Cell = ({
   function shouldShowMore() {
     const taskContainer = taskContainerRef.current as HTMLDivElement
     const tasksAmount = taskContainer?.children.length
-    
+
     const TASK_HEIGHT = 24
 
     //                  sum of the tasks          + gaps between them
@@ -58,7 +58,7 @@ export const Cell = ({
   useEffect(() => {
     if (tasks?.length) {
       shouldShowMore()
-      window.addEventListener('resize', shouldShowMore)
+      window.addEventListener("resize", shouldShowMore)
     }
     return () => {
       document.removeEventListener("resize", shouldShowMore)
@@ -73,7 +73,7 @@ export const Cell = ({
         isToday && "border-t border-t-accent"
       } border-r border-cBorder p-2 text-cCalendarFont`}
     >
-      <CellHeader cell={cell}/>
+      <CellHeader cell={cell} />
       <div
         ref={taskContainerRef}
         className="flex h-[calc(100%-3rem)] w-full flex-col flex-wrap gap-x-2 gap-y-1 overflow-x-clip"
@@ -82,26 +82,28 @@ export const Cell = ({
           const { id, status } = task
           return (
             <Tooltip text={task.title} size="md" key={task.id}>
-                <div 
-                  onClick={() => updateTaskOpened(task.id)}
-                  className="bg-[#607d8b] rounded-[5px] text-start text-white px-1 flex items-center cursor-pointer">
-                  <Checkbox
-                    iconClassName="fill-white"
-                      className="absolute left-[2px] top-[2px]"
-                      borderClassName="border-white bg-[#607d8b] hidden group-hover:flex"
-                      onChange={() => onUpdateStatus({id, status})}
-                      checked={task.status == 'FINISHED'}
-                    />
-                    <span className="truncate">{task.title}</span>
-                </div>
+              <div
+                onClick={() => updateTaskOpened(task.id)}
+                className="flex cursor-pointer items-center rounded-[5px] bg-[#607d8b] px-1 text-start text-white"
+              >
+                <Checkbox
+                  iconClassName="fill-white"
+                  className="absolute left-[2px] top-[2px]"
+                  borderClassName="border-white bg-[#607d8b] hidden group-hover:flex"
+                  onChange={() => onUpdateStatus({ id, status })}
+                  checked={task.status == "FINISHED"}
+                />
+                <span className="truncate">{task.title}</span>
+              </div>
             </Tooltip>
           )
         })}
       </div>
-      <CellFooter 
-        updateTaskOpened={updateTaskOpened} 
-        showMoreVisible={showMore} 
-        tasks={tasks}/>
+      <CellFooter
+        updateTaskOpened={updateTaskOpened}
+        showMoreVisible={showMore}
+        tasks={tasks}
+      />
     </div>
   )
 }

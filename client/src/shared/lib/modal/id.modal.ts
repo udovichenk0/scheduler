@@ -28,3 +28,5 @@ export const createIdModal = () => {
     close,
   }
 }
+
+export type IdModalFactory = ReturnType<typeof createIdModal>

@@ -1,31 +1,38 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from "@playwright/test"
 
-import { UserDto } from '@/shared/api/user'
-import { generateError } from '@/shared/lib/error'
+import { UserDto } from "@/shared/api/user"
+import { generateError } from "@/shared/lib/error"
 
-test.beforeEach( async ({ page }) => {
-  await page.goto('/')
+test.beforeEach(async ({ page }) => {
+  await page.goto("/")
   await page.getByTitle("Settings").click()
   await page.getByRole("button", { name: "Synchronization" }).click()
-  await page.getByRole("button", { name: "Continue With Email"}).click()
+  await page.getByRole("button", { name: "Continue With Email" }).click()
 })
-test('Successful login', async ({ page }) => {
-  await page.route("http://localhost:3000/user?email=mytestemail@gmail.com", async (route) => {
-    const json:UserDto = {id: 'user_id', email: 'mytestemail@gmail.com', verified: true}
-    return route.fulfill({json})
-  })
+test("Successful login", async ({ page }) => {
+  await page.route(
+    "http://localhost:3000/user?email=mytestemail@gmail.com",
+    async (route) => {
+      const json: UserDto = {
+        id: "user_id",
+        email: "mytestemail@gmail.com",
+        verified: true,
+      }
+      return route.fulfill({ json })
+    },
+  )
   await page.route("http://localhost:3000/auth/sign-in", async (route) => {
     const json = {
-      user: {id: 'user_id', email: 'mytestemail@gmail.com', verified: true},
+      user: { id: "user_id", email: "mytestemail@gmail.com", verified: true },
       access_token: "access_token",
     }
-    return route.fulfill({json})
+    return route.fulfill({ json })
   })
   //signin
-  
-  await page.getByRole('textbox').fill("mytestemail@gmail.com")
 
-  await page.getByRole("button", { name: "Continue"}).click()
+  await page.getByRole("textbox").fill("mytestemail@gmail.com")
+
+  await page.getByRole("button", { name: "Continue" }).click()
 
   await expect(page.getByText("Sign in")).toBeVisible()
 
@@ -36,78 +43,94 @@ test('Successful login', async ({ page }) => {
   await expect(page.getByRole("button", { name: "Quit" })).toBeVisible()
 })
 
-test('Sign up flow', async ({ page }) => {
-
-  await page.route("http://localhost:3000/user?email=mytestemail@gmail.com", async (route) => {
-    const json = generateError(404, "User not found")
-    return route.fulfill({json})
-  })
+test("Sign up flow", async ({ page }) => {
+  await page.route(
+    "http://localhost:3000/user?email=mytestemail@gmail.com",
+    async (route) => {
+      const json = generateError(404, "User not found")
+      return route.fulfill({ json })
+    },
+  )
   await page.route("http://localhost:3000/auth/sign-up", async (route) => {
-    const json = {id: 'user_id', email: 'mytestemail@gmail.com', verified: false}
-    return route.fulfill({json})
+    const json = {
+      id: "user_id",
+      email: "mytestemail@gmail.com",
+      verified: false,
+    }
+    return route.fulfill({ json })
   })
   await page.route("http://localhost:3000/auth/verify-email", async (route) => {
     const json = {
-      user: {id: 'user_id', email: 'mytestemail@gmail.com', verified: true},
+      user: { id: "user_id", email: "mytestemail@gmail.com", verified: true },
       access_token: "access_token",
     }
-    return route.fulfill({json})
+    return route.fulfill({ json })
   })
-  await page.getByRole('textbox').fill("mytestemail@gmail.com")
-  await page.getByRole("button", { name: "Continue"}).click()
+  await page.getByRole("textbox").fill("mytestemail@gmail.com")
+  await page.getByRole("button", { name: "Continue" }).click()
   //signup modal
-  await expect(page.getByText('Sign up')).toBeVisible()
+  await expect(page.getByText("Sign up")).toBeVisible()
 
   await page.getByRole("textbox").fill("password123")
   await page.getByRole("button", { name: "Resume" }).click()
   // to be verification modal
-  await expect(page.getByRole("heading", {name: "Verification"})).toBeVisible()
+  await expect(
+    page.getByRole("heading", { name: "Verification" }),
+  ).toBeVisible()
   //input
-  const input = page.getByLabel('Code')
+  const input = page.getByLabel("Code")
   await input.focus()
   const submit = page.getByRole("button", { name: "Submit" })
 
   await expect(submit).toBeDisabled()
   //enter code
-  await input.pressSequentially('123456')
+  await input.pressSequentially("123456")
   await expect(submit).toBeEnabled()
   await submit.click()
 
   //to be logged in
   await expect(page.getByRole("button", { name: "Quit" })).toBeVisible()
 })
-test('Show error if verification code is not correct', async ({ page }) => {
-
-  await page.route("http://localhost:3000/user?email=mytestemail@gmail.com", async (route) => {
-    const json = generateError(404, "User not found")
-    return route.fulfill({json})
-  })
+test("Show error if verification code is not correct", async ({ page }) => {
+  await page.route(
+    "http://localhost:3000/user?email=mytestemail@gmail.com",
+    async (route) => {
+      const json = generateError(404, "User not found")
+      return route.fulfill({ json })
+    },
+  )
   await page.route("http://localhost:3000/auth/sign-up", async (route) => {
-    const json = {id: 'user_id', email: 'mytestemail@gmail.com', verified: false}
-    return route.fulfill({json})
+    const json = {
+      id: "user_id",
+      email: "mytestemail@gmail.com",
+      verified: false,
+    }
+    return route.fulfill({ json })
   })
   const error_description = "Confirmation Code is invalid"
   await page.route("http://localhost:3000/auth/verify-email", async (route) => {
     const json = generateError(400, "Invalid confirmation code")
-    return route.fulfill({json})
+    return route.fulfill({ json })
   })
-  await page.getByRole('textbox').fill("mytestemail@gmail.com")
-  await page.getByRole("button", { name: "Continue"}).click()
+  await page.getByRole("textbox").fill("mytestemail@gmail.com")
+  await page.getByRole("button", { name: "Continue" }).click()
   //signup modal
-  await expect(page.getByText('Sign up')).toBeVisible()
+  await expect(page.getByText("Sign up")).toBeVisible()
 
   await page.getByRole("textbox").fill("password123")
   await page.getByRole("button", { name: "Resume" }).click()
   // to be verification modal
-  await expect(page.getByRole("heading", {name: "Verification"})).toBeVisible()
+  await expect(
+    page.getByRole("heading", { name: "Verification" }),
+  ).toBeVisible()
   //input
-  const input = page.getByLabel('Code')
+  const input = page.getByLabel("Code")
   await input.focus()
   const submit = page.getByRole("button", { name: "Submit" })
 
   await expect(submit).toBeDisabled()
   //enter code
-  await input.pressSequentially('123456')
+  await input.pressSequentially("123456")
 
   await expect(submit).toBeEnabled()
   await submit.click()
@@ -117,21 +140,28 @@ test('Show error if verification code is not correct', async ({ page }) => {
 //
 
 test("Show error if password is not correct", async ({ page }) => {
-  await page.route("http://localhost:3000/user?email=mytestemail@gmail.com", async (route) => {
-    const json = {id: 'user_id', email: 'mytestemail@gmail.com', verified: true}
-    return route.fulfill({json})
-  })
+  await page.route(
+    "http://localhost:3000/user?email=mytestemail@gmail.com",
+    async (route) => {
+      const json = {
+        id: "user_id",
+        email: "mytestemail@gmail.com",
+        verified: true,
+      }
+      return route.fulfill({ json })
+    },
+  )
   await page.route("http://localhost:3000/auth/sign-in", async (route) => {
     const json = generateError(400, "Wrong login or password")
     return route.fulfill({
-      json 
+      json,
     })
   })
   //signin
 
-  await page.getByRole('textbox').fill("mytestemail@gmail.com")
+  await page.getByRole("textbox").fill("mytestemail@gmail.com")
 
-  await page.getByRole("button", { name: "Continue"}).click()
+  await page.getByRole("button", { name: "Continue" }).click()
 
   await expect(page.getByText("Sign in")).toBeVisible()
 
@@ -141,9 +171,9 @@ test("Show error if password is not correct", async ({ page }) => {
   await expect(page.getByLabel("Incorrect login or password")).toBeVisible()
 })
 
-test('Show error if email is too short', async ({ page }) => {
-  const errorMessage = 'Entered email is too short'
-  await page.getByRole('textbox').fill("s");
+test("Show error if email is too short", async ({ page }) => {
+  const errorMessage = "Entered email is too short"
+  await page.getByRole("textbox").fill("s")
 
   await page.getByRole("button", { name: "Continue" }).click()
 

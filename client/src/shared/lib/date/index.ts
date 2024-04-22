@@ -1,3 +1,5 @@
 export { normalizeSeconds } from "./normalize-time"
 export { generateCalendar } from "./generate-calendar"
 export { addLeadingZero } from "./add-leading-zero"
+export { getToday } from "./get-today"
+export * from "./comparison"

@@ -1,15 +1,14 @@
-import { createEvent, createStore, sample, Store } from "effector"
-import { spread, and, not, or } from "patronum"
+import { createEvent, createStore, sample } from "effector"
+import { and, not, or } from "patronum"
 
-import { CreateTaskType } from "@/features/manage-task/model/create"
-import { UpdateTaskType } from "@/features/manage-task/model/update"
+import { CreateTaskFactory } from "@/features/manage-task/model/create"
+import { UpdateTaskFactory } from "@/features/manage-task/model/update"
 
 import { Task } from "@/entities/task/task-item"
 
 import { createModal } from "@/shared/lib/modal"
 import { TaskId } from "@/shared/api/task"
 import { bridge } from "@/shared/lib/effector/bridge"
-import { findTaskById, tasksNotNull } from "@/entities/task/task-item/lib"
 
 export const pomodoroModal = createModal({})
 export const settingsModal = createModal({})
@@ -18,19 +17,13 @@ export const dateModal = createModal({})
 export const disclosureTask = ({
   updateTaskModel,
   createTaskModel,
-  $tasks,
 }: {
-  updateTaskModel: UpdateTaskType
-  createTaskModel: CreateTaskType
-  $tasks: Store<Nullable<Task[]>>
+  updateTaskModel: UpdateTaskFactory
+  createTaskModel: CreateTaskFactory
 }) => {
   const {
-    $title,
-    $description,
-    $status,
-    $startDate,
-    $type,
     $isUpdating,
+    setFieldsTriggered: setFieldsTriggeredById,
     taskSuccessfullyUpdated,
     updateTaskTriggeredById,
     $isAllowToSubmit: $isAllowToUpdate,
@@ -43,7 +36,7 @@ export const disclosureTask = ({
   } = createTaskModel
 
   const closeTaskTriggered = createEvent()
-  const updatedTaskOpenedById = createEvent<string>()
+  const updatedTaskOpened = createEvent<Task>()
   const createdTaskOpened = createEvent()
 
   const updatedTaskClosed = createEvent()
@@ -56,17 +49,15 @@ export const disclosureTask = ({
   const $isCreatedTaskTriggered = createStore(false)
 
   sample({
-    clock: updatedTaskOpenedById,
-    source: $tasks,
-    filter: tasksNotNull,
-    fn: findTaskById,
-    target: spread({
-      title: $title,
-      description: $description,
-      status: $status,
-      start_date: $startDate,
-      type: $type,
+    clock: updatedTaskOpened,
+    fn: ({ title, description, status, start_date, type }) => ({
+      title,
+      description,
+      status,
+      start_date,
+      type,
     }),
+    target: setFieldsTriggeredById,
   })
   bridge(() => {
     sample({
@@ -89,17 +80,19 @@ export const disclosureTask = ({
   })
 
   sample({
-    clock: updatedTaskOpenedById,
+    clock: updatedTaskOpened,
     filter: and(
       not($updatedTaskId),
       not($createdTask),
       not($isUpdatedTaskTriggered),
     ),
+    fn: (task) => task.id,
     target: $updatedTaskId,
   })
   sample({
-    clock: updatedTaskOpenedById,
+    clock: updatedTaskOpened,
     filter: and($updatedTaskId, not($isAllowToUpdate)),
+    fn: (task) => task.id,
     target: $updatedTaskId,
   })
 
@@ -192,7 +185,7 @@ export const disclosureTask = ({
     closeTaskTriggered,
     $createdTask,
     $updatedTaskId,
-    updatedTaskOpenedById,
+    updatedTaskOpened,
     createdTaskOpened,
   }
 }

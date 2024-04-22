@@ -37,3 +37,5 @@ export const createSorting = () => {
     sort,
   }
 }
+
+export type CreateSorting = ReturnType<typeof createSorting>

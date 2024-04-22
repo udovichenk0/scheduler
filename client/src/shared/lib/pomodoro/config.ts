@@ -1,6 +1,6 @@
 export const Timer = {
   START: "start",
-  STOP: "stop"
+  STOP: "stop",
 } as const
 
 export const State = {

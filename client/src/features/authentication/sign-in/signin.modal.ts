@@ -1,14 +1,12 @@
-import { attach, createEvent, createStore, sample, split } from "effector"
+import { createEvent, createStore, sample, split } from "effector"
 import { spread } from "patronum"
 import { z } from "zod"
 import { t } from "i18next"
 
 import { $$session } from "@/entities/session"
-import { $$task } from "@/entities/task/task-item"
 
 import { authApi } from "@/shared/api/auth"
 import { tokenService } from "@/shared/api/token"
-import { taskApi } from "@/shared/api/task"
 import { bridge } from "@/shared/lib/effector/bridge"
 import { UNEXPECTED_ERROR_MESSAGE, isHttpError } from "@/shared/lib/error"
 
@@ -33,10 +31,6 @@ export const $password = createStore<string>("").on(
 export const $passwordError = createStore<Nullable<string>>(null)
 
 const signinSchema = z.string().trim().min(MIN_LENGTH).max(MAX_LENGTH)
-
-const getTasksFromLsFxAttached = attach({
-  effect: taskApi.getTasksFromLocalStorageFx,
-})
 
 bridge(() => {
   sample({
@@ -68,11 +62,7 @@ bridge(() => {
       token: tokenService.setTokenTriggered,
     }),
   })
-  sample({
-    clock: authApi.signinQuery.finished.success,
-    target: getTasksFromLsFxAttached,
-  })
-  
+
   const wrongPassword = createEvent()
   const internalError = createEvent()
   split({
@@ -82,8 +72,8 @@ bridge(() => {
     },
     cases: {
       isWrongPassword: wrongPassword,
-      __: internalError
-    }
+      __: internalError,
+    },
   })
 
   sample({
@@ -95,22 +85,7 @@ bridge(() => {
   sample({
     clock: internalError,
     fn: () => t(UNEXPECTED_ERROR_MESSAGE),
-    target: $passwordError
-  })
-})
-
-bridge(() => {
-  sample({
-    clock: getTasksFromLsFxAttached.doneData,
-    filter: (result) => !result.length,
-    target: $$task.getTasksTriggered,
-  })
-  sample({
-    clock: getTasksFromLsFxAttached.doneData,
-    source: $$session.$user,
-    filter: (user, data) => Boolean(user) && data.length > 0,
-    fn: (_, data) => ({ tasks: data }),
-    target: taskApi.createTasksQuery.start,
+    target: $passwordError,
   })
 })
 
@@ -120,7 +95,7 @@ sample({
 })
 
 function checkError(value: Nullable<string>) {
-  if(!value || value.length < MIN_LENGTH){
+  if (!value || value.length < MIN_LENGTH) {
     return TOO_SHORT_PASSWORD_MESSAGE
   }
   if (value.length > MAX_LENGTH) {

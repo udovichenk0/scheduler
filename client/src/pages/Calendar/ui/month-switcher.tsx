@@ -12,7 +12,8 @@ export const MonthSwitcher = ({
   date: Dayjs
 }) => {
   const { t } = useTranslation()
-  const isCurrentMonth = dayjs().isSame(date, 'month') && dayjs().isSame(date, "year")
+  const isCurrentMonth =
+    dayjs().isSame(date, "month") && dayjs().isSame(date, "year")
   return (
     <div className="sticky top-0 z-50 mb-2 flex items-center justify-end gap-4 bg-main">
       <Button

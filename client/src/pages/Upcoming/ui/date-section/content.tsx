@@ -7,7 +7,11 @@ import { Task, TaskItem } from "@/entities/task/task-item"
 
 import { TaskId } from "@/shared/api/task"
 
-import { TaskManagerContext } from "../../upcoming.model"
+import {
+  $$dateModal,
+  $$idModal,
+  TaskManagerContext,
+} from "../../upcoming.model"
 
 export const Content = ({
   onSelectTaskId,
@@ -17,9 +21,9 @@ export const Content = ({
   isSelected,
   selectedTaskId,
 }: {
-  onSelectTaskId: (args: {taskId: TaskId, section: string}) => void
+  onSelectTaskId: (args: { taskId: TaskId; section: string }) => void
   taskRef: RefObject<HTMLDivElement>
-  section: string,
+  section: string
   tasks: Task[]
   title?: ReactNode
   isSelected: boolean
@@ -28,7 +32,7 @@ export const Content = ({
   const { $$createTask, $$updateTask, $$taskDisclosure } =
     useContext(TaskManagerContext)
   const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
-  const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpenedById)
+  const openUpdatedTaskById = useUnit($$taskDisclosure.updatedTaskOpened)
   const createdTask = useUnit($$taskDisclosure.$createdTask)
   const changeStatusAndUpdate = useUnit($$updateTask.statusChangedAndUpdated)
   const changeDateAndUpdate = useUnit($$updateTask.dateChangedAndUpdated)
@@ -41,6 +45,7 @@ export const Content = ({
             <div className="border-cBorder px-3 pb-2 last:border-b" key={id}>
               {task.id === updatedTaskId ? (
                 <ExpandedTask
+                  dateModal={$$dateModal}
                   modifyTaskModel={$$updateTask}
                   taskRef={taskRef}
                 />
@@ -52,8 +57,9 @@ export const Content = ({
                   onUpdateStatus={changeStatusAndUpdate}
                   isTaskSelected={selectedTaskId === task.id}
                   onClick={() => onSelectTaskId({ taskId: task.id, section })}
-                  onDoubleClick={() => openUpdatedTaskById(task.id)}
+                  onDoubleClick={() => openUpdatedTaskById(task)}
                   task={task}
+                  idModal={$$idModal}
                 />
               )}
             </div>
@@ -63,6 +69,7 @@ export const Content = ({
       {createdTask && isSelected && (
         <div className="border-b border-cBorder px-3 py-2">
           <ExpandedTask
+            dateModal={$$dateModal}
             dateModifier={true}
             modifyTaskModel={$$createTask}
             taskRef={taskRef}

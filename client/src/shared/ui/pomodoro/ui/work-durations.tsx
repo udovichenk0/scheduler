@@ -67,7 +67,9 @@ export const PomodoroDurations = ({
               </div>
             </div>
             <span className="sr-only">{time} minutes</span>
-            <span aria-hidden="true" className="text-[12px] text-cIconDefault">{time}</span>
+            <span aria-hidden="true" className="text-[12px] text-cIconDefault">
+              {time}
+            </span>
           </button>
         )
       })}

@@ -51,7 +51,7 @@ split({
   cases: {
     isNoError: noError,
     isHttpError: notFoundError,
-  }
+  },
 })
 sample({
   clock: noError,
@@ -61,15 +61,15 @@ sample({
 sample({
   clock: notFoundError,
   fn: () => Flow.register,
-  target: $flow
+  target: $flow,
 })
 
 sample({
   clock: authApi.logoutQuery.finished.success,
-  fiilter: Boolean,
   fn: () => Flow.email,
   target: $flow,
 })
+
 sample({
   clock: authApi.signupQuery.finished.success,
   fn: () => Flow.verify,
@@ -90,4 +90,3 @@ sample({
     resetSignupPasswordTriggered,
   ],
 })
-

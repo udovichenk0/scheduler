@@ -1,4 +1,4 @@
-import { useUnit } from "effector-react"
+import { useUnit, useGate } from "effector-react"
 import { useTranslation } from "react-i18next"
 
 import { Settings } from "@/widgets/settings"
@@ -8,20 +8,36 @@ import { routes } from "@/shared/routing"
 import { Button } from "@/shared/ui/buttons/main-button/ui"
 import { Container } from "@/shared/ui/general/container"
 
-import { $inboxTasksCount, $todayTasksCount, $$modal } from "./sidebar.modal"
+import { $$modal, gate, $inboxCounter, $todayCounter } from "./sidebar.model"
 import { Logo } from "./ui/logo"
 import { SidebarFooter } from "./ui/footer"
 
 export const Sidebar = () => {
   const { t } = useTranslation()
-  const inboxTasksCount = useUnit($inboxTasksCount)
-  const todayTasksCount = useUnit($todayTasksCount)
+  const inboxTasksCount = useUnit($inboxCounter.$counter)
+  const todayTasksCount = useUnit($todayCounter.$counter)
   const openSettingsModal = useUnit($$modal.open)
   const sidebar_footer_buttons = [
-    {title: "setting.title", onClick: openSettingsModal, type: 'button' as const, iconName: "common/settings" as const},
-    {title: "task.unplaced", type: 'link' as const, route: routes.unplaced, iconName: "common/cross-arrows" as const},
-    {title: "task.trash", type: 'link' as const, route: routes.trash, iconName: "common/trash-can" as const},
+    {
+      title: "setting.title",
+      onClick: openSettingsModal,
+      type: "button" as const,
+      iconName: "common/settings" as const,
+    },
+    {
+      title: "task.unplaced",
+      type: "link" as const,
+      route: routes.unplaced,
+      iconName: "common/cross-arrows" as const,
+    },
+    {
+      title: "task.trash",
+      type: "link" as const,
+      route: routes.trash,
+      iconName: "common/trash-can" as const,
+    },
   ]
+  useGate(gate)
   return (
     <aside className={`border-r-[1px] border-cBorder bg-brand text-primary`}>
       <div className="grid h-full w-[250px] grid-rows-[auto_1fr_auto] flex-col">
@@ -109,8 +125,8 @@ export const Sidebar = () => {
             </span>
           </Button>
         </Container>
-        
-        <SidebarFooter config={sidebar_footer_buttons}/>
+
+        <SidebarFooter config={sidebar_footer_buttons} />
 
         <Settings modal={$$modal} defaultTab="general" />
       </div>

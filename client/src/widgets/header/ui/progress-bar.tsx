@@ -20,7 +20,7 @@ export const PomodoroProgressBar = ({
   const pickedTime = useUnit($currentStaticTime)
   const passingTime = useUnit($tickingTime)
   const state = useUnit($state)
-  const isWorkTime = state == 'work'
+  const isWorkTime = state == "work"
   const CIRCLE_SIZE = 565
   const progress =
     CIRCLE_SIZE - ((pickedTime - passingTime) / pickedTime) * CIRCLE_SIZE

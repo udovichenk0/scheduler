@@ -17,11 +17,10 @@ export const CheckEmailForm = ({ goBack }: { goBack: () => void }) => {
   const changeEmail = useUnit(emailChanged)
   const onSubmit = useUnit(submitTriggered)
   const submit = () => {
-    if(import.meta.env.MODE == "development"){
+    if (import.meta.env.MODE == "development") {
       onSubmit()
-    }
-    else {
-      alert('Temporarily not available, but the functionality is the same')
+    } else {
+      alert("Temporarily not available, but the functionality is the same")
     }
   }
   return (

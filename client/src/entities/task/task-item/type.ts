@@ -12,6 +12,7 @@ export type Task = {
   date_created: Date
   is_deleted: boolean
 }
+
 export type SortType = SpritesMap["sort"]
 export type SortConfig = {
   label: string

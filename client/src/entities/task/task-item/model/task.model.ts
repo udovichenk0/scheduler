@@ -1,52 +1,103 @@
-import { createEffect, createEvent, createStore, sample, scopeBind } from "effector"
-import { not } from "patronum"
+import { Effect, createEvent, createStore, sample } from "effector"
+import { and, not } from "patronum"
+import { Query } from "@farfetched/core"
+import { RouteInstance } from "node_modules/atomic-router/dist/atomic-router"
 
 import { $$session } from "@/entities/session"
 
+import { prepend } from "@/shared/lib/effector"
 import { TaskId, taskApi } from "@/shared/api/task"
-import { singleton } from "@/shared/lib/effector/singleton"
-import { createIdModal, createModal } from "@/shared/lib/modal"
+import { authApi } from "@/shared/api/auth"
+import { tokenApi } from "@/shared/api/token"
 
 import { Task } from "../type"
-import { deleteById, tasksNotNull } from "../lib"
+import { deleteById, findTaskById, tasksNotNull } from "../lib"
 
-export const $$dateModal = createModal({})
-export const $$modal = createIdModal()
+import { CreateSorting } from "./sorting.model"
 
-export const $$task = singleton(() => {
+type ApiQuery = Query<void, (Task & { user_id: string })[], unknown>
+type ApiStorage = Effect<void, { result: (Task & { user_id: null })[] }>
+
+export const taskFactory = ({
+  sortModel,
+  filter,
+  route,
+  api,
+}: {
+  sortModel?: CreateSorting
+  filter: (task: Task) => boolean
+  route: RouteInstance<{}>
+  api: {
+    taskQuery: ApiQuery
+    taskStorage: ApiStorage
+  }
+}) => {
   const $tasks = createStore<Nullable<Task[]>>(null)
-  const setTaskTriggered = createEvent<Task>()
-  const setTasksTriggered = createEvent<Task[]>()
-  const getTasksTriggered = createEvent()
-  const taskDeleted = createEvent<TaskId>()
-  const trashTasksDeleted = createEvent()
-  const reset = createEvent()
-  const init = createEvent()
+  const $isInited = createStore(false)
 
-  const listenFx = createEffect(() => {
-    const setTaskTriggeredScoped = scopeBind(setTasksTriggered)
-    addEventListener('storage', (event) => {
-      if(event.newValue && event.key == 'tasks'){
-        setTaskTriggeredScoped(JSON.parse(event.newValue))
-      }
-    })
-  })
-  //tasks
+  const addTaskTriggered = createEvent<Task>()
+  const setTasksTriggered = createEvent<Task[]>()
+  const taskDeleted = createEvent<TaskId>()
+  const reset = createEvent()
   sample({
-    clock: taskApi.getTasksQuery.finished.success,
+    clock: [api.taskQuery.finished.success, api.taskStorage.doneData],
     fn: ({ result }) => result,
-    target: $tasks,
+    target: [$tasks, prepend($isInited, true)],
   })
+
   sample({
-    clock: setTaskTriggered,
+    clock: addTaskTriggered,
     source: $tasks,
     filter: tasksNotNull,
     fn: (oldTasks, newTask) => [...oldTasks, newTask],
     target: $tasks,
   })
   sample({
+    clock: [
+      taskApi.createTaskMutation.finished.success,
+      taskApi.createTaskLs.doneData,
+    ],
+    filter: ({ result }) => filter(result),
+    fn: ({ result }) => result,
+    target: addTaskTriggered,
+  })
+
+  sample({
+    clock: [
+      taskApi.updateStatusMutation.finished.success,
+      taskApi.updateTaskMutation.finished.success,
+      taskApi.updateDateMutation.finished.success,
+      taskApi.updateDateLs.doneData,
+      taskApi.updateStatusLs.doneData,
+      taskApi.updateTaskLs.doneData,
+    ],
+    source: $tasks,
+    filter: (tasks, { result }) => tasksNotNull(tasks) && filter(result),
+    fn: (tasks, { result }) => {
+      if (findTaskById(tasks!, result.id)) {
+        return tasks!.map((task) => (task.id == result.id ? result : task))
+      }
+      return [...tasks!, result]
+    },
+    target: setTasksTriggered,
+  })
+
+  sample({
+    clock: [
+      taskApi.updateStatusMutation.finished.success,
+      taskApi.updateTaskMutation.finished.success,
+      taskApi.updateDateMutation.finished.success,
+      taskApi.updateDateLs.doneData,
+      taskApi.updateStatusLs.doneData,
+      taskApi.updateTaskLs.doneData,
+    ],
+    filter: ({ result }) => !filter(result),
+    fn: ({ result }) => result.id,
+    target: taskDeleted,
+  })
+  sample({
     clock: setTasksTriggered,
-    target: $tasks
+    target: $tasks,
   })
   sample({
     clock: taskDeleted,
@@ -55,47 +106,62 @@ export const $$task = singleton(() => {
     fn: deleteById,
     target: $tasks,
   })
-  sample({
-    clock: trashTasksDeleted,
-    source: $tasks,
-    filter: tasksNotNull,
-    fn: (tasks) => tasks.filter(task => !task.is_deleted),
-    target: $tasks
-  })
 
-  sample({ //!move to create task model 
-    clock: taskApi.createTasksQuery.finished.success,
-    fn: ({result}) => result,
-    target: [$tasks, taskApi.deleteTasksFromLocalStorageFx],
-  })
-
+  if (sortModel) {
+    sample({
+      clock: [addTaskTriggered, setTasksTriggered, sortModel.$sortType],
+      source: {
+        tasks: $tasks,
+        sortType: sortModel.$sortType,
+      },
+      filter: ({ tasks }) => !!tasks,
+      fn: ({ tasks, sortType }) => sortModel.sortBy(sortType, tasks),
+      target: $tasks,
+    })
+  }
   sample({
-    clock: taskApi.getTasksFromLocalStorageFx.doneData,
-    filter: not($$session.$isAuthenticated),
+    clock: [
+      taskApi.trashTaskMutation.finished.success,
+      taskApi.trashTaskLs.doneData,
+    ],
+    filter: ({ result }) => filter(result),
+    fn: ({ result }) => result.id,
+    target: taskDeleted,
+  })
+  sample({
+    clock: [route.opened, $$session.$isAuthenticated],
+    filter: and(not($isInited), $$session.$isAuthenticated, route.$isOpened),
+    target: api.taskQuery.start,
+  })
+  sample({
+    clock: [route.opened, tokenApi.refreshQuery.finished.failure],
+    filter: and(
+      not($isInited),
+      not($$session.$isAuthenticated),
+      tokenApi.refreshQuery.$finished,
+      route.$isOpened,
+    ),
+    target: api.taskStorage,
+  })
+  sample({
+    clock: taskApi.createTasksMutation.finished.success,
+    filter: route.$isOpened,
+    target: api.taskQuery.start,
+  })
+  sample({
+    clock: authApi.logoutQuery.finished.success,
+    fn: () => [],
     target: $tasks,
   })
 
-  sample({
-    clock: getTasksTriggered,
-    target: taskApi.getTasksQuery.start,
-  })
-
-  sample({
-    clock: reset,
-    target: $tasks.reinit,
-  })
-
-  sample({
-    clock: init,
-    target: listenFx
-  })
   return {
     $tasks,
-    setTaskTriggered,
-    reset,
-    getTasksTriggered,
-    trashTasksDeleted,
+    $isInited,
+    addTaskTriggered,
+    setTasksTriggered,
     taskDeleted,
-    init,
+    reset,
   }
-})
+}
+
+export type TaskFactory = ReturnType<typeof taskFactory>

@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next"
 
 import { Layout } from "@/widgets/layout/main"
 
+import { Sort } from "@/entities/task/task-item"
+
 import { useDocumentTitle, onClickOutside } from "@/shared/lib/react"
 
 import { AllUpcomingTasks } from "./sections/upcoming-tasks"
@@ -18,23 +20,22 @@ import {
   $$createTask,
   $$updateTask,
   $tasksByDateKv,
-  $upcomingTasks,
   $tasksByDate,
   $$selectTask,
   $$sort,
   selectTaskIdWithSectionTitle,
+  $tasks,
 } from "./upcoming.model"
 import { TasksByDate } from "./sections/tasks-by-date"
 import { HeaderTitle } from "./ui/header-title"
 import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer/variant-changer"
 import { SORT_CONFIG } from "./config"
-import { Sort } from "@/entities/task/task-item"
+
 const Upcoming = () => {
   const expandedTaskRef = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
   useDocumentTitle(t("task.upcoming"))
-
-  const upcomingTasks = useUnit($upcomingTasks)
+  const upcomingTasks = useUnit($tasks)
   const tasksByDate = useUnit($tasksByDate)
   const variant = useUnit($variant)
   const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
@@ -58,11 +59,15 @@ const Upcoming = () => {
   return (
     <Layout>
       <Layout.Header
-        slot={<Sort sorting={{
-          onChange: onSortChange,
-          active: activeSort,
-          config: SORT_CONFIG,
-        }}/>}
+        slot={
+          <Sort
+            sorting={{
+              onChange: onSortChange,
+              active: activeSort,
+              config: SORT_CONFIG,
+            }}
+          />
+        }
         iconName="common/upcoming"
         title={<HeaderTitle variant={variant} />}
       />

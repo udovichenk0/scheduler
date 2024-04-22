@@ -64,13 +64,9 @@ export const Input = forwardRef<InputRef, InputProps>(
           {icon && <span className="absolute bottom-1 right-0">{icon}</span>}
         </div>
         <div className="h-5">
-          {error && (
-            <span className="text-sm text-error">{error}</span>
-          )}
+          {error && <span className="text-sm text-error">{error}</span>}
         </div>
       </label>
     )
   },
 )
-
-

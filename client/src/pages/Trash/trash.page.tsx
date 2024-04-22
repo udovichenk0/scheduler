@@ -8,19 +8,20 @@ import { TaskItem } from "@/entities/task/task-item"
 
 import { clickOnElement, useDocumentTitle } from "@/shared/lib/react"
 import { NoTasks } from "@/shared/ui/no-tasks"
+import { Button } from "@/shared/ui/buttons/main-button"
 
 import {
   $$deleteTask,
   $trashTasks,
-  $$selectTask
+  $$selectTask,
+  $$idModal,
 } from "./trash.model"
-import { Button } from "@/shared/ui/buttons/main-button"
 
 const Trash = () => {
   const taskItemRef = useRef<HTMLDivElement>(null)
   useDocumentTitle(t("task.trash"))
 
-  const tasks = useUnit($trashTasks)
+  const tasks = useUnit($trashTasks.$tasks)
   const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
 
   const onSelectTaskId = useUnit($$selectTask.selectTaskId)
@@ -31,28 +32,31 @@ const Trash = () => {
       <Layout>
         <Layout.Header
           slot={
-            <Button 
+            <Button
               onClick={onDeleteAllTasks}
-              intent={"accent"} 
-              size={'xs'} 
-              className="flex items-center gap-x-2">
-              <Cross/>
+              intent={"accent"}
+              size={"xs"}
+              className="flex items-center gap-x-2"
+            >
+              <Cross />
               {t("action.clearBucket")}
             </Button>
           }
-          iconName="common/inbox" 
-          title={t("task.trash")} />
+          iconName="common/inbox"
+          title={t("task.trash")}
+        />
         <Layout.Content
           contentRef={taskItemRef}
           className="flex flex-col"
-          onClick={(e) => {
+          onClick={(e) =>
             clickOnElement(taskItemRef, e, () => onSelectTaskId(null))
-          }}
+          }
         >
           {tasks?.map((task, id) => {
             return (
               <div className="px-3 pb-2" key={id}>
                 <TaskItem
+                  idModal={$$idModal}
                   typeLabel
                   dateLabel
                   isTaskSelected={selectedTaskId === task.id}
@@ -75,10 +79,12 @@ const Trash = () => {
 }
 const Cross = () => {
   return (
-    <div className="w-[10px] h-[10px] mt-[2px] relative
-      after:content-[''] after:left-1/2 after:bottom-0 after:absolute after:w-[2px] after:h-3 after:bg-accent after:rotate-45
-      before:content-[''] before:left-1/2 before:bottom-0 before:absolute before:w-[2px] before:h-3 before:bg-accent before:-rotate-45
-    "></div>
+    <div
+      className="relative mt-[2px] h-[10px] w-[10px]
+      before:absolute before:bottom-0 before:left-1/2 before:h-3 before:w-[2px] before:-rotate-45 before:bg-accent before:content-['']
+      after:absolute after:bottom-0 after:left-1/2 after:h-3 after:w-[2px] after:rotate-45 after:bg-accent after:content-['']
+    "
+    ></div>
   )
 }
 export default Trash

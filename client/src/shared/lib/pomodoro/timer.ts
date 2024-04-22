@@ -5,8 +5,10 @@ import {
   sample,
   createEvent,
 } from "effector"
-import { Timer } from "./config"
+
 import { prepend } from "../effector"
+
+import { Timer } from "./config"
 
 export const createTimer = ({
   defaultTimerDuration = 1500,
@@ -21,7 +23,11 @@ export const createTimer = ({
 
   const $timer = createStore(defaultTimerDuration)
   const $isRunning = createStore(false)
-  const $worker = createStore(new Worker("src/shared/lib/pomodoro/worker-interval.ts", {type: 'module'}))
+  const $worker = createStore(
+    new Worker("src/shared/lib/pomodoro/worker-interval.ts", {
+      type: "module",
+    }),
+  )
 
   const listenWorkerEventsFx = createEffect((worker: Worker) => {
     const scopedWorkerTick = scopeBind(workerEvent)

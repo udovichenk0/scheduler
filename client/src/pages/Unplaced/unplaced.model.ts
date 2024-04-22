@@ -1,4 +1,4 @@
-import { combine, sample } from "effector"
+import { sample } from "effector"
 
 import { disclosureTask } from "@/widgets/expanded-task/model"
 
@@ -6,35 +6,43 @@ import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
 import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
-import { $$task, createSorting } from "@/entities/task/task-item"
+import { taskFactory, createSorting } from "@/entities/task/task-item"
 
 import { selectTaskFactory } from "@/shared/lib/effector"
+import { taskApi } from "@/shared/api/task"
+import { routes } from "@/shared/routing"
+import { createIdModal, createModal } from "@/shared/lib/modal"
+
+export const unplacedRoute = routes.unplaced
+
+export const $$dateModal = createModal({})
+export const $$idModal = createIdModal()
 
 export const $$sort = createSorting()
-export const $unplacedTasks = combine(
-  $$task.$tasks,
-  $$sort.$sortType,
-  (tasks, sortType) => {
-    if (!tasks) return null
-    const unplacedTasks = tasks.filter(
-      ({ type, is_deleted }) => type == "unplaced" && !is_deleted,
-    )
-    return $$sort.sortBy(sortType, unplacedTasks)
+export const $unplacedTasks = taskFactory({
+  sortModel: $$sort,
+  route: unplacedRoute,
+  filter: ({ type }) => type == "unplaced",
+  api: {
+    taskQuery: taskApi.unplacedTasksQuery,
+    taskStorage: taskApi.unplacedTasksLs,
   },
-)
+})
 
 export const $$trashTask = trashTaskFactory()
+
 export const $$updateTask = updateTaskFactory()
+
 export const $$createTask = createTaskFactory({
   defaultType: "unplaced",
   defaultDate: new Date(),
 })
+
 export const $$taskDisclosure = disclosureTask({
-  $tasks: $$task.$tasks,
   updateTaskModel: $$updateTask,
   createTaskModel: $$createTask,
 })
-export const $$selectTask = selectTaskFactory($unplacedTasks)
+export const $$selectTask = selectTaskFactory($unplacedTasks.$tasks)
 
 sample({
   clock: $$trashTask.taskTrashedById,

@@ -20,13 +20,14 @@ export function Checkbox({
       <input
         onChange={onChange}
         type="checkbox"
-        className="checkbox_input appearance-none h-0"
+        className="checkbox_input h-0 appearance-none"
       />
       <span
-      className={clsx(
-        borderClassName,
-        "checkbox flex h-5 w-5 items-center justify-center rounded-[3px] border-[2px] border-cTaskEditDefault",
-      )}>
+        className={clsx(
+          borderClassName,
+          "checkbox flex h-5 w-5 items-center justify-center rounded-[3px] border-[2px] border-cTaskEditDefault",
+        )}
+      >
         {checked && <DoneSvg className={clsx(iconClassName, "checker")} />}
       </span>
     </label>

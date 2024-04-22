@@ -1,9 +1,11 @@
-import { SHORT_MONTHS_NAMES } from "@/shared/config/constants"
 import dayjs from "dayjs"
 import { useTranslation } from "react-i18next"
+
+import { SHORT_MONTHS_NAMES } from "@/shared/config/constants"
+
 import { CellProps } from "./cell"
 
-export const CellHeader = ({ cell }: { cell: CellProps}) => {
+export const CellHeader = ({ cell }: { cell: CellProps }) => {
   const { t } = useTranslation()
   const { date, month, year } = cell
   const isToday = dayjs(new Date(year, month, date)).isSame(dayjs(), "date")

@@ -19,7 +19,6 @@ export const $$themeSettings = singleton(() => {
     }
   })
   const initThemeFx = createEffect((theme: Theme) => {
-    console.log(theme)
     if (ThemeSchema.safeParse(theme).success) {
       document.documentElement.setAttribute("data-theme", theme)
     }
@@ -27,7 +26,6 @@ export const $$themeSettings = singleton(() => {
   const getThemeFx = createEffect(() => {
     const theme = parseCookieValue("theme") as string
     if (ThemeSchema.safeParse(theme).success) {
-      console.log("here")
       return theme
     }
     const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches

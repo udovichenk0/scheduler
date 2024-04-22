@@ -1,7 +1,6 @@
-import { $$pomodoroSettings } from '@/entities/settings/pomodoro';
 import { createEvent, sample } from "effector"
 
-import { $$task } from '@/entities/task/task-item';
+import { $$pomodoroSettings } from "@/entities/settings/pomodoro"
 import { $$themeSettings } from "@/entities/settings/theme/main-theme"
 import { $$accentSettings } from "@/entities/settings/theme/icon-theme"
 
@@ -12,7 +11,6 @@ export const appInitializer = () => {
   const init = createEvent()
   const $$routerHistory = createHistory()
   const theme = $$themeSettings
-  const listen = $$task
   const pomodoro = $$pomodoroSettings
   sample({
     clock: init,
@@ -21,8 +19,7 @@ export const appInitializer = () => {
       $$routerHistory.init,
       $$i18n.init,
       theme.init,
-      listen.init,
-      pomodoro.init
+      pomodoro.init,
     ],
   })
   return {

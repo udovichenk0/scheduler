@@ -12,57 +12,57 @@
   &[data-dir="left"]{
     @apply right-[110%]
   } */
-  &[data-dir="tr"]{
-    @apply left-1/2 -top-[110%] -translate-x-2
+  &[data-dir="tr"] {
+    @apply -top-[110%] left-1/2 -translate-x-2;
   }
-  &[data-dir="tl"]{
-    @apply right-1/2 -top-[110%] translate-x-2
+  &[data-dir="tl"] {
+    @apply -top-[110%] right-1/2 translate-x-2;
   }
-  &[data-dir="tc"]{
-    @apply left-1/2 -translate-x-1/2 -top-[110%]
+  &[data-dir="tc"] {
+    @apply -top-[110%] left-1/2 -translate-x-1/2;
   }
-  &[data-dir="br"]{
-    @apply left-1/2 -bottom-[110%] -translate-x-2
+  &[data-dir="br"] {
+    @apply -bottom-[110%] left-1/2 -translate-x-2;
   }
-  &[data-dir="bl"]{
-    @apply right-1/2 -bottom-[110%] translate-x-2
+  &[data-dir="bl"] {
+    @apply -bottom-[110%] right-1/2 translate-x-2;
   }
-  &[data-dir="bc"]{
-    @apply right-1/2 -bottom-[110%] translate-x-1/2
+  &[data-dir="bc"] {
+    @apply -bottom-[110%] right-1/2 translate-x-1/2;
   }
 }
-.tooltip:after { 
+.tooltip:after {
   position: absolute;
   content: "";
   transform: translateX(50%);
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  
+
   &[data-dir="tr"] {
-    @apply top-full left-0 border-t-[4px] border-t-cCalendarTooltip 
-  };
-  &[data-dir="tl"]{
-    @apply top-full right-[10px] border-t-[4px] border-t-cCalendarTooltip
-  };
-  &[data-dir="tc"]{
-    @apply top-full right-1/2 border-t-[4px] border-t-cCalendarTooltip
-  };
+    @apply left-0 top-full border-t-[4px] border-t-cCalendarTooltip;
+  }
+  &[data-dir="tl"] {
+    @apply right-[10px] top-full border-t-[4px] border-t-cCalendarTooltip;
+  }
+  &[data-dir="tc"] {
+    @apply right-1/2 top-full border-t-[4px] border-t-cCalendarTooltip;
+  }
   &[data-dir="br"] {
-    @apply bottom-full left-0 border-b-[4px] border-b-cCalendarTooltip
-  };
-  &[data-dir="bl"]{
-    @apply bottom-full right-[10px] border-b-[4px] border-b-cCalendarTooltip
-  };
-  &[data-dir="bc"]{
-    @apply bottom-full right-1/2 border-b-[4px] border-b-cCalendarTooltip
-  };
+    @apply bottom-full left-0 border-b-[4px] border-b-cCalendarTooltip;
+  }
+  &[data-dir="bl"] {
+    @apply bottom-full right-[10px] border-b-[4px] border-b-cCalendarTooltip;
+  }
+  &[data-dir="bc"] {
+    @apply bottom-full right-1/2 border-b-[4px] border-b-cCalendarTooltip;
+  }
 }
 
 .size {
-  &[data-size="base"]{
-    @apply text-sm
+  &[data-size="base"] {
+    @apply text-sm;
   }
-  &[data-size="md"]{
-    @apply text-base
+  &[data-size="md"] {
+    @apply text-base;
   }
 }

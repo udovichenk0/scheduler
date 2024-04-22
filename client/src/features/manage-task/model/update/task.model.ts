@@ -1,13 +1,12 @@
 import { attach, createEvent, merge, sample } from "effector"
-import { spread, and, not } from "patronum"
+import { and, not, spread } from "patronum"
 import { attachOperation } from "@farfetched/core"
 
-import { findTaskById, switchTaskType, tasksNotNull } from "@/entities/task/task-item/lib"
+import { switchTaskType } from "@/entities/task/task-item/lib"
 import { $$session } from "@/entities/session"
-import { $$task, Task } from "@/entities/task/task-item"
 import { modifyTaskFactory } from "@/entities/task/task-form"
 
-import { taskApi, TaskId, TaskStatus } from "@/shared/api/task"
+import { taskApi, TaskStatus, TaskType } from "@/shared/api/task"
 import { bridge } from "@/shared/lib/effector/bridge"
 
 export const updateTaskFactory = () => {
@@ -18,27 +17,33 @@ export const updateTaskFactory = () => {
     $fields,
     $title,
     $description,
-    $type,
     $startDate,
     $status,
+    $type,
     dateChangedAndUpdated,
     statusChangedAndUpdated,
   } = $$modifyTask
 
-  const setFieldsTriggeredById = createEvent<string>()
+  const setFieldsTriggered = createEvent<{
+    title: string
+    description: Nullable<string>
+    status: TaskStatus
+    start_date: Nullable<Date>
+    type: TaskType
+  }>()
   const updateTaskTriggeredById = createEvent<string>()
 
-  const attachUpdateStatusQuery = attachOperation(taskApi.updateStatusQuery)
-  const attachUpdateTaskDate = attachOperation(taskApi.updateDateQuery)
-  const attachUpdateTaskQuery = attachOperation(taskApi.updateTaskQuery)
+  const attachUpdateStatusQuery = attachOperation(taskApi.updateStatusMutation)
+  const attachUpdateTaskDate = attachOperation(taskApi.updateDateMutation)
+  const attachUpdateTaskQuery = attachOperation(taskApi.updateTaskMutation)
   const attachUpdateTaskDateFromLsFx = attach({
-    effect: taskApi.updateDateInLocalStorageFx,
+    effect: taskApi.updateDateLs,
   })
   const attachUpdateStatusFromLocalStorageFx = attach({
-    effect: taskApi.updateStatusInLocalStorageFx,
+    effect: taskApi.updateStatusLs,
   })
   const attachUpdateTaskFromLocalStorageFx = attach({
-    effect: taskApi.updateTaskFromLocalStorageFx,
+    effect: taskApi.updateTaskLs,
   })
 
   const taskSuccessfullyUpdated = merge([
@@ -48,28 +53,23 @@ export const updateTaskFactory = () => {
 
   //updatae task date from localstorage or from the server
   bridge(() => {
-    function getType(tasks: Task[], id: TaskId, date: Date){
-      const task = tasks?.find((task) => task.id == id)!
-      const type = switchTaskType(task.type, date)
-      return type
-    }
     sample({
       clock: dateChangedAndUpdated,
-      source: $$task.$tasks,
+      source: $type,
       filter: not($$session.$isAuthenticated),
-      fn: (tasks, { date, id }) => {
-        const type = getType(tasks!, id, date)
-        return { id, date, type }
+      fn: (type, { date, id }) => {
+        const newType = switchTaskType(type, date)
+        return { id, date, type: newType }
       },
       target: attachUpdateTaskDateFromLsFx,
     })
     sample({
       clock: dateChangedAndUpdated,
-      source: $$task.$tasks,
+      source: $type,
       filter: $$session.$isAuthenticated,
-      fn: (tasks, { date, id }) => {
-        const type = getType(tasks!, id, date)
-        return { data: { start_date: date, type }, id }
+      fn: (type, { date, id }) => {
+        const newType = switchTaskType(type, date)
+        return { data: { start_date: date, type: newType }, id }
       },
       target: attachUpdateTaskDate.start,
     })
@@ -117,10 +117,7 @@ export const updateTaskFactory = () => {
   })
 
   sample({
-    clock: setFieldsTriggeredById,
-    source: $$task.$tasks,
-    filter: tasksNotNull,
-    fn: findTaskById,
+    clock: setFieldsTriggered,
     target: spread({
       title: $title,
       description: $description,
@@ -129,6 +126,7 @@ export const updateTaskFactory = () => {
       type: $type,
     }),
   })
+
   // Update the client store after response and reset fields
   sample({
     clock: [
@@ -139,24 +137,14 @@ export const updateTaskFactory = () => {
       attachUpdateTaskDateFromLsFx.doneData,
       attachUpdateStatusFromLocalStorageFx.doneData,
     ],
-    source: $$task.$tasks,
-    fn: (tasks, { result }) => tasks!.map((task) => task.id == result.id ? result : task),
-    target: [$$task.$tasks, resetFieldsTriggered],
+    target: resetFieldsTriggered,
   })
   return {
     updateTaskTriggeredById,
     taskSuccessfullyUpdated,
-    setFieldsTriggeredById,
-    $isUpdating: taskApi.updateTaskQuery.$pending,
+    setFieldsTriggered,
+    $isUpdating: taskApi.updateTaskMutation.$pending,
     ...$$modifyTask,
-    _: {
-      updateTaskFromLocalStorageFx: attachUpdateTaskFromLocalStorageFx,
-      updateTaskQuery: taskApi.updateTaskQuery,
-      updateTaskDateFromLsFx: attachUpdateTaskDateFromLsFx,
-      updateTaskDate: taskApi.updateDateQuery,
-      updateStatusQuery: attachUpdateStatusQuery,
-      updateStatusFromLocalStorageFx: attachUpdateStatusFromLocalStorageFx,
-    },
   }
 }
-export type UpdateTaskType = ReturnType<typeof updateTaskFactory>
+export type UpdateTaskFactory = ReturnType<typeof updateTaskFactory>

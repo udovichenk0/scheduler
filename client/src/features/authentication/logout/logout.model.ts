@@ -1,8 +1,6 @@
-import { sample } from "effector"
-import { createEvent } from "effector/compat"
+import { sample, createEvent } from "effector"
 
 import { $$session } from "@/entities/session"
-import { $$task } from "@/entities/task/task-item"
 
 import { authApi } from "@/shared/api/auth"
 import { tokenService } from "@/shared/api/token"
@@ -16,5 +14,5 @@ sample({
 
 sample({
   clock: authApi.logoutQuery.finished.success,
-  target: [$$session.reset, tokenService.resetToken, $$task.reset],
+  target: [$$session.reset, tokenService.resetToken],
 })
