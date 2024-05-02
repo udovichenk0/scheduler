@@ -1,4 +1,10 @@
-import { createStore, createEvent, sample, Store } from "effector"
+import {
+  createStore,
+  createEvent,
+  sample,
+  Store,
+  EventCallable,
+} from "effector"
 
 import { Task } from "@/entities/task/task-item"
 
@@ -6,6 +12,7 @@ import { TaskId } from "@/shared/api/task"
 
 export const selectTaskFactory = (
   $tasks: Store<Nullable<Task[] | Task[][]>>,
+  selectNextIdOnEvent: EventCallable<TaskId>,
 ) => {
   const selectTaskId = createEvent<Nullable<TaskId>>()
   const selectNextId = createEvent<TaskId>()
@@ -31,6 +38,11 @@ export const selectTaskFactory = (
     },
     target: $selectedTaskId,
   })
+  sample({
+    clock: selectNextIdOnEvent,
+    target: selectNextId,
+  })
+
   return {
     selectTaskId,
     selectNextId,

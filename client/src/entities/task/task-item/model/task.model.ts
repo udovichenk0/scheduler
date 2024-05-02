@@ -39,17 +39,20 @@ export const taskFactory = ({
   const setTasksTriggered = createEvent<Task[]>()
   const taskDeleted = createEvent<TaskId>()
   const reset = createEvent()
-  sample({
-    clock: [api.taskQuery.finished.success, api.taskStorage.doneData],
-    fn: ({ result }) => result,
-    target: [$tasks, prepend($isInited, true)],
-  })
 
   sample({
     clock: addTaskTriggered,
     source: $tasks,
     filter: tasksNotNull,
     fn: (oldTasks, newTask) => [...oldTasks, newTask],
+    target: $tasks,
+  })
+
+  sample({
+    clock: taskDeleted,
+    source: $tasks,
+    filter: tasksNotNull,
+    fn: deleteById,
     target: $tasks,
   })
   sample({
@@ -62,6 +65,11 @@ export const taskFactory = ({
     target: addTaskTriggered,
   })
 
+  sample({
+    clock: [api.taskQuery.finished.success, api.taskStorage.doneData],
+    fn: ({ result }) => result,
+    target: [$tasks, prepend($isInited, true)],
+  })
   sample({
     clock: [
       taskApi.updateStatusMutation.finished.success,
@@ -95,15 +103,29 @@ export const taskFactory = ({
     fn: ({ result }) => result.id,
     target: taskDeleted,
   })
+
+  sample({
+    clock: [
+      taskApi.trashTaskMutation.finished.success,
+      taskApi.trashTaskLs.doneData,
+    ],
+    filter: ({ result }) => filter(result),
+    fn: ({ result }) => result.id,
+    target: taskDeleted,
+  })
+
+  sample({
+    clock: taskApi.createTasksMutation.finished.success,
+    filter: route.$isOpened,
+    target: api.taskQuery.start,
+  })
   sample({
     clock: setTasksTriggered,
     target: $tasks,
   })
   sample({
-    clock: taskDeleted,
-    source: $tasks,
-    filter: tasksNotNull,
-    fn: deleteById,
+    clock: authApi.logoutQuery.finished.success,
+    fn: () => [],
     target: $tasks,
   })
 
@@ -119,20 +141,13 @@ export const taskFactory = ({
       target: $tasks,
     })
   }
-  sample({
-    clock: [
-      taskApi.trashTaskMutation.finished.success,
-      taskApi.trashTaskLs.doneData,
-    ],
-    filter: ({ result }) => filter(result),
-    fn: ({ result }) => result.id,
-    target: taskDeleted,
-  })
+
   sample({
     clock: [route.opened, $$session.$isAuthenticated],
     filter: and(not($isInited), $$session.$isAuthenticated, route.$isOpened),
     target: api.taskQuery.start,
   })
+
   sample({
     clock: [route.opened, tokenApi.refreshQuery.finished.failure],
     filter: and(
@@ -142,16 +157,6 @@ export const taskFactory = ({
       route.$isOpened,
     ),
     target: api.taskStorage,
-  })
-  sample({
-    clock: taskApi.createTasksMutation.finished.success,
-    filter: route.$isOpened,
-    target: api.taskQuery.start,
-  })
-  sample({
-    clock: authApi.logoutQuery.finished.success,
-    fn: () => [],
-    target: $tasks,
   })
 
   return {

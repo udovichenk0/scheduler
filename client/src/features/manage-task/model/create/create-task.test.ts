@@ -4,6 +4,7 @@ import { createRoute } from "atomic-router"
 
 import { $$session } from "@/entities/session"
 import { TaskFactory, taskFactory } from "@/entities/task/task-item"
+import { isInbox } from "@/entities/task/task-item/lib"
 
 import { taskApi } from "@/shared/api/task"
 
@@ -62,7 +63,7 @@ describe("create task", () => {
   let $$createTask: CreateTaskFactory
   beforeEach(() => {
     $$mockTasks = taskFactory({
-      filter: ({ is_deleted, type }) => !is_deleted && type == "inbox",
+      filter: isInbox,
       api: {
         taskQuery: taskApi.inboxTasksQuery,
         taskStorage: taskApi.inboxTasksLs,

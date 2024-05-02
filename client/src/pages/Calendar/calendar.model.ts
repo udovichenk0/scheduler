@@ -7,6 +7,7 @@ import { updateTaskFactory } from "@/features/manage-task/model/update"
 import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
 import { taskFactory, Task } from "@/entities/task/task-item"
+import { isUnplaced } from "@/entities/task/task-item/lib"
 
 import { createModal } from "@/shared/lib/modal"
 import { bridge } from "@/shared/lib/effector/bridge"
@@ -20,7 +21,7 @@ export const $$dateModal = createModal({})
 export const $$trashTask = trashTaskFactory()
 
 const $unplacedTasks = taskFactory({
-  filter: ({ type }) => type == "unplaced",
+  filter: isUnplaced,
   route: calendarRoute,
   api: {
     taskQuery: taskApi.unplacedTasksQuery,

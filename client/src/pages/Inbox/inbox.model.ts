@@ -1,12 +1,11 @@
-import { sample } from "effector"
-
 import { disclosureTask } from "@/widgets/expanded-task/model"
 
 import { updateTaskFactory } from "@/features/manage-task/model/update"
 import { trashTaskFactory } from "@/features/manage-task/model/trash"
 import { createTaskFactory } from "@/features/manage-task/model/create"
 
-import { taskFactory, createSorting, Task } from "@/entities/task/task-item"
+import { taskFactory, createSorting } from "@/entities/task/task-item"
+import { isInbox } from "@/entities/task/task-item/lib"
 
 import { selectTaskFactory } from "@/shared/lib/effector"
 import { routes } from "@/shared/routing"
@@ -21,7 +20,7 @@ export const $$sort = createSorting()
 
 export const $inboxTasks = taskFactory({
   sortModel: $$sort,
-  filter: inboxFilter,
+  filter: isInbox,
   route: inboxRoute,
   api: {
     taskQuery: taskApi.inboxTasksQuery,
@@ -41,13 +40,7 @@ export const $$taskDisclosure = disclosureTask({
   createTaskModel: $$createTask,
 })
 
-export const $$selectTask = selectTaskFactory($inboxTasks.$tasks)
-
-sample({
-  clock: $$trashTask.taskTrashedById,
-  target: $$selectTask.selectNextId,
-})
-
-function inboxFilter(task: Task) {
-  return task.type == "inbox"
-}
+export const $$selectTask = selectTaskFactory(
+  $inboxTasks.$tasks,
+  $$trashTask.taskTrashedById,
+)

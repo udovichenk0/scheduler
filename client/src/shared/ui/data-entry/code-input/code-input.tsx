@@ -58,15 +58,16 @@ export const CodeInput = forwardRef(
       const {
         target: { value, nextElementSibling },
       } = event
+      const nextEl = nextElementSibling as HTMLInputElement
       if (value.length > 1) {
         event.target.value = value.charAt(0)
-        if (nextElementSibling) {
-          ;(nextElementSibling as HTMLInputElement).focus()
+        if (nextEl) {
+          nextEl.focus()
         }
       } else {
         if (value.match("[0-9]{1}")) {
-          if (nextElementSibling) {
-            ;(nextElementSibling as HTMLInputElement).focus()
+          if (nextEl) {
+            nextEl.focus()
           }
         } else {
           event.target.value = ""

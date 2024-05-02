@@ -10,6 +10,7 @@ import { updateTaskFactory } from "@/features/manage-task/model/update"
 import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
 import { taskFactory, Task, createSorting } from "@/entities/task/task-item"
+import { isUnplaced } from "@/entities/task/task-item/lib"
 
 import { TaskId, taskApi } from "@/shared/api/task"
 import { selectTaskFactory } from "@/shared/lib/effector"
@@ -31,14 +32,13 @@ export const upcomingRoute = routes.upcoming
 //factories
 
 export const $$dateModal = createModal({})
-export const $$idModal = createIdModal()
-
 export const $$sort = createSorting()
+export const $$idModal = createIdModal()
 
 export const $upcomingTasks = taskFactory({
   sortModel: $$sort,
   route: upcomingRoute,
-  filter: ({ type }) => type == "unplaced",
+  filter: isUnplaced,
   api: {
     taskQuery: taskApi.upcomingTasksQuery,
     taskStorage: taskApi.upcomingTasksLs,
@@ -127,7 +127,10 @@ const $sectionTasks = combine(
     }
   },
 )
-export const $$selectTask = selectTaskFactory($sectionTasks)
+export const $$selectTask = selectTaskFactory(
+  $sectionTasks,
+  $$trashTask.taskTrashedById,
+)
 
 sample({
   clock: selectTaskIdWithSectionTitle,
@@ -175,8 +178,4 @@ sample({
     return variant.toDate()
   },
   target: $selectedDate,
-})
-sample({
-  clock: $$trashTask.taskTrashedById,
-  target: $$selectTask.selectNextId,
 })
