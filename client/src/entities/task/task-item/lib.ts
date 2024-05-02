@@ -22,3 +22,7 @@ export const switchTaskType = (type: TaskType, date?: Date): TaskType => {
 export function deleteById(tasks: Task[], deletedTaskId: TaskId) {
   return tasks.filter((task) => task.id != deletedTaskId)
 }
+
+export const isUnplaced = (task: Task) => task.type == "unplaced"
+
+export const isInbox = (task: Task) => task.type == "inbox"

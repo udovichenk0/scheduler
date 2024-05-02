@@ -1,5 +1,3 @@
-import { sample } from "effector"
-
 import { removeTaskFactory } from "@/features/manage-task"
 
 import { taskFactory } from "@/entities/task/task-item"
@@ -22,9 +20,7 @@ export const $trashTasks = taskFactory({
 })
 export const $$deleteTask = removeTaskFactory($trashTasks)
 
-export const $$selectTask = selectTaskFactory($trashTasks.$tasks)
-
-sample({
-  clock: $$deleteTask.taskDeletedById,
-  target: $$selectTask.selectNextId,
-})
+export const $$selectTask = selectTaskFactory(
+  $trashTasks.$tasks,
+  $$deleteTask.taskDeletedById,
+)

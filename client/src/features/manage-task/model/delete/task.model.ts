@@ -13,6 +13,8 @@ export const removeTaskFactory = (taskModel: TaskFactory) => {
     taskApi.deleteTaskLs.doneData,
     taskApi.deleteTaskMutation.finished.success,
   ])
+
+  //if logged in
   sample({
     clock: taskDeletedById,
     filter: $$session.$isAuthenticated,
@@ -24,6 +26,7 @@ export const removeTaskFactory = (taskModel: TaskFactory) => {
     target: taskApi.deleteAllTasksMutation.start,
   })
 
+  //if not logged in
   sample({
     clock: taskDeletedById,
     filter: not($$session.$isAuthenticated),
