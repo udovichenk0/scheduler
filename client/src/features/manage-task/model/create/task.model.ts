@@ -1,20 +1,18 @@
 import { merge, sample, createEvent } from "effector"
 import { not, and } from "patronum"
 
-import { modifyTaskFactory } from "@/entities/task/task-form"
+import { ModifyTaskFactory } from "@/entities/task/task-form"
 import { $$session } from "@/entities/session"
 
 import { taskApi } from "@/shared/api/task"
 import { bridge } from "@/shared/lib/effector/bridge"
 
 export const createTaskFactory = ({
-  defaultType,
-  defaultDate,
+  $$modifyTask,
 }: {
-  defaultType: "inbox" | "unplaced"
-  defaultDate: Nullable<Date>
+  $$modifyTask: ModifyTaskFactory
 }) => {
-  const $$modifyTask = modifyTaskFactory({ defaultType, defaultDate })
+  // const $$modifyTask = modifyTaskFactory({ defaultType, defaultDate })
   const { $fields, $isAllowToSubmit, resetFieldsTriggered } = $$modifyTask
 
   const createTaskTriggered = createEvent()

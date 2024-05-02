@@ -2,6 +2,7 @@ import { allSettled, fork } from "effector"
 import { test, expect, vi, describe, beforeEach } from "vitest"
 import { createRoute } from "atomic-router"
 
+import { modifyTaskFactory } from "@/entities/task/task-form"
 import { $$session } from "@/entities/session"
 import { TaskFactory, taskFactory } from "@/entities/task/task-item"
 import { isInbox } from "@/entities/task/task-item/lib"
@@ -71,8 +72,10 @@ describe("create task", () => {
       route: createRoute(),
     })
     $$createTask = createTaskFactory({
-      defaultDate: null,
-      defaultType: "inbox",
+      $$modifyTask: modifyTaskFactory({
+        defaultType: "inbox",
+        defaultDate: null,
+      }),
     })
   })
   test("should create task if user is authenticated", async () => {

@@ -1,4 +1,3 @@
-import dayjs from "dayjs"
 import { createEvent, createStore, sample, combine } from "effector"
 
 import { disclosureTask } from "@/widgets/expanded-task/model"
@@ -7,6 +6,7 @@ import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
 import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
+import { modifyTaskFactory } from "@/entities/task/task-form"
 import { taskFactory, createSorting } from "@/entities/task/task-item"
 import { isUnplaced } from "@/entities/task/task-item/lib"
 
@@ -15,7 +15,9 @@ import { selectTaskFactory } from "@/shared/lib/effector"
 import { taskApi } from "@/shared/api/task"
 import { routes } from "@/shared/routing"
 import { createIdModal, createModal } from "@/shared/lib/modal"
-import { isToday } from "@/shared/lib/date"
+import { getToday, isToday } from "@/shared/lib/date"
+
+import { isBeforeToday } from "./../../shared/lib/date/comparison"
 
 export const homeRoute = routes.home
 export const $$dateModal = createModal({})
@@ -24,8 +26,10 @@ export const $$idModal = createIdModal()
 export const $$trashTask = trashTaskFactory()
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
-  defaultType: "unplaced",
-  defaultDate: dayjs(new Date()).startOf("date").toDate(),
+  $$modifyTask: modifyTaskFactory({
+    defaultType: "unplaced",
+    defaultDate: getToday(),
+  }),
 })
 export const $$taskDisclosure = disclosureTask({
   updateTaskModel: $$updateTask,
@@ -45,9 +49,7 @@ export const $todayTasks = taskFactory({
 
 export const $overdueTasks = taskFactory({
   sortModel: $$sort,
-  filter: (task) =>
-    isUnplaced(task) &&
-    dayjs(new Date(task.start_date!)).isBefore(dayjs().startOf("date")),
+  filter: (task) => isUnplaced(task) && isBeforeToday(task.start_date),
   route: homeRoute,
   api: {
     taskQuery: taskApi.overdueTasksQuery,
