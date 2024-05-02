@@ -6,6 +6,7 @@ import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
 import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
+import { modifyTaskFactory } from "@/entities/task/task-form"
 import { taskFactory, Task } from "@/entities/task/task-item"
 import { isUnplaced } from "@/entities/task/task-item/lib"
 
@@ -13,6 +14,7 @@ import { createModal } from "@/shared/lib/modal"
 import { bridge } from "@/shared/lib/effector/bridge"
 import { taskApi } from "@/shared/api/task"
 import { routes } from "@/shared/routing"
+import { getToday } from "@/shared/lib/date"
 
 export const calendarRoute = routes.calendar
 
@@ -31,8 +33,10 @@ const $unplacedTasks = taskFactory({
 
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
-  defaultType: "unplaced",
-  defaultDate: new Date(),
+  $$modifyTask: modifyTaskFactory({
+    defaultType: "unplaced",
+    defaultDate: getToday(),
+  }),
 })
 
 export const $$moreTasksModal = createModal({})

@@ -182,4 +182,4 @@ export const modifyTaskFactory = ({
   }
 }
 
-export type ModifyTask = ReturnType<typeof modifyTaskFactory> // write ts-morph for unused exports
+export type ModifyTaskFactory = ReturnType<typeof modifyTaskFactory>

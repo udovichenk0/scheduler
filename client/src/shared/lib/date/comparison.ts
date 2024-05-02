@@ -7,18 +7,22 @@ export const isToday = (date: Nullable<InputDate>) => {
   if (!date) return false
   return dayjs(parseDate(date)).isToday()
 }
-export const isBeforeToday = (date: InputDate) => {
+
+export const isBeforeToday = (date: Nullable<InputDate>) => {
+  if (!date) return false
   return parseDate(date) < getToday()
 }
-export const isAfterToday = (date: InputDate) => {
-  return parseDate(date) > getToday()
+export const isAfterToday = (date: Nullable<InputDate>) => {
+  if (!date) return false
+  return parseDate(date) > dayjs(getToday()).endOf("date").toDate()
 }
 
-function parseDate(date: InputDate) {
-  if (!date) throw Error("Invalid date")
+export function parseDate(date: InputDate) {
+  if (!date) throw new Error("Invalid date")
   if (date instanceof Date) return date
-  if (new Date(date) instanceof RangeError) {
-    throw Error("Invalid date")
+  const d = new Date(date)
+  if (d instanceof RangeError || isNaN(d.getTime())) {
+    throw new Error("Invalid date")
   }
-  return new Date(date)
+  return d
 }

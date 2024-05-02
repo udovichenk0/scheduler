@@ -9,6 +9,7 @@ import { createTaskFactory } from "@/features/manage-task/model/create"
 import { updateTaskFactory } from "@/features/manage-task/model/update"
 import { trashTaskFactory } from "@/features/manage-task/model/trash"
 
+import { modifyTaskFactory } from "@/entities/task/task-form"
 import { taskFactory, Task, createSorting } from "@/entities/task/task-item"
 import { isUnplaced } from "@/entities/task/task-item/lib"
 
@@ -16,6 +17,7 @@ import { TaskId, taskApi } from "@/shared/api/task"
 import { selectTaskFactory } from "@/shared/lib/effector"
 import { routes } from "@/shared/routing"
 import { createIdModal, createModal } from "@/shared/lib/modal"
+import { getToday } from "@/shared/lib/date"
 
 import {
   getTasksPerDate,
@@ -46,8 +48,10 @@ export const $upcomingTasks = taskFactory({
 })
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
-  defaultType: "unplaced",
-  defaultDate: dayjs(new Date()).startOf("date").toDate(),
+  $$modifyTask: modifyTaskFactory({
+    defaultType: "unplaced",
+    defaultDate: getToday(),
+  }),
 })
 export const $$taskDisclosure = disclosureTask({
   updateTaskModel: $$updateTask,

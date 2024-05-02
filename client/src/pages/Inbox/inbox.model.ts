@@ -6,6 +6,7 @@ import { createTaskFactory } from "@/features/manage-task/model/create"
 
 import { taskFactory, createSorting } from "@/entities/task/task-item"
 import { isInbox } from "@/entities/task/task-item/lib"
+import { modifyTaskFactory } from "@/entities/task/task-form"
 
 import { selectTaskFactory } from "@/shared/lib/effector"
 import { routes } from "@/shared/routing"
@@ -32,8 +33,7 @@ export const $$trashTask = trashTaskFactory()
 
 export const $$updateTask = updateTaskFactory()
 export const $$createTask = createTaskFactory({
-  defaultType: "inbox",
-  defaultDate: null,
+  $$modifyTask: modifyTaskFactory({ defaultType: "inbox", defaultDate: null }),
 })
 export const $$taskDisclosure = disclosureTask({
   updateTaskModel: $$updateTask,

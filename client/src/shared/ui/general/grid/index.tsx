@@ -15,8 +15,8 @@ export const Grid = ({
   children: ReactElement[]
 }) => {
   return (
-    // @ts-ignore
     <div
+      // @ts-ignore
       style={{ "--columns": columns, "--rows": rows, "--col": "red" }}
       className={clsx(style.grid, className)}
     >
@@ -25,9 +25,9 @@ export const Grid = ({
           const x = (index % columns) + 1
           const y = Math.floor(index / columns) + 1
           return (
-            // @ts-ignore
             <div
               key={index}
+              // @ts-ignore
               style={{ "--column": x, "--row": y }}
               className={style.item}
             />
