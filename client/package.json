@@ -35,7 +35,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@neodx/svg": "^0.2.0",
+    "@neodx/svg": "^0.7.1",
     "@playwright/test": "^1.40.1",
     "@types/node": "^20.10.6",
     "@types/react": "^18.0.28",
