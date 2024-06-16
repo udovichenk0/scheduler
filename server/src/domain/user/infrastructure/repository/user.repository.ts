@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/services/clients/prisma";
+import { v4 as uuidv4 } from "uuid";
 
 @Injectable()
 export class UserRepository {
@@ -20,7 +21,10 @@ export class UserRepository {
   }
   async create(data: { hash: string; email: string }) {
     return await this.prismaService.user.create({
-      data
+      data: {
+        id: uuidv4(),
+        ...data
+      }
     });
   }
   async deleteById(id: string) {

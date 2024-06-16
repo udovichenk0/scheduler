@@ -1,6 +1,9 @@
+import { v4 as uuidv4 } from "uuid";
+
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "src/services/clients/prisma/prisma.client";
-import { Prisma } from "@prisma/client";
+import { PrismaService } from "src/services/clients/prisma";
+import { Prisma } from "prisma/generated";
+
 @Injectable()
 export class TaskRepository {
   constructor(private prismaService: PrismaService) {}
@@ -50,6 +53,7 @@ export class TaskRepository {
   }) {
     return this.prismaService.task.createMany({
       data: data.map((task) => ({
+        id: uuidv4(),
         ...task,
         user_id
       }))
