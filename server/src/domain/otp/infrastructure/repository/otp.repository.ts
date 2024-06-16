@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/services/clients/prisma/prisma.client";
-// import { Confirmation, VerifyOTPDto } from './dto/dto';
+import { v4 as uuidv4 } from "uuid";
 
 type Confirmation = {
   code: string;
@@ -14,15 +14,16 @@ type Confirmation = {
 export class OTPRepository {
   constructor(private prismaService: PrismaService) {}
   deleteByUserId(id: string) {
-    return this.prismaService.emailConfirmation.delete({
+    return this.prismaService.confirmation.delete({
       where: {
         user_id: id
       }
     });
   }
   create(code: string, user_id: string) {
-    return this.prismaService.emailConfirmation.create({
+    return this.prismaService.confirmation.create({
       data: {
+        id: uuidv4(),
         user_id,
         code
       }
@@ -30,7 +31,7 @@ export class OTPRepository {
   }
 
   findByUserId(user_id: string) {
-    return this.prismaService.emailConfirmation.findUnique({
+    return this.prismaService.confirmation.findUnique({
       where: {
         user_id
       }
@@ -40,7 +41,7 @@ export class OTPRepository {
   async findByUserEmail(data: { email: string; code: string }) {
     const { email } = data;
     const res = await this.prismaService.$queryRaw<Confirmation[]>`
-      SELECT code, user.* FROM emailConfirmation e JOIN user ON e.user_id = user.id WHERE user.email = ${email};`;
+      SELECT code, user.* FROM confirmation JOIN user ON e.user_id = user.id WHERE user.email = ${email};`;
     const { code, ...user } = res[0];
 
     if (!code || !user) return null;
