@@ -10,12 +10,12 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - CLIENT_URL=http://localhost:4173
-      - SESSION_SECRET=SESSION_SECRET
-      - REFRESH_SECRET=REFRESH_SECRET
-      - JWT_SECRET=JWT_SECRET
-      - DATABASE_URL=mysql://root:2j8w6d12denzeldenis@mysql:3306/scheduler
-      - PASSWORD="efppuksoimzxnerp"
+      - CLIENT_URL=${CLIENT_URL}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - REFRESH_SECRET=${REFRESH_SECRET}
+      - JWT_SECRET=${JWT_SECRET}
+      - DATABASE_URL=${DATABASE_URL}
+      - PASSWORD=${PASSWORD}
     depends_on:
       mysql:
         condition: service_healthy
@@ -33,7 +33,7 @@ services:
     image: mysql
     container_name: "database"
     environment:
-      - MYSQL_ROOT_PASSWORD=2j8w6d12denzeldenis
+      - MYSQL_ROOT_PASSWORD=${PASSWORD}
       - MYSQL_DATABASE=scheduler
     volumes:
       - C:/Users/User/dumps:/docker-entrypoint-initdb.d
