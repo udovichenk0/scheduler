@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException
@@ -52,6 +53,8 @@ export function handleError(er: Err) {
       return new BadRequestException(er);
     case 401:
       return new UnauthorizedException(er);
+    case 403:
+      return new ForbiddenException(er);
     case 404:
       return new NotFoundException(er);
     case 503:
