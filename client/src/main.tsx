@@ -28,7 +28,7 @@ sample({
 sample({
   clock: [
     authApi.signinQuery.finished.success,
-    authApi.signupQuery.finished.success,
+    authApi.verifyQuery.finished.success,
   ],
   source: [
     $unplacedTasks.$tasks,

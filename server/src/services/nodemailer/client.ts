@@ -25,13 +25,14 @@ export class EmailTransporter {
             pass: process.env.PASSWORD
           }
         })
-        .sendEmail({
+        .sendMail({
           from: process.env.EMAIL,
           to,
           subject,
           html: `<h1>${code}</h1>`
         });
     } catch (error) {
+      console.log(error);
       return Errors.InternalServerError();
     }
   }

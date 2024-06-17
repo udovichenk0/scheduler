@@ -41,7 +41,7 @@ export class OTPRepository {
   async findByUserEmail(data: { email: string; code: string }) {
     const { email } = data;
     const res = await this.prismaService.$queryRaw<Confirmation[]>`
-      SELECT code, user.* FROM confirmation JOIN user ON e.user_id = user.id WHERE user.email = ${email};`;
+      SELECT code, user.* FROM confirmation AS e JOIN user ON e.user_id = user.id WHERE user.email = ${email};`;
     const { code, ...user } = res[0];
 
     if (!code || !user) return null;
