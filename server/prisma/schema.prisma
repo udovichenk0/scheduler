@@ -1,5 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  output        = "./generated"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -7,45 +9,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id                String             @id @default(cuid())
-  email             String             @unique
-  hash              String
-  verified          Boolean            @default(false)
-  created_at        DateTime           @default(now())
-  emailconfirmation emailconfirmation?
-  task              task[]
+model confirmation {
+  id      String @id
+  code    String
+  user_id String @unique
+  user    user   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model task {
-  id           String    @id @default(cuid())
+  id           String      @id
   title        String
   description  String?
-  type         Type
-  status       Status    @default(INPROGRESS)
-  start_date   DateTime? @db.Timestamp(0)
+  type         task_type
+  status       task_status @default(INPROGRESS)
+  start_date   DateTime?   @db.Timestamp(0)
   user_id      String
-  date_created DateTime  @default(now())
-  is_deleted   Boolean   @default(false)
-  user         user      @relation(fields: [user_id], references: [id])
+  date_created DateTime    @default(now())
+  is_deleted   Boolean     @default(false)
+  user         user        @relation(fields: [user_id], references: [id])
 
   @@index([user_id], map: "task_user_id_fkey")
 }
 
-model emailconfirmation {
-  id      String @id
-  code    String
-  user_id String @unique(map: "emailConfirmation_user_id_key")
-  user    user   @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "emailConfirmation_user_id_fkey")
+model user {
+  id           String        @id
+  email        String        @unique
+  hash         String
+  verified     Boolean       @default(false)
+  created_at   DateTime      @default(now())
+  confirmation confirmation?
+  task         task[]
 }
 
-enum Status {
+enum task_type {
+  inbox
+  unplaced
+}
+
+enum task_status {
   FINISHED
   CANCELED
   INPROGRESS
-}
-
-enum Type {
-  inbox
-  unplaced
 }
