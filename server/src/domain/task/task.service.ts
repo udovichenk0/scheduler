@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { Prisma } from "@prisma/client";
 import { TaskRepository } from "./repository/task.repository";
 import { Errors } from "src/services/err/errors";
 import { getTodayDate } from "./lib";
+import { Prisma } from "prisma/generated";
 @Injectable()
 export class TaskService {
   constructor(private taskRepository: TaskRepository) {}

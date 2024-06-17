@@ -8,9 +8,6 @@ import { defineConfig } from "vite"
 import tsconfigPaths from "vite-tsconfig-paths"
 // https://vitejs.dev/config/
 export default defineConfig({
-  test: {
-    include: ["**/*.test.ts"],
-  },
   build: {
     target: "esnext",
   },
@@ -24,7 +21,13 @@ export default defineConfig({
       root: "assets",
       group: true,
       output: "public",
-      definitions: "src/shared/ui/icon/sprite.h.ts",
+      metadata: {
+        path: "src/shared/ui/icon/sprite.h.ts",
+        runtime: {
+          size: true,
+          viewBox: true
+        }
+      },
       resetColors: {
         replaceUnknown: "#000",
       },
