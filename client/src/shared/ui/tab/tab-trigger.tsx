@@ -10,7 +10,6 @@ interface TabProps {
   children: ReactNode
 }
 
-//fix it
 export function Trigger({
   className,
   value,
@@ -23,7 +22,7 @@ export function Trigger({
     <button
       {...props}
       onClick={() => setValue(value)}
-      className={clsx(className, currentValue == value && activeClass)}
+      className={clsx(className, currentValue == value && activeClass, "focus-visible:text-accent")}
     >
       {children}
     </button>

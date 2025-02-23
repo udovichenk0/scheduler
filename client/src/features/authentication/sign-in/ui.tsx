@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/shared/ui/buttons/main-button"
@@ -11,22 +11,25 @@ import { TogglePasswordButton } from "../shared/ui/toggle-password-button"
 
 import {
   $password,
-  $passwordError,
+  $error,
   passwordChanged,
   submitTriggered,
-} from "./signin.modal"
+} from "./signin.model"
 
 export const Signin = ({ goBack }: { goBack: () => void }) => {
   const { t } = useTranslation()
 
   const password = useUnit($password)
-  const error = useUnit($passwordError)
+  const error = useUnit($error)
   const email = useUnit($email)
   const changePassword = useUnit(passwordChanged)
   const onSubmit = useUnit(submitTriggered)
 
   const [isPasswordShown, togglePasswortView] = useState(false)
   const ref = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    ref.current?.focus()
+  }, [])
   return (
     <AuthTemplate
       onSubmit={onSubmit}

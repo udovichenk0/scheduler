@@ -2,17 +2,16 @@ import { useTranslation } from "react-i18next"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
-import { TaskId } from "@/shared/api/task"
 import { Tooltip } from "@/shared/ui/general/tooltip"
 
 export const Footer = ({
   onCreateTask,
-  selectedTaskId,
+  isTrashDisabled,
   onDeleteTask,
 }: {
   onCreateTask?: () => void
-  selectedTaskId: Nullable<TaskId>
-  onDeleteTask: (selectedTaskId: TaskId) => void
+  isTrashDisabled: boolean
+  onDeleteTask: () => void
 }) => {
   const { t } = useTranslation()
   return (
@@ -30,18 +29,18 @@ export const Footer = ({
         <Icon name="common/plus" className="mr-4 text-lg" />
         {t("footer.newTask")}
       </Button>
-      <Tooltip text={t("action.delete")}>
+      <Tooltip dir="tc" text={t("action.delete")}>
         <Button
           title={t("action.delete")}
-          disabled={!selectedTaskId}
-          onClick={() => onDeleteTask(selectedTaskId!)}
+          disabled={isTrashDisabled}
+          onClick={onDeleteTask}
           intent={"primary"}
           size={"xs"}
         >
           <Icon
             name="common/trash-can"
             className={`text-[24px] ${
-              selectedTaskId ? "opacity-70" : "opacity-40"
+              !isTrashDisabled ? "opacity-70" : "opacity-40"
             }`}
           />
         </Button>

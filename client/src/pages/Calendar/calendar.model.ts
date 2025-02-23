@@ -1,58 +1,42 @@
 import dayjs from "dayjs"
-import { createEvent, createStore, sample } from "effector"
-import { and, not } from "patronum"
+import { combine, createEvent, restore } from "effector"
 
-import { createTaskFactory } from "@/features/manage-task/model/create"
-import { updateTaskFactory } from "@/features/manage-task/model/update"
-import { trashTaskFactory } from "@/features/manage-task/model/trash"
+import { createTaskFactory } from "@/features/manage-task/create"
+import { updateTaskFactory } from "@/features/manage-task/update"
+import { trashTaskFactory } from "@/features/manage-task/trash"
 
-import { modifyTaskFactory } from "@/entities/task/task-form"
-import { taskFactory, Task } from "@/entities/task/task-item"
-import { isUnplaced } from "@/entities/task/task-item/lib"
+import { Task, $$taskModel, modifyTaskFactory } from "@/entities/task"
+import { isUnplaced } from "@/entities/task/lib"
 
-import { createModal } from "@/shared/lib/modal"
-import { bridge } from "@/shared/lib/effector/bridge"
-import { taskApi } from "@/shared/api/task"
 import { routes } from "@/shared/routing"
 import { getToday } from "@/shared/lib/date"
 
 export const calendarRoute = routes.calendar
 
-export const $$dateModal = createModal({})
+export const setMoreTasks = createEvent<Task[]>()
+export const $moreTasks = restore(setMoreTasks, [])
 
-export const $$trashTask = trashTaskFactory()
+export const $$trashTask = trashTaskFactory({taskModel: $$taskModel})
 
-const $unplacedTasks = taskFactory({
-  filter: isUnplaced,
-  route: calendarRoute,
-  api: {
-    taskQuery: taskApi.unplacedTasksQuery,
-    taskStorage: taskApi.unplacedTasksLs,
-  },
+const $unplacedTasks = combine($$taskModel.$tasks, (tasks) => {
+  return tasks?.filter((task) => isUnplaced(task) && !task.is_trashed) || []
 })
 
-export const $$updateTask = updateTaskFactory()
+export const $$updateTask = updateTaskFactory({taskModel: $$taskModel})
 export const $$createTask = createTaskFactory({
   $$modifyTask: modifyTaskFactory({
     defaultType: "unplaced",
     defaultDate: getToday(),
   }),
+  taskModel: $$taskModel
 })
 
-export const $$moreTasksModal = createModal({})
-
-export const taskFormModalOpened = createEvent()
-export const taskFormModalClosed = createEvent()
-export const $isTaskFormModalOpened = createStore(false)
-  .on(taskFormModalOpened, () => true)
-  .on(taskFormModalClosed, () => false)
-
-export const $mappedTasks = $unplacedTasks.$tasks.map((tasks) => {
+export const $mappedTasks = $unplacedTasks.map((tasks) => {
   if (!tasks) return null
   return tasks.reduce(
     (acc, task) => {
       const date = dayjs(task.start_date).format("YYYY-MM-DD")
-      if (!task.start_date || task.is_deleted) {
+      if (!task.start_date || task.is_trashed) {
         return acc
       }
       if (!acc[date]) {
@@ -63,84 +47,4 @@ export const $mappedTasks = $unplacedTasks.$tasks.map((tasks) => {
     },
     [] as unknown as Record<string, Task[]>,
   )
-})
-
-export const canceled = createEvent()
-export const saved = createEvent()
-export const $updatedTask = createStore<string | null>(null)
-export const $createdTask = createStore(false)
-
-export const createTaskModalOpened = createEvent<Date>()
-export const updateTaskModalOpened = createEvent<string>()
-
-bridge(() => {
-  sample({
-    clock: createTaskModalOpened,
-    target: $$createTask.$startDate,
-  })
-  sample({
-    clock: createTaskModalOpened,
-    fn: () => true,
-    target: $createdTask,
-  })
-
-  sample({
-    clock: updateTaskModalOpened,
-    target: [$$updateTask.setFieldsTriggered, $updatedTask],
-  })
-  sample({
-    clock: [updateTaskModalOpened, createTaskModalOpened],
-    target: taskFormModalOpened,
-  })
-})
-
-bridge(() => {
-  sample({
-    clock: saved,
-    filter: and(
-      not($$updateTask.$isAllowToSubmit),
-      not($$createTask.$isAllowToSubmit),
-    ),
-    target: taskFormModalClosed,
-  })
-  sample({
-    clock: saved,
-    filter: $$createTask.$isAllowToSubmit,
-    target: $$createTask.createTaskTriggered,
-  })
-
-  sample({
-    clock: saved,
-    source: {
-      updatedTaskId: $updatedTask,
-      canUpdate: $$updateTask.$isAllowToSubmit,
-    },
-    filter: ({ canUpdate, updatedTaskId }) =>
-      canUpdate && Boolean(updatedTaskId),
-    fn: ({ updatedTaskId }) => updatedTaskId!,
-    target: $$updateTask.updateTaskTriggeredById,
-  })
-})
-
-bridge(() => {
-  sample({
-    clock: [
-      $$createTask.taskSuccessfullyCreated,
-      $$updateTask.taskSuccessfullyUpdated,
-      $$trashTask.taskSuccessfullyDeleted,
-      canceled,
-    ],
-    target: taskFormModalClosed,
-  })
-  //reset fields after modal is closed
-  sample({
-    clock: [taskFormModalClosed, canceled],
-    filter: $createdTask,
-    target: [$createdTask.reinit, $$createTask.resetFieldsTriggered],
-  })
-  sample({
-    clock: [taskFormModalClosed, canceled],
-    filter: and($updatedTask),
-    target: [$updatedTask.reinit, $$updateTask.resetFieldsTriggered],
-  })
 })

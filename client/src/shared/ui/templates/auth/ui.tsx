@@ -10,7 +10,7 @@ type AuthTemplateProps = {
   subtitle?: string
   disabled?: boolean
   onArrowClick: () => void
-  onSubmit: () => void
+  onSubmit?: () => void
   className?: string
 }
 export const AuthTemplate = ({
@@ -23,7 +23,7 @@ export const AuthTemplate = ({
 }: AuthTemplateProps) => {
   const submitForm = (e: FormEvent) => {
     e.preventDefault()
-    onSubmit()
+    onSubmit?.()
   }
   return (
     <div className="relative text-center text-cFont">

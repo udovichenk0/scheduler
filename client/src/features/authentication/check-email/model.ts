@@ -2,8 +2,6 @@ import { createEvent, createStore, sample } from "effector"
 import { z } from "zod"
 import { t } from "i18next"
 
-import { userApi } from "@/shared/api/user"
-
 import {
   MAX_LENGTH,
   MIN_LENGTH,
@@ -11,13 +9,15 @@ import {
   TOO_LONG_MESSAGE,
   TOO_SHORT_MESSAGE,
 } from "./constants"
+import { authApi } from "@/shared/api/auth"
+import { UNEXPECTED_ERROR_MESSAGE } from "@/shared/lib/error"
 
 export const emailChanged = createEvent<string>()
 export const submitTriggered = createEvent()
 export const resetEmailTriggered = createEvent()
 
 export const $email = createStore<string>("")
-export const $emailError = createStore<Nullable<string>>(null)
+export const $error = createStore<Nullable<string>>(null)
 const emailSchema = z.string().email().min(MIN_LENGTH).max(MAX_LENGTH)
 
 sample({
@@ -29,23 +29,28 @@ sample({
   clock: submitTriggered,
   source: $email,
   filter: (email) => emailSchema.safeParse(email).success,
-  target: userApi.getUserQuery.start,
+  target: authApi.checkVerifiedEmailExists.start,
 })
 
 sample({
   clock: submitTriggered,
   source: $email,
   filter: (email) => !emailSchema.safeParse(email).success,
-  fn: checkError,
-  target: $emailError,
+  fn: getErrorMessage,
+  target: $error,
+})
+sample({
+  clock: authApi.checkVerifiedEmailExists.finished.failure,
+  fn: () => t(UNEXPECTED_ERROR_MESSAGE),
+  target: $error
 })
 
 sample({
   clock: resetEmailTriggered,
-  target: [$emailError.reinit!, $email.reinit!],
+  target: [$error.reinit!, $email.reinit!],
 })
 
-function checkError(value: Nullable<string>) {
+function getErrorMessage(value: Nullable<string>) {
   if (!value || value.length < MIN_LENGTH) {
     return t(TOO_SHORT_MESSAGE)
   }

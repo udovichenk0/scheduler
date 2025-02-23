@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 html {
   --dark-blue: #0b0417;
@@ -8,179 +6,215 @@ html {
   --white: #ffffff;
   --light-blue: #0e162e;
   /* --test: 99 102 241 */
+  
 }
-@layer base {
-  html {
-    font-family:
-      Helvetica Nova,
-      sans-serif;
-  }
-  html[data-theme="space"] {
-    --main: #0b0417;
-    --test: 46, 188, 255;
-    --accent: 46, 188, 255;
-    --blue: 46, 188, 255;
-    --yellow: 253, 216, 53;
-    --red: 244, 67, 54;
-    --orange: 245, 124, 0;
-    --green: 0, 200, 83;
-    --purple: 170, 0, 255;
-    --pink: 224, 64, 251;
-    --primary: #ffffff;
-    --cFont: #fff;
-    --cOpacitySecondFont: #76899b;
-    --brand: var(--main);
-    --cBorder: #393b4681;
-    --cSecondBorder: #76899b;
-    --cLeftBottomPanel: var(--accent);
-    --cButtonBg: #2384b9;
-    --cButtunHover: #217aaa;
-    --cTaskEdit: #1c283e;
-    --cFocusSecond: rgba(70, 131, 203, 0.5);
-    --cTaskEditDefault: #76899b;
-    --cTimeIntervalLow: #252538;
-    --cIconDefault: #76899b;
-    --cTimeInterval: #174468;
-    --cPomodoroRed: #ff5f58;
-    --cPomodoroGreen: #62c554;
-    --cCalendarFont: #fff;
-    --cCalendarTooltip: #76899b;
-    --cTooltipFont: #272839;
-    --menuBg: #120c1e;
-  }
+html {
+  font-family:
+    Helvetica Nova,
+    sans-serif;
+}
 
-  html[data-theme="default"] {
-    --main: #2b2c37;
-    --accent: 46, 188, 255;
-    --blue: 46, 188, 255;
-    --yellow: 255, 202, 40;
-    --red: 255, 82, 82;
-    --orange: 245, 124, 0;
-    --green: 0, 200, 83;
-    --purple: 124, 77, 255;
-    --pink: 234, 128, 252;
-    --primary: #fff;
-    --cFont: #fff;
-    --cOpacitySecondFont: #76899b;
-    --newFocus: #394a61;
-    --brand: #23242b;
-    --cBorder: #393b46;
-    --cSecondBorder: #76899b;
-    --cLeftBottomPanel: var(--accent);
-    --cButtonBg: #11879c;
-    --cButtunHover: #0f7a8d;
-    --cButtonText: var(--cFont);
-    --cTaskEdit: #23242b;
-    --cFocusSecond: #415d81;
-    --cTaskEditDefault: #76899b;
-    --cTimeIntervalLow: #3d4350;
-    --cIconDefault: #76899b;
-    --cTimeInterval: #244250;
-    --cPomodoroRed: #ff5f58;
-    --cPomodoroGreen: #62c554;
-    --cCalendarFont: #fff;
-    --cCalendarTooltip: #76899b;
-    --cTooltipFont: var(--brand);
-    --menuBg: #1d1e24;
-  }
-  html[data-theme="dark"] {
-    --main: #121212;
-    --accent: 70, 131, 203;
-    --blue: 70, 131, 203;
-    --yellow: 255, 213, 79;
-    --red: 229, 115, 115;
-    --orange: 255, 183, 77;
-    --green: 129, 199, 132;
-    --purple: 124, 77, 255;
-    --pink: 234, 128, 252;
-    --primary: #fffc;
-    --cFont: #fffc;
-    --cOpacitySecondFont: #ffffff4d;
-    --brand: var(--main);
-    --cBorder: #393b4681;
-    --cSecondBorder: #ffffffcc;
-    --cLeftBottomPanel: #ffffffcc;
-    --cButtonBg: #366193;
-    --cButtunHover: #315885;
-    --cButtonText: var(--cFont);
-    --cTaskEdit: #26262680;
-    --cFocusSecond: rgba(70, 131, 203, 0.5);
-    --cTaskEditDefault: hsla(0, 0%, 100%, 0.8);
-    --cTimeIntervalLow: #394049;
-    --cIconDefault: hsla(0, 0%, 100%, 0.8);
-    --cTimeInterval: #243952;
-    --cPomodoroRed: #ff5f58;
-    --cPomodoroGreen: #62c554;
-    --cCalendarFont: hsla(0, 0%, 100%, 0.8);
-    --cTooltipFont: var(--cTaskEdit);
-    --cCalendarTooltip: #d0d0d0;
-  }
-  html[data-theme="light"] {
-    --main: #f9f9f9;
-    --accent: 70, 131, 203;
-    --blue: 70, 131, 203;
-    --yellow: 251, 192, 45;
-    --red: 255, 82, 82;
-    --orange: 245, 124, 0;
-    --green: 76, 175, 80;
-    --purple: 126, 87, 194;
-    --pink: 240, 98, 146;
-    --primary: #596175;
-    --cFont: #2b2c37;
-    --cOpacitySecondFont: #76899b;
-    --brand: #f5f7fb;
-    --cBorder: #d3e3f6;
-    --cSecondBorder: #76899b;
-    --cLeftBottomPanel: var(--accent);
-    --cButtonBg: #7ba6d8;
-    --cButtunHover: #82b0e4;
-    --cButtonText: #f9f9f9;
-    --cTaskEdit: #eef2f9;
-    --cFocusSecond: #b2bdca;
-    --cTaskEditDefault: #76899b;
-    --cTimeIntervalLow: #d1d7dc;
-    --cIconDefault: #76899b;
-    --cTimeInterval: #d3e0ef;
-    --cPomodoroRed: #ff5f58;
-    --cPomodoroGreen: #62c554;
-    --cCalendarFont: #76899b;
-    --cCalendarTooltip: #4683cb;
-    --cTooltipFont: var(--cTaskEdit);
-    --menuBg: #f5f7fb;
-  }
-  html[data-theme="grey"] {
-    --main: #f4f4f4;
-    --accent: 84, 117, 156;
-    --blue: 84, 117, 156;
-    --yellow: 251, 192, 45;
-    --red: 229, 115, 115;
-    --orange: 255, 152, 0;
-    --green: 102, 187, 106;
-    --purple: 126, 87, 194;
-    --pink: 255, 128, 171;
-    --primary: #333333cc;
-    --cFont: #2b2c37;
-    --cOpacitySecondFont: #333333cc;
-    --brand: var(--main);
-    --cBorder: #d3e3f6;
-    --cSecondBorder: #76899b;
-    --cLeftBottomPanel: var(--accent);
-    --cButtonBg: #849bb6;
-    --cButtunHover: #8aa3c0;
-    --cButtonText: #fff;
-    --cTaskEdit: #fff;
-    --cFocusSecond: #54759c;
-    --cTaskEditDefault: rgba(51, 51, 51, 0.6);
-    --cTimeIntervalLow: #d8d8d8;
-    --cIconDefault: rgba(51, 51, 51, 0.6);
-    --cTimeInterval: #ccd4de;
-    --cPomodoroRed: #ff5f58;
-    --cPomodoroGreen: #62c554;
-    --cCalendarFont: rgba(51, 51, 51, 0.8);
-    --cCalendarTooltip: #e1e1e1;
-    --cTooltipFont: var(--cTooltipFont);
-    --menuBg: #f4f4f4;
-  }
+@theme {
+  --drop-shadow-base: 0 35px 35px rgba(0, 0, 0, 0.56);
+
+  --color-main: var(--main);
+  --color-accent: rgb(var(--accent));
+  --color-blue: rgb(var(--blue));
+  --color-yellow: rgb(var(--yellow));
+  --color-red: rgb(var(--red));
+  --color-orange: rgb(var(--orange));
+  --color-green: rgb(var(--green));
+  --color-purple: rgb(var(--purple));
+  --color-pink: rgb(var(--pink));
+  --color-primary: var(--primary);
+  --color-cFont: var(--cFont);
+  --color-cOpacitySecondFont: var(--cOpacitySecondFont);
+  --color-brand: var(--main);
+  --color-cBorder: var(--cBorder);
+  --color-cSecondBorder: var(--cSecondBorder);
+  --color-cLeftBottomPanel: var(--accent);
+  --color-cButtonBg: var(--cButtonBg);
+  --color-hover: rgba(var(--accent), 0.2);
+  --color-cTaskEdit: var(--cTaskEdit);
+  --color-cFocusSecond: var(--cFocusSecond);
+  --color-cFocus: rgba(var(--accent), 0.3);
+  --color-cTaskEditDefault: var(--cTaskEditDefault);
+  --color-cTimeIntervalLow: var(--cTimeIntervalLow);
+  --color-cIconDefault: var(--cIconDefault);
+  --color-cTimeInterval: var(--cTimeInterval);
+  --color-cPomodoroRed: var(--cPomodoroRed);
+  --color-cPomodoroGreen: var(--cPomodoroGreen);
+  --color-cCalendarFont: var(--cCalendarFont);
+  --color-cCalendarTooltip: var(--cCalendarTooltip);
+  --color-cTooltipFont: var(--cTooltipFont);
+  --color-menuBg: var(--menuBg);
+  --color-error: #F72C5B
+}
+
+html[data-theme="space"] {
+  --main: #0b0417;
+  --accent: 46, 188, 255;
+  --blue: 46, 188, 255;
+  --yellow: 253, 216, 53;
+  --red: 244, 67, 54;
+  --orange: 245, 124, 0;
+  --green: 0, 200, 83;
+  --purple: 170, 0, 255;
+  --pink: 224, 64, 251;
+  --primary: #ffffff;
+  --cFont: #fff;
+  --cOpacitySecondFont: #76899b;
+  --brand: var(--main);
+  --cBorder: #393b4681;
+  --cSecondBorder: #76899b;
+  --cLeftBottomPanel: var(--accent);
+  --cButtonBg: #2384b9;
+  --hover: rgba(34, 123, 170, 0.3);
+  --cTaskEdit: #1c283e;
+  --cFocusSecond: rgba(70, 131, 203, 0.5);
+  --cTaskEditDefault: #76899b;
+  --cTimeIntervalLow: #252538;
+  --cIconDefault: #76899b;
+  --cTimeInterval: #174468;
+  --cPomodoroRed: #ff5f58;
+  --cPomodoroGreen: #62c554;
+  --cCalendarFont: #fff;
+  --cCalendarTooltip: #76899b;
+  --cTooltipFont: var(--cFont);
+  --menuBg: #120c1e;
+}
+
+html[data-theme="default"] {
+  --main: #2b2c37;
+  --accent: 46, 188, 255;
+  --blue: 46, 188, 255;
+  --yellow: 255, 202, 40;
+  --red: 255, 82, 82;
+  --orange: 245, 124, 0;
+  --green: 0, 200, 83;
+  --purple: 124, 77, 255;
+  --pink: 234, 128, 252;
+  --primary: #fff;
+  --cFont: #fff;
+  --cOpacitySecondFont: #76899b;
+  --newFocus: #394a61;
+  --brand: #23242b;
+  --cBorder: #393b46;
+  --cSecondBorder: #76899b;
+  --cLeftBottomPanel: var(--accent);
+  --cButtonBg: #11879c;
+  --hover: rgb(15, 122, 141, 0.5);
+  --cButtonText: var(--cFont);
+  --cTaskEdit: #23242b;
+  --cFocusSecond: #415d81;
+  --cTaskEditDefault: #76899b;
+  --cTimeIntervalLow: #3d4350;
+  --cIconDefault: #76899b;
+  --cTimeInterval: #244250;
+  --cPomodoroRed: #ff5f58;
+  --cPomodoroGreen: #62c554;
+  --cCalendarFont: #fff;
+  --cCalendarTooltip: #76899b;
+  --cTooltipFont: var(--cFont);
+  --menuBg: #1d1e24;
+}
+html[data-theme="dark"] {
+  --main: #121212;
+  --accent: 70, 131, 203;
+  --blue: 70, 131, 203;
+  --yellow: 255, 213, 79;
+  --red: 229, 115, 115;
+  --orange: 255, 183, 77;
+  --green: 129, 199, 132;
+  --purple: 124, 77, 255;
+  --pink: 234, 128, 252;
+  --primary: #fffc;
+  --cFont: #fffc;
+  --cOpacitySecondFont: #ffffff4d;
+  --brand: var(--main);
+  --cBorder: #393b4681;
+  --cSecondBorder: #ffffffcc;
+  --cLeftBottomPanel: #ffffffcc;
+  --cButtonBg: #366193;
+  --hover: rgba(49, 88, 133, 0.5);
+  --cButtonText: var(--cFont);
+  --cTaskEdit: #26262680;
+  --cFocusSecond: rgba(70, 131, 203, 0.5);
+  --cTaskEditDefault: hsla(0, 0%, 100%, 0.8);
+  --cTimeIntervalLow: #394049;
+  --cIconDefault: hsla(0, 0%, 100%, 0.8);
+  --cTimeInterval: #243952;
+  --cPomodoroRed: #ff5f58;
+  --cPomodoroGreen: #62c554;
+  --cCalendarFont: hsla(0, 0%, 100%, 0.8);
+  --cTooltipFont: var(--main);
+  --cCalendarTooltip: #d0d0d0;
+}
+html[data-theme="light"] {
+  --main: #f9f9f9;
+  --accent: 70, 131, 203;
+  --blue: 70, 131, 203;
+  --yellow: 251, 192, 45;
+  --red: 255, 82, 82;
+  --orange: 245, 124, 0;
+  --green: 76, 175, 80;
+  --purple: 126, 87, 194;
+  --pink: 240, 98, 146;
+  --primary: #596175;
+  --cFont: #2b2c37;
+  --cOpacitySecondFont: #76899b;
+  --brand: #f5f7fb;
+  --cBorder: #d3e3f6;
+  --cSecondBorder: #76899b;
+  --cLeftBottomPanel: var(--accent);
+  --cButtonBg: #7ba6d8;
+  --hover: rgba(130, 176, 228, 0.5);
+  --cButtonText: #f9f9f9;
+  --cTaskEdit: #eef2f9;
+  --cFocusSecond: #b2bdca;
+  --cTaskEditDefault: #76899b;
+  --cTimeIntervalLow: #d1d7dc;
+  --cIconDefault: #76899b;
+  --cTimeInterval: #d3e0ef;
+  --cPomodoroRed: #ff5f58;
+  --cPomodoroGreen: #62c554;
+  --cCalendarFont: #76899b;
+  --cCalendarTooltip: #4683cb;
+  --cTooltipFont: var(--cTaskEdit);
+  --menuBg: #f5f7fb;
+}
+html[data-theme="grey"] {
+  --main: #f4f4f4;
+  --accent: 84, 117, 156;
+  --blue: 84, 117, 156;
+  --yellow: 251, 192, 45;
+  --red: 229, 115, 115;
+  --orange: 255, 152, 0;
+  --green: 102, 187, 106;
+  --purple: 126, 87, 194;
+  --pink: 255, 128, 171;
+  --primary: #333333cc;
+  --cFont: #2b2c37;
+  --cOpacitySecondFont: #333333cc;
+  --brand: var(--main);
+  --cBorder: #d3e3f6;
+  --cSecondBorder: #76899b;
+  --cLeftBottomPanel: var(--accent);
+  --cButtonBg: #849bb6;
+  --hover: rgba(138, 163, 192, 0.5);
+  --cButtonText: #fff;
+  --cTaskEdit: #fff;
+  --cFocusSecond: #54759c;
+  --cTaskEditDefault: rgba(51, 51, 51, 0.6);
+  --cTimeIntervalLow: #d8d8d8;
+  --cIconDefault: rgba(51, 51, 51, 0.6);
+  --cTimeInterval: #ccd4de;
+  --cPomodoroRed: #ff5f58;
+  --cPomodoroGreen: #62c554;
+  --cCalendarFont: rgba(51, 51, 51, 0.8);
+  --cCalendarTooltip: #e1e1e1;
+  --cTooltipFont: var(--cTooltipFont);
+  --menuBg: #f4f4f4;
 }
 @layer components {
   .icon {
@@ -212,5 +246,10 @@ input {
   scrollbar-width: none; /* Firefox */
 }
 .noScroll::-webkit-scrollbar {
+  display: none;
+}
+
+input::-ms-reveal,
+input::-ms-clear {
   display: none;
 }

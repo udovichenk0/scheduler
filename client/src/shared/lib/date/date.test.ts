@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest"
 import isTodayjs from "dayjs/plugin/isToday"
-import { extend } from "dayjs"
+import dayjs, { extend } from "dayjs"
 
-import { isAfterToday, isBeforeToday, isToday, parseDate } from "./"
+import { getToday, isAfterToday, isBeforeToday, isToday, parseDate } from "./"
 
 extend(isTodayjs)
 
@@ -29,24 +29,25 @@ describe("parseDate function", () => {
 
 describe("isToday function", () => {
   test("should tell if its today", () => {
-    expect(isToday("Thu May 02 2024 00:00:00")).toBeTruthy()
-    expect(isToday("Thu May 02 2024 23:59:59")).toBeTruthy()
-    expect(isToday("Thu May 01 2024 23:59:59")).toBeFalsy()
+    expect(isToday(getToday())).toBeTruthy()
+    expect(isToday(dayjs(getToday()).add(59, "minute").add(59, 'second').toDate())).toBeTruthy()
+    expect(isToday(dayjs(getToday()).subtract(1, 'day').toDate())).toBeFalsy()
   })
 })
 
-describe.only("isBeforeToday function", () => {
+describe("isBeforeToday function", () => {
   test("should tell if its before specific date", () => {
-    expect(isBeforeToday("Thu May 02 2024 00:00:00")).toBeFalsy()
-    expect(isBeforeToday("Thu May 02 2024 23:59:59")).toBeFalsy()
+    console.log(getToday())
+    expect(isBeforeToday(getToday())).toBeFalsy()
+    expect(isBeforeToday(dayjs(getToday()).add(59, "minute").add(59, 'second').toDate())).toBeFalsy()
     expect(isBeforeToday("Thu May 01 2024 23:59:59")).toBeTruthy()
   })
 })
 
-describe.only("isAfterToday function", () => {
-  test("should tell if its before specific date", () => {
-    expect(isAfterToday("Thu May 03 2024 00:00:00")).toBeTruthy()
-    expect(isAfterToday("Thu May 02 2024 23:59:59")).toBeFalsy()
-    expect(isAfterToday("Thu May 01 2024 23:59:59")).toBeFalsy()
+describe("isAfterToday function", () => {
+  test("should tell if its after specific date", () => {
+    expect(isAfterToday(dayjs(getToday()).add(1, "day").toDate())).toBeTruthy()
+    expect(isAfterToday(dayjs(getToday()).add(59, "minute").add(59, 'second').toDate())).toBeFalsy()
+    expect(isAfterToday(dayjs(getToday()).subtract(1, 'day').toDate())).toBeFalsy()
   })
 })

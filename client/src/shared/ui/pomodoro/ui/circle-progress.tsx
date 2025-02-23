@@ -5,7 +5,12 @@ import { useUnit } from "effector-react"
 import { normalizeSeconds } from "@/shared/lib/date"
 import { State } from "@/shared/lib/pomodoro"
 
-const DEFAULT_PROGRESS_BAR = 848 // if 848 then progress is 0% otherwise its 100%
+const CIRCLE_DIAMETER = 260
+const LINE_WIDTH = 7
+const CIRCLE_RADIUS = (CIRCLE_DIAMETER / 2) - LINE_WIDTH
+const DEFAULT_PROGRESS_BAR = (2 * Math.PI * CIRCLE_RADIUS) - 2
+const CIRCLE_CENTERED_POSITION = CIRCLE_DIAMETER / 2
+
 
 export const ProgressCircle = ({
   $time,
@@ -29,47 +34,44 @@ export const ProgressCircle = ({
     ((staticTime - time) / staticTime) * DEFAULT_PROGRESS_BAR
   return (
     <div className="relative flex h-full w-full justify-center">
+      <div
+        className={`${isWorkTime ? "fill-cPomodoroRed" : "fill-cPomodoroGreen"} absolute text-5xl top-1/2 -translate-y-1/2`}
+      >
+        {normalizeSeconds(time)}
+      </div>
       <svg
-        width="260"
-        height="260"
-        viewBox="-14.25 -0.25 312.5 312.5"
+        width={CIRCLE_DIAMETER}
+        height={CIRCLE_DIAMETER}
+        viewBox="0 0 260 260"
         version="1.1"
+        className="relative -rotate-90"
         xmlns="http://www.w3.org/2000/svg"
       >
         <circle
-          r="135"
-          cx="145"
-          cy="145"
+          r={CIRCLE_RADIUS}
+          cx={CIRCLE_CENTERED_POSITION}
+          cy={CIRCLE_CENTERED_POSITION}
           className={
             isWorkTime ? "stroke-cPomodoroRed" : "stroke-cPomodoroGreen"
           }
           fill="transparent"
-          strokeWidth="7px"
+          strokeWidth={LINE_WIDTH}
           strokeDasharray="2 7"
         ></circle>
         <circle
-          r="135"
-          cx="145"
-          cy="145"
+          r={CIRCLE_RADIUS}
+          cx={CIRCLE_CENTERED_POSITION}
+          cy={CIRCLE_CENTERED_POSITION}
           className={clsx(
-            "translate-y-[290px] -rotate-90",
             isWorkTime ? "stroke-cPomodoroRed" : "stroke-cPomodoroGreen",
           )}
-          strokeWidth="8px"
+          strokeWidth={LINE_WIDTH}
           strokeDashoffset={progress}
           fill="transparent"
-          strokeDasharray="848"
+          strokeDasharray="772"
         ></circle>
-        <text
-          y="51%"
-          x="16%"
-          fontSize={60}
-          className={isWorkTime ? "fill-cPomodoroRed" : "fill-cPomodoroGreen"}
-        >
-          {normalizeSeconds(time)}
-        </text>
       </svg>
-      <div className="absolute bottom-[70px] left-[113px] grid h-[40px] grid-cols-4 grid-rows-3 gap-x-2 gap-y-1">
+      <div className="absolute bottom-[70px] pt-2 grid h-10 grid-cols-4 grid-rows-3 gap-x-2 gap-y-1">
         {stages.map(({ fulfilled }, id) => {
           return (
             <div

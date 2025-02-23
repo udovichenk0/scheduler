@@ -1,37 +1,32 @@
+import { Error } from "@/shared/api/type"
+
 export const UNEXPECTED_ERROR_MESSAGE =
   "setting.synchronization.error.unexpected"
 
-type Response = {
-  error: {
-    response: {
-      code: number
-      message: string
+export function isErrorMessageValid(message: string){
+  return ({error}: {error: any}) => {
+    const err = getHandledError(error)
+    if(!err){
+      return false
     }
-  }
-}
-export function isHttpError(error: number) {
-  return (response: any) => {
-    const r = response as Response
-    return r.error?.response?.code ? r.error.response.code == error : false
+    return err.message === message
   }
 }
 
-export function isError(response: any) {
-  return !!response.error
-}
-
-export function isNoError(response: any) {
-  return !isError(response)
-}
-
-export function generateError(code: number, message: string) {
-  return {
-    response: {
-      code,
-      message,
-    },
-    status: code,
-    options: {},
-    message,
+export function isHttpError(status: number){
+  return ({error}: {error: any}) => {
+    const err = getHandledError(error)
+    if(!err){
+      return false
+    }
+    return err.status === status
   }
+}
+
+export function getHandledError(error: any): Error | null {
+  const err = error as Error
+  if(!!err?.error && !!err?.message){
+    return err
+  }
+  return null
 }

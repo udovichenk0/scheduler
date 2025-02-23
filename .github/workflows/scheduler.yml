@@ -1,53 +1,19 @@
-name: Scheduler CI
+# name: Docker
 
-on:
-  push:
-    branches: [ "develop" ]
-    paths-ignore:
-      - "server/**"
+# on: 
+#   push:
+#     branches:
+#       - 'main'
 
-env:
-  VITE_ORIGIN_URL: http://localhost:3000/
-  CI: true
-jobs:
-  build:
+# jobs:
+#   web:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+    
+      
+# docker buildx
 
-    runs-on: ubuntu-latest
-    defaults: 
-      run:
-        working-directory: './client'
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+# login to docker registery
 
-    steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install yarn
-      run: npm install -g yarn
-    - name: Setup node with yarn cache
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: yarn
-        cache-dependency-path: './client/yarn.lock'
-    - name: Install dependencies
-      run: yarn    
-    - name: Run tests
-      run: yarn test
-    - name: Install playwright browsers
-      run: yarn playwright install
-    - name: Run playwright
-      run: yarn test:e2e
-    - uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
-    - name: Generate build
-      run: yarn build

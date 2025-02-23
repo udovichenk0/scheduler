@@ -159,7 +159,9 @@ export const createPomodoro = ({
   })
 
   function updateStage(stages: Stage[]) {
-    const lastFulfilled = stages.findLastIndex((value) => value.fulfilled) + 1
+    // stages
+    const lastFulfilled = stages.map((value) => value.fulfilled).lastIndexOf(true) + 1;
+    // const lastFulfilled = stages.findLastIndex((value) => value.fulfilled) + 1
     return stages.map((s, ind) =>
       ind == lastFulfilled ? { fulfilled: true } : s,
     )

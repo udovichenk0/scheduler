@@ -1,68 +1,84 @@
 .tooltip {
   position: absolute;
   z-index: 1000;
-  border-radius: 5px;
   pointer-events: none;
-  /* &[data-dir="top"]{
-    @apply left-1/2 -top-[170%] -translate-x-1/2
-  }
-  &[data-dir="right"]{
-    @apply left-[110%]
-  }
-  &[data-dir="left"]{
-    @apply right-[110%]
-  } */
+
   &[data-dir="tr"] {
-    @apply -top-[110%] left-1/2 -translate-x-2;
+    top: -110%;
+    left: calc(50% - 0.75rem);
   }
   &[data-dir="tl"] {
-    @apply -top-[110%] right-1/2 translate-x-2;
+    top: -110%;
+    right: calc(50% - 0.5rem);
   }
   &[data-dir="tc"] {
-    @apply -top-[110%] left-1/2 -translate-x-1/2;
+    bottom: 120%;
+    right: 50%;
+    transform: translateX(50%)
   }
   &[data-dir="br"] {
-    @apply -bottom-[110%] left-1/2 -translate-x-2;
+    bottom: -110%;
+    left: 50%;
+    transform: translateX(-0.75rem)
   }
   &[data-dir="bl"] {
-    @apply -bottom-[110%] right-1/2 translate-x-2;
+    bottom: -110%;
+    right: 50%;
+    transform: translateX(0.75rem)
   }
   &[data-dir="bc"] {
-    @apply -bottom-[110%] right-1/2 translate-x-1/2;
+    bottom: -110%;
+    right: 50%;
+    transform: translateX(50%)
   }
 }
+
 .tooltip:after {
   position: absolute;
   content: "";
-  transform: translateX(50%);
+  /* transform: translateX(50%); */
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-
-  &[data-dir="tr"] {
-    @apply left-0 top-full border-t-[4px] border-t-cCalendarTooltip;
-  }
-  &[data-dir="tl"] {
-    @apply right-[10px] top-full border-t-[4px] border-t-cCalendarTooltip;
-  }
-  &[data-dir="tc"] {
-    @apply right-1/2 top-full border-t-[4px] border-t-cCalendarTooltip;
-  }
-  &[data-dir="br"] {
-    @apply bottom-full left-0 border-b-[4px] border-b-cCalendarTooltip;
-  }
-  &[data-dir="bl"] {
-    @apply bottom-full right-[10px] border-b-[4px] border-b-cCalendarTooltip;
-  }
-  &[data-dir="bc"] {
-    @apply bottom-full right-1/2 border-b-[4px] border-b-cCalendarTooltip;
-  }
 }
-
+.tooltip[data-dir="tr"]:after{
+  left: 0.5rem;
+  top: 100%;
+  border-top: 4px solid var(--cCalendarTooltip);
+}
+.tooltip[data-dir="tl"]:after{
+  right: 0.5rem;
+  top: 100%;
+  border-top: 4px solid var(--cCalendarTooltip)
+}
+.tooltip[data-dir="tc"]:after{
+  right: 50%;
+  top: 100%;
+  transform: translateX(50%);
+  border-top: 4px solid var(--cCalendarTooltip)
+}
+.tooltip[data-dir="br"]:after{
+  bottom: 100%;
+  left: 0.5rem;
+  border-bottom: 4px solid var(--cCalendarTooltip)
+}
+.tooltip[data-dir="bl"]:after{
+  bottom: 100%;
+  right: 0.5rem;
+  border-bottom: 4px solid var(--cCalendarTooltip)
+}
+.tooltip[data-dir="bc"]:after{
+  bottom: 100%;
+  right: 50%;
+  transform: translateX(50%);
+  border-bottom: 4px solid var(--cCalendarTooltip)
+}
 .size {
   &[data-size="base"] {
-    @apply text-sm;
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.25rem; /* 20px */
   }
   &[data-size="md"] {
-    @apply text-base;
+    font-size: 1rem; /* 16px */
+    line-height: 1.5rem; /* 24px */
   }
 }

@@ -1,43 +1,29 @@
-import { useUnit, useGate } from "effector-react"
+import { useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
-
-import { Settings } from "@/widgets/settings"
 
 import { Icon } from "@/shared/ui/icon/icon"
 import { routes } from "@/shared/routing"
 import { Button } from "@/shared/ui/buttons/main-button/ui"
 import { Container } from "@/shared/ui/general/container"
 
-import { $$modal, gate, $inboxCounter, $todayCounter } from "./sidebar.model"
-import { Logo } from "./ui/logo"
-import { SidebarFooter } from "./ui/footer"
+import { $inboxCounter, $todayCounter } from "./sidebar.model"
+import { Logo } from "./logo"
+import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { ModalName } from "@/shared/lib/modal/modal-names"
+import { Tooltip } from "@/shared/ui/general/tooltip"
+import Settings from "../settings"
 
 export const Sidebar = () => {
   const { t } = useTranslation()
-  const inboxTasksCount = useUnit($inboxCounter.$counter)
-  const todayTasksCount = useUnit($todayCounter.$counter)
-  const openSettingsModal = useUnit($$modal.open)
-  const sidebar_footer_buttons = [
-    {
-      title: "setting.title",
-      onClick: openSettingsModal,
-      type: "button" as const,
-      iconName: "common/settings" as const,
-    },
-    {
-      title: "task.unplaced",
-      type: "link" as const,
-      route: routes.unplaced,
-      iconName: "common/cross-arrows" as const,
-    },
-    {
-      title: "task.trash",
-      type: "link" as const,
-      route: routes.trash,
-      iconName: "common/trash-can" as const,
-    },
-  ]
-  useGate(gate)
+  const inboxTasksCount = useUnit($inboxCounter)
+  const todayTasksCount = useUnit($todayCounter)
+
+  const {
+    isOpened: isSettingsOpened, 
+    open: onOpenSettings, 
+    close: onCloseSettings
+  } = useDisclosure({ id: ModalName.SidebarSettingsModal })
+  
   return (
     <aside className={`border-r-[1px] border-cBorder bg-brand text-primary`}>
       <div className="grid h-full w-[250px] grid-rows-[auto_1fr_auto] flex-col">
@@ -65,7 +51,7 @@ export const Sidebar = () => {
                 />
                 {t("task.inbox")}
               </div>
-              <span className="text-grey">{inboxTasksCount}</span>
+              <span className="text-cOpacitySecondFont">{inboxTasksCount}</span>
             </Button>
 
             <Button
@@ -83,7 +69,7 @@ export const Sidebar = () => {
                 />
                 {t("task.today")}
               </div>
-              <span className="text-grey">{todayTasksCount}</span>
+              <span className="text-cOpacitySecondFont">{todayTasksCount}</span>
             </Button>
 
             <Button
@@ -125,10 +111,41 @@ export const Sidebar = () => {
             </span>
           </Button>
         </Container>
-
-        <SidebarFooter config={sidebar_footer_buttons} />
-
-        <Settings modal={$$modal} defaultTab="general" />
+        <Container className="flex gap-2 border-t-[1px] border-cBorder text-cIconDefault">
+          <Tooltip text={t("setting.title")} dir="tr">
+            <Button
+              title={t("setting.title")}
+              onClick={onOpenSettings}
+              intent="primary"
+              size="xs"
+            >
+              <Icon name="common/settings" className="text-[24px]" />
+            </Button>
+          </Tooltip>
+          <Tooltip text={t("task.unplaced")} dir="tc">
+            <Button
+              title={t("task.unplaced")}
+              to={routes.unplaced}
+              as="link"
+              intent={"primary"}
+              size={"xs"}
+            >
+              <Icon name="common/cross-arrows" className="text-[24px]" />
+            </Button>
+          </Tooltip>
+          <Tooltip text={t("task.trash")} dir="tc">
+            <Button
+              title={t("task.trash")}
+              to={routes.trash}
+              as="link"
+              intent={"primary"}
+              size={"xs"}
+            >
+              <Icon name="common/trash-can" className="text-[24px]" />
+            </Button>
+          </Tooltip>
+        </Container>
+        <Settings isOpen={isSettingsOpened} onClose={onCloseSettings} />
       </div>
     </aside>
   )

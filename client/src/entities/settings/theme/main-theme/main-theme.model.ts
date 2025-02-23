@@ -3,7 +3,8 @@ import { createEffect } from "effector/effector.umd"
 import { z } from "zod"
 
 import { singleton } from "@/shared/lib/effector/singleton"
-import { parseCookieValue, setCookie } from "@/shared/lib/storage"
+import { setCookie } from "@/shared/lib/storage"
+import { getCookie } from "@/shared/lib/storage/get-cookie"
 const ThemeSchema = z.enum(["space", "default", "dark", "light", "grey"])
 
 export type Theme = z.infer<typeof ThemeSchema>
@@ -24,7 +25,7 @@ export const $$themeSettings = singleton(() => {
     }
   })
   const getThemeFx = createEffect(() => {
-    const theme = parseCookieValue("theme") as string
+    const theme = getCookie("theme")
     if (ThemeSchema.safeParse(theme).success) {
       return theme
     }

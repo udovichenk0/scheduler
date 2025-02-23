@@ -1,0 +1,327 @@
+openai: '3.0.0'
+info: 
+  title: 'Swagger Scheduler'
+  version: '1.0.0'
+paths:
+  /email/exists:
+    get:
+      summary: 'Check if verified email exists'
+      parameters: 
+        - name: email
+          in: query  
+          allowReserved: true
+          required: true
+          schema:
+            $ref: '#/components/schemas/Email'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetEmailExists200'
+  /auth/signin:
+    post:
+      summary: "Sign in a user"
+      requestBody:
+        $ref: '#/components/requestBodies/AuthEmailCreds'
+      responses:
+        '200':
+          $ref: '#/components/responses/User'
+  /auth/signup:
+    post:
+      requestBody:
+        $ref: '#/components/requestBodies/AuthEmailCreds'
+      responses:
+        '200':
+          $ref: '#/components/responses/User'
+  /auth/signout:
+    post:
+      responses:
+        '204':
+          description: 'User signed out'
+  /auth/verify:
+    post:
+      summary: 'Verify email'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  $ref: '#/components/schemas/Code'
+                userId:
+                  $ref: '#/components/schemas/Id'
+              required:
+                - code
+                - userId
+      responses:
+        '200':
+  /auth/session:
+    get:
+      summary: "Check user`s session"
+      responses:
+        '200':
+          $ref: '#/components/responses/User'
+  /auth/resend:
+    post:
+      summary: 'Resend verification code'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: '#/components/schemas/Email'
+                userId:
+                  $ref: '#/components/schemas/Id'
+              required:
+                - email
+                - userId
+      responses:
+        '200':
+
+  #*task endpoints
+  /tasks:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskDto'
+    post:
+      summary: Create task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskFields'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDto'
+    delete:
+      summary: Delete all trashed tasks
+      responses:
+        '200':
+  /tasks/{id}:
+    put:
+      summary: Update task's fields
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref:
+              '#/components/schemas/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskFields'
+      responses:  
+        '200':
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskDto"
+    delete:
+      summary: Delete trashed task by taskId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+  /tasks/{id}/date:
+    patch:
+      summary: Update task's date
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartDate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/TaskDto'
+  /tasks/{id}/status:
+    patch:
+      parameters:
+        - name: id
+          in: path
+          schema:
+            $ref: '#/components/schemas/Id'
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  $ref: '#/components/schemas/TaskStatus'
+              required:
+                - status
+      responses:
+        '200':
+  /tasks/{id}/trash:
+    post:
+      parameters:
+        - name: id
+          in: path
+          schema:
+            $ref: '#/components/schemas/Id'
+          required: true
+      responses:
+        '200':
+
+components:
+  responses:
+    GetEmailExists200:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              exists: 
+                type: boolean
+            required: 
+              - exists
+    User:
+      description: 'User response'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserDto'
+  schemas:
+    Description:
+      type: string
+      nullable: true
+    StartDate:
+      type: integer
+      nullable: true
+    Email:
+      type: string
+      format: email
+      description: 'Email address'
+      minLength: 4
+    Code:
+      type: string
+      minLength: 6
+      maxLength: 6
+    Id:
+      type: string
+      format: uuid
+    UserDto:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        email:
+          $ref: '#/components/schemas/Email'
+        verified:
+          type: boolean
+      required:
+        - id
+        - email
+        - verified
+        - created_at
+    TaskStatus:
+      type: string
+      enum:
+      - inprogress
+      - finished
+    TaskType:
+      type: string
+      enum:
+        - inbox
+        - unplaced
+    TaskFields:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        start_date:
+          type: integer
+          nullable: true
+        type:
+          $ref: '#/components/schemas/TaskType'
+      required:
+        - title
+        - description
+        - status
+        - start_date
+        - type
+    TaskDto:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        start_date:
+          type: integer
+          nullable: true
+        user_id: 
+          $ref: '#/components/schemas/Id'
+        type:
+          $ref: '#/components/schemas/TaskType'
+        date_created:
+          type: string
+        is_trashed:
+          type: boolean
+      required:
+        - id
+        - title
+        - description
+        - status
+        - start_date
+        - user_id
+        - type
+        - date_created
+        - is_trashed
+
+  requestBodies:
+    AuthEmailCreds:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                $ref: '#/components/schemas/Email'
+              password: 
+                type: string
+            required:
+              - email
+              - password

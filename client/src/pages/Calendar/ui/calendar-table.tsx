@@ -2,12 +2,10 @@ import dayjs, { Dayjs } from "dayjs"
 import { memo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Task } from "@/entities/task/task-item"
+import { Task, TaskId, TaskStatus } from "@/entities/task"
 
 import { generateCalendar } from "@/shared/lib/date/generate-calendar"
 import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
-import { ModalType } from "@/shared/lib/modal"
-import { TaskId, TaskStatus } from "@/shared/api/task"
 import { Grid } from "@/shared/ui/general/grid"
 
 import { MonthSwitcher } from "./month-switcher"
@@ -15,19 +13,20 @@ import { Cell } from "./cell"
 
 type CalendarProps = {
   tasks: Nullable<Record<string, Task[]>>
-  openUpdatedTask: (taskId: TaskId) => void
-  openCreatedTask: (date: Date) => void
+  onTaskClick: (e: HTMLButtonElement, task: Task) => void
+  onCellClick: (e: HTMLButtonElement, date: Date) => void
+  onShowMoreTasks: (tasks: Task[]) => void
   onUpdateStatus: ({ id, status }: { id: TaskId; status: TaskStatus }) => void
   setDate: (date: Dayjs) => void
   date: Dayjs
-  modal: ModalType
 }
 export const Calendar = memo(
   ({
     tasks,
-    openUpdatedTask,
-    openCreatedTask,
+    onTaskClick,
+    onCellClick,
     onUpdateStatus,
+    onShowMoreTasks,
     setDate,
     date,
   }: CalendarProps) => {
@@ -45,14 +44,15 @@ export const Calendar = memo(
             const date = dayjs(
               new Date(cell.year, cell.month, cell.date),
             ).format("YYYY-MM-DD")
-            const t = tasks?.[date]
+            const t = tasks?.[date] || []
 
             return (
               <Cell
                 key={date}
-                updateTaskOpened={openUpdatedTask}
-                createTaskOpened={openCreatedTask}
+                onTaskClick={onTaskClick}
+                onClick={onCellClick}
                 onUpdateStatus={onUpdateStatus}
+                onShowMoreTasks={onShowMoreTasks}
                 cell={cell}
                 tasks={t}
               />

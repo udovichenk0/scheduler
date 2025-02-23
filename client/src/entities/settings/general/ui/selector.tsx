@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, Ref } from "react"
 import { EventCallable, Store } from "effector"
 import { useUnit } from "effector-react"
 type Options = {
@@ -9,11 +9,13 @@ type SelectorProps = {
   $selectedValue: Store<string>
   options: Options
   onSelect: EventCallable<string>
+  ref: Ref<HTMLButtonElement>
 }
 export const Selector = ({
   $selectedValue,
   options,
   onSelect,
+  ref: focusRef
 }: SelectorProps) => {
   const { selectedValue } = useUnit({ selectedValue: $selectedValue })
   const [isShown, setIsShown] = useState(false)
@@ -34,8 +36,9 @@ export const Selector = ({
   return (
     <div ref={ref} className="relative w-[150px]">
       <button
+        ref={focusRef}
         onClick={() => setIsShown((prev) => !prev)}
-        className="h-[24px] w-full rounded-[5px] border border-cSecondBorder px-4 text-center"
+        className="h-[24px] w-full rounded-[5px] border border-cSecondBorder px-4 text-center focus-visible:ring"
       >
         {selectedValue}
       </button>
@@ -47,7 +50,7 @@ export const Selector = ({
                 onClick={() => onSelect(value)}
                 key={label}
                 className={`w-full px-4 text-cOpacitySecondFont hover:bg-blue-500 hover:text-white 
-                  ${label === selectedValue && "bg-cHover"}`}
+                  ${label === selectedValue && "bg-hover"}`}
               >
                 {label}
               </button>

@@ -1,14 +1,15 @@
 import { VariantProps } from "class-variance-authority"
 import { clsx } from "clsx"
-import { ButtonHTMLAttributes, ReactNode } from "react"
+import { ButtonHTMLAttributes, ForwardedRef, ReactNode, Ref } from "react"
 import { RouteInstance, RouteParams, RouteQuery } from "atomic-router"
 import { Link } from "atomic-router-react"
 
 import { buttonCva } from "./cva.styles"
 type BaseProps = VariantProps<typeof buttonCva> & {
   children: ReactNode
+  ref?: Ref<HTMLButtonElement>
 }
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   BaseProps & {
     as?: "button"
   }
@@ -19,7 +20,7 @@ type LinkProps = BaseProps & {
   query?: RouteQuery | undefined
   activeClassName?: string | undefined
   inactiveClassName?: string | undefined
-  ref?: React.ForwardedRef<HTMLAnchorElement> | undefined
+  ref?: ForwardedRef<HTMLAnchorElement>
 } & React.AnchorHTMLAttributes<HTMLAnchorElement>
 
 type ButtonOrLinkProps = LinkProps | ButtonProps
@@ -32,15 +33,13 @@ export const Button = ({
 }: ButtonOrLinkProps) => {
   if (props.as == "link") {
     return (
-      <Link {...props} to={props.to}>
-        <div className={clsx(className, buttonCva({ size, intent }))}>
-          {children}
-        </div>
+      <Link className={clsx("block", className, buttonCva({ size, intent }))} {...props} to={props.to}>
+        {children}
       </Link>
     )
   }
   return (
-    <button className={clsx(className, buttonCva({ size, intent }))} {...props}>
+    <button  className={clsx(className, buttonCva({ size, intent }))} {...props}>
       {children}
     </button>
   )

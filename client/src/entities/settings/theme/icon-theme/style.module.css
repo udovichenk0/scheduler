@@ -1,27 +1,34 @@
 .accentColor {
-  @apply flex h-[23px] w-[23px] items-center justify-center rounded-[5px] text-center text-primary;
+  display: flex;
+  height: 23px;
+  width: 23px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  text-align: center;
+  color: var(--primary);
   &[data-active="true"] {
-    @apply border-[1px] border-cFont;
+    border: 1px solid var(--cFont);
   }
   &[data-color="blue"] {
-    @apply bg-accentBlue;
+    background-color: var(--color-blue);
   }
   &[data-color="yellow"] {
-    @apply bg-accentYellow;
+    background-color: var(--color-yellow);
   }
   &[data-color="red"] {
-    @apply bg-accentRed;
+    background-color: var(--color-red);
   }
   &[data-color="orange"] {
-    @apply bg-accentOrange;
+    background-color: var(--color-orange);
   }
   &[data-color="green"] {
-    @apply bg-accentGreen;
+    background-color: var(--color-green);
   }
   &[data-color="purple"] {
-    @apply bg-accentPurple;
+    background-color: var(--color-purple);
   }
   &[data-color="pink"] {
-    @apply bg-accentPink;
+    background-color: var(--color-pink);
   }
 }

@@ -1,46 +1,27 @@
-import { disclosureTask } from "@/widgets/expanded-task/model"
+import { updateTaskFactory } from "@/features/manage-task/update"
+import { trashTaskFactory } from "@/features/manage-task/trash"
+import { createTaskFactory } from "@/features/manage-task/create"
 
-import { updateTaskFactory } from "@/features/manage-task/model/update"
-import { trashTaskFactory } from "@/features/manage-task/model/trash"
-import { createTaskFactory } from "@/features/manage-task/model/create"
+import { createSorting, getTaskModelInstance, modifyTaskFactory } from "@/entities/task"
+import { isInbox, shouldShowCompleted } from "@/entities/task/lib"
 
-import { taskFactory, createSorting } from "@/entities/task/task-item"
-import { isInbox } from "@/entities/task/task-item/lib"
-import { modifyTaskFactory } from "@/entities/task/task-form"
-
-import { selectTaskFactory } from "@/shared/lib/effector"
 import { routes } from "@/shared/routing"
-import { taskApi } from "@/shared/api/task"
-import { createIdModal, createModal } from "@/shared/lib/modal"
+import { combine } from "effector"
 
 export const inboxRoute = routes.inbox
-export const $$dateModal = createModal({})
-export const $$idModal = createIdModal()
 
 export const $$sort = createSorting()
 
-export const $inboxTasks = taskFactory({
-  sortModel: $$sort,
-  filter: isInbox,
-  route: inboxRoute,
-  api: {
-    taskQuery: taskApi.inboxTasksQuery,
-    taskStorage: taskApi.inboxTasksLs,
-  },
+export const $$taskModel = getTaskModelInstance()
+
+export const $inboxTasks = combine($$taskModel.$tasks, $$sort.$sortType, $$taskModel.$isCompletedShown, (tasks, sortType, isCompletedShown) => {
+  const todayTasks = tasks?.filter((task) => isInbox(task) && !task.is_trashed && shouldShowCompleted(isCompletedShown, task)) || []
+  return $$sort.sortBy(sortType, todayTasks)
 })
 
-export const $$trashTask = trashTaskFactory()
-
-export const $$updateTask = updateTaskFactory()
+export const $$trashTask = trashTaskFactory({taskModel: $$taskModel})
+export const $$updateTask = updateTaskFactory({taskModel: $$taskModel})
 export const $$createTask = createTaskFactory({
   $$modifyTask: modifyTaskFactory({ defaultType: "inbox", defaultDate: null }),
+  taskModel: $$taskModel
 })
-export const $$taskDisclosure = disclosureTask({
-  updateTaskModel: $$updateTask,
-  createTaskModel: $$createTask,
-})
-
-export const $$selectTask = selectTaskFactory(
-  $inboxTasks.$tasks,
-  $$trashTask.taskTrashedById,
-)

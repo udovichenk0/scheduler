@@ -1,80 +1,79 @@
 import { t } from "i18next"
-import { Suspense, useRef } from "react"
 import { useUnit } from "effector-react"
 
 import { Layout } from "@/widgets/layout/main"
 
-import { TaskItem } from "@/entities/task/task-item"
+import { TaskItem } from "@/entities/task"
 
-import { clickOnElement, useDocumentTitle } from "@/shared/lib/react"
+import { useDocumentTitle } from "@/shared/lib/react"
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { Button } from "@/shared/ui/buttons/main-button"
 
 import {
   $$deleteTask,
   $trashTasks,
-  $$selectTask,
-  $$idModal,
 } from "./trash.model"
+import { useState } from "react"
+import { useSelectItem } from "@/shared/lib/use-select-item"
 
 const Trash = () => {
-  const taskItemRef = useRef<HTMLDivElement>(null)
   useDocumentTitle(t("task.trash"))
 
-  const tasks = useUnit($trashTasks.$tasks)
-  const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
-
-  const onSelectTaskId = useUnit($$selectTask.selectTaskId)
+  const tasks = useUnit($trashTasks)
   const onDeleteTask = useUnit($$deleteTask.taskDeletedById)
   const onDeleteAllTasks = useUnit($$deleteTask.allTasksDeleted)
-  return (
-    <Suspense fallback={<div>inbox loading...</div>}>
-      <Layout>
-        <Layout.Header
-          slot={
-            <Button
-              onClick={onDeleteAllTasks}
-              intent={"accent"}
-              size={"xs"}
-              className="flex items-center gap-x-2"
-            >
-              <Cross />
-              {t("action.clearBucket")}
-            </Button>
-          }
-          iconName="common/inbox"
-          title={t("task.trash")}
-        />
-        <Layout.Content
-          contentRef={taskItemRef}
-          className="flex flex-col"
-          onClick={(e) =>
-            clickOnElement(taskItemRef, e, () => onSelectTaskId(null))
-          }
-        >
-          {tasks?.map((task, id) => {
-            return (
-              <div className="px-3 pb-2" key={id}>
-                <TaskItem
-                  idModal={$$idModal}
-                  typeLabel
-                  dateLabel
-                  isTaskSelected={selectedTaskId === task.id}
-                  onClick={() => onSelectTaskId(task.id)}
-                  task={task}
-                />
-              </div>
-            )
-          })}
-          <NoTasks isTaskListEmpty={!tasks?.length} />
-        </Layout.Content>
 
-        <Layout.Footer
-          selectedTaskId={selectedTaskId}
-          onDeleteTask={onDeleteTask}
-        />
-      </Layout>
-    </Suspense>
+  const [selectedTaskId, setSelectedTaskId] = useState<Nullable<string>>(null)
+  const {
+    onSelect, 
+    onUnselect, 
+    addNode,
+  } = useSelectItem({
+    items: tasks,
+    onChange: (task) => setSelectedTaskId(task?.id || null)
+  })
+
+  return (
+    <Layout>
+      <Layout.Header
+        slot={
+          <Button
+            onClick={onDeleteAllTasks}
+            intent={"accent"}
+            size={"xs"}
+            className="flex items-center gap-x-2"
+          >
+            <Cross />
+            {t("action.clearBucket")}
+          </Button>
+        }
+        iconName="common/inbox"
+        title={t("task.trash")}
+      />
+      <Layout.Content className="flex flex-col">
+        {tasks?.map((task, id) => {
+          return (
+            <div className="px-3 pb-2" key={task.id}>
+              <TaskItem
+                ref={(node) => addNode(node!, id)}
+                isShown
+                typeLabel
+                dateLabel
+                onSelect={() => onSelect(id)}
+                onBlur={onUnselect}
+                task={task}
+              />
+            </div>
+          )
+        })}
+        <NoTasks isTaskListEmpty={!tasks?.length} />
+      </Layout.Content>
+
+      <Layout.Footer
+        isTrashDisabled={!selectedTaskId}
+        onDeleteTask={() => selectedTaskId && onDeleteTask(selectedTaskId)}
+      />
+    </Layout>
   )
 }
 const Cross = () => {

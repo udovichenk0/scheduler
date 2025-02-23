@@ -1,11 +1,13 @@
 import { useUnit } from "effector-react"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Icon } from "@/shared/ui/icon"
 
 import { $$themeSettings, Theme } from "./main-theme.model"
 import style from "./styles.module.css"
+import clsx from "clsx"
+import { Typography } from "@/shared/ui/general/typography"
 const { themeChanged, $theme } = $$themeSettings
 
 export const MainThemeChanger = () => {
@@ -21,19 +23,24 @@ export const MainThemeChanger = () => {
   const activeTheme = useUnit($theme)
   const changeTheme = useUnit(themeChanged)
   return (
-    <div className="mb-6 flex h-[100px] items-center justify-around px-10">
-      {themes.map((theme) => {
-        return (
-          <ThemeBox
-            key={theme}
-            title={t(`setting.theme.${theme}`)}
-            theme={theme}
-            activeTheme={activeTheme}
-            changeTheme={changeTheme}
-          />
-        )
-      })}
-    </div>
+    <>
+      <Typography.Heading size="xs" id="theme" className="mb-6 text-center text-cFont">
+        {t("setting.theme.themeTitle")}
+      </Typography.Heading>
+      <div className="mb-12 flex items-center justify-around px-10">
+        {themes.map((theme) => {
+          return (
+            <ThemeBox
+              key={theme}
+              title={t(`setting.theme.${theme}`)}
+              theme={theme}
+              activeTheme={activeTheme}
+              changeTheme={changeTheme}
+            />
+          )
+        })}
+      </div>
+    </>
   )
 }
 
@@ -41,24 +48,32 @@ const ThemeBox = ({
   title,
   theme,
   activeTheme,
-  changeTheme,
+  changeTheme
 }: {
   title: string
   theme: Theme
   activeTheme: Theme
   changeTheme: (theme: Theme) => void
 }) => {
+  const ref = useRef<HTMLButtonElement>(null)
   const isActive = activeTheme == theme
+  useEffect(() => {
+    if(isActive){
+      ref.current?.focus()
+    }
+  }, [])
   return (
     <button
-      className="flex w-[60px] flex-col items-center"
+      ref={ref}
+      aria-describedby="theme" 
+      className="flex w-[60px] flex-col items-center group"
       key={title}
       onClick={() => changeTheme(theme)}
     >
-      <div data-color={theme} data-active={isActive} className={style.mainBg}>
+      <div data-color={theme} data-active={isActive} className={clsx(style.mainBg, "group-focus-visible:ring") }>
         <div className="flex w-10 items-center justify-center gap-[3px]">
           <div className="w-full">
-            <div className={`h-[8px] w-full rounded-[2px] bg-accent`} />
+            <div data-color={theme} className={`h-[8px] w-full rounded-[2px] ${style.topBox}`} />
             <div className="mt-[2px] flex w-full gap-[2px]">
               <div data-color={theme} className={style.leftBox} />
               <div data-color={theme} className={style.rightBox} />

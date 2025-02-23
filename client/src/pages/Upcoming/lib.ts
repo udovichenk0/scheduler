@@ -4,7 +4,7 @@ import isSameOrBefore from "dayjs/plugin/isSameOrBefore"
 import isTomorrow from "dayjs/plugin/isTomorrow"
 import isToday from "dayjs/plugin/isToday"
 
-import { Task } from "@/entities/task/task-item"
+import { Task } from "@/entities/task"
 
 import { lowerCase } from "@/shared/lib/typography"
 import { i18n } from "@/shared/i18n"
@@ -79,6 +79,7 @@ export function getTasksPerMonth(tasks: Task[]) {
     }
   })
 }
+
 export function getTasksForRemainingYear(tasks: Task[]) {
   const date = dayjs()
     .add(MIN_DATES_LENGTH, "day")

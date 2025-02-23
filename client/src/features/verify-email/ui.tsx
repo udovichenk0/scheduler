@@ -42,7 +42,7 @@ export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
       <div className="mb-2 flex justify-center">
         <CodeInput
           label={t("setting.synchronization.verify.label")}
-          inputStyle={`focus:border-cHover bg-transparent border-b p-1 mx-0 w-6 border-cSecondBorder ${
+          inputStyle={`focus:border-hover bg-transparent border-b p-[4px] mx-0 w-6 border-cSecondBorder ${
             error && "border-error"
           }`}
           containerStyle="gap-2"

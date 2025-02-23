@@ -15,6 +15,8 @@ import {
   MIN_LONG_BREAK,
   MAX_LONG_BREAK,
 } from "./config"
+import { z } from "zod"
+import { boolStr } from "@/shared/lib/validation"
 
 export const $$pomodoroSettings = singleton(() => {
   const init = createEvent()
@@ -126,29 +128,36 @@ export const $$pomodoroSettings = singleton(() => {
     })
   })
   bridge(() => {
+    const strToNumSchema = z.string().pipe(z.coerce.number())
     const initWorkDuration = cookiePersist({
       source: $workDuration,
       name: "workDuration",
+      schema: strToNumSchema,
     })
     const initShortBreakDuration = cookiePersist({
       source: $shortBreakDuration,
       name: "shortBreak",
+      schema: strToNumSchema,
     })
     const initLongBreakDuration = cookiePersist({
       source: $longBreakDuration,
       name: "longBreak",
+      schema: strToNumSchema,
     })
     const initCustomDuration = cookiePersist({
       source: $customDuration,
       name: "customDuration",
+      schema: strToNumSchema,
     })
     const initStartTimerAutomatically = cookiePersist({
       source: $isEnabledAutomaticStart,
       name: "startTimerAutomatically",
+      schema: boolStr,
     })
     const initNotificationSound = cookiePersist({
       source: $isEnabledNotificationSound,
       name: "notificationSound",
+      schema: boolStr,
     })
     sample({
       clock: init,

@@ -2,10 +2,10 @@ import { clsx } from "clsx"
 import {
   ChangeEvent,
   KeyboardEvent,
-  forwardRef,
   useImperativeHandle,
   useRef,
   ClipboardEvent,
+  RefObject,
 } from "react"
 
 import { onMount } from "@/shared/lib/react"
@@ -18,9 +18,10 @@ interface CodeInputProps {
   autoFocus?: boolean
   containerStyle?: string
   inputStyle?: string
+  ref: RefObject<any>
 }
 
-export const CodeInput = forwardRef(
+export const CodeInput = 
   (
     {
       autoFocus,
@@ -29,8 +30,8 @@ export const CodeInput = forwardRef(
       inputStyle,
       length,
       label,
+      ref
     }: CodeInputProps,
-    ref,
   ) => {
     const inputRefs = useRef<HTMLInputElement[]>([])
     useImperativeHandle(ref, () => ({
@@ -105,7 +106,7 @@ export const CodeInput = forwardRef(
     const inputs = Array.from({ length })
     return (
       <label className={"text-start"}>
-        <label className="text-[12px] text-grey">{label}</label>
+        <label className="text-[12px] text-cOpacitySecondFont">{label}</label>
         <div className={clsx("flex", containerStyle)}>
           {inputs.map((_, i) => {
             return (
@@ -127,5 +128,4 @@ export const CodeInput = forwardRef(
         </div>
       </label>
     )
-  },
-)
+  }

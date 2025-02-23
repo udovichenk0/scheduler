@@ -1,26 +1,36 @@
 .heading {
   &[data-size="xs"] {
-    @apply text-sm leading-tight;
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.25rem; /* 20px */
   }
   &[data-size="sm"] {
-    @apply text-base leading-tight;
+    /* @apply text-base leading-tight; */
+    font-size: 1rem; /* 16px */
+    line-height: 1.25rem; /* 20px */
   }
   &[data-size="base"] {
-    @apply text-lg leading-tight;
+    /* @apply text-lg leading-tight; */
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.25rem; /* 20px */
   }
   &[data-size="lg"] {
-    @apply text-2xl leading-none;
+    /* @apply text-2xl leading-none; */
+    font-size: 1.5rem; /* 24px */
+    line-height: 1;
   }
 }
 
 .paragraph {
   &[data-size="xs"] {
-    @apply text-[12px];
+    font-size: 0.75rem; /* 12px */
+    line-height: 1rem; /* 16px */
   }
   &[data-size="sm"] {
-    @apply text-sm;
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.25rem; /* 20px */
   }
   &[data-size="base"] {
-    @apply text-base;
+    font-size: 1rem; /* 16px */
+    line-height: 1.5rem; /* 24px */
   }
 }

@@ -1,19 +1,11 @@
-FROM node:20-alpine
+FROM golang:1.22.3-alpine
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY package.json yarn.lock ./
-RUN yarn
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
 COPY . .
+RUN go build -v -o /usr/local/bin/app ./cmd
 
-RUN yarn prisma generate && yarn build
-
-FROM node:20-alpine
-
-WORKDIR /app
-
-USER node
-
-COPY --from=0 --chown=node:node /app /app
-
-CMD yarn start:dev
+CMD ["app"]

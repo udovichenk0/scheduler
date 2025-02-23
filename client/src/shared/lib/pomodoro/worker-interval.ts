@@ -6,7 +6,7 @@ onmessage = function (e) {
     case Timer.START:
       timer = setInterval(() => {
         self.postMessage({ isRunning: true })
-      }, 10)
+      }, 1000)
       break
     case Timer.STOP:
       clearInterval(timer)

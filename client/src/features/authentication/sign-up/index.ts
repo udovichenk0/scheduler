@@ -1,2 +1,2 @@
 export * from "./ui"
-export * from "./signup.modal"
+export * from "./signup.model"

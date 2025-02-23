@@ -1,121 +1,73 @@
 import { createQuery } from "@farfetched/core"
-import { zodContract } from "@farfetched/zod"
-import { createEffect } from "effector"
 
-import { UserSchema } from "../user/user.dto"
+import { SessionUserSchema } from "./auth.dto"
+import { getAuthSession, getEmailExists, postAuthResend, postAuthSignin, postAuthSignout, postAuthSignup, postAuthVerify } from "../scheduler"
+import { getAuthSessionResponse, getEmailExistsResponse, postAuthSigninResponse, postAuthSignupResponse } from "../zod"
+import { handleResponse, throwIfError } from "../lib"
+import { AuthEmailCredsBody, Email, PostAuthResendBody, PostAuthVerifyBody } from '../scheduler.schemas';
+import { getHandledError } from "@/shared/lib/error"
 
-import { AuthDto, AuthSchema } from "./auth.dto"
-
-const AuthContract = zodContract(AuthSchema)
-const UserContract = zodContract(UserSchema)
-
-const signinFx = createEffect(
-  async (body: { email: string; password: string }) => {
-    const response = await fetch(
-      import.meta.env.VITE_ORIGIN_URL + "auth/sign-in",
-      {
-        credentials: "include",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        body: JSON.stringify(body),
-      },
-    )
-    const data = await response.json()
-    if (data.status >= 400) {
-      throw data
+export const tokenQuery = createQuery({
+  handler: async ({ code, state }: {code: string, state: string}) => {
+    const response = await fetch(import.meta.env.VITE_ORIGIN_URL + `api/auth/token?code=${code}&state=${state}`, {
+      credentials: "include"
+    })
+    const s = await response.json()
+    const user = SessionUserSchema.safeParse(s)
+    if(user.success){
+      return user.data
     }
-    return data
-  },
-)
-export const signinQuery = createQuery({
-  effect: signinFx,
-  contract: AuthContract,
+    throw user.error
+  }
 })
 
-export const signupFx = createEffect(
-  async (body: { email: string; password: string }) => {
-    const response = await fetch(
-      import.meta.env.VITE_ORIGIN_URL + "auth/sign-up",
-      {
-        credentials: "include",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        body: JSON.stringify(body),
-      },
-    )
-    const data = await response.json()
-    if (data.status >= 400) {
-      throw data
-    }
-    return data
-  },
-)
-export const signupQuery = createQuery({
-  effect: signupFx,
-  contract: UserContract,
+export const checkSession = createQuery({
+  handler: async () => {
+    const response = await getAuthSession({credentials: "include"})
+    return handleResponse(response, getAuthSessionResponse)
+  }
 })
 
-export const logoutQuery = createQuery({
-  effect: createEffect(async () => {
-    const response = await fetch(
-      import.meta.env.VITE_ORIGIN_URL + "auth/logout",
-      {
-        method: "POST",
-        credentials: "include",
-      },
-    )
-    const data = await response.json()
-    if (data.status >= 400) {
-      throw data
+export const signIn = createQuery({
+  handler: async ({email, password}: AuthEmailCredsBody) => {
+    const response = await postAuthSignin({email, password}, {credentials: "include"})
+    return handleResponse(response, postAuthSigninResponse)
+  }
+})
+
+export const signUp = createQuery({
+  handler: async ({email, password}: AuthEmailCredsBody) => {
+    const response = await postAuthSignup({email, password}, {credentials: "include"})
+    return handleResponse(response, postAuthSignupResponse)
+  }
+})
+
+export const checkVerifiedEmailExists = createQuery({
+  handler: async (email: Email) => {
+    const response = await getEmailExists({email})
+    return handleResponse(response, getEmailExistsResponse)
+  }
+})
+
+export const signOut = createQuery({
+  handler: async () => {
+    const response = await postAuthSignout({credentials: "include"})
+    if(getHandledError(response.data)){
+      throw response.data
     }
-    return data
-  }),
+  }
+})
+
+export const verifyEmailQuery = createQuery({
+  handler: async ({code, userId}: PostAuthVerifyBody) => {
+    const response = await postAuthVerify({code, userId}, {credentials: "include"})
+    throwIfError(response.data)
+  }
 })
 
 export const resendCodeQuery = createQuery({
-  effect: createEffect(async (email: string) => {
-    const response = await fetch(
-      import.meta.env.VITE_ORIGIN_URL + "otp/resend",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        body: JSON.stringify({ email }),
-      },
-    )
-    const data = await response.json()
-    if (data.status >= 400) {
-      throw data
-    }
-    return data
-  }),
-})
-
-export const verifyQuery = createQuery({
-  effect: createEffect<{ code: string; email: string }, AuthDto>(
-    async ({ code, email }) => {
-      const response = await fetch(
-        import.meta.env.VITE_ORIGIN_URL + "auth/verify-email",
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ code, email }),
-        },
-      )
-      const data = await response.json()
-      if (data.status >= 400) {
-        throw data
-      }
-      return data
-    },
-  ),
-  contract: AuthContract,
+  handler: async ({userId, email}: PostAuthResendBody) => {
+    const response = await postAuthResend({userId, email})
+    throwIfError(response.data)
+  }
 })

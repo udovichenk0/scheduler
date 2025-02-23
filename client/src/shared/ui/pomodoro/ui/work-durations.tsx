@@ -50,7 +50,7 @@ export const PomodoroDurations = ({
         return (
           <button
             key={time}
-            className="flex h-[60px] cursor-pointer flex-col items-center justify-between"
+            className="flex group h-[60px] cursor-pointer flex-col items-center justify-between"
             onClick={() => selectTime(timeInSecond)}
           >
             <div className="flex h-10 items-center">
@@ -61,7 +61,7 @@ export const PomodoroDurations = ({
                 }}
                 className={`${
                   activeTimer && "border-cPomodoroRed bg-cPomodoroRed"
-                } flex items-center justify-center rounded-full border-2 border-cIconDefault`}
+                } flex items-center justify-center rounded-full border-2 border-cIconDefault group-focus:border-cPomodoroRed`}
               >
                 {activeTimer && <Icon name="common/done" className="w-[7px]" />}
               </div>

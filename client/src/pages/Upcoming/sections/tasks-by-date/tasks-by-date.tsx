@@ -1,85 +1,79 @@
 import { useUnit } from "effector-react"
-import { RefObject, useContext, useEffect } from "react"
+import { useContext, useEffect } from "react"
 import { Dayjs } from "dayjs"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
 
-import { TaskItem, Task } from "@/entities/task/task-item"
+import { Task } from "@/entities/task"
 
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { TaskId } from "@/shared/api/task"
 
 import {
-  $$dateModal,
-  $$idModal,
   TaskManagerContext,
 } from "../../upcoming.model"
+import { ModalName } from "@/shared/lib/modal/modal-names"
+import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { EditableTask } from "@/widgets/editable-task"
+import { useSelectItem } from "@/shared/lib/use-select-item"
 
 export const TasksByDate = ({
-  taskRef,
   onSelectTaskId,
-  selectedTaskId,
   tasks,
   date,
 }: {
-  taskRef: RefObject<HTMLDivElement>
   onSelectTaskId: (task: Nullable<TaskId>) => void
-  selectedTaskId: Nullable<TaskId>
   tasks: Task[]
   date: Dayjs
 }) => {
-  const { $$taskDisclosure, $$updateTask, $$createTask } =
+  const { $$updateTask, $$createTask } =
     useContext(TaskManagerContext)
 
-  const createdTask = useUnit($$taskDisclosure.$createdTask)
-  const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
-
-  const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpened)
-  const onChangeUpdateDate = useUnit($$updateTask.dateChanged)
+  const onCreateTask = useUnit($$createTask.createTaskTriggered)
   const onChangeCreateDate = useUnit($$createTask.dateChanged)
-  const onChangeStatus = useUnit($$updateTask.statusChangedAndUpdated)
-  const onChangeDate = useUnit($$updateTask.dateChangedAndUpdated)
+  const onChangeUpdateDate = useUnit($$updateTask.dateChanged)
+
+  const {
+    onSelect, 
+    onUnselect, 
+    addNode,
+  } = useSelectItem({
+    items: tasks,
+    onChange: (task) => onSelectTaskId(task?.id || null)
+  })
+
+  const {
+    isOpened: isCreateFormOpened, 
+    close: onCloseCreateForm
+  } = useDisclosure({id: ModalName.CreateTaskForm, onClose: onCreateTask})
 
   useEffect(() => {
     onChangeUpdateDate(date.toDate())
     onChangeCreateDate(date.toDate())
   }, [date])
+
   return (
     <section className="h-full pt-2">
       {tasks?.map((task, id) => {
         return (
-          <div className="px-3 pb-2" key={id}>
-            {task.id === updatedTaskId ? (
-              <ExpandedTask
-                dateModal={$$dateModal}
-                modifyTaskModel={$$updateTask}
-                taskRef={taskRef}
-              />
-            ) : (
-              <TaskItem
-                idModal={$$idModal}
-                onUpdateDate={onChangeDate}
-                onUpdateStatus={onChangeStatus}
-                isTaskSelected={selectedTaskId === task.id}
-                onClick={() => onSelectTaskId(task.id)}
-                onDoubleClick={() => onUpdateTaskFormOpen(task)}
-                task={task}
-              />
-            )}
-          </div>
+          <EditableTask
+            ref={(node) => addNode(node!, id)}
+            key={task.id}
+            $$updateTask={$$updateTask}
+            task={task}
+            onSelect={() => onSelect(id)}
+            onBlur={onUnselect}
+          />
         )
       })}
-      <NoTasks isTaskListEmpty={!tasks?.length && !createdTask} />
-      <div className="mx-3">
-        {createdTask && (
-          <ExpandedTask
-            dateModal={$$dateModal}
-            modifyTaskModel={$$createTask}
-            dateModifier={true}
-            taskRef={taskRef}
-          />
-        )}
-      </div>
+      <NoTasks isTaskListEmpty={!tasks?.length && !isCreateFormOpened} />
+      <ExpandedTask
+        className="mx-3"
+        isExpanded={isCreateFormOpened}
+        modifyTaskModel={$$createTask}
+        dateModifier={true}
+        closeTaskForm={onCloseCreateForm}
+      />
     </section>
   )
 }

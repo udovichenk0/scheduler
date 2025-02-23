@@ -11,7 +11,8 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Typography } from "@/shared/ui/general/typography"
 import { Icon } from "@/shared/ui/icon"
 
-import { $flow, flowChanged, gate, Flow } from "./sync.modal"
+import { $flow, flowChanged, gate, Flow } from "./sync.model"
+import { useEffect, useRef } from "react"
 
 export const Authentication = () => {
   const currentFlow = useUnit($flow)
@@ -31,7 +32,7 @@ export const Authentication = () => {
           <Signup goBack={() => selectForm(Flow.email)} />
         )}
         {currentFlow === Flow.logout && <Logout />}
-        {currentFlow === Flow.options && <AuthOptions />}
+        {currentFlow === Flow.options && <AuthOptions/>}
         {currentFlow === Flow.verify && (
           <VerifyEmail goBack={() => selectForm(Flow.email)} />
         )}
@@ -43,6 +44,10 @@ export const Authentication = () => {
 const AuthOptions = () => {
   const { t } = useTranslation()
   const selectForm = useUnit(flowChanged)
+  const ref = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    ref.current?.focus()
+  }, [])
   return (
     <div className="text-center text-cFont">
       <Typography.Heading size="base" className="mb-2 font-semibold">
@@ -52,7 +57,7 @@ const AuthOptions = () => {
         {t("setting.synchronization.main.description")}
       </Typography.Paragraph>
       <div className="text- inline-flex flex-col gap-5">
-        <Button onClick={() => selectForm(Flow.email)} size={"lg"}>
+        <Button ref={ref} onClick={() => selectForm(Flow.email)} size={"lg"}>
           <Icon name="common/mail" className="mr-4 w-[15px] text-primary" />
           {t("setting.synchronization.main.withEmailButtonTitle")}
         </Button>

@@ -5,7 +5,7 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Store } from "effector"
 
-import { Task } from "@/entities/task/task-item"
+import { Task } from "@/entities/task"
 
 import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/buttons/main-button"
@@ -35,7 +35,7 @@ export function UpcomingVariantChanger({
   }
   return (
     <div className="sticky top-0 z-10 flex w-full bg-main">
-      <div className="mb-2 flex w-full border-b border-accent/50 px-9 text-cIconDefault">
+      <div className="flex w-full border-b border-accent/50 px-9 text-cIconDefault">
         <div className="flex">
           <button
             title={t("task.upcoming")}

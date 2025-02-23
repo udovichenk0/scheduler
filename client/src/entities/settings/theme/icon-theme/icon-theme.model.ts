@@ -3,6 +3,7 @@ import { z } from "zod"
 
 import { singleton } from "@/shared/lib/effector/singleton"
 import { parseCookieValue, setCookie } from "@/shared/lib/storage"
+import { getCookie } from "@/shared/lib/storage/get-cookie"
 const AccentSchema = z.enum([
   "blue",
   "yellow",
@@ -28,10 +29,11 @@ export const $$accentSettings = singleton(() => {
     }
   })
   const getAccentFx = createEffect(() => {
-    const accent = parseCookieValue("accent")
+    const accent = getCookie("accent")
     if (AccentSchema.safeParse(accent).success) {
       return accent as Accent
     }
+    console.log("here")
     return "blue"
   })
   const initAccentFx = createEffect(() => {

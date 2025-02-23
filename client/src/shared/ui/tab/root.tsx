@@ -8,14 +8,16 @@ import { TabContext } from "./tab.model"
 type TabsProps = {
   children: ReactNode
   className?: string
-  defaultValue: string
+  defaultValue?: string
+  value?: string
+  onChange?: (value: string) => void
 }
 
-export const Root = ({ children, className, defaultValue }: TabsProps) => {
-  const [value, setValue] = useState(defaultValue)
+export const Root = ({ children, className, defaultValue, value: customValue, onChange }: TabsProps) => {
+  const [value, setValue] = useState(defaultValue || "")
   return (
     <div className={className}>
-      <TabContext.Provider value={{ value, setValue }}>
+      <TabContext.Provider value={{ value: customValue || value, setValue: onChange || setValue }}>
         {children}
       </TabContext.Provider>
     </div>

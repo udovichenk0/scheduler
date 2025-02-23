@@ -1,6 +1,6 @@
-.checkbox_input:focus + .checkbox {
-  @apply border-accent;
+.checkbox_input:focus-visible + .checkbox {
+  border: 2px solid var(--color-accent)
 }
-.checkbox_input:focus + .checkbox > .checker {
-  @apply fill-accent;
+.checkbox_input:focus-visible + .checkbox > .checker {
+  fill: var(--color-accent)
 }

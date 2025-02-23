@@ -1,73 +1,48 @@
 import { createEvent, createStore, sample, combine } from "effector"
 
-import { disclosureTask } from "@/widgets/expanded-task/model"
+import { createTaskFactory } from "@/features/manage-task/create"
+import { updateTaskFactory } from "@/features/manage-task/update"
+import { trashTaskFactory } from "@/features/manage-task/trash"
 
-import { createTaskFactory } from "@/features/manage-task/model/create"
-import { updateTaskFactory } from "@/features/manage-task/model/update"
-import { trashTaskFactory } from "@/features/manage-task/model/trash"
-
-import { modifyTaskFactory } from "@/entities/task/task-form"
-import { taskFactory, createSorting } from "@/entities/task/task-item"
-import { isUnplaced } from "@/entities/task/task-item/lib"
+import { createSorting, getTaskModelInstance, modifyTaskFactory } from "@/entities/task"
+import { isUnplaced, shouldShowCompleted } from "@/entities/task/lib"
 
 import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
-import { selectTaskFactory } from "@/shared/lib/effector"
-import { taskApi } from "@/shared/api/task"
-import { routes } from "@/shared/routing"
-import { createIdModal, createModal } from "@/shared/lib/modal"
 import { getToday, isToday } from "@/shared/lib/date"
 
 import { isBeforeToday } from "./../../shared/lib/date/comparison"
+import { createGate } from "effector-react"
+import { boolStr } from "@/shared/lib/validation"
 
-export const homeRoute = routes.home
-export const $$dateModal = createModal({})
-export const $$idModal = createIdModal()
+export const gate = createGate()
 
-export const $$trashTask = trashTaskFactory()
-export const $$updateTask = updateTaskFactory()
+export const $$taskModel = getTaskModelInstance()
+
+export const $$trashTask = trashTaskFactory({taskModel: $$taskModel})
+export const $$updateTask = updateTaskFactory({taskModel: $$taskModel})
 export const $$createTask = createTaskFactory({
   $$modifyTask: modifyTaskFactory({
     defaultType: "unplaced",
-    defaultDate: getToday(),
+    defaultDate: getToday()
   }),
+  taskModel: $$taskModel
 })
-export const $$taskDisclosure = disclosureTask({
-  updateTaskModel: $$updateTask,
-  createTaskModel: $$createTask,
-})
+
 export const $$sort = createSorting()
 
-export const $todayTasks = taskFactory({
-  sortModel: $$sort,
-  filter: (task) => isUnplaced(task) && isToday(task.start_date),
-  route: homeRoute,
-  api: {
-    taskQuery: taskApi.todayTasksQuery,
-    taskStorage: taskApi.todayTasksLs,
-  },
+const $commonTasks = combine($$taskModel.$tasks, $$taskModel.$isCompletedShown, (tasks, isCompletedShown) => {
+  return tasks?.filter((task) => isUnplaced(task) && !task.is_trashed && shouldShowCompleted(isCompletedShown, task)) || []
 })
 
-export const $overdueTasks = taskFactory({
-  sortModel: $$sort,
-  filter: (task) => isUnplaced(task) && isBeforeToday(task.start_date),
-  route: homeRoute,
-  api: {
-    taskQuery: taskApi.overdueTasksQuery,
-    taskStorage: taskApi.overdueTasksLs,
-  },
+export const $todayTasks = combine($commonTasks, $$sort.$sortType, (tasks, sortType) => {
+  const todayTasks = tasks?.filter((task) => isToday(task.start_date)) || []
+  return $$sort.sortBy(sortType, todayTasks)
 })
 
-const $tasks = combine(
-  $todayTasks.$tasks,
-  $overdueTasks.$tasks,
-  (todayTasks, overdueTasks) => {
-    return [todayTasks || [], overdueTasks || []]
-  },
-)
-export const $$selectTask = selectTaskFactory(
-  $tasks,
-  $$trashTask.taskTrashedById,
-)
+export const $overdueTasks = combine($commonTasks, $$sort.$sortType, (tasks, sortType) => {
+  const overdueTasks = tasks?.filter((task) => isBeforeToday(task.start_date)) || []
+  return $$sort.sortBy(sortType, overdueTasks)
+})
 
 export const $isOverdueTasksOpened = createStore(false)
 export const toggleOverdueTasksOpened = createEvent()
@@ -79,7 +54,13 @@ sample({
   target: $isOverdueTasksOpened,
 })
 
-cookiePersist({
+const init = cookiePersist({
   source: $isOverdueTasksOpened,
   name: "overdueTasksOpened",
+  schema: boolStr,
+})
+
+sample({
+  clock: gate.open,
+  target: init
 })

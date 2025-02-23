@@ -1,6 +1,9 @@
 import { useEffect } from "react"
-export const onMount = (cb: () => void) => {
+export const onMount = (cb: () => any) => {
   useEffect(() => {
-    cb()
+    const func = cb()
+    if(typeof func === "function"){
+      return func
+    }
   }, [])
 }

@@ -1,47 +1,59 @@
 import { useUnit } from "effector-react"
-import { useRef } from "react"
 import { useTranslation } from "react-i18next"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { Layout } from "@/widgets/layout/main"
 
-import { Sort, TaskItem } from "@/entities/task/task-item"
+import { Sort } from "@/entities/task"
 
 import { NoTasks } from "@/shared/ui/no-tasks"
-import { useDocumentTitle, onClickOutside } from "@/shared/lib/react"
+import { useDocumentTitle } from "@/shared/lib/react"
 
 import {
   $$createTask,
   $$trashTask,
   $$sort,
-  $$taskDisclosure,
   $$updateTask,
-  $$selectTask,
   $unplacedTasks,
-  $$dateModal,
-  $$idModal,
+  $$taskModel,
 } from "./unplaced.model"
 import { SORT_CONFIG } from "./config"
+import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { ModalName } from "@/shared/lib/modal/modal-names"
+import { EditableTask } from "@/widgets/editable-task"
+import { useState } from "react"
+import { useSelectItem } from "@/shared/lib/use-select-item"
+import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
 
 const Unplaced = () => {
   const { t } = useTranslation()
   useDocumentTitle(t("task.unplaced"))
-  const taskRef = useRef<HTMLDivElement>(null)
 
-  const unplacedTasks = useUnit($unplacedTasks.$tasks)
-  const createdTask = useUnit($$taskDisclosure.$createdTask)
-  const updatedTaskId = useUnit($$taskDisclosure.$updatedTaskId)
-  const selectedTaskId = useUnit($$selectTask.$selectedTaskId)
+  const tasks = useUnit($unplacedTasks)
   const activeSort = useUnit($$sort.$sortType)
 
-  const onSelectTaskId = useUnit($$selectTask.selectTaskId)
-  const onCloseTaskForm = useUnit($$taskDisclosure.closeTaskTriggered)
-  const onUpdateTaskFormOpen = useUnit($$taskDisclosure.updatedTaskOpened)
-  const onCreateTaskFormOpen = useUnit($$taskDisclosure.createdTaskOpened)
   const onDeleteTask = useUnit($$trashTask.taskTrashedById)
-  const onChangeStatus = useUnit($$updateTask.statusChangedAndUpdated)
-  const onChangeDate = useUnit($$updateTask.dateChangedAndUpdated)
+  const onCreateTask = useUnit($$createTask.createTaskTriggered)
   const onSortChange = useUnit($$sort.sort)
+
+  const {
+    isOpened: isCreateFormOpened, 
+    open: onOpenCreateForm, 
+    close: onCloseCreateForm
+  } = useDisclosure({id: ModalName.CreateTaskForm, onClose: onCreateTask})
+
+  const onToggleCompleted = useUnit($$taskModel.toggleCompletedShown)
+  const isCompletedShown = useUnit($$taskModel.$isCompletedShown)
+
+  const [selectedTaskId, setSelectedTaskId] = useState<Nullable<string>>(null)
+  const {
+    onSelect, 
+    onUnselect, 
+    addNode,
+  } = useSelectItem({
+    items: tasks,
+    onChange: (task) => setSelectedTaskId(task?.id || null)
+  })
 
   return (
     <Layout>
@@ -49,58 +61,46 @@ const Unplaced = () => {
         iconName="common/cross-arrows"
         title={t("task.unplaced")}
         slot={
-          <Sort
-            sorting={{
-              onChange: onSortChange,
-              active: activeSort,
-              config: SORT_CONFIG,
-            }}
-          />
+          <>
+            <Sort
+              sorting={{
+                onChange: onSortChange,
+                active: activeSort,
+                config: SORT_CONFIG,
+              }}
+            />
+            <CompletedToggle checked={isCompletedShown} onToggle={onToggleCompleted}/>
+          </>
         }
       />
-      <Layout.Content
-        onClick={(e) => onClickOutside(taskRef, e, onCloseTaskForm)}
-      >
-        {unplacedTasks?.map((task, id) => {
+      <Layout.Content>
+        {tasks?.map((task, index) => {
           return (
-            <div className="px-3 pb-2" key={id}>
-              {task.id === updatedTaskId ? (
-                <ExpandedTask
-                  dateModal={$$dateModal}
-                  modifyTaskModel={$$updateTask}
-                  taskRef={taskRef}
-                />
-              ) : (
-                <TaskItem
-                  idModal={$$idModal}
-                  dateLabel
-                  onUpdateDate={onChangeDate}
-                  onUpdateStatus={onChangeStatus}
-                  isTaskSelected={selectedTaskId === task.id}
-                  onClick={() => onSelectTaskId(task.id)}
-                  onDoubleClick={() => onUpdateTaskFormOpen(task)}
-                  task={task}
-                />
-              )}
+            <div className="px-3 pb-2" key={task.id}>
+              <EditableTask
+                ref={(node) => addNode(node!, index)}
+                $$updateTask={$$updateTask}
+                dateLabel
+                task={task}
+                onSelect={() => onSelect(index)}
+                onBlur={onUnselect}
+              />
             </div>
           )
         })}
-        <NoTasks isTaskListEmpty={!unplacedTasks?.length && !createdTask} />
-        <div className="mx-3">
-          {createdTask && (
-            <ExpandedTask
-              dateModal={$$dateModal}
-              modifyTaskModel={$$createTask}
-              dateModifier={false}
-              taskRef={taskRef}
-            />
-          )}
-        </div>
+        <NoTasks isTaskListEmpty={!tasks?.length && !isCreateFormOpened} />
+        <ExpandedTask
+          className="mx-3"
+          isExpanded={isCreateFormOpened}
+          modifyTaskModel={$$createTask}
+          dateModifier={false}
+          closeTaskForm={onCloseCreateForm}
+        />
       </Layout.Content>
       <Layout.Footer
-        selectedTaskId={selectedTaskId}
-        onDeleteTask={onDeleteTask}
-        onCreateTask={onCreateTaskFormOpen}
+        isTrashDisabled={!selectedTaskId}
+        onDeleteTask={() => selectedTaskId && onDeleteTask(selectedTaskId)}
+        onCreateTask={onOpenCreateForm}
       />
     </Layout>
   )

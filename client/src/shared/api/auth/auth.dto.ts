@@ -1,9 +1,22 @@
 import { z } from "zod"
 
-import { UserSchema } from "../user/user.dto"
-
-export const AuthSchema = z.object({
-  user: UserSchema,
-  access_token: z.string(),
+export const SessionUserSchema = z.object({
+  id: z.string(),
+  email: z.string().email(),
+  verified: z.boolean(),
+  created_at: z.string()
 })
-export type AuthDto = z.infer<typeof AuthSchema>
+
+export const UserDto = z.object({
+  id: z.string(),
+  email: z.string().email(),
+  verified: z.boolean(),
+  created_at: z.string()
+})
+
+
+export const EmailTakenDtoSchema = z.object({
+  exists: z.boolean()
+})
+
+export type SessionUserDto = z.infer<typeof SessionUserSchema>

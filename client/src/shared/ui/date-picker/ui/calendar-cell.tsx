@@ -44,9 +44,10 @@ export const Cell = ({
       ref={focusRef}
       onClick={() => onDateChange(new Date(year, month, date))}
       disabled={isPast || isTaskDate}
-      className={`h-[35px] w-[35px] text-[13px] ${
-        !isTaskDate && !isPast && "hover:bg-cHover"
+      className={`size-[35px] text-[13px] focus-visible:ring ${
+        !isTaskDate && !isPast && "hover:bg-hover"
       } 
+      ${isTaskDate && 'bg-hover'}
         flex items-center justify-center rounded-[5px] text-cCalendarFont 
         ${isPast && "text-cSecondBorder"} 
         `}
@@ -54,7 +55,7 @@ export const Cell = ({
       {isToday ? (
         <Icon name="common/filled-star" className="text-accent" />
       ) : (
-        <div aria-hidden>
+        <div>
           {date === 1 || isTaskDate ? (
             <div className="grid text-[9px] leading-[9px]">
               <div>{date}</div>

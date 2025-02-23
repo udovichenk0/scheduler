@@ -1,18 +1,17 @@
-import { sample, createEvent } from "effector"
-
 import { $$session } from "@/entities/session"
-
+import { getTaskModelInstance } from "@/entities/task"
 import { authApi } from "@/shared/api/auth"
-import { tokenService } from "@/shared/api/token"
-
+import { createEvent, sample } from "effector"
 export const submitTriggered = createEvent()
+
+const $$taskModel = getTaskModelInstance()
 
 sample({
   clock: submitTriggered,
-  target: authApi.logoutQuery.start,
+  target: authApi.signOut.start,
 })
 
 sample({
-  clock: authApi.logoutQuery.finished.success,
-  target: [$$session.reset, tokenService.resetToken],
+  clock: authApi.signOut.finished.success,
+  target: [$$session.reset, $$taskModel.reset],
 })

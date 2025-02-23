@@ -1,7 +1,0 @@
-export { TaskItem } from "./ui/task-item"
-export { Sort } from "./ui/task-sorting"
-export { TaskSortingPopup as TaskSorting } from "./ui/task-sorting"
-export * from "./model/task.model"
-export * from "./model/sorting.model"
-export type { Task, SortType, SortConfig } from "./type"
-export * from "./config"

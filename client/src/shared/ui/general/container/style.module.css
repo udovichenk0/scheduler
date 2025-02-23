@@ -1,14 +1,14 @@
 .container {
-  &[data-padding="sm"] {
-    @apply p-1;
+  &[data-padding="base"] {
+    padding: 4px;
   }
   &[data-padding="base"] {
-    @apply p-2;
+    padding: 8px;
   }
   &[data-padding="xl"] {
-    @apply p-4;
+    padding: 16px;
   }
   &[data-rounded="base"] {
-    @apply rounded-[5px];
+    border-radius: 5px;
   }
 }

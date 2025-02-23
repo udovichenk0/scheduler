@@ -1,5 +1,4 @@
 export function parseCookieValue<T>(name: T) {
-  name
   for (const cookie of document.cookie.split("; ")) {
     const [cookieName, value] = cookie.split("=")
     if (cookieName === name) {

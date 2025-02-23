@@ -21,5 +21,3 @@ USER node
 COPY --from=0 --chown=node:node /app/client /app/client
 
 CMD yarn preview --host
-
-# https://docs.docker.com/build/building/secrets/

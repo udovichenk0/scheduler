@@ -1,14 +1,15 @@
 import dayjs from "dayjs"
-import { useRef, useState, useEffect, MouseEvent } from "react"
+import { useRef, useState, useEffect, KeyboardEvent } from "react"
 
-import { Task } from "@/entities/task/task-item"
+import { Task, TaskId, TaskStatus, TaskStatuses } from "@/entities/task"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
-import { TaskId, TaskStatus } from "@/shared/api/task"
-import { Tooltip } from "@/shared/ui/general/tooltip"
 
-import { CellFooter } from "./cell-footer"
 import { CellHeader } from "./cell-header"
+import { isEnter } from "@/shared/lib/key-utils"
+import { useUnit } from "effector-react"
+import { $$createTask } from "../calendar.model"
+import { useTranslation } from "react-i18next"
 
 export type CellProps = {
   date: number
@@ -18,28 +19,42 @@ export type CellProps = {
 export const Cell = ({
   cell,
   tasks,
-  updateTaskOpened,
-  createTaskOpened,
+  onTaskClick,
+  onShowMoreTasks,
+  onClick,
   onUpdateStatus,
 }: {
   cell: CellProps
   tasks?: Task[]
-  updateTaskOpened: (taskId: TaskId) => void
-  createTaskOpened: (date: Date) => void
+  onTaskClick: (target: HTMLButtonElement, task: Task) => void
+  onShowMoreTasks: (tasks: Task[]) => void,
+  onClick: (target: HTMLButtonElement, date: Date) => void
   onUpdateStatus: ({ id, status }: { id: TaskId; status: TaskStatus }) => void
 }) => {
   const taskContainerRef = useRef<HTMLDivElement>(null)
   const cellRef = useRef<HTMLDivElement>(null)
+  const { t } = useTranslation()
 
   const [showMore, setShowMore] = useState(false)
 
   const { date, month, year } = cell
-  const clickOnCell = (e: MouseEvent) => {
-    if (taskContainerRef.current === e.target) {
-      createTaskOpened(new Date(year, month, date))
+  
+  const setDate = useUnit($$createTask.setDate)
+
+  const cellDate = new Date(year, month, date)
+  const clickOnCell = () => {
+    const target = cellRef.current as unknown as HTMLButtonElement
+    onClick(target, cellDate)
+    setDate(cellDate)
+  }
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    if(isEnter(e)){
+      clickOnCell()
     }
   }
-  const isToday = dayjs(new Date(year, month, date)).isSame(dayjs(), "date")
+
+  const isToday = dayjs(cellDate).isSame(dayjs(), "date")
 
   function shouldShowMore() {
     const taskContainer = taskContainerRef.current as HTMLDivElement
@@ -69,41 +84,53 @@ export const Cell = ({
     <div
       ref={cellRef}
       onClick={clickOnCell}
-      className={`w-full border-b ${
+      tabIndex={0}
+      onKeyDown={onKeyDown}
+      className={`w-full flex flex-col min-h-[100px] focus-visible:ring border-b overflow-x-clip ${
         isToday && "border-t border-t-accent"
       } border-r border-cBorder p-2 text-cCalendarFont`}
     >
       <CellHeader cell={cell} />
       <div
         ref={taskContainerRef}
-        className="flex h-[calc(100%-3rem)] w-full flex-col flex-wrap gap-x-2 gap-y-1 overflow-x-clip"
+        className="flex h-[calc(100%-3rem)] w-full flex-col flex-wrap gap-x-2 gap-y-1"
       >
         {tasks?.map((task) => {
-          const { id, status } = task
+          const { id, status, title } = task
           return (
-            <Tooltip text={task.title} size="md" key={task.id}>
-              <div
-                onClick={() => updateTaskOpened(task.id)}
-                className="flex cursor-pointer items-center rounded-[5px] bg-[#607d8b] px-1 text-start text-white"
+            <div key={id} className="relative w-full group">
+              <Checkbox
+                iconClassName="fill-white"
+                className="left-[2px] top-[2px] absolute bg-[#607d8b] hidden group-hover:flex"
+                borderClassName="border-white"
+                onChange={() => onUpdateStatus({ id, status })}
+                checked={status == TaskStatuses.FINISHED}
+              />
+              <button
+                onKeyDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onTaskClick(e.target as HTMLButtonElement, task)
+                }}
+                className="select-none w-full truncate cursor-pointer focus-visible:ring rounded-[5px] bg-[#607d8b] text-start text-white px-1"
               >
-                <Checkbox
-                  iconClassName="fill-white"
-                  className="absolute left-[2px] top-[2px]"
-                  borderClassName="border-white bg-[#607d8b] hidden group-hover:flex"
-                  onChange={() => onUpdateStatus({ id, status })}
-                  checked={task.status == "FINISHED"}
-                />
-                <span className="truncate">{task.title}</span>
-              </div>
-            </Tooltip>
+                {title}
+              </button>
+            </div>
           )
         })}
       </div>
-      <CellFooter
-        updateTaskOpened={updateTaskOpened}
-        showMoreVisible={showMore}
-        tasks={tasks}
-      />
+      {showMore && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onShowMoreTasks(tasks || [])
+          }}
+          className="w-full text-start text-sm text-cIconDefault hover:text-primary"
+        >
+          {t("calendar.showAll")}
+        </button>
+      )}
     </div>
   )
 }

@@ -23,7 +23,7 @@ const {
 export const PomodoroSettings = () => {
   return (
     <div className="px-16">
-      <SettingsWithInputs />
+      <SettingsWithInputs/>
       <SettingsWithCheckboxes />
     </div>
   )
@@ -38,11 +38,13 @@ const SettingsWithInputs = () => {
   const shortBreak = useUnit($shortBreakDuration)
   const longBreak = useUnit($longBreakDuration)
   const applySettings = useUnit(settingsApplied)
+  
   return (
     <div className="mb-6 space-y-3">
       <div className="flex items-center justify-end">
         <span>{t("setting.pomodoro.workDuration")}:</span>
         <PomodoroInput
+          autoFocus
           onSubmit={applySettings}
           onChange={changeWorkDuration}
           className="ml-1 mr-2"

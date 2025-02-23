@@ -11,6 +11,7 @@ interface Props extends HTMLAttributes<HTMLElement> {
   dir?: Dir
   size?: Size
   children: ReactNode
+  containerClassName?: string
 }
 
 export const Tooltip = ({
@@ -20,13 +21,13 @@ export const Tooltip = ({
   children,
 }: Props) => {
   return (
-    <div className="sdf group relative">
+    <div className="group relative">
       {children}
-      <span
+      <div
         data-dir={dir}
         className={clsx(
           style.tooltip,
-          "hidden max-w-[150px] text-ellipsis bg-cCalendarTooltip px-3 py-1 group-hover:block",
+          "hidden max-w-[150px] rounded-[5px] text-ellipsis bg-cCalendarTooltip px-3 py-1 group-hover:block select-none",
         )}
       >
         <div
@@ -35,7 +36,7 @@ export const Tooltip = ({
         >
           {text}
         </div>
-      </span>
+      </div>
     </div>
   )
 }

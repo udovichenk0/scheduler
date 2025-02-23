@@ -1,94 +1,109 @@
 .leftBox {
-  @apply h-[8px] w-full rounded-[2px];
+  height: 8px;
+  width: 100%;
+  border-radius: 2px;
   &[data-color="space"] {
-    @apply bg-[#1c283e];
+    background-color: var(--cTaskEdit);
   }
   &[data-color="default"] {
-    @apply bg-[#fff];
+    background-color: white;
   }
   &[data-color="dark"] {
-    @apply bg-[#182533];
+    background-color:#182533;
   }
   &[data-color="light"] {
-    @apply bg-[#c7d6eb];
+    background-color: #c7d6eb;
   }
   &[data-color="grey"] {
-    @apply bg-[#595959];
+    background-color: #595959;
   }
 }
 .rightBox {
-  @apply h-[8px] w-full rounded-[2px];
+  height: 8px;
+  width: 100%;
+  border-radius: 2px;
   &[data-color="space"] {
-    @apply bg-[#121227];
+    background-color: #121227 
   }
   &[data-color="default"] {
-    @apply bg-[#76899b];
+    background-color: #76899b 
   }
   &[data-color="dark"] {
-    @apply bg-[#262626];
+    background-color: #262626 
   }
   &[data-color="light"] {
-    @apply bg-[#76899b];
+    background-color: #76899b 
   }
   &[data-color="grey"] {
-    @apply bg-[#dfe7f0];
+    background-color: #dfe7f0 
   }
 }
 .text {
-  @apply flex h-[26px] text-start text-[24px];
+  height: 26px;
+  text-align: start;
+  font-size: 24px;
+  display: flex;
   &[data-color="space"] {
-    @apply text-[#ffffff];
+    color: white;
   }
   &[data-color="default"] {
-    @apply text-[#ffffff];
+    color: white;
   }
   &[data-color="dark"] {
-    @apply text-[#a6a6a6];
+    color: #a6a6a6;
   }
   &[data-color="light"] {
-    @apply text-[#596175];
+    color: #596175;
   }
   &[data-color="grey"] {
-    @apply text-[#596175];
+    color: #596175;
   }
 }
 .topBox {
-  @apply h-[8px] w-full rounded-[2px];
+  height: 8px;
+  width: 100%;
+  border-radius: 2px;
   &[data-color="space"] {
-    @apply bg-azure;
+    background-color: #2ebcff;
   }
   &[data-color="default"] {
-    @apply bg-azure;
+    background-color: #2ebcff;
   }
   &[data-color="dark"] {
-    @apply bg-azure;
+    background-color: #4683cb
   }
   &[data-color="light"] {
-    @apply bg-azure;
+    background-color: #4683cb
   }
   &[data-color="grey"] {
-    @apply bg-azure;
+    background-color: #54759c
   }
 }
 .mainBg {
   box-sizing: content-box;
-  @apply relative flex h-[50px] w-[50px] items-end justify-center rounded-[5px];
+  position: relative;
+  display: flex;
+  height: 50px;
+  width: 50px;
+  align-items: end;
+  justify-content: center;
+  border-radius: 5px;
   &[data-active="true"] {
-    @apply border-[1px] border-cBorder;
+    border: 1px solid var(--cBorder);
   }
   &[data-color="space"] {
-    @apply bg-main-blue;
+    background-color: var(--dark-blue)
   }
   &[data-color="default"] {
-    @apply bg-[#23242b];
+    background-color: #23242b;
   }
   &[data-color="dark"] {
-    @apply bg-[#0d0d0d];
+    background-color: #0d0d0d;
   }
   &[data-color="light"] {
-    @apply bg-[#f9f9f9];
+    background-color: #f9f9f9;
   }
   &[data-color="grey"] {
-    @apply bg-[#fff];
+    background-color: #fff;
   }
 }

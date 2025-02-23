@@ -1,18 +1,17 @@
+import { $$session } from '@/entities/session';
 import { createEvent, createStore, sample, split } from "effector"
-import { interval, spread, equals } from "patronum"
+import { interval, equals } from "patronum"
 import { createGate } from "effector-react"
 import { t } from "i18next"
-
-import { $$session } from "@/entities/session"
-
-import { authApi } from "@/shared/api/auth"
-import { tokenService } from "@/shared/api/token"
-import { bridge } from "@/shared/lib/effector"
 import { UNEXPECTED_ERROR_MESSAGE, isHttpError } from "@/shared/lib/error"
 
-import { $email, resetEmailTriggered } from "../authentication/check-email"
+// import { $email, resetEmailTriggered } from "../authentication/check-email"
 
 import { INVALID_CODE_MESSAGE } from "./constants"
+import { authApi } from "@/shared/api/auth"
+import { resetEmailTriggered } from "../authentication/check-email"
+import { prepend } from '@/shared/lib/effector';
+const RESEND_TIME = 10
 export const CODE_LENGTH = 6
 export const codeChanged = createEvent<string>()
 export const submitTriggered = createEvent()
@@ -20,7 +19,7 @@ export const resent = createEvent()
 
 export const $code = createStore<Nullable<string>>(null)
 export const $error = createStore<Nullable<string>>(null)
-export const $time = createStore(10)
+export const $time = createStore(RESEND_TIME)
 
 export const resetVerifyTriggered = createEvent()
 const timerStarted = createEvent()
@@ -55,49 +54,26 @@ sample({
 
 sample({
   clock: submitTriggered,
-  source: { code: $code, email: $email },
-  filter: ({ code }) => !!code,
-  fn: ({ code, email }) => ({ code: code!, email }),
-  target: authApi.verifyQuery.start,
+  source: { code: $code, session: $$session.$user },
+  filter: ({ code, session }) => !!code && !!session?.id,
+  fn: ({ code, session }) => ({ code: code!, userId: session?.id! }),
+  target: authApi.verifyEmailQuery.start,
 })
+
 sample({
-  clock: authApi.verifyQuery.finished.success,
-  fn: ({ result }) => ({
-    user: result.user,
-    token: result.access_token,
-  }),
-  target: spread({
-    user: $$session.sessionSet,
-    token: tokenService.setTokenTriggered,
-  }),
-})
-sample({
-  clock: authApi.verifyQuery.finished.success,
+  clock: authApi.verifyEmailQuery.finished.success,
   target: resetEmailTriggered,
 })
 
-const invalidCodeError = createEvent()
-const unexpectedError = createEvent()
 split({
-  source: authApi.verifyQuery.finished.failure,
+  source: authApi.verifyEmailQuery.finished.failure,
   match: {
     invalidCode: isHttpError(400),
   },
   cases: {
-    invalidCode: invalidCodeError,
-    __: unexpectedError,
+    invalidCode: prepend<Nullable<string>, void>($error, t(INVALID_CODE_MESSAGE)),
+    __: prepend<Nullable<string>, void>($error, t(UNEXPECTED_ERROR_MESSAGE)),
   },
-})
-sample({
-  clock: invalidCodeError,
-  fn: () => t(INVALID_CODE_MESSAGE),
-  target: $error,
-})
-
-sample({
-  clock: unexpectedError,
-  fn: () => t(UNEXPECTED_ERROR_MESSAGE),
-  target: $error,
 })
 
 sample({
@@ -105,21 +81,26 @@ sample({
   target: resetVerifyTriggered,
 })
 
-bridge(() => {
-  sample({
-    clock: resent,
-    source: $email,
-    filter: Boolean,
-    target: authApi.resendCodeQuery.start,
-  })
+sample({
+  clock: resent,
+  source: $$session.$user,
+  filter: Boolean,
+  fn: ({id, email}) => ({userId: id, email}),
+  target: authApi.resendCodeQuery.start,
+})
 
-  sample({
-    clock: authApi.resendCodeQuery.finished.success,
-    target: [resetVerifyTriggered, timerStarted],
-  })
+sample({
+  clock: authApi.resendCodeQuery.finished.success,
+  target: [resetVerifyTriggered, timerStarted],
+})
+
+sample({
+  clock: authApi.resendCodeQuery.finished.finally,
+  fn: () => RESEND_TIME,
+  target: [$time, timerStarted]
 })
 
 sample({
   clock: resetVerifyTriggered,
-  target: [$time.reinit, timerStopped, $error.reinit],
+  target: [$time.reinit, $error.reinit],
 })

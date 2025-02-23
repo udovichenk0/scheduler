@@ -1,91 +1,133 @@
 import { useUnit } from "effector-react"
-import { ReactNode, RefObject } from "react"
-import { Store, EventCallable } from "effector"
-
-import { ModifyTaskForm } from "@/entities/task/task-form"
+import { ReactNode, RefObject, useEffect, useRef, useState } from "react"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
-import { BaseModal } from "@/shared/ui/modals/base"
 import { DatePicker } from "@/shared/ui/date-picker"
-import { ModalFactory } from "@/shared/lib/modal/base.modal"
+import { EventCallable, StoreWritable } from "effector"
+import { Container } from "@/shared/ui/general/container"
+import { Modal } from "@/shared/ui/modal"
+import clsx from "clsx"
+import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { ModalName } from "@/shared/lib/modal/modal-names"
+import { getToday } from "@/shared/lib/date"
+import { TaskStatus, TaskType } from "@/entities/task/type"
+import { ModifyTaskForm } from "@/entities/task"
 
-type ModifyTaskFormType = {
-  $title: Store<string>
-  $description: Store<Nullable<string>>
-  $status: Store<"FINISHED" | "INPROGRESS">
-  $type: Store<"inbox" | "unplaced">
-  $startDate: Store<Nullable<Date>>
-  statusChanged: EventCallable<"FINISHED" | "INPROGRESS">
+type TaskFactory = {
+  $title: StoreWritable<string>
+  $description: StoreWritable<Nullable<string>>
+  $status: StoreWritable<TaskStatus>
+  $type: StoreWritable<TaskType>
+  $startDate: StoreWritable<Nullable<Date>>
+  statusChanged: EventCallable<TaskStatus>
   descriptionChanged: EventCallable<Nullable<string>>
   titleChanged: EventCallable<string>
-  typeChanged: EventCallable<"inbox" | "unplaced">
+  typeChanged: EventCallable<TaskType>
   dateChanged: EventCallable<Date>
 }
 
 export const ExpandedTask = ({
-  taskRef,
-  dateModifier,
+  isExpanded = true,
+  dateModifier = true,
   modifyTaskModel,
   sideDatePicker = true,
   rightPanelSlot,
-  dateModal,
+  className,
+  closeTaskForm,
 }: {
+  isExpanded?: boolean,
   taskRef?: RefObject<HTMLDivElement>
   dateModifier?: boolean
-  modifyTaskModel: ModifyTaskFormType
+  modifyTaskModel: TaskFactory
   sideDatePicker?: boolean
   rightPanelSlot?: ReactNode
-  dateModal: ModalFactory
+  className?: string,
+  closeTaskForm?: () => void
 }) => {
-  const startDate = useUnit(modifyTaskModel.$startDate)
+  const ref = useRef<HTMLDivElement>(null)
+  const taskDate = useUnit(modifyTaskModel.$startDate)
+  const [tempDate, setTempDate] = useState(taskDate)
   const changeDate = useUnit(modifyTaskModel.dateChanged)
-  const openDateModal = useUnit(dateModal.open)
-  const closeDateModal = useUnit(dateModal.close)
-  const isModalOpened = useUnit(dateModal.$isOpened)
 
-  const onChangeDate = (date: Date) => {
-    closeDateModal()
-    changeDate(date)
+  const onChangeDate = () => {
+    if(tempDate){
+      changeDate(tempDate)
+    }
   }
+  const {
+    isOpened: isDateModalOpened, 
+    open: onOpenDateModal, 
+    close: onCloseDateModal,
+    cancel: onCancelDateModal
+  } = useDisclosure({ id: ModalName.DateModal, onClose: onChangeDate })
+
+
+  useEffect(() => {
+    const onClickOutside = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) {
+        closeTaskForm?.()
+      }
+    }
+    if(isExpanded){
+      document.addEventListener("click", onClickOutside, true)
+    }
+    return () => {
+      if(isExpanded){
+        document.removeEventListener("click", onClickOutside, true)
+      }
+    }
+  }, [isExpanded])
+
+  if(!isExpanded){
+    return null
+  }
+
   return (
-    <div ref={taskRef} className="group flex">
-      {sideDatePicker && (
-        <div className="w-5">
-          <Icon
-            onClick={openDateModal}
-            name="common/upcoming"
-            className="invisible translate-y-1 text-lg text-accent group-hover:visible"
+    <div ref={ref} className={clsx("group flex", className)}>
+      <Modal 
+        label="Choose date" 
+        isOpened={isDateModalOpened} 
+        closeModal={onCloseDateModal}>
+          {sideDatePicker && (
+            <Modal.Trigger className="size-5 mr-2" intent="base" onClick={onOpenDateModal}>
+              <Icon
+                name="common/upcoming"
+                className="invisible translate-y-1 text-lg text-accent group-hover:visible"
+              />
+            </Modal.Trigger>
+          )}
+        <Modal.Overlay>
+          <Modal.Body>
+            <Modal.Content>
+              <DatePicker
+                currentDate={tempDate || getToday()}
+                onDateChange={setTempDate}
+                onCancel={() => {
+                  onCancelDateModal()
+                  setTempDate(taskDate)
+                }}
+                onSave={onCloseDateModal}
+              />
+            </Modal.Content>
+          </Modal.Body>
+        </Modal.Overlay>
+      </Modal>
+        <Container className="rounded-[5px] w-full bg-cTaskEdit">
+          <ModifyTaskForm
+            dateModifier={dateModifier}
+            modifyTaskModel={modifyTaskModel}
           />
-        </div>
-      )}
-      <BaseModal isOpened={isModalOpened} onClose={closeDateModal}>
-        <DatePicker
-          currentDate={startDate || new Date()}
-          onDateChange={onChangeDate}
-          onCancel={() => console.log("cancel")}
-          onSave={() => console.log("cancel")}
-        />
-      </BaseModal>
-      <div
-        className={
-          "flex w-full flex-col rounded-[5px] bg-cTaskEdit p-2 text-sm"
-        }
-      >
-        <ModifyTaskForm
-          dateModifier={dateModifier}
-          modifyTaskModel={modifyTaskModel}
-        />
-        <div className="flex items-center justify-end space-x-1">
-          <Button onClick={openDateModal} intent={"primary"} size={"xs"}>
-            <Icon
-              name="common/upcoming"
-              className="p-[3px] text-[19px] text-cIconDefault"
-            />
-          </Button>
-          {rightPanelSlot}
-        </div>
-      </div>
+          <div className="flex items-center justify-end space-x-1">
+            <Button aria-label="Choose date" onClick={onOpenDateModal} intent={"primary"} size={"xs"}>
+              <Icon
+                name="common/upcoming"
+                className="p-[3px] text-[19px] text-cIconDefault"
+              />
+            </Button>
+            {rightPanelSlot}
+          </div>
+        </Container>
     </div>
   )
 }

@@ -11,14 +11,14 @@ import { TogglePasswordButton } from "../shared/ui/toggle-password-button"
 
 import {
   $password,
-  $passwordError,
+  $error,
   passwordChanged,
   submitTriggered,
-} from "./signup.modal"
+} from "./signup.model"
 export const Signup = ({ goBack }: { goBack: () => void }) => {
   const { t } = useTranslation()
   const password = useUnit($password)
-  const error = useUnit($passwordError)
+  const error = useUnit($error)
   const email = useUnit($email)
   const changePassword = useUnit(passwordChanged)
   const onSubmit = useUnit(submitTriggered)

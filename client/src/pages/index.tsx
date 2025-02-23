@@ -1,24 +1,27 @@
 import { createRoutesView } from "atomic-router-react"
 
-import { InboxRoute } from "./Inbox"
-import { HomeRoute } from "./Today"
-import { UnplacedRoute } from "./Unplaced"
-import { UpcomingRoute } from "./Upcoming"
-import { CalendarRoute } from "./Calendar"
-import { TrashRoute } from "./Trash"
+import { lazy } from "react"
+const Unplaced = lazy(() => import("./Unplaced/unplaced.page"))
+const Inbox = lazy(() => import("./Inbox/inbox.page"))
+const Home = lazy(() => import("./Today/today.page"))
+const Trash = lazy(() => import("./Trash/trash.page"))
+const Calendar = lazy(() => import("./Calendar/calendar.page"))
+const Upcoming = lazy(() => import("./Upcoming/upcoming.page"))
+import { routes } from "@/shared/routing"
+import { NotFoundPage } from "./404/404.page"
 
-const routes = [
-  HomeRoute,
-  InboxRoute,
-  UpcomingRoute,
-  UnplacedRoute,
-  CalendarRoute,
-  TrashRoute,
+const pageRoutes = [
+  {view: Home, route: routes.home},
+  {view: Inbox, route: routes.inbox},
+  {view: Upcoming, route: routes.upcoming},
+  {view: Unplaced, route: routes.unplaced},
+  {view: Calendar, route: routes.calendar},
+  {view: Trash, route: routes.trash},
 ]
 
 export const RoutesView = createRoutesView({
-  routes,
+  routes: pageRoutes,
   otherwise() {
-    return <div className="text-white">Page not found!</div>
+    return <NotFoundPage/>
   },
 })
