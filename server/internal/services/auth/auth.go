@@ -86,30 +86,22 @@ func (a *Service) SignUp(ctx context.Context, email, pass string) (entity.User, 
 	}
 
 	uow := pkg.NewUnitOfWork(a.db, ctx)
-
-	tx, err := uow.Begin()
+	var code string
+	uow.StartUOW(func(ctx context.Context) error {
+		user, err = a.userService.CreateUser(ctx, params)
+		if err != nil {
+			return err
+		}
+		code, err = a.verificationService.CreateCode(ctx, user.Id)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 
 	if err != nil {
 		return entity.User{}, err
 	}
-
-	ctx = context.WithValue(ctx, pkg.TxKey, tx)
-	user, err = a.userService.CreateUser(ctx, params)
-	if err != nil {
-		return entity.User{}, errs.CheckSqlError(err, "User")
-	}
-
-	code, err := a.verificationService.CreateCode(ctx, user.Id)
-	if err != nil {
-		return entity.User{}, err
-	}
-
-	err = uow.Commit()
-	if err != nil {
-		return entity.User{}, err
-	}
-
-	// template := a.smtpService.CreateVerificationCodeTemplate(code)
 
 	err = a.smtpService.SendEmail(smtpservice.SendInput{
 		To:      user.Email,

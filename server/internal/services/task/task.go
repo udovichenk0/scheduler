@@ -4,12 +4,10 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/jmoiron/sqlx"
 	"github.com/udovichenk0/scheduler/internal/entity"
 	taskservice "github.com/udovichenk0/scheduler/internal/ports/api/task"
 	taskRepo "github.com/udovichenk0/scheduler/internal/ports/repository/task"
 	"github.com/udovichenk0/scheduler/internal/ports/repository/task/model"
-	"github.com/udovichenk0/scheduler/pkg"
 	"github.com/udovichenk0/scheduler/pkg/errs"
 	"github.com/udovichenk0/scheduler/pkg/logger"
 )
@@ -17,11 +15,10 @@ import (
 type Service struct {
 	taskRepo taskRepo.Port
 	logger   logger.Logger
-	db       *sqlx.DB
 }
 
-func New(taskRepo taskRepo.Port, logger logger.Logger, db *sqlx.DB) *Service {
-	return &Service{taskRepo, logger, db}
+func New(taskRepo taskRepo.Port, logger logger.Logger) *Service {
+	return &Service{taskRepo, logger}
 }
 
 func (ts *Service) GetTasks(ctx context.Context, userId string) ([]entity.Task, error) {
@@ -59,13 +56,9 @@ func (ts *Service) CreateTask(ctx context.Context, params taskservice.CreateInpu
 		return entity.Task{}, errs.NewBadRequestError(err)
 	}
 
-	uow := pkg.NewUnitOfWork(ts.db, ctx)
-	err = uow.StartUOW(func(ctx context.Context) error {
-		if err := ts.taskRepo.Create(ctx, createTaskParams); err != nil {
-			return errs.NewInternalError(err)
-		}
-		return nil
-	})
+	if err := ts.taskRepo.Create(ctx, createTaskParams); err != nil {
+		return entity.Task{}, errs.NewInternalError(err)
+	}
 
 	if err != nil {
 		return entity.Task{}, err

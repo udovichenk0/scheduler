@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 
 	sq "github.com/huandu/go-sqlbuilder"
 	"github.com/jmoiron/sqlx"
@@ -21,7 +20,6 @@ func NewUserRepo(db *sqlx.DB) *UserRepo {
 
 func (ur UserRepo) Get(ctx context.Context, email string) (model.User, error) {
 	user := model.User{}
-	fmt.Println(email)
 	err := ur.db.GetContext(ctx, &user, "SELECT id, email, hash, verified, created_at FROM user WHERE email = ?", email)
 	if err != nil {
 		return model.Nil, err

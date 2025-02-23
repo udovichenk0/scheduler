@@ -93,7 +93,7 @@ func (s Deps) GetDeps() *rest.Deps {
 	userRepo := db.NewUserRepo(s.db.Pool)
 	userRepo.Update(context.Background(), userPort.UpdateInput{Email: "test"})
 	verificationRepo := db.NewVerificationRepo(s.db.Pool)
-	taskService := task.New(taskRepo, s.log, s.db.Pool)
+	taskService := task.New(taskRepo, s.log)
 	userService := user.New(userRepo, s.log)
 	smtpService := smtp.New(s.appConfig.Smtp)
 	verificationService := verification.New(verificationRepo, userService, smtpService)
