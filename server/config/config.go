@@ -4,9 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/lestrrat-go/jwx/jwk"
 	smtpservice "github.com/udovichenk0/scheduler/internal/ports/api/smtp"
-	"golang.org/x/oauth2"
 )
 
 type DBConfig struct {
@@ -17,10 +15,8 @@ type DBConfig struct {
 	Port string
 }
 type Config struct {
-	Oauth2Config oauth2.Config
-	Jwks         jwk.Set
-	Db           DBConfig
-	Smtp         smtpservice.SmtpConfig
+	Db   DBConfig
+	Smtp smtpservice.SmtpConfig
 }
 
 func createDbOptions() DBConfig {

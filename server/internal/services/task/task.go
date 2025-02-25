@@ -143,6 +143,7 @@ func (ts *Service) TrashTask(ctx context.Context, params taskservice.TrashInput)
 	trashTaskParams := taskRepo.UpdateInput{
 		TaskId: params.TaskId,
 		UserId: params.UserId,
+		IsTrashed: true,
 	}
 	err := ts.taskRepo.Update(ctx, trashTaskParams)
 

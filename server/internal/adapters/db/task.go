@@ -99,7 +99,11 @@ func (tr *TaskRepository) Update(ctx context.Context, input task.UpdateInput) er
 	}
 
 	if input.StartDate != 0 {
-		sql.Set(sql.Assign("start_date", input.StartDate))
+		sql.Set(sql.Assign("FROM_UNIXTIME(start_date)", input.StartDate))
+	}
+
+	if input.IsTrashed {
+		sql.Set(sql.Assign("is_trashed", input.IsTrashed))
 	}
 
 	sql.Where(sql.EQ("id", input.TaskId))

@@ -24,27 +24,10 @@ type UpdateInput struct {
 	StartDate   int64
 	TaskId      string
 	UserId      string
-}
-
-type UpdateDateAndTypeInput struct {
-	Type      string
-	StartDate int64
-	TaskId    string
-	UserId    string
+	IsTrashed   bool
 }
 
 type DeleteInput struct {
-	TaskId string
-	UserId string
-}
-
-type UpdateStatusInput struct {
-	TaskId string
-	UserId string
-	Status string
-}
-
-type TrashInput struct {
 	TaskId string
 	UserId string
 }
