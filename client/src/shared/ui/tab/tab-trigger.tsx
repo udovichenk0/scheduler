@@ -1,13 +1,14 @@
 import { clsx } from "clsx"
-import { ReactNode, useContext } from "react"
+import { ButtonHTMLAttributes, MouseEvent, ReactNode, useContext } from "react"
 
 import { TabContext } from "./tab.model"
 
-interface TabProps {
+type TriggerProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   value: string
   className?: string
   activeClass?: string
   children: ReactNode
+  onClick?: (e: MouseEvent, value: string) => void
 }
 
 export function Trigger({
@@ -15,13 +16,17 @@ export function Trigger({
   value,
   activeClass,
   children,
+  onClick,
   ...props
-}: TabProps) {
+}: TriggerProps) {
   const { value: currentValue, setValue } = useContext(TabContext)
   return (
     <button
       {...props}
-      onClick={() => setValue(value)}
+      onClick={(e) => {
+        setValue(value)
+        if(onClick) onClick(e, value)
+      }}
       className={clsx(className, currentValue == value && activeClass, "focus-visible:text-accent")}
     >
       {children}

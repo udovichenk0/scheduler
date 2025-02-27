@@ -14,14 +14,15 @@ import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
 import { generateDaysOfWeek } from "../../config"
 
 import style from "./style.module.css"
+import { Root } from "@/shared/ui/tab"
 
 export function UpcomingVariantChanger({
   setUpcomingVariant,
-  variant,
+  upcomingDate,
   $tasksByDateKv,
 }: {
-  setUpcomingVariant: (variant: "upcoming" | Dayjs) => void
-  variant: "upcoming" | Dayjs
+  setUpcomingVariant: (date: Nullable<Dayjs>) => void
+  upcomingDate: Nullable<Dayjs>
   $tasksByDateKv: Store<Nullable<Record<string, Task[]>>>
 }) {
   const [week, setWeek] = useState(0)
@@ -37,31 +38,34 @@ export function UpcomingVariantChanger({
     <div className="sticky top-0 z-10 flex w-full bg-main">
       <div className="flex w-full border-b border-accent/50 px-9 text-cIconDefault">
         <div className="flex">
-          <button
+          <Root.Trigger
+            value="upcoming"
             title={t("task.upcoming")}
             className={clsx(style.active, "px-2 pb-2")}
-            onClick={() => setUpcomingVariant("upcoming")}
-            data-active={variant === "upcoming"}
+            onClick={() => setUpcomingVariant(null)}
+            data-active={!upcomingDate}
           >
             <Icon name="common/upcoming" className="text-[21px]" />
-          </button>
-          <button
+          </Root.Trigger>
+          <Root.Trigger
+            value="date"
             title={t("task.today")}
             className={clsx(style.active, "px-2 pb-2")}
             onClick={() => setUpcomingVariant(dayjs().startOf("day"))}
-            data-active={dayjs(variant).isToday()}
+            data-active={dayjs(upcomingDate).isToday()}
           >
             <Icon name="common/outlined-star" className="text-[21px]" />
-          </button>
+          </Root.Trigger>
         </div>
         <div className="flex w-full justify-around text-sm">
           {dayList.map((date, id) => {
             const isAnyTask = !!tasksByDate?.[date.format("YYYY-MM-DD")]
             return (
-              <button
+              <Root.Trigger
+                value="date"
                 key={id}
                 onClick={() => setUpcomingVariant(date)}
-                data-active={date.isSame(variant)}
+                data-active={date.isSame(upcomingDate)}
                 className={clsx(
                   style.active,
                   "relative w-full py-2 text-sm text-cIconDefault",
@@ -72,7 +76,7 @@ export function UpcomingVariantChanger({
                 {isAnyTask && (
                   <span className="after:absolute after:top-1/2 after:h-[5px] after:w-[5px] after:-translate-y-1/2 after:rounded-full after:bg-cIconDefault after:content-['']"></span>
                 )}
-              </button>
+              </Root.Trigger>
             )
           })}
         </div>

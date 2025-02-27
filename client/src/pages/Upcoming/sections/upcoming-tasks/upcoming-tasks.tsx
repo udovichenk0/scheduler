@@ -4,16 +4,17 @@ import { Task } from "@/entities/task"
 
 import { TaskId } from "@/shared/api/task"
 
-import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
-import { Fragment, ReactNode, useContext, useState } from "react"
+import { Fragment, ReactNode, useContext, useEffect, useState } from "react"
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { EditableTask } from "@/widgets/editable-task"
 import { useUnit } from "effector-react"
 import { TaskManagerContext } from "../../upcoming.model"
 import { useSelectItem } from "@/shared/lib/use-select-item"
+import { getToday } from "@/shared/lib/date"
 
-export const AllUpcomingTasks = ({
+export const UpcomingTasks = ({
   onChangeDate,
   onSelectTaskId,
   tasks,
@@ -28,7 +29,9 @@ export const AllUpcomingTasks = ({
 }) => {
   const { close: onClose } = useDisclosure({id: ModalName.CreateTaskForm})
   const [selectedSection, setSelectedSection] = useState<Nullable<Date>>(null)
-
+  useEffect(() => {
+    setSelectedSection(getToday())
+  }, [])
   return (
     <>
       {tasks.map(({ tasks, title, date }) => {
@@ -84,6 +87,7 @@ const Section = ({tasks, onSelectTaskId, isSelected}: {tasks: Task[], onSelectTa
     items: tasks,
     onChange: (task) => onSelectTaskId(task?.id || null)
   })
+
   return (
     <>
       {!!tasks.length && (

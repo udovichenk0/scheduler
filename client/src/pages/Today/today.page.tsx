@@ -1,4 +1,4 @@
-import { useGate, useUnit } from "effector-react"
+import { useGate, useList, useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
@@ -27,7 +27,7 @@ import {
   gate,
 } from "./today.model"
 import { SORT_CONFIG } from "./config"
-import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { EditableTask } from "@/widgets/editable-task"
 import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
@@ -37,20 +37,20 @@ import { useState } from "react"
 const Today = () => {
   const { t } = useTranslation()
   useDocumentTitle(t("task.today"))
-
-  const overdueTasks = useUnit($overdueTasks)
-  const todayTasks = useUnit($todayTasks)
   const activeSort = useUnit($$sort.$sortType)
 
-  const onDeleteTask = useUnit($$trashTask.taskTrashedById)
   const onSortChange = useUnit($$sort.sort)
-  const { isOpened, open: onOpen } = useDisclosure({id: ModalName.CreateTaskForm})
 
   const isCompletedShown = useUnit($$taskModel.$isCompletedShown)
   const onToggleCompleted = useUnit($$taskModel.toggleCompletedShown)
+  const overdueTasks = useUnit($overdueTasks)
+  const todayTasks = useUnit($todayTasks)
+
+  const onDeleteTask = useUnit($$trashTask.taskTrashedById)
+  const { isOpened, open: onOpen } = useDisclosure({id: ModalName.CreateTaskForm})
+
   const [selectedTaskId, setSelectedTaskId] = useState<Nullable<string>>(null)
   useGate(gate)
-
 
   return (
     <Layout>
@@ -109,6 +109,20 @@ const OverdueTasks = ({
     onChange: (task) => onSelectTaskId(task?.id || null)
   })
 
+  const list = useList($overdueTasks, (task, index) => {
+    return (
+      <EditableTask
+        key={task.id}
+        ref={(node) => addNode(node!, index)}
+        task={task}
+        typeLabel
+        $$updateTask={$$updateTask}
+        onSelect={() => onSelect(index)}
+        onBlur={onUnselect}
+      />
+    )
+  })
+
   return (
     <section className={`${tasks?.length ? "block" : "hidden"}`}>
       <div className="flex items-center gap-1 border-b-1 border-t-1 border-cBorder px-5 py-2">
@@ -140,20 +154,7 @@ const OverdueTasks = ({
       </div>
         {isExpanded && (
           <div className="mt-2 px-3">
-            {tasks?.map((task, index) => {
-                return (
-                  <EditableTask
-                    ref={(node) => addNode(node!, index)}
-                    key={task.id}
-                    dateLabel
-                    typeLabel
-                    task={task}
-                    $$updateTask={$$updateTask}
-                    onSelect={() => onSelect(index)}
-                    onBlur={onUnselect}
-                  />
-                )
-              })}
+            {list}
           </div>
         )}
     </section>
@@ -179,6 +180,19 @@ const TodayTasks = ({
     items: tasks,
     onChange: (task) => onSelectTaskId(task?.id || null)
   })
+  const list = useList($todayTasks, (task, index) => {
+    return (
+      <EditableTask
+        key={task.id}
+        ref={(node) => addNode(node!, index)}
+        task={task}
+        typeLabel
+        $$updateTask={$$updateTask}
+        onSelect={() => onSelect(index)}
+        onBlur={onUnselect}
+      />
+    )
+  })
 
   return (
     <section>
@@ -200,19 +214,7 @@ const TodayTasks = ({
         </div>
       )}
       <div className="mx-3">
-        {tasks?.map((task, index) => {
-          return (
-            <EditableTask
-              key={task.id}
-              ref={(node) => addNode(node!, index)}
-              task={task}
-              typeLabel
-              $$updateTask={$$updateTask}
-              onSelect={() => onSelect(index)}
-              onBlur={onUnselect}
-            />
-          )
-        })}
+        {list}
       </div>
       <ExpandedTask
         className="mx-3"

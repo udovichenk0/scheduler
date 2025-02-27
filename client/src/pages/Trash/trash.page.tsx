@@ -1,5 +1,5 @@
 import { t } from "i18next"
-import { useUnit } from "effector-react"
+import { useList, useUnit } from "effector-react"
 
 import { Layout } from "@/widgets/layout/main"
 
@@ -22,7 +22,21 @@ const Trash = () => {
   const tasks = useUnit($trashTasks)
   const onDeleteTask = useUnit($$deleteTask.taskDeletedById)
   const onDeleteAllTasks = useUnit($$deleteTask.allTasksDeleted)
-
+  const list = useList($trashTasks, (task, id) => {
+    return (
+      <div className="px-3 pb-2" key={task.id}>
+        <TaskItem
+          ref={(node) => addNode(node!, id)}
+          isShown
+          typeLabel
+          dateLabel
+          onSelect={() => onSelect(id)}
+          onBlur={onUnselect}
+          task={task}
+        />
+      </div>
+    )
+  })
   const [selectedTaskId, setSelectedTaskId] = useState<Nullable<string>>(null)
   const {
     onSelect, 
@@ -51,21 +65,7 @@ const Trash = () => {
         title={t("task.trash")}
       />
       <Layout.Content className="flex flex-col">
-        {tasks?.map((task, id) => {
-          return (
-            <div className="px-3 pb-2" key={task.id}>
-              <TaskItem
-                ref={(node) => addNode(node!, id)}
-                isShown
-                typeLabel
-                dateLabel
-                onSelect={() => onSelect(id)}
-                onBlur={onUnselect}
-                task={task}
-              />
-            </div>
-          )
-        })}
+        {list}
         <NoTasks isTaskListEmpty={!tasks?.length} />
       </Layout.Content>
 

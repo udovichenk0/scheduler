@@ -13,7 +13,7 @@ import {
   TaskManagerContext,
 } from "../../upcoming.model"
 import { ModalName } from "@/shared/lib/modal/modal-names"
-import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { EditableTask } from "@/widgets/editable-task"
 import { useSelectItem } from "@/shared/lib/use-select-item"
 
@@ -31,7 +31,6 @@ export const TasksByDate = ({
 
   const onCreateTask = useUnit($$createTask.createTaskTriggered)
   const onChangeCreateDate = useUnit($$createTask.dateChanged)
-  const onChangeUpdateDate = useUnit($$updateTask.dateChanged)
 
   const {
     onSelect, 
@@ -48,7 +47,6 @@ export const TasksByDate = ({
   } = useDisclosure({id: ModalName.CreateTaskForm, onClose: onCreateTask})
 
   useEffect(() => {
-    onChangeUpdateDate(date.toDate())
     onChangeCreateDate(date.toDate())
   }, [date])
 

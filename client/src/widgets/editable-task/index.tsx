@@ -1,6 +1,6 @@
 import { Task, TaskItem } from "@/entities/task"
 import { ExpandedTask } from "../expanded-task"
-import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { UpdateTaskFactory } from "@/features/manage-task/update"
 import { useUnit } from "effector-react"
 import { ReactNode, Ref } from "react"
@@ -42,7 +42,7 @@ export const EditableTask = ({
   } = useDisclosure({prefix: ModalName.UpdateTaskForm, onClose: onUpdateTask})
 
   return (
-    <div className=" not-last:mb-2">
+    <div className="not-last:mb-2">
       <ExpandedTask
         sideDatePicker={formSideDatePicker}
         isExpanded={isUpdateFormOpened}

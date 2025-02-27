@@ -22,7 +22,7 @@ import { ExpandedTask } from "@/widgets/expanded-task"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { TaskId } from "@/shared/api/task"
 import { Icon } from "@/shared/ui/icon"
-import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { MoreTasks } from "./ui/more-tasks"
 

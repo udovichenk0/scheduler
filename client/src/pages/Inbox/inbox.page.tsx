@@ -1,4 +1,4 @@
-import { useUnit } from "effector-react"
+import { useList, useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
@@ -20,7 +20,7 @@ import {
   $$taskModel
 } from "./inbox.model"
 import { SORT_CONFIG } from "./config"
-import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { EditableTask } from "@/widgets/editable-task"
 import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
@@ -55,6 +55,20 @@ const Inbox = () => {
     close: onCloseCreateForm
   } = useDisclosure({id: ModalName.CreateTaskForm, onClose: onCreateTask})
 
+  const list = useList($inboxTasks, (task, index) => {
+    return (
+      <EditableTask
+        formDateModifier={false}
+        key={task.id}
+        ref={(node) => addNode(node!, index)}
+        $$updateTask={$$updateTask}
+        task={task}
+        onSelect={() => onSelect(index)}
+        onBlur={onUnselect}
+      />
+    )
+  })
+
   return (
     <Layout>
       <Layout.Header
@@ -74,19 +88,7 @@ const Inbox = () => {
         title={t("task.inbox")}
       />
       <Layout.Content className="flex flex-col px-3">
-        {tasks?.map((task, index) => {
-          return (
-            <EditableTask
-              formDateModifier={false}
-              key={task.id}
-              ref={(node) => addNode(node!, index)}
-              $$updateTask={$$updateTask}
-              task={task}
-              onSelect={() => onSelect(index)}
-              onBlur={onUnselect}
-            />
-          )
-        })}
+        {list}
         <ExpandedTask
           isExpanded={isCreateFormOpened}
           modifyTaskModel={$$createTask}
@@ -95,7 +97,6 @@ const Inbox = () => {
         />
         <NoTasks isTaskListEmpty={!tasks?.length && !isCreateFormOpened} />
       </Layout.Content>
-
       <Layout.Footer
         isTrashDisabled={!selectedPayload}
         onDeleteTask={() => selectedPayload && onTrashTask(selectedPayload)}

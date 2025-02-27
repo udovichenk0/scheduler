@@ -15,7 +15,7 @@ import { ProgressBar } from "./ui/progress-bar"
 import Settings from "@/widgets/settings"
 import { CloseButton, Modal } from "@/shared/ui/modal"
 import { normalizeSeconds } from "@/shared/lib/date"
-import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { Button } from "@/shared/ui/buttons/main-button"
 

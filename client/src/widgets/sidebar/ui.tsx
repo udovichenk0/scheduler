@@ -8,7 +8,7 @@ import { Container } from "@/shared/ui/general/container"
 
 import { $inboxCounter, $todayCounter } from "./sidebar.model"
 import { Logo } from "./logo"
-import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { Tooltip } from "@/shared/ui/general/tooltip"
 import Settings from "../settings"

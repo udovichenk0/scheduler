@@ -11,7 +11,7 @@ import { onMount } from "@/shared/lib/react"
 
 import { Modal } from "@/shared/ui/modal"
 import { ModalName } from "@/shared/lib/modal/modal-names"
-import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { getToday } from "@/shared/lib/date"
 import { EditableContent } from "@/shared/ui/data-entry/editable-content"
 import { TaskStatus as Status, TaskType as Type } from "../type"

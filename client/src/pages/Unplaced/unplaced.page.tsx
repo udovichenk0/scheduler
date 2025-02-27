@@ -1,4 +1,4 @@
-import { useUnit } from "effector-react"
+import { useList, useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
@@ -18,7 +18,7 @@ import {
   $$taskModel,
 } from "./unplaced.model"
 import { SORT_CONFIG } from "./config"
-import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { EditableTask } from "@/widgets/editable-task"
 import { useState } from "react"
@@ -44,6 +44,20 @@ const Unplaced = () => {
 
   const onToggleCompleted = useUnit($$taskModel.toggleCompletedShown)
   const isCompletedShown = useUnit($$taskModel.$isCompletedShown)
+
+  const list = useList($unplacedTasks, (task, index) => {
+    return (
+      <div className="px-3 pb-2" key={task.id}>
+        <EditableTask
+          ref={(node) => addNode(node!, index)}
+          $$updateTask={$$updateTask}
+          dateLabel
+          task={task}
+          onSelect={() => onSelect(index)}
+          onBlur={onUnselect}
+        />
+      </div>
+    )})
 
   const [selectedTaskId, setSelectedTaskId] = useState<Nullable<string>>(null)
   const {
@@ -74,20 +88,7 @@ const Unplaced = () => {
         }
       />
       <Layout.Content>
-        {tasks?.map((task, index) => {
-          return (
-            <div className="px-3 pb-2" key={task.id}>
-              <EditableTask
-                ref={(node) => addNode(node!, index)}
-                $$updateTask={$$updateTask}
-                dateLabel
-                task={task}
-                onSelect={() => onSelect(index)}
-                onBlur={onUnselect}
-              />
-            </div>
-          )
-        })}
+        {list}
         <NoTasks isTaskListEmpty={!tasks?.length && !isCreateFormOpened} />
         <ExpandedTask
           className="mx-3"

@@ -8,7 +8,7 @@ import { Icon } from "@/shared/ui/icon"
 import { SortConfig, SortType } from "../type"
 import { Modal } from "@/shared/ui/modal"
 import { useRef } from "react"
-import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 export type SortProps = {
   config: SortConfig[]

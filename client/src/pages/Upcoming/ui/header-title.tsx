@@ -7,21 +7,21 @@ import {
 } from "@/shared/config/constants"
 import { lowerCase } from "@/shared/lib/typography/lower-case"
 
-export const HeaderTitle = ({ variant }: { variant: "upcoming" | Dayjs }) => {
+export const HeaderTitle = ({ date }: { date: Nullable<Dayjs> }) => {
   const { t } = useTranslation()
-  if (variant == "upcoming") {
+  if (!date) {
     return <span>{t("task.upcoming")}</span>
   }
   return (
     <>
       <span className="text-cIconDefault">
-        {t(LONG_WEEKS_NAMES[variant.day()])}&nbsp;
+        {t(LONG_WEEKS_NAMES[date.day()])}&nbsp;
       </span>
       <span>
-        {variant.date()}&nbsp;
-        {lowerCase(t(LONG_MONTHS_NAMES_PLURAL[variant.month()]))}&nbsp;
+        {date.date()}&nbsp;
+        {lowerCase(t(LONG_MONTHS_NAMES_PLURAL[date.month()]))}&nbsp;
       </span>
-      <span className="text-cIconDefault">{variant.year()}</span>
+      <span className="text-cIconDefault">{date.year()}</span>
     </>
   )
 }

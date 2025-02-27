@@ -7,13 +7,13 @@ import { Sort } from "@/entities/task"
 
 import { useDocumentTitle } from "@/shared/lib/react"
 
-import { AllUpcomingTasks } from "./sections/upcoming-tasks"
+import { UpcomingTasks } from "./sections/upcoming-tasks"
 import {
   $$trashTask,
-  $selectedDate,
-  currentDateSelected,
-  $variant,
-  variantSelected,
+  // $selectedDate,
+  // currentDateSelected,
+  $upcomingDate,
+  upcomingDateSelected,
   TaskManagerContext,
   $$createTask,
   $$updateTask,
@@ -25,26 +25,25 @@ import {
 } from "./upcoming.model"
 import { TasksByDate } from "./sections/tasks-by-date"
 import { HeaderTitle } from "./ui/header-title"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer/variant-changer"
 import { SORT_CONFIG } from "./config"
-import { useDisclosure } from "@/shared/lib/modal/use-modal"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { useState } from "react"
 import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
+import { Root } from "@/shared/ui/tab"
 
 const Upcoming = () => {
   const { t } = useTranslation()
   useDocumentTitle(t("task.upcoming"))
   const upcomingTasks = useUnit($tasks)
   const tasksByDate = useUnit($tasksByDate)
-  const variant = useUnit($variant)
+  const upcomingDate = useUnit($upcomingDate)
   const activeSort = useUnit($$sort.$sortType)
 
-  const onChangeDate = useUnit(currentDateSelected)
   const onDeleteTask = useUnit($$trashTask.taskTrashedById)
-  const onSelectViewVariant = useUnit(variantSelected)
+  const onSelectViewVariant = useUnit(upcomingDateSelected)
   const onSortChange = useUnit($$sort.sort)
-  const date = useUnit($selectedDate)
   const setDate = useUnit($$createTask.setDate)
   const { open: onOpenCreateForm } = useDisclosure({id: ModalName.CreateTaskForm})
   const onToggleCompleted = useUnit($$taskModel.toggleCompletedShown)
@@ -68,40 +67,45 @@ const Upcoming = () => {
           </>
         }
         iconName="common/upcoming"
-        title={<HeaderTitle variant={variant} />}
+        title={<HeaderTitle date={upcomingDate} />}
       />
       <Layout.Content className="flex flex-col">
-        <UpcomingVariantChanger
-          setUpcomingVariant={onSelectViewVariant}
-          variant={variant}
-          $tasksByDateKv={$tasksByDateKv}
-        />
         <TaskManagerContext.Provider
           value={{
             $$createTask,
             $$updateTask,
           }}
         >
-          {variant === "upcoming" ? (
-            <AllUpcomingTasks
-              onSelectTaskId={setSelectedTaskId}
-              onChangeDate={onChangeDate}
-              tasks={upcomingTasks}
-            />
-          ) : (
-            <TasksByDate
-              onSelectTaskId={setSelectedTaskId}
-              date={variant}
-              tasks={tasksByDate}
-            />
-          )}
+          <Root defaultValue="upcoming">
+            <Root.List>
+              <UpcomingVariantChanger
+                setUpcomingVariant={onSelectViewVariant}
+                upcomingDate={upcomingDate}
+                $tasksByDateKv={$tasksByDateKv}
+              />
+            </Root.List>
+            <Root.Content label="upcoming">
+              <UpcomingTasks
+                onSelectTaskId={setSelectedTaskId}
+                onChangeDate={setDate}
+                tasks={upcomingTasks}
+              />
+            </Root.Content>
+            <Root.Content label="date">
+              <TasksByDate
+                onSelectTaskId={setSelectedTaskId}
+                date={upcomingDate!}
+                tasks={tasksByDate}
+              />
+            </Root.Content>
+          </Root>
         </TaskManagerContext.Provider>
       </Layout.Content>
       <Layout.Footer
         onDeleteTask={() => selectedTaskId && onDeleteTask(selectedTaskId)}
         onCreateTask={() => {
           onOpenCreateForm()
-          setDate(date)
+          // setDate(date)
         }}
         isTrashDisabled={!selectedTaskId}
       />

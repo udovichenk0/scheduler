@@ -1,4 +1,4 @@
-import { combine, createEvent, sample, createStore } from "effector"
+import { combine, createEvent, createStore } from "effector"
 import dayjs, { Dayjs } from "dayjs"
 import { createContext } from "react"
 
@@ -20,7 +20,7 @@ import {
   getTasksPerYear,
 } from "./lib"
 
-type Variant = "upcoming" | Dayjs
+type Variant = Nullable<Dayjs>
 
 export const upcomingRoute = routes.upcoming
 
@@ -48,20 +48,17 @@ export const TaskManagerContext = createContext({
   $$createTask,
 })
 
-export const $selectedDate = createStore<Date>(getToday())
-export const currentDateSelected = createEvent<Date>()
-
-export const variantSelected = createEvent<Variant>()
-export const $variant = createStore<Variant>("upcoming").on(
-  variantSelected,
-  (_, variant) => variant,
+export const upcomingDateSelected = createEvent<Variant>()
+export const $upcomingDate = createStore<Variant>(null).on(
+  upcomingDateSelected,
+  (_, date) => date,
 )
 
 export const $tasks = combine(
   $upcomingTasks,
-  $variant,
+  $upcomingDate,
   (tasks, variant) => {
-    if (variant == "upcoming" && tasks) {
+    if (!variant && tasks) {
       const tasksPerDate = getTasksPerDate(tasks)
       const tasksForRemainingMonth = getTasksForRemainingMonth(tasks)
       const tasksPerMonth = getTasksPerMonth(tasks)
@@ -80,9 +77,9 @@ export const $tasks = combine(
 
 export const $tasksByDate = combine(
   $upcomingTasks,
-  $variant,
+  $upcomingDate,
   (tasks, variant) => {
-    if (variant != "upcoming" && tasks) {
+    if (!!variant && tasks) {
       return tasks.filter(({ start_date }) => {
         return dayjs(start_date).startOf("date").isSame(variant.startOf("date"))
       })
@@ -101,20 +98,4 @@ export const $tasksByDateKv = combine($upcomingTasks, (tasks) => {
     acc[date].push(item)
     return acc
   }, {})
-})
-
-sample({
-  clock: currentDateSelected,
-  target: $selectedDate,
-})
-
-sample({
-  clock: variantSelected,
-  fn: (variant) => {
-    if (variant == "upcoming") {
-      return dayjs(new Date()).startOf("date").toDate()
-    }
-    return variant.toDate()
-  },
-  target: $selectedDate,
 })

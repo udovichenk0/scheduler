@@ -13,7 +13,7 @@ import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 import { Task, TaskId, TaskStatus, TaskType } from "../type"
 import { TaskStatuses } from "../config"
 import { Modal } from "@/shared/ui/modal"
-import { useDisclosure } from "@/shared/lib/modal/use-modal"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 
 export const TaskItem = ({

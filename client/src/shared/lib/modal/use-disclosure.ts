@@ -1,5 +1,5 @@
 import { $$modal } from '@/shared/lib/modal';
-import { useUnit } from "effector-react"
+import { useStoreMap, useUnit } from "effector-react"
 import { useEffect, useId, useState } from 'react';
 
 function makeId(randId: string, prefix?: string){
@@ -19,21 +19,19 @@ export const useDisclosure = ({
   onClose?: () => void
 }) => {
   const randId = useId()
-  const [modalId, setModalId] = useState<string>(id || makeId(randId, prefix))
+  const [modalId] = useState<string>(id || makeId(randId, prefix))
   const open = useUnit($$modal.open)
   const close = useUnit($$modal.close)
   const cancel = useUnit($$modal.cancel)
-  const modalIds = useUnit($$modal.$ids)
+  const isOpened = useStoreMap({
+    store: $$modal.$ids,
+    keys: [modalId],
+    fn: (ids, [id]) => ids.includes(id)
+  })
   const destroy = useUnit($$modal.destroy)
   const registerOnCloseCallback = useUnit($$modal.registerOnCloseCallback)
-  const isOpened = !!modalId && modalIds.includes(modalId)
 
-  const isOpenedWithId = (id: string) => isOpened && id == modalId
   const openModal = () => open(modalId)
-  const onOpenAndSetId = (id: string) => {
-    setModalId(id)
-    open(id)
-  }
 
   useEffect(() => {
     if(onClose){
@@ -50,8 +48,6 @@ export const useDisclosure = ({
     open: openModal,
     close,
     cancel,
-    onOpenAndSetId,
     isOpened,
-    isOpenedWithId: isOpenedWithId,
   }
 }
