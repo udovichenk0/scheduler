@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 
 	sq "github.com/huandu/go-sqlbuilder"
 	"github.com/jmoiron/sqlx"
@@ -99,7 +100,7 @@ func (tr *TaskRepository) Update(ctx context.Context, input task.UpdateInput) er
 	}
 
 	if input.StartDate != 0 {
-		sql.Set(sql.Assign("FROM_UNIXTIME(start_date)", input.StartDate))
+		sql.Set(fmt.Sprintf("start_date = FROM_UNIXTIME(%d)", input.StartDate))
 	}
 
 	if input.IsTrashed {
