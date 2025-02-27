@@ -30,7 +30,7 @@ func (v VerificationRepo) GetByUserId(ctx context.Context, userId string) ([]mod
 }
 
 func (v VerificationRepo) Create(ctx context.Context, params verification.CreateInput) error {
-	_, err := pkg.ExecWithTx(ctx, v.db, "INSERT INTO verification (id, user_id, code, expires_at) VALUES (?, ?, ?, FROM_UNIXTIME(?))", params.Id, params.UserId, params.Code, params.ExpiresAt)
+	_, err := pkg.ExecWithTx(ctx, v.db, "INSERT INTO verification (id, user_id, code, expires_at) VALUES (?, ?, ?, ?)", params.Id, params.UserId, params.Code, params.ExpiresAt)
 	return err
 }
 
@@ -40,6 +40,6 @@ func (v VerificationRepo) Delete(ctx context.Context, id string) error {
 }
 
 func (v VerificationRepo) Update(ctx context.Context, params verification.UpdateInput) error {
-	_, err := v.db.ExecContext(ctx, "UPDATE verification SET code = ?, expires_at = FROM_UNIXTIME(?) WHERE user_id = ?", params.Code, params.ExpiresAt, params.UserId)
+	_, err := v.db.ExecContext(ctx, "UPDATE verification SET code = ?, expires_at = ? WHERE user_id = ?", params.Code, params.ExpiresAt, params.UserId)
 	return err
 }

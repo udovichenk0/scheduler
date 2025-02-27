@@ -8,6 +8,7 @@ import (
 	taskservice "github.com/udovichenk0/scheduler/internal/ports/api/task"
 	taskRepo "github.com/udovichenk0/scheduler/internal/ports/repository/task"
 	"github.com/udovichenk0/scheduler/internal/ports/repository/task/model"
+	"github.com/udovichenk0/scheduler/pkg"
 	"github.com/udovichenk0/scheduler/pkg/errs"
 	"github.com/udovichenk0/scheduler/pkg/logger"
 )
@@ -45,9 +46,11 @@ func (ts *Service) CreateTask(ctx context.Context, params taskservice.CreateInpu
 		Description: params.Description,
 		Type:        string(params.Type),
 		Status:      string(params.Status),
-		StartDate:   params.StartDate,
 		UserId:      params.UserId,
 		TaskId:      uuid.String(),
+	}
+	if params.StartDate != 0 {
+		createTaskParams.StartDate = pkg.UnixToDateTime(params.StartDate)
 	}
 
 	isValid, err := entity.IsValidTaskTypeAndStartTime(params.Type, params.StartDate)
@@ -81,11 +84,12 @@ func (ts *Service) UpdateTask(ctx context.Context, params taskservice.UpdateInpu
 		Description: params.Description,
 		Type:        string(taskType),
 		Status:      string(params.Status),
-		StartDate:   params.StartDate,
 		TaskId:      params.TaskId,
 		UserId:      params.UserId,
 	}
-
+	if params.StartDate != 0 {
+		updateTaskParams.StartDate = pkg.UnixToDateTime(params.StartDate)
+	}
 	if err := ts.taskRepo.Update(ctx, updateTaskParams); err != nil {
 		return entity.Task{}, errs.CheckSqlError(err, "Task")
 	}
@@ -110,14 +114,16 @@ func (ts *Service) UpdateTaskDate(ctx context.Context, params taskservice.Update
 	task.Type = taskType
 	task.StartDate = params.Date
 
-	updateDateAndTypeInput := taskRepo.UpdateInput{
-		Type:      string(taskType),
-		StartDate: params.Date,
-		TaskId:    params.TaskId,
-		UserId:    params.UserId,
+	updateDateAndTypeInput := taskRepo.UpdateDateInput{
+		Type:   string(taskType),
+		TaskId: params.TaskId,
+		UserId: params.UserId,
+	}
+	if params.Date != 0 {
+		updateDateAndTypeInput.StartDate = pkg.UnixToDateTime(params.Date)
 	}
 
-	if err := ts.taskRepo.Update(ctx, updateDateAndTypeInput); err != nil {
+	if err := ts.taskRepo.UpdateDate(ctx, updateDateAndTypeInput); err != nil {
 		return entity.Task{}, errs.CheckSqlError(err, "Task")
 	}
 
@@ -125,13 +131,13 @@ func (ts *Service) UpdateTaskDate(ctx context.Context, params taskservice.Update
 }
 
 func (ts *Service) UpdateTaskStatus(ctx context.Context, params taskservice.UpdateStatusInput) error {
-	updateStatusParams := taskRepo.UpdateInput{
+	updateStatusParams := taskRepo.UpdateStatusInput{
 		TaskId: params.TaskId,
 		UserId: params.UserId,
 		Status: string(params.Status),
 	}
 
-	err := ts.taskRepo.Update(ctx, updateStatusParams)
+	err := ts.taskRepo.UpdateStatus(ctx, updateStatusParams)
 
 	if err != nil {
 		return errs.CheckSqlError(err, "Task")
@@ -140,12 +146,11 @@ func (ts *Service) UpdateTaskStatus(ctx context.Context, params taskservice.Upda
 }
 
 func (ts *Service) TrashTask(ctx context.Context, params taskservice.TrashInput) error {
-	trashTaskParams := taskRepo.UpdateInput{
+	trashTaskParams := taskRepo.UpdateTrashInput{
 		TaskId: params.TaskId,
 		UserId: params.UserId,
-		IsTrashed: true,
 	}
-	err := ts.taskRepo.Update(ctx, trashTaskParams)
+	err := ts.taskRepo.TrashTask(ctx, trashTaskParams)
 
 	if err != nil {
 		return errs.CheckSqlError(err, "Task")

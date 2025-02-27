@@ -156,7 +156,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StartDate'
+              type: object
+              properties:
+                start_date:
+                  $ref: '#/components/schemas/StartDate'
+              required:
+                - start_date
       responses:
         '200':
           content:

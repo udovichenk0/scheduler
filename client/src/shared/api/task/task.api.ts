@@ -57,7 +57,7 @@ export const deleteTrashedTasksMutation = createQuery({
 })
 export const updateDateMutation = createQuery({
   handler: async ({id, start_date}: {id: TaskId, start_date: StartDate}) => {
-    const response = await patchTasksIdDate(id, start_date, {credentials: "include"})
+    const response = await patchTasksIdDate(id, {start_date}, {credentials: "include"})
     return handleResponse(response, patchTasksIdDateResponse)
   }
 })

@@ -4,8 +4,8 @@
  * Swagger Scheduler
  * OpenAPI spec version: 1.0.0
  */
-export type PatchTasksIdStatusBody = {
-  status: TaskStatus;
+export type PatchTasksIdDateBody = {
+  start_date: StartDate;
 };
 
 export type PostAuthResendBody = {
@@ -53,6 +53,10 @@ export const TaskStatus = {
   inprogress: 'inprogress',
   finished: 'finished',
 } as const;
+
+export type PatchTasksIdStatusBody = {
+  status: TaskStatus;
+};
 
 export interface TaskDto {
   date_created: string;

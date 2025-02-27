@@ -9,10 +9,10 @@ import type {
   GetEmailExists200Response,
   GetEmailExistsParams,
   Id,
+  PatchTasksIdDateBody,
   PatchTasksIdStatusBody,
   PostAuthResendBody,
   PostAuthVerifyBody,
-  StartDate,
   TaskDto,
   TaskFields,
   UserResponse
@@ -390,7 +390,7 @@ export const getPatchTasksIdDateUrl = (id: Id,) => {
 }
 
 export const patchTasksIdDate = async (id: Id,
-    startDate: StartDate, options?: RequestInit): Promise<patchTasksIdDateResponse> => {
+    patchTasksIdDateBody: PatchTasksIdDateBody, options?: RequestInit): Promise<patchTasksIdDateResponse> => {
   
   return patchTasksIdDateMutator<Promise<patchTasksIdDateResponse>>(getPatchTasksIdDateUrl(id),
   {      
@@ -398,7 +398,7 @@ export const patchTasksIdDate = async (id: Id,
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
-      startDate,)
+      patchTasksIdDateBody,)
   }
 );}
 

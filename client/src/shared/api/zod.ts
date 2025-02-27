@@ -183,7 +183,9 @@ export const patchTasksIdDateParams = zod.object({
   "id": zod.string().uuid()
 })
 
-export const patchTasksIdDateBody = zod.number().nullable()
+export const patchTasksIdDateBody = zod.object({
+  "start_date": zod.number().nullable()
+})
 
 export const patchTasksIdDateResponse = zod.object({
   "id": zod.string().uuid(),

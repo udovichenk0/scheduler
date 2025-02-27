@@ -11,7 +11,7 @@ type CreateInput struct {
 	Description string
 	Type        string
 	Status      string
-	StartDate   int64
+	StartDate   string
 	UserId      string
 	TaskId      string
 }
@@ -21,10 +21,26 @@ type UpdateInput struct {
 	Description string
 	Type        string
 	Status      string
-	StartDate   int64
+	StartDate   string
 	TaskId      string
 	UserId      string
-	IsTrashed   bool
+}
+
+type UpdateDateInput struct {
+	StartDate string
+	Type      string
+	TaskId    string
+	UserId    string
+}
+
+type UpdateStatusInput struct {
+	Status string
+	TaskId string
+	UserId string
+}
+type UpdateTrashInput struct {
+	TaskId string
+	UserId string
 }
 
 type DeleteInput struct {
@@ -40,4 +56,7 @@ type Port interface {
 	Create(ctx context.Context, task CreateInput) error
 	CreateMany(ctx context.Context, tasks []CreateInput, userId string) error
 	Update(ctx context.Context, taskFields UpdateInput) error
+	UpdateDate(ctx context.Context, taskFields UpdateDateInput) error
+	UpdateStatus(ctx context.Context, taskFields UpdateStatusInput) error
+	TrashTask(ctx context.Context, params UpdateTrashInput) error
 }

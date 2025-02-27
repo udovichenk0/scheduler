@@ -43,13 +43,13 @@ func (tr *TaskRepository) GetByTaskId(ctx context.Context, taskId string) (model
 func (tr *TaskRepository) Create(ctx context.Context, task task.CreateInput) error {
 	_, err := tr.db.ExecContext(
 		ctx,
-		"INSERT INTO task (id, title, description, type, status, start_date, user_id) VALUES (?,?,?,?,?,FROM_UNIXTIME(?),?)",
+		"INSERT INTO task (id, title, description, type, status, start_date, user_id) VALUES (?,?,?,?,?,?,?)",
 		task.TaskId,
 		task.Title,
 		task.Description,
 		task.Type,
 		task.Status,
-		pkg.NewNullInt(task.StartDate),
+		pkg.NewNullString(task.StartDate),
 		task.UserId,
 	)
 	return err
@@ -72,7 +72,7 @@ func (tr *TaskRepository) CreateMany(ctx context.Context, tasks []task.CreateInp
 	for _, task := range tasks {
 		query += "(?, ?, ?, ?, ?, FROM_UNIXTIME(?), ?),"
 
-		data = append(data, task.TaskId, task.Title, task.Description, task.Type, task.Status, pkg.NewNullInt(task.StartDate), userId)
+		data = append(data, task.TaskId, task.Title, task.Description, task.Type, task.Status, pkg.NewNullString(task.StartDate), userId)
 	}
 
 	tr.db.ExecContext(ctx, query[:len(query)-1], data...)
@@ -83,36 +83,64 @@ func (tr *TaskRepository) CreateMany(ctx context.Context, tasks []task.CreateInp
 func (tr *TaskRepository) Update(ctx context.Context, input task.UpdateInput) error {
 	sql := sq.NewUpdateBuilder().Update("task")
 
-	if input.Title != "" {
-		sql.Set(sql.Assign("title", input.Title))
-	}
-
-	if input.Description != "" {
-		sql.Set(sql.Assign("description", input.Description))
-	}
-
-	if input.Type != "" {
-		sql.Set(sql.Assign("type", input.Type))
-	}
-
-	if input.Status != "" {
-		sql.Set(sql.Assign("status", input.Status))
-	}
-
-	if input.StartDate != 0 {
-		sql.Set(fmt.Sprintf("start_date = FROM_UNIXTIME(%d)", input.StartDate))
-	}
-
-	if input.IsTrashed {
-		sql.Set(sql.Assign("is_trashed", input.IsTrashed))
-	}
+	sql.Set(
+		sql.Assign("description", input.Description),
+		sql.Assign("title", input.Title),
+		sql.Assign("type", input.Type),
+		sql.Assign("status", input.Status),
+		sql.Assign("start_date", pkg.NewNullString(input.StartDate)),
+	)
 
 	sql.Where(sql.EQ("id", input.TaskId))
 	sql.Where(sql.EQ("user_id", input.UserId))
 
 	query, args := sql.Build()
-
+	fmt.Println(query, args)
 	_, err := tr.db.ExecContext(ctx, query, args...)
 
+	return err
+}
+
+func (tr *TaskRepository) UpdateDate(ctx context.Context, input task.UpdateDateInput) error {
+	sql := sq.NewUpdateBuilder().Update("task")
+
+	sql.Set(
+		sql.Assign("start_date", input.StartDate),
+		sql.Assign("type", input.Type),
+	)
+
+	sql.Where(sql.EQ("id", input.TaskId))
+	sql.Where(sql.EQ("user_id", input.UserId))
+
+	query, args := sql.Build()
+	_, err := tr.db.ExecContext(ctx, query, args...)
+	return err
+}
+
+func (tr *TaskRepository) UpdateStatus(ctx context.Context, input task.UpdateStatusInput) error {
+	sql := sq.NewUpdateBuilder().Update("task")
+
+	sql.Set(
+		sql.Assign("status", input.Status),
+	)
+	sql.Where(sql.EQ("id", input.TaskId))
+	sql.Where(sql.EQ("user_id", input.UserId))
+
+	query, args := sql.Build()
+	_, err := tr.db.ExecContext(ctx, query, args...)
+	return err
+}
+
+func (tr *TaskRepository) TrashTask(ctx context.Context, input task.UpdateTrashInput) error {
+	sql := sq.NewUpdateBuilder().Update("task")
+
+	sql.Set(
+		sql.Assign("is_trashed", true),
+	)
+	sql.Where(sql.EQ("id", input.TaskId))
+	sql.Where(sql.EQ("user_id", input.UserId))
+
+	query, args := sql.Build()
+	_, err := tr.db.ExecContext(ctx, query, args...)
 	return err
 }

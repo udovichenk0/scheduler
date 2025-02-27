@@ -17,11 +17,11 @@ type CreateInput struct {
 	Id        string
 	Code      string
 	UserId    string
-	ExpiresAt int64
+	ExpiresAt string
 }
 
 type UpdateInput struct {
 	UserId    string
 	Code      string
-	ExpiresAt int64
+	ExpiresAt string
 }

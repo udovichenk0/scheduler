@@ -124,6 +124,16 @@ export const updateTaskFactory = ({ taskModel }:{ taskModel: TaskModel }) => {
     fn: (updates, { result }) => Object.fromEntries(Object.entries(updates).filter(([key]) => result.id != key)),
     target: $oldFields
   })
+  // sample({
+  //   clock: attachUpdateTaskQuery.finished.success,
+  //   source: taskModel.$tasks,
+  //   fn: (tasks, { params, result }) => {
+  //     const tempId = params.id
+  //     return tasks!.map((task) => task.id == tempId ? {...task, ...taskToDomain(result)} : task)
+  //   },
+  //   target: taskModel.setTasksTriggered
+  // })
+
   sample({
     clock: attachUpdateTaskQuery.finished.failure,
     source: $oldFields,

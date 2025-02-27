@@ -60,7 +60,7 @@ func (v *Service) CreateCode(ctx context.Context, userId string) (string, error)
 		Id:        pkg.NewUUID(),
 		UserId:    userId,
 		Code:      code,
-		ExpiresAt: entity.GetVerificationExpiration(),
+		ExpiresAt: pkg.UnixToDateTime(entity.GetVerificationExpiration()),
 	})
 
 	if err != nil {
@@ -74,7 +74,7 @@ func (v *Service) ChangeCode(ctx context.Context, userId string, email string) e
 	params := verificationRepo.UpdateInput{
 		UserId:    userId,
 		Code:      entity.GenerateVerificationCode(),
-		ExpiresAt: entity.GetVerificationExpiration(),
+		ExpiresAt: pkg.UnixToDateTime(entity.GetVerificationExpiration()),
 	}
 
 	err := v.smtpService.SendEmail(smtpservice.SendInput{

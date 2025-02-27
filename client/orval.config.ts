@@ -2,7 +2,7 @@
  
  export default defineConfig({
    scheduler: {
-     input: './scheduler.yaml',
+     input: './orval.yaml',
      output: {
       target: './src/shared/api/scheduler.ts',
       baseUrl: "http://localhost:3000/api",
@@ -18,7 +18,7 @@
     // }
    },
    zod: {
-    input: './scheduler.yaml',
+    input: './orval.yaml',
     output: {
       target: './src/shared/api/zod.ts',
       client: "zod"
