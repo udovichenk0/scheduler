@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log/slog"
+	"path/filepath"
 
 	"github.com/bytedance/sonic"
 	_ "github.com/go-sql-driver/mysql"
@@ -10,7 +11,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/joho/godotenv"
 	"github.com/udovichenk0/scheduler/config"
 	"github.com/udovichenk0/scheduler/internal/adapters/db"
 	"github.com/udovichenk0/scheduler/internal/adapters/rest"
@@ -27,9 +27,10 @@ import (
 )
 
 func main() {
-	godotenv.Load()
+	envPath := filepath.Join("..", "..", ".env")
+	appConfig := config.NewWithPath(envPath)
 	log := log.NewLogger()
-	appConfig := config.CreateConfig()
+
 	db := db.New(db.Opts{
 		User: appConfig.Db.User,
 		Pass: appConfig.Db.Pass,
@@ -37,7 +38,12 @@ func main() {
 		Port: appConfig.Db.Port,
 		Name: appConfig.Db.Name,
 	})
-	smtp := smtp.New(appConfig.Smtp)
+	smtp := smtp.New(smtp.Opts{
+		From:     appConfig.Smtp.From,
+		Password: appConfig.Smtp.Password,
+		Host:     appConfig.Smtp.Host,
+		Port:     appConfig.Smtp.Port,
+	})
 
 	app := fiber.New(fiber.Config{
 		JSONEncoder: sonic.Marshal,
@@ -95,9 +101,8 @@ func (s Deps) GetDeps() *rest.Deps {
 	verificationRepo := db.NewVerificationRepo(s.db.Pool)
 	taskService := task.New(taskRepo, s.log)
 	userService := user.New(userRepo, s.log)
-	smtpService := smtp.New(s.appConfig.Smtp)
-	verificationService := verification.New(verificationRepo, userService, smtpService)
-	authService := auth.New(userService, smtpService, verificationService, s.db.Pool, sm, s.log)
+	verificationService := verification.New(verificationRepo, userService, s.smtp)
+	authService := auth.New(userService, s.smtp, verificationService, s.db.Pool, sm, s.log)
 
 	return &rest.Deps{
 		Task:         taskService,

@@ -8,15 +8,28 @@ import (
 )
 
 type Service struct {
-	auth smtp.Auth
-	smtpport.SmtpConfig
+	auth     smtp.Auth
+	From     string
+	Password string
+	Host     string
+	Port     string
 }
 
-func New(conf smtpport.SmtpConfig) Service {
+type Opts struct {
+	From     string
+	Password string
+	Host     string
+	Port     string
+}
+
+func New(conf Opts) Service {
 	auth := smtp.PlainAuth("", conf.From, conf.Password, conf.Host)
 	return Service{
-		auth:       auth,
-		SmtpConfig: conf,
+		auth:     auth,
+		Host:     conf.Host,
+		From:     conf.From,
+		Password: conf.Password,
+		Port:     conf.Port,
 	}
 }
 

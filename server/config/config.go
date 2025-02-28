@@ -3,9 +3,17 @@ package config
 import (
 	"log"
 	"os"
+	"path/filepath"
 
-	smtpservice "github.com/udovichenk0/scheduler/internal/ports/api/smtp"
+	"github.com/joho/godotenv"
 )
+
+type SmtpConfig struct {
+	Host     string
+	Password string
+	Port     string
+	From     string
+}
 
 type DBConfig struct {
 	Name string
@@ -16,7 +24,7 @@ type DBConfig struct {
 }
 type Config struct {
 	Db   DBConfig
-	Smtp smtpservice.SmtpConfig
+	Smtp SmtpConfig
 }
 
 func createDbOptions() DBConfig {
@@ -29,9 +37,8 @@ func createDbOptions() DBConfig {
 	}
 }
 
-func createSmtpConfig() smtpservice.SmtpConfig {
-
-	return smtpservice.SmtpConfig{
+func createSmtpConfig() SmtpConfig {
+	return SmtpConfig{
 		Host:     GetEnv("SMTP_HOST"),
 		Port:     GetEnv("SMTP_PORT"),
 		Password: GetEnv("SMTP_PASSWORD"),
@@ -39,7 +46,17 @@ func createSmtpConfig() smtpservice.SmtpConfig {
 	}
 }
 
-func CreateConfig() *Config {
+func New() *Config {
+	envPath := filepath.Join("..", ".env")
+	godotenv.Load(envPath)
+	return &Config{
+		Db:   createDbOptions(),
+		Smtp: createSmtpConfig(),
+	}
+}
+
+func NewWithPath(path string) *Config {
+	godotenv.Load(path)
 	return &Config{
 		Db:   createDbOptions(),
 		Smtp: createSmtpConfig(),
