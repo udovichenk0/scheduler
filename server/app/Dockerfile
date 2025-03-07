@@ -1,11 +1,22 @@
-FROM golang:1.22.3-alpine
+FROM golang:1.22.3-alpine as base
 
-WORKDIR /usr/src/app
+WORKDIR /server
 
-COPY go.mod go.sum ./
-RUN go mod download && go mod verify
+COPY app ./app
+COPY config ./config
+COPY entrypoint.sh ./
 
-COPY . .
-RUN go build -v -o /usr/local/bin/app ./cmd
+RUN chmod +x ./entrypoint.sh
 
-CMD ["app"]
+RUN cd /server/app/cmd && go build -o /server/bin ./main.go
+
+FROM golang:1.22.3-alpine as final
+
+WORKDIR /server
+
+COPY --from=base /server/bin ./bin
+COPY --from=base /server/entrypoint.sh ./
+
+ENTRYPOINT ["sh", "/server/entrypoint.sh"]
+
+CMD /server/bin

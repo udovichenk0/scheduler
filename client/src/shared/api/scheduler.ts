@@ -52,7 +52,7 @@ export const getGetEmailExistsUrl = (params: GetEmailExistsParams,) => {
     }
   });
 
-  return normalizedParams.size ? `http://localhost:3000/api/email/exists?${normalizedParams.toString()}` : `http://localhost:3000/api/email/exists`
+  return normalizedParams.size ? `/email/exists?${normalizedParams.toString()}` : `/email/exists`
 }
 
 export const getEmailExists = async (params: GetEmailExistsParams, options?: RequestInit): Promise<getEmailExistsResponse> => {
@@ -80,7 +80,7 @@ export type postAuthSigninResponse = {
 export const getPostAuthSigninUrl = () => {
 
 
-  return `http://localhost:3000/api/auth/signin`
+  return `/auth/signin`
 }
 
 export const postAuthSignin = async (authEmailCredsBody: AuthEmailCredsBody, options?: RequestInit): Promise<postAuthSigninResponse> => {
@@ -106,7 +106,7 @@ export type postAuthSignupResponse = {
 export const getPostAuthSignupUrl = () => {
 
 
-  return `http://localhost:3000/api/auth/signup`
+  return `/auth/signup`
 }
 
 export const postAuthSignup = async (authEmailCredsBody: AuthEmailCredsBody, options?: RequestInit): Promise<postAuthSignupResponse> => {
@@ -132,7 +132,7 @@ export type postAuthSignoutResponse = {
 export const getPostAuthSignoutUrl = () => {
 
 
-  return `http://localhost:3000/api/auth/signout`
+  return `/auth/signout`
 }
 
 export const postAuthSignout = async ( options?: RequestInit): Promise<postAuthSignoutResponse> => {
@@ -160,7 +160,7 @@ export type postAuthVerifyResponse = {
 export const getPostAuthVerifyUrl = () => {
 
 
-  return `http://localhost:3000/api/auth/verify`
+  return `/auth/verify`
 }
 
 export const postAuthVerify = async (postAuthVerifyBody: PostAuthVerifyBody, options?: RequestInit): Promise<postAuthVerifyResponse> => {
@@ -189,7 +189,7 @@ export type getAuthSessionResponse = {
 export const getGetAuthSessionUrl = () => {
 
 
-  return `http://localhost:3000/api/auth/session`
+  return `/auth/session`
 }
 
 export const getAuthSession = async ( options?: RequestInit): Promise<getAuthSessionResponse> => {
@@ -217,7 +217,7 @@ export type postAuthResendResponse = {
 export const getPostAuthResendUrl = () => {
 
 
-  return `http://localhost:3000/api/auth/resend`
+  return `/auth/resend`
 }
 
 export const postAuthResend = async (postAuthResendBody: PostAuthResendBody, options?: RequestInit): Promise<postAuthResendResponse> => {
@@ -243,7 +243,7 @@ export type getTasksResponse = {
 export const getGetTasksUrl = () => {
 
 
-  return `http://localhost:3000/api/tasks`
+  return `/tasks`
 }
 
 export const getTasks = async ( options?: RequestInit): Promise<getTasksResponse> => {
@@ -271,7 +271,7 @@ export type postTasksResponse = {
 export const getPostTasksUrl = () => {
 
 
-  return `http://localhost:3000/api/tasks`
+  return `/tasks`
 }
 
 export const postTasks = async (taskFields: TaskFields, options?: RequestInit): Promise<postTasksResponse> => {
@@ -300,7 +300,7 @@ export type deleteTasksResponse = {
 export const getDeleteTasksUrl = () => {
 
 
-  return `http://localhost:3000/api/tasks`
+  return `/tasks`
 }
 
 export const deleteTasks = async ( options?: RequestInit): Promise<deleteTasksResponse> => {
@@ -328,7 +328,7 @@ export type putTasksIdResponse = {
 export const getPutTasksIdUrl = (id: Id,) => {
 
 
-  return `http://localhost:3000/api/tasks/${id}`
+  return `/tasks/${id}`
 }
 
 export const putTasksId = async (id: Id,
@@ -358,7 +358,7 @@ export type deleteTasksIdResponse = {
 export const getDeleteTasksIdUrl = (id: Id,) => {
 
 
-  return `http://localhost:3000/api/tasks/${id}`
+  return `/tasks/${id}`
 }
 
 export const deleteTasksId = async (id: Id, options?: RequestInit): Promise<deleteTasksIdResponse> => {
@@ -386,7 +386,7 @@ export type patchTasksIdDateResponse = {
 export const getPatchTasksIdDateUrl = (id: Id,) => {
 
 
-  return `http://localhost:3000/api/tasks/${id}/date`
+  return `/tasks/${id}/date`
 }
 
 export const patchTasksIdDate = async (id: Id,
@@ -413,7 +413,7 @@ export type patchTasksIdStatusResponse = {
 export const getPatchTasksIdStatusUrl = (id: Id,) => {
 
 
-  return `http://localhost:3000/api/tasks/${id}/status`
+  return `/tasks/${id}/status`
 }
 
 export const patchTasksIdStatus = async (id: Id,
@@ -440,7 +440,7 @@ export type postTasksIdTrashResponse = {
 export const getPostTasksIdTrashUrl = (id: Id,) => {
 
 
-  return `http://localhost:3000/api/tasks/${id}/trash`
+  return `/tasks/${id}/trash`
 }
 
 export const postTasksIdTrash = async (id: Id, options?: RequestInit): Promise<postTasksIdTrashResponse> => {

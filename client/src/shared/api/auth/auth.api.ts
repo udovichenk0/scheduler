@@ -45,6 +45,7 @@ export const signUp = createQuery({
 export const checkVerifiedEmailExists = createQuery({
   handler: async (email: Email) => {
     const response = await getEmailExists({email})
+
     return handleResponse(response, getEmailExistsResponse)
   }
 })

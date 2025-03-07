@@ -1,6 +1,6 @@
 FROM node:20-alpine
 
-WORKDIR /app/client
+WORKDIR /app
 
 COPY package.json yarn.lock ./
 
@@ -8,16 +8,16 @@ RUN yarn
 
 COPY . .
 
-RUN yarn build
+RUN yarn build && npm -g install http-server
 
 FROM node:20-alpine
 
 USER node
 
-WORKDIR /app/client
+WORKDIR /app
 
 USER node
 
-COPY --from=0 --chown=node:node /app/client /app/client
+COPY --from=0 --chown=node:node /app/dist ./app
 
-CMD yarn preview --host
+CMD npx http-server --proxy http://localhost:4173 ./app -p 4173 -d false

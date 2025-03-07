@@ -32,12 +32,9 @@ func main() {
 	log := log.NewLogger()
 
 	db := db.New(db.Opts{
-		User: appConfig.Db.User,
-		Pass: appConfig.Db.Pass,
-		Host: appConfig.Db.Host,
-		Port: appConfig.Db.Port,
-		Name: appConfig.Db.Name,
+		URL: appConfig.Db.URL,
 	})
+
 	smtp := smtp.New(smtp.Opts{
 		From:     appConfig.Smtp.From,
 		Password: appConfig.Smtp.Password,
@@ -54,7 +51,6 @@ func main() {
 			return c.Status(e.Status).JSON(e)
 		},
 	})
-
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     config.GetEnv("CLIENT_URL"),
 		AllowMethods:     "GET,DELETE,POST,PUT,PATCH",

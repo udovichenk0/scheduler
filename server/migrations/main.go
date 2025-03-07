@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"embed"
-	"fmt"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -12,11 +11,10 @@ import (
 )
 
 //go:embed migrations/*.sql
-var embedMigrations embed.FS //
+var embedMigrations embed.FS
 
 func main() {
-	c := config.New().Db
-	source := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", c.User, c.Pass, c.Host, c.Port, c.Name)
+	source := config.GetEnv("DATABASE_URL")
 	db, err := sql.Open("mysql", source)
 	if err != nil {
 		log.Fatal(err)
@@ -30,6 +28,6 @@ func main() {
 	goose.SetBaseFS(embedMigrations)
 
 	if err := goose.Up(db, "migrations"); err != nil {
-		log.Fatal(err)
+		log.Println(err.Error())
 	}
 }

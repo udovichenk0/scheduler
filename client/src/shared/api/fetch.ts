@@ -7,6 +7,14 @@ const getData = async (res: Response) => {
   }
   return await res.text()
 }
+ const getUrl = (contextUrl: string) => {
+   const baseUrl =
+     MODE === 'production'
+       ? 'http://localhost:3000/api'
+       : 'http://localhost:3000/api';
+ 
+   return `${baseUrl}${contextUrl}`;
+ };
 
 export const customInstance = async <T>(url: string, {
    method,
@@ -18,7 +26,7 @@ export const customInstance = async <T>(url: string, {
    responseType?: string;
    headers?: HeadersInit
  }): Promise<T> => {
-   const response = await fetch(url, {
+   const response = await fetch(getUrl(url), {
     ...rest,
      method,
      headers: headers,

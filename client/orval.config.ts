@@ -1,11 +1,10 @@
  import { defineConfig } from 'orval';
- 
- export default defineConfig({
+
+export default defineConfig({
    scheduler: {
      input: './orval.yaml',
      output: {
       target: './src/shared/api/scheduler.ts',
-      baseUrl: "http://localhost:3000/api",
       // mock: true,
       mode: "split",
       client: "fetch",

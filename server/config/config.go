@@ -16,11 +16,7 @@ type SmtpConfig struct {
 }
 
 type DBConfig struct {
-	Name string
-	Pass string
-	User string
-	Host string
-	Port string
+	URL string
 }
 type Config struct {
 	Db   DBConfig
@@ -29,11 +25,7 @@ type Config struct {
 
 func createDbOptions() DBConfig {
 	return DBConfig{
-		Name: GetEnv("MYSQL_DATABASE"),
-		Pass: GetEnv("MYSQL_PASSWORD"),
-		User: GetEnv("MYSQL_USER"),
-		Host: GetEnv("MYSQL_HOST"),
-		Port: GetEnv("MYSQL_PORT"),
+		URL: GetEnv("DATABASE_URL"),
 	}
 }
 

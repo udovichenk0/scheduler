@@ -9,7 +9,11 @@ import tailwindcss from '@tailwindcss/vite';
 // import checker from "vite-plugin-checker"
 import tsconfigPaths from "vite-tsconfig-paths"
 // https://vitejs.dev/config/
+
 export default defineConfig({
+  define: {
+    MODE: JSON.stringify(process.env.NODE_ENV),
+  },
   server: {
     port: 4173,
   },

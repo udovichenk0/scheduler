@@ -1,0 +1,81 @@
+services:
+  db:
+    image: mysql:8.0
+    networks:
+      - scheduler
+    secrets:
+      - db_password
+      - db_user
+      - database
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 15s
+        max_attempts: 20
+    environment:
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_password
+      MYSQL_USER_FILE: /run/secrets/db_user
+      MYSQL_DATABASE_FILE: /run/secrets/database
+  migrations:
+    image: migrations
+    networks:
+      - scheduler
+    depends_on:
+      - db
+    secrets:
+      - database_url
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+  app:
+    image: app
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    networks:
+      - scheduler
+    environment:
+      CLIENT_URL: http://localhost:4173
+      ENV: PROD
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 15s
+        max_attempts: 20
+    secrets:
+      - database_url
+      - smtp_port
+      - smtp_password
+      - smtp_host
+      - smtp_from
+  web:
+    image: web
+    networks:
+      - scheduler
+    ports:
+      - 4173:4173
+    
+secrets:
+  db_password: 
+    external: true
+  database:
+    external: true
+  db_user:
+    external: true
+  database_url:
+    external: true
+  smtp_port:
+    external: true
+  smtp_password:
+    external: true
+  smtp_host:
+    external: true
+  smtp_from:
+    external: true
+
+networks:
+  scheduler:
+    external: true
