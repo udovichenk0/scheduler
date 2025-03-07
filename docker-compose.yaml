@@ -57,6 +57,11 @@ services:
       - scheduler
     ports:
       - 4173:4173
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 15s
+        max_attempts: 20
     
 secrets:
   db_password: 
