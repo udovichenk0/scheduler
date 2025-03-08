@@ -18,7 +18,7 @@ services:
       MYSQL_USER_FILE: /run/secrets/db_user
       MYSQL_DATABASE_FILE: /run/secrets/database
   migrations:
-    image: migrations
+    image: kkkkhe/migrations:latest
     networks:
       - scheduler
     depends_on:
@@ -30,7 +30,7 @@ services:
         condition: on-failure
         delay: 30s
   app:
-    image: app
+    image: kkkkhe/app:latest
     ports:
       - 3000:3000
     depends_on:
@@ -52,7 +52,7 @@ services:
       - smtp_host
       - smtp_from
   web:
-    image: web
+    image: kkkkhe/web:latest
     networks:
       - scheduler
     ports:
