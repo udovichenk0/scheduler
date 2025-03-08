@@ -6,16 +6,33 @@ on:
       - main
 
 jobs:
-  build-go:
+  build-go-and-push:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Setup go
         uses: actions/setup-go@v5
         with:
-          go-version-file: 'server/go.work'
+          go-version-file: server/go.work
       - run: go build -C server/app/cmd main.go
-  build-web:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: /server
+          file: /server/app/Dockerfile
+          cache-to: type=gha,mode=max
+          cache-from: type=gha
+          tags: scheduler/app:latest
+
+  build-web-and-push:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
