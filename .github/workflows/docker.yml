@@ -28,6 +28,6 @@ jobs:
             client/package.json
             client/yarn.lock
       - name: Install deps
-        run: cd client && yarn install --frozen-lockfile --prod
+        run: cd client && yarn install --frozen-lockfile
       - name: Build web
         run: cd client && yarn build
