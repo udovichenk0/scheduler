@@ -13,7 +13,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v5
         with:
-          go-version: 'server/go.work'
+          go-version-file: 'server/go.work'
       - run: go build -C server/app/cmd main.go
   web:
     runs-on: ubuntu-latest
