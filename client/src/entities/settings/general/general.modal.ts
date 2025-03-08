@@ -1,5 +1,4 @@
-import { createEvent, createStore, sample } from "effector"
-import { createEffect } from "effector/effector.mjs"
+import { createEvent, createStore, sample, createEffect } from "effector"
 
 import { $$i18n } from "@/shared/i18n"
 import { parseCookieValue } from "@/shared/lib/storage"
