@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-go:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,7 +15,7 @@ jobs:
         with:
           go-version-file: 'server/go.work'
       - run: go build -C server/app/cmd main.go
-  web:
+  build-web:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,4 +30,4 @@ jobs:
       - name: Install deps
         run: yarn install --frozen-lockfile --prod
       - name: Build web
-        run: yarn build
+        run: cd client && yarn build
