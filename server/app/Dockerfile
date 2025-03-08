@@ -1,4 +1,4 @@
-FROM golang:1.24.1-alpine as base
+FROM golang:1.24.1-alpine AS base
 
 WORKDIR /server
 
@@ -10,7 +10,7 @@ RUN chmod +x ./entrypoint.sh
 
 RUN cd app/cmd && go build -o /server/bin ./main.go
 
-FROM golang:1.24.1-alpine as final
+FROM golang:1.24.1-alpine AS final
 
 WORKDIR /server
 
@@ -19,4 +19,4 @@ COPY --from=base /server/entrypoint.sh ./
 
 ENTRYPOINT ["sh", "/server/entrypoint.sh"]
 
-CMD /server/bin
+CMD ["/server/bin"]
