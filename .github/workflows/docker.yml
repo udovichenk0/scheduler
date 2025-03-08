@@ -27,7 +27,8 @@ jobs:
           cache-dependency-path: |
             client/package.json
             client/yarn.lock
+      - run: cd client
       - name: Install deps
         run: yarn install --frozen-lockfile --prod
       - name: Build web
-        run: cd client && yarn build
+        run: yarn build
