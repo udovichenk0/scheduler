@@ -1,4 +1,4 @@
-FROM golang:1.22.3-alpine as base
+FROM golang:1.24.1-alpine as base
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ ENTRYPOINT ["sh", "/app/server/migrations/entrypoint.sh"]
 RUN cd /app/server/migrations && go build -o /app/bin ./main.go
 
 
-FROM golang:1.22.3-alpine as final
+FROM golang:1.24.1-alpine as final
 
 WORKDIR /app
 

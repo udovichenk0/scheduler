@@ -1,4 +1,4 @@
-FROM golang:1.22.3-alpine as base
+FROM golang:1.24.1-alpine as base
 
 WORKDIR /server
 
@@ -8,9 +8,9 @@ COPY entrypoint.sh ./
 
 RUN chmod +x ./entrypoint.sh
 
-RUN cd /server/app/cmd && go build -o /server/bin ./main.go
+RUN cd app/cmd && go build -o /server/bin ./main.go
 
-FROM golang:1.22.3-alpine as final
+FROM golang:1.24.1-alpine as final
 
 WORKDIR /server
 
