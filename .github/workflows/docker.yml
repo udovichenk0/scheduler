@@ -30,7 +30,7 @@ jobs:
           file: ./server/app/Dockerfile
           cache-to: type=gha,mode=max
           cache-from: type=gha
-          tags: scheduler/app:latest
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/app:latest
 
   build-web-and-push:
     runs-on: ubuntu-latest
