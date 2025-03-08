@@ -26,8 +26,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          context: /server
-          file: /server/app/Dockerfile
+          context: ./server
+          file: ./server/app/Dockerfile
           cache-to: type=gha,mode=max
           cache-from: type=gha
           tags: scheduler/app:latest
