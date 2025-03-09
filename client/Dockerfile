@@ -18,6 +18,6 @@ WORKDIR /app
 
 USER node
 
-COPY --from=0 --chown=node:node /app/dist ./app
+COPY --from=0 --chown=node:node /app/dist /app
 
-CMD ["npx", "http-server", "--proxy http://localhost:4173", "./app", "-p 4173", "-d false"]
+CMD ["npx", "http-server", "--proxy http://localhost:4173", "/app", "-p 4173", "-d false"]
