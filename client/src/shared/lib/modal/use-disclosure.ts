@@ -1,6 +1,7 @@
-import { $$modal } from '@/shared/lib/modal';
 import { useStoreMap, useUnit } from "effector-react"
 import { useEffect, useId, useState } from 'react';
+
+import { $$modal } from '@/shared/lib/modal';
 
 function makeId(randId: string, prefix?: string){
   if(prefix){

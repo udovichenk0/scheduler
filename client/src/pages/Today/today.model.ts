@@ -1,4 +1,5 @@
 import { createEvent, createStore, sample, combine } from "effector"
+import { createGate } from "effector-react"
 
 import { createTaskFactory } from "@/features/manage-task/create"
 import { updateTaskFactory } from "@/features/manage-task/update"
@@ -9,10 +10,9 @@ import { isUnplaced, shouldShowCompleted } from "@/entities/task/lib"
 
 import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
 import { getToday, isToday } from "@/shared/lib/date"
+import { boolStr } from "@/shared/lib/validation"
 
 import { isBeforeToday } from "./../../shared/lib/date/comparison"
-import { createGate } from "effector-react"
-import { boolStr } from "@/shared/lib/validation"
 
 export const gate = createGate()
 

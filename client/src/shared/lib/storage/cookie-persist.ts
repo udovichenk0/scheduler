@@ -7,9 +7,10 @@ import {
   createStore,
 } from "effector"
 import { combineEvents, not } from "patronum"
-
 import { z } from "zod"
+
 import { prepend } from "../effector"
+
 import { getCookie } from "./get-cookie"
 
 export const cookiePersist = <T>({

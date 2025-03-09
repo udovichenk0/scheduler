@@ -1,9 +1,11 @@
 import { clsx } from "clsx"
-
-import { DoneSvg } from "./done.svg"
 import "./style.css"
 import { RefObject } from "react"
+
 import { isEnter, isSpace } from "@/shared/lib/key-utils"
+
+import { DoneSvg } from "./done.svg"
+
 export function Checkbox({
   onChange,
   checked,

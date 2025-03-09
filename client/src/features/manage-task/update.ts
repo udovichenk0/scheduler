@@ -1,14 +1,14 @@
-import { dateToUnix } from '@/shared/lib/date/date-to-unix';
 import { createEvent, createStore, merge, sample } from "effector"
 import { and } from "patronum"
 import { attachOperation } from "@farfetched/core"
 
 import { changeTaskStatus, findTaskById, getTaskFields, taskToDomain } from "@/entities/task/lib"
 import { $$session } from "@/entities/session"
+import { modifyTaskFactory, TaskModel } from "@/entities/task"
+import { EditableTaskFields, Task, Status } from '@/entities/task/type';
 
 import { taskApi, TaskId } from "@/shared/api/task"
-import { modifyTaskFactory, TaskModel } from "@/entities/task"
-import { EditableTaskFields, Task, TaskStatus } from '@/entities/task/type';
+import { dateToUnix } from '@/shared/lib/date/date-to-unix';
 import { toApiTaskFields } from '@/shared/api/task/task.dto';
 
 export const updateTaskFactory = ({ taskModel }:{ taskModel: TaskModel }) => {
@@ -24,7 +24,7 @@ export const updateTaskFactory = ({ taskModel }:{ taskModel: TaskModel }) => {
   const updateTaskTriggered = createEvent()
   const statusChangedAndUpdated = createEvent<{
     id: TaskId
-    status: TaskStatus
+    status: Status
   }>()
   const dateChangedAndUpdated = createEvent<{ id: TaskId; date: Date }>()
   const init = createEvent<Task>()

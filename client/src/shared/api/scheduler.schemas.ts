@@ -39,7 +39,7 @@ export type GetEmailExists200Response = {
 export type TaskType = typeof TaskType[keyof typeof TaskType];
 
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+ 
 export const TaskType = {
   inbox: 'inbox',
   unplaced: 'unplaced',
@@ -48,7 +48,7 @@ export const TaskType = {
 export type TaskStatus = typeof TaskStatus[keyof typeof TaskStatus];
 
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+ 
 export const TaskStatus = {
   inprogress: 'inprogress',
   finished: 'finished',

@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next"
+import { useRef, useState } from "react"
 
 import { PomodoroSettings } from "@/entities/settings/pomodoro"
 import { ThemeChanger } from "@/entities/settings/theme"
@@ -6,10 +7,9 @@ import { GeneralSettings } from "@/entities/settings/general"
 
 import { Icon } from "@/shared/ui/icon"
 import { Root } from "@/shared/ui/tab"
+import { CloseButton, Modal } from "@/shared/ui/modal"
 
 import { Authentication } from "./ui/sync"
-import { CloseButton, Modal } from "@/shared/ui/modal"
-import { useRef, useState } from "react"
 const Tab = {
   general: "general",
   synchronization: "synchronization",

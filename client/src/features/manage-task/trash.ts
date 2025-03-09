@@ -1,10 +1,10 @@
 import { createEvent, sample, merge } from "effector"
+import { attachOperation } from "@farfetched/core"
 
 import { $$session } from "@/entities/session"
+import { TaskModel } from "@/entities/task"
 
 import { taskApi } from "@/shared/api/task"
-import { TaskModel } from "@/entities/task"
-import { attachOperation } from "@farfetched/core"
 
 export const trashTaskFactory = ({
   taskModel

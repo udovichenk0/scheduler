@@ -2,6 +2,8 @@ import { useUnit } from "effector-react"
 import { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 
+import Settings from "@/widgets/settings"
+
 import { $$pomodoroSettings } from "@/entities/settings/pomodoro"
 
 import { Typography } from "@/shared/ui/general/typography"
@@ -9,15 +11,14 @@ import { Icon, IconName } from "@/shared/ui/icon"
 import { Container } from "@/shared/ui/general/container"
 import { Pomodoro } from "@/shared/ui/pomodoro"
 import { Tooltip } from "@/shared/ui/general/tooltip"
-
-import { $$pomodoro } from "./header.model"
-import { ProgressBar } from "./ui/progress-bar"
-import Settings from "@/widgets/settings"
 import { CloseButton, Modal } from "@/shared/ui/modal"
 import { normalizeSeconds } from "@/shared/lib/date"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { Button } from "@/shared/ui/buttons/main-button"
+
+import { ProgressBar } from "./ui/progress-bar"
+import { $$pomodoro } from "./header.model"
 
 type HeaderProps = {
   iconName: IconName

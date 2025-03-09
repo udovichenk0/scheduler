@@ -1,18 +1,19 @@
 import dayjs, { Dayjs } from "dayjs"
+import { Fragment, ReactNode, useContext, useEffect, useState } from "react"
+import { useUnit } from "effector-react"
+
+import { ExpandedTask } from "@/widgets/expanded-task"
+import { EditableTask } from "@/widgets/editable-task"
 
 import { Task } from "@/entities/task"
 
 import { TaskId } from "@/shared/api/task"
-
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
-import { Fragment, ReactNode, useContext, useEffect, useState } from "react"
-import { ExpandedTask } from "@/widgets/expanded-task"
-import { EditableTask } from "@/widgets/editable-task"
-import { useUnit } from "effector-react"
-import { TaskManagerContext } from "../../upcoming.model"
 import { useSelectItem } from "@/shared/lib/use-select-item"
 import { getToday } from "@/shared/lib/date"
+
+import { TaskManagerContext } from "../../upcoming.model"
 
 export const UpcomingTasks = ({
   onChangeDate,

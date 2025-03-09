@@ -1,5 +1,6 @@
 import { useUnit, useGate } from "effector-react"
 import { useTranslation } from "react-i18next"
+import { useEffect, useRef } from "react"
 
 import { CheckEmailForm } from "@/features/authentication/check-email"
 import { Logout } from "@/features/authentication/logout"
@@ -12,7 +13,6 @@ import { Typography } from "@/shared/ui/general/typography"
 import { Icon } from "@/shared/ui/icon"
 
 import { $flow, flowChanged, gate, Flow } from "./sync.model"
-import { useEffect, useRef } from "react"
 
 export const Authentication = () => {
   const currentFlow = useUnit($flow)

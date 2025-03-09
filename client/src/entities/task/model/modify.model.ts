@@ -1,11 +1,12 @@
 import dayjs from "dayjs"
 import { combine, createEvent, createStore, sample, split } from "effector"
+import { spread } from "patronum"
 
 import { bridge } from "@/shared/lib/effector/bridge"
 
+import type { Status as Status, Type as Type, EditableTaskFields } from '../type.ts'
+
 import { TaskStatus, TaskType } from "./task.model.ts"
-import type { TaskStatus as Status, TaskType as Type, EditableTaskFields } from '../type.ts'
-import { spread } from "patronum"
 
 export const modifyTaskFactory = ({
   defaultType = "inbox",

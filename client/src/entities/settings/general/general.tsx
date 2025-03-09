@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next"
 import { useUnit } from "effector-react"
+import { useEffect, useRef } from "react"
 
 import { onMount } from "@/shared/lib/react"
 
 import { languages } from "./config"
 import { $currentLanguage, init, languageChanged } from "./general.modal"
-import { useEffect, useRef } from "react"
 import { Selector } from "./ui/selector"
 export const GeneralSettings = () => {
   const ref = useRef<HTMLButtonElement>(null)

@@ -1,5 +1,6 @@
-import { isEnter } from "@/shared/lib/key-utils";
 import { HTMLAttributes, useEffect, useRef, useState } from "react";
+
+import { isEnter } from "@/shared/lib/key-utils";
 
 type EditableContentProps = {
   onSave: (str: string) => void, 

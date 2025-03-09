@@ -1,11 +1,11 @@
 import { createEvent, sample, merge } from "effector"
 import { and } from "patronum"
+import { attachOperation } from "@farfetched/core"
 
 import { $$session } from "@/entities/session"
 import { TaskModel } from "@/entities/task"
 
 import { taskApi } from "@/shared/api/task"
-import { attachOperation } from "@farfetched/core"
 export const removeTaskFactory = (taskModel: TaskModel) => {
   const taskDeletedById = createEvent<string>()
   const allTasksDeleted = createEvent()

@@ -4,10 +4,18 @@ import { useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
 
 import { Layout } from "@/widgets/layout/main"
+import { ExpandedTask } from "@/widgets/expanded-task"
 
-import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
+import { CloseButton, Modal } from "@/shared/ui/modal"
 import { useDocumentTitle } from "@/shared/lib/react"
+import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
+import { Button } from "@/shared/ui/buttons/main-button"
+import { TaskId } from "@/shared/api/task"
+import { Icon } from "@/shared/ui/icon"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
+import { ModalName } from "@/shared/lib/modal/modal-names"
 
+import { Calendar } from "./ui/calendar-table"
 import {
   $$createTask,
   $$trashTask,
@@ -16,14 +24,6 @@ import {
   $moreTasks,
   setMoreTasks,
 } from "./calendar.model"
-import { Calendar } from "./ui/calendar-table"
-import { CloseButton, Modal } from "@/shared/ui/modal"
-import { ExpandedTask } from "@/widgets/expanded-task"
-import { Button } from "@/shared/ui/buttons/main-button"
-import { TaskId } from "@/shared/api/task"
-import { Icon } from "@/shared/ui/icon"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { ModalName } from "@/shared/lib/modal/modal-names"
 import { MoreTasks } from "./ui/more-tasks"
 
 const CalendarPage = () => {

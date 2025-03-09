@@ -1,3 +1,5 @@
+import { combine } from "effector"
+
 import { createTaskFactory } from "@/features/manage-task/create"
 import { updateTaskFactory } from "@/features/manage-task/update"
 import { trashTaskFactory } from "@/features/manage-task/trash"
@@ -7,7 +9,6 @@ import { isUnplaced, shouldShowCompleted } from "@/entities/task/lib"
 
 import { routes } from "@/shared/routing"
 import { getToday } from "@/shared/lib/date"
-import { combine } from "effector"
 
 export const unplacedRoute = routes.unplaced
 

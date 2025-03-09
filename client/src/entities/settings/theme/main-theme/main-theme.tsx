@@ -1,13 +1,13 @@
 import { useUnit } from "effector-react"
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { clsx } from "clsx"
 
 import { Icon } from "@/shared/ui/icon"
+import { Typography } from "@/shared/ui/general/typography"
 
 import { $$themeSettings, Theme } from "./main-theme.model"
 import style from "./styles.module.css"
-import clsx from "clsx"
-import { Typography } from "@/shared/ui/general/typography"
 const { themeChanged, $theme } = $$themeSettings
 
 export const MainThemeChanger = () => {

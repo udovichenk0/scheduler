@@ -1,9 +1,9 @@
 import { createEvent, createStore, sample } from "effector"
 
 import { singleton } from "@/shared/lib/effector/singleton"
+import { authApi } from "@/shared/api/auth"
 
 import { User } from "./type"
-import { authApi } from "@/shared/api/auth"
 
 
 export const $$session = singleton(() => {

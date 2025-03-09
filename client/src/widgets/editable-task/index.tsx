@@ -1,10 +1,14 @@
-import { Task, TaskItem } from "@/entities/task"
-import { ExpandedTask } from "../expanded-task"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { UpdateTaskFactory } from "@/features/manage-task/update"
 import { useUnit } from "effector-react"
 import { ReactNode, Ref } from "react"
+
+import { UpdateTaskFactory } from "@/features/manage-task/update"
+
+import { Task, TaskItem } from "@/entities/task"
+
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
+
+import { ExpandedTask } from "../expanded-task"
 
 type EditableTaskProps = {
   task: Task,

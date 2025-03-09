@@ -1,4 +1,3 @@
-import { tasksToDomain } from './../lib';
 import { createEvent, createStore, sample } from "effector"
 import { and } from "patronum"
 
@@ -6,11 +5,12 @@ import { $$session } from "@/entities/session"
 
 import { singleton } from "@/shared/lib/effector"
 import { TaskId, taskApi } from "@/shared/api/task"
-
-import { EditableTaskFields, Task } from "../type"
-import { deleteById } from "../lib"
 import { boolStr } from '@/shared/lib/validation';
 import { cookiePersist } from '@/shared/lib/storage';
+
+import { EditableTaskFields, Task } from "../type"
+import { deleteById , tasksToDomain } from "../lib"
+
 
 export const TaskType = { //!FIX rename
   INBOX: "inbox",

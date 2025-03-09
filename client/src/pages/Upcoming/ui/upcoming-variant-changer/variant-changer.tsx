@@ -10,11 +10,11 @@ import { Task } from "@/entities/task"
 import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
+import { Root } from "@/shared/ui/tab"
 
 import { generateDaysOfWeek } from "../../config"
 
 import style from "./style.module.css"
-import { Root } from "@/shared/ui/tab"
 
 export function UpcomingVariantChanger({
   setUpcomingVariant,

@@ -1,12 +1,12 @@
-let modals: HTMLElement[] = []
+const modals: HTMLElement[] = []
 export function focusTrap(dialogEl: HTMLElement | null){
   if(!dialogEl) return
   modals.push(dialogEl)
-  let focusableEls = findFocusableElements(dialogEl)
+  const focusableEls = findFocusableElements(dialogEl)
   const firstEl = getFirstEl(focusableEls)
   const lastEl = getLastEl(focusableEls)
   function startFocusTrap(e: FocusEvent) {
-    let focusableEls = findFocusableElements(dialogEl!)
+    const focusableEls = findFocusableElements(dialogEl!)
     const isActive = modals[modals.length - 1] == dialogEl
     if(!isActive) return
     if(isFirstElementUnfocused(e, firstEl)){

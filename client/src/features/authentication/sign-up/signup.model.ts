@@ -1,9 +1,11 @@
-import { $$session } from '@/entities/session';
 import { createEvent, createStore, sample } from "effector"
 import { z } from "zod"
 
+import { $$session } from '@/entities/session';
+
 import { authApi } from "@/shared/api/auth"
 import { bridge } from "@/shared/lib/effector/bridge"
+import { UNEXPECTED_ERROR_MESSAGE } from '@/shared/lib/error';
 
 import { $email } from "../check-email"
 
@@ -14,7 +16,6 @@ import {
   TOO_LONG_MESSAGE,
   TOO_SHORT_MESSAGE,
 } from "./constants"
-import { UNEXPECTED_ERROR_MESSAGE } from '@/shared/lib/error';
 
 export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()

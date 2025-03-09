@@ -1,0 +1,37 @@
+name: Build and lint
+
+on: 
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.work
+          cache-dependency-path: "**/*.sum"
+      - name: Build go
+        run: go build -C server/app/cmd -o ./bin main.go
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with: 
+          node-version-file: client/package.json
+          cache: 'yarn'
+          cache-dependency-path: |
+            client/package.json
+            client/yarn.lock
+      - name: Install deps
+        run: cd client && yarn install --frozen-lockfile
+      - name: Lint
+        run: cd client && 
+      - name: Build web
+        run: cd client && yarn build

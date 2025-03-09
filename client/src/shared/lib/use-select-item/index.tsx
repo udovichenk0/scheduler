@@ -13,10 +13,10 @@ export const useSelectItem = <T,>({
   useEffect(() => {
     if(items.length < refItems.current.length){
       if(selectedItem != null && selectedItem >= 0){
-        if(!!items[selectedItem]){
+        if(items[selectedItem]){
           refItems.current[selectedItem].focus()
           onChange?.(items[selectedItem])
-        } else if(!!items[selectedItem - 1]){
+        } else if(items[selectedItem - 1]){
           setSelectedItem(selectedItem - 1)
           onChange?.(items[selectedItem - 1])
           refItems.current[selectedItem - 1].focus()

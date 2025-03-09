@@ -1,15 +1,15 @@
 import { t } from "i18next"
 import { useTranslation } from "react-i18next"
+import { useRef } from "react"
 
 import { Tooltip } from "@/shared/ui/general/tooltip"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
-
-import { SortConfig, SortType } from "../type"
 import { Modal } from "@/shared/ui/modal"
-import { useRef } from "react"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
+
+import { SortConfig, SortType } from "../type"
 export type SortProps = {
   config: SortConfig[]
   active: SortType

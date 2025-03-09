@@ -9,12 +9,12 @@ import { Icon } from "@/shared/ui/icon"
 import { routes } from "@/shared/routing"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
-
-import { Task, TaskId, TaskStatus, TaskType } from "../type"
-import { TaskStatuses } from "../config"
 import { Modal } from "@/shared/ui/modal"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
+
+import { TaskStatuses } from "../config"
+import { Task, TaskId, Status, Type } from "../type"
 
 export const TaskItem = ({
   ref: elem,
@@ -32,7 +32,7 @@ export const TaskItem = ({
   isShown: boolean,
   task: Task
   onUpdateDate?: ({ date, id }: { date: Date; id: TaskId }) => void
-  onUpdateStatus?: ({ id, status }: { status: TaskStatus; id: TaskId }) => void
+  onUpdateStatus?: ({ id, status }: { status: Status; id: TaskId }) => void
   onDoubleClick?: () => void
   dateLabel?: boolean
   onSelect: () => void
@@ -162,7 +162,7 @@ export const TaskItem = ({
   )
 }
 
-const TypeLable = ({isVisible, taskType}:{isVisible: boolean, taskType: TaskType}) => {
+const TypeLable = ({isVisible, taskType}:{isVisible: boolean, taskType: Type}) => {
   const ref = useRef<HTMLDivElement>(null)
   if(!isVisible){
     return null

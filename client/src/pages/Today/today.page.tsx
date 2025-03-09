@@ -1,10 +1,13 @@
 import { useGate, useList, useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
+import { useState } from "react"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { Layout } from "@/widgets/layout/main"
+import { EditableTask } from "@/widgets/editable-task"
 
 import { Sort } from "@/entities/task"
+import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
@@ -13,7 +16,11 @@ import { TaskId } from "@/shared/api/task"
 import {
   useDocumentTitle,
 } from "@/shared/lib/react"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
+import { ModalName } from "@/shared/lib/modal/modal-names"
+import { useSelectItem } from "@/shared/lib/use-select-item"
 
+import { SORT_CONFIG } from "./config"
 import {
   $$trashTask,
   $isOverdueTasksOpened,
@@ -26,13 +33,6 @@ import {
   $$taskModel,
   gate,
 } from "./today.model"
-import { SORT_CONFIG } from "./config"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { ModalName } from "@/shared/lib/modal/modal-names"
-import { EditableTask } from "@/widgets/editable-task"
-import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
-import { useSelectItem } from "@/shared/lib/use-select-item"
-import { useState } from "react"
 
 const Today = () => {
   const { t } = useTranslation()

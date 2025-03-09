@@ -1,29 +1,31 @@
 import { useUnit } from "effector-react"
 import { ReactNode, RefObject, useEffect, useRef, useState } from "react"
+import { EventCallable, StoreWritable } from "effector"
+import clsx from "clsx"
+
+import { Status, Type } from "@/entities/task/type"
+import { ModifyTaskForm } from "@/entities/task"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { DatePicker } from "@/shared/ui/date-picker"
-import { EventCallable, StoreWritable } from "effector"
 import { Container } from "@/shared/ui/general/container"
 import { Modal } from "@/shared/ui/modal"
-import clsx from "clsx"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { getToday } from "@/shared/lib/date"
-import { TaskStatus, TaskType } from "@/entities/task/type"
-import { ModifyTaskForm } from "@/entities/task"
+
 
 type TaskFactory = {
   $title: StoreWritable<string>
   $description: StoreWritable<Nullable<string>>
-  $status: StoreWritable<TaskStatus>
-  $type: StoreWritable<TaskType>
+  $status: StoreWritable<Status>
+  $type: StoreWritable<Type>
   $startDate: StoreWritable<Nullable<Date>>
-  statusChanged: EventCallable<TaskStatus>
+  statusChanged: EventCallable<Status>
   descriptionChanged: EventCallable<Nullable<string>>
   titleChanged: EventCallable<string>
-  typeChanged: EventCallable<TaskType>
+  typeChanged: EventCallable<Type>
   dateChanged: EventCallable<Date>
 }
 

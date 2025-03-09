@@ -1,11 +1,14 @@
 import { createQuery } from "@farfetched/core"
 
-import { SessionUserSchema } from "./auth.dto"
+import { getHandledError } from "@/shared/lib/error"
+
 import { getAuthSession, getEmailExists, postAuthResend, postAuthSignin, postAuthSignout, postAuthSignup, postAuthVerify } from "../scheduler"
 import { getAuthSessionResponse, getEmailExistsResponse, postAuthSigninResponse, postAuthSignupResponse } from "../zod"
 import { handleResponse, throwIfError } from "../lib"
 import { AuthEmailCredsBody, Email, PostAuthResendBody, PostAuthVerifyBody } from '../scheduler.schemas';
-import { getHandledError } from "@/shared/lib/error"
+
+import { SessionUserSchema } from "./auth.dto"
+
 
 export const tokenQuery = createQuery({
   handler: async ({ code, state }: {code: string, state: string}) => {

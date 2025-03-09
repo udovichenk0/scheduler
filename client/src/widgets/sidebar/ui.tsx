@@ -5,13 +5,14 @@ import { Icon } from "@/shared/ui/icon/icon"
 import { routes } from "@/shared/routing"
 import { Button } from "@/shared/ui/buttons/main-button/ui"
 import { Container } from "@/shared/ui/general/container"
-
-import { $inboxCounter, $todayCounter } from "./sidebar.model"
-import { Logo } from "./logo"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { Tooltip } from "@/shared/ui/general/tooltip"
+
 import Settings from "../settings"
+
+import { Logo } from "./logo"
+import { $inboxCounter, $todayCounter } from "./sidebar.model"
 
 export const Sidebar = () => {
   const { t } = useTranslation()

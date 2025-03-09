@@ -1,6 +1,7 @@
-import { createStore, createEvent, sample, EventCallable, createEffect } from "effector"
+import { createStore, createEvent, sample, createEffect } from "effector"
 
 import { router } from "@/shared/routing"
+
 import { singleton } from "../effector"
 import { isEsc } from "../key-utils"
 import { setupListener } from "../effector/setup-listener"
@@ -8,7 +9,7 @@ import { setupListener } from "../effector/setup-listener"
 
 export const createModalsManager = () => {
   const $ids = createStore<string[]>([])
-  const $onCloseCallbacks = createStore<Record<string, Function>>({})
+  const $onCloseCallbacks = createStore<Record<string, () => void>>({})
   const open = createEvent<string>()
   // behave like a close event but does trigger onCloseCallback
   const cancel = createEvent()
@@ -18,7 +19,7 @@ export const createModalsManager = () => {
   const startListener = createEvent()
   const stopListener = createEvent()
   const destroy = createEvent<string>()
-  const registerOnCloseCallback = createEvent<{id: string, fn: Function}>()
+  const registerOnCloseCallback = createEvent<{id: string, fn: () => void}>()
   const keydown = setupListener<KeyboardEvent>({
     event: "keydown",
     start: startListener,
@@ -101,7 +102,7 @@ sample({
     target: closeAll,
   })
 
-  const triggerOnCloseCallbackFx = createEffect(({cbs, id}: {cbs: Record<string, Function>, id: string}) => {
+  const triggerOnCloseCallbackFx = createEffect(({cbs, id}: {cbs: Record<string, () => void>, id: string}) => {
     const callback = cbs[id]
     if(callback){
       callback()
@@ -156,40 +157,4 @@ sample({
 
 export const $$modal = singleton(createModalsManager)
 
-export const createModalManager = ({
-  id,
-  onClose,
-  onOpen
-}: {
-  id?: string
-  onClose?: EventCallable<void>
-  onOpen?: EventCallable<void>
-}) => {
-  const $id = createStore<Nullable<string>>(id || null)
-  const openAndSetId = createEvent<string>()
-  if(onClose){
-    sample({
-      clock: $$modal.modalClosed,
-      source: $id,
-      filter: (closedId, modalId) => closedId === modalId,
-    })
-  }
-  if(onOpen){
-    sample({
-      clock: openAndSetId,
-      target: onOpen
-    })
-    sample({
-      clock: $$modal.open,
-      source: $id,
-      filter: (openedId, modalId) => openedId === modalId,
-      target: onOpen
-    })
-  }
-  sample({
-    clock: openAndSetId,
-    target: $id,
-    ...$$modal
-  })
-}
 export type IdModalFactory = ReturnType<typeof createModalsManager>

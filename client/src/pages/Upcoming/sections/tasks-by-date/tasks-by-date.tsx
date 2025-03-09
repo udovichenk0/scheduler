@@ -3,19 +3,19 @@ import { useContext, useEffect } from "react"
 import { Dayjs } from "dayjs"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
+import { EditableTask } from "@/widgets/editable-task"
 
 import { Task } from "@/entities/task"
 
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { TaskId } from "@/shared/api/task"
+import { ModalName } from "@/shared/lib/modal/modal-names"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
+import { useSelectItem } from "@/shared/lib/use-select-item"
 
 import {
   TaskManagerContext,
 } from "../../upcoming.model"
-import { ModalName } from "@/shared/lib/modal/modal-names"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { EditableTask } from "@/widgets/editable-task"
-import { useSelectItem } from "@/shared/lib/use-select-item"
 
 export const TasksByDate = ({
   onSelectTaskId,

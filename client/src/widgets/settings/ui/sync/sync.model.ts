@@ -7,6 +7,7 @@ import { resetSigninPasswordTriggered } from "@/features/authentication/sign-in"
 import { resetSignupPasswordTriggered } from "@/features/authentication/sign-up"
 
 import { $$session } from "@/entities/session"
+
 import { authApi } from "@/shared/api/auth"
 import { prepend } from "@/shared/lib/effector"
 

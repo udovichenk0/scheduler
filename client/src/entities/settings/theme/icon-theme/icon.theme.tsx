@@ -1,13 +1,14 @@
 import { useUnit } from "effector-react"
 import { useState } from "react"
+import { clsx } from "clsx"
+import { useTranslation } from "react-i18next"
 
 import { Icon } from "@/shared/ui/icon"
+import { Typography } from "@/shared/ui/general/typography"
 
 import { $$accentSettings, Accent } from "./icon-theme.model"
 import style from "./style.module.css"
-import clsx from "clsx"
-import { Typography } from "@/shared/ui/general/typography"
-import { useTranslation } from "react-i18next"
+
 
 const { accentChanged, $accent } = $$accentSettings
 export const AccentThemeChanger = () => {

@@ -1,9 +1,10 @@
+import { combine } from "effector"
+
 import { removeTaskFactory } from "@/features/manage-task/delete"
 
 import { $$taskModel } from "@/entities/task"
 
 import { routes } from "@/shared/routing"
-import { combine } from "effector"
 
 export const trashRoute = routes.trash
 

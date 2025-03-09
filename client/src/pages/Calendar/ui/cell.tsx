@@ -1,15 +1,17 @@
 import dayjs from "dayjs"
 import { useRef, useState, useEffect, KeyboardEvent } from "react"
+import { useUnit } from "effector-react"
+import { useTranslation } from "react-i18next"
 
-import { Task, TaskId, TaskStatus, TaskStatuses } from "@/entities/task"
+import { Task, TaskId, Status, TaskStatuses } from "@/entities/task"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
+import { isEnter } from "@/shared/lib/key-utils"
+
+import { $$createTask } from "../calendar.model"
 
 import { CellHeader } from "./cell-header"
-import { isEnter } from "@/shared/lib/key-utils"
-import { useUnit } from "effector-react"
-import { $$createTask } from "../calendar.model"
-import { useTranslation } from "react-i18next"
+
 
 export type CellProps = {
   date: number
@@ -29,7 +31,7 @@ export const Cell = ({
   onTaskClick: (target: HTMLButtonElement, task: Task) => void
   onShowMoreTasks: (tasks: Task[]) => void,
   onClick: (target: HTMLButtonElement, date: Date) => void
-  onUpdateStatus: ({ id, status }: { id: TaskId; status: TaskStatus }) => void
+  onUpdateStatus: ({ id, status }: { id: TaskId; status: Status }) => void
 }) => {
   const taskContainerRef = useRef<HTMLDivElement>(null)
   const cellRef = useRef<HTMLDivElement>(null)

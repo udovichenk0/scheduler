@@ -1,17 +1,20 @@
 
-import { EditableTaskFields, Task, TaskId, TaskStatus } from "./type"
-import { TaskStatuses } from "./config"
+import dayjs from "dayjs"
+import { t } from "i18next"
+
 import { dateToUnix } from "@/shared/lib/date/date-to-unix"
 import { TaskDto } from '@/shared/api/scheduler.schemas'
 import { unixToDate } from "@/shared/lib/date/unix-to-date"
-import dayjs from "dayjs"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
-import { t } from "i18next"
+
+import { TaskStatuses } from "./config"
+import { EditableTaskFields, Task, TaskId, Status } from "./type"
+
 
 export const findTaskById = (tasks: Task[], id: TaskId) =>
   tasks.find((task) => task.id === id)!
 
-export const changeTaskStatus = (status: TaskStatus) => {
+export const changeTaskStatus = (status: Status) => {
   switch (true) {
     case status === TaskStatuses.FINISHED:
       return TaskStatuses.INPROGRESS

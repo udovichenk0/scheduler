@@ -1,3 +1,5 @@
+import { combine } from "effector"
+
 import { updateTaskFactory } from "@/features/manage-task/update"
 import { trashTaskFactory } from "@/features/manage-task/trash"
 import { createTaskFactory } from "@/features/manage-task/create"
@@ -6,7 +8,6 @@ import { createSorting, getTaskModelInstance, modifyTaskFactory } from "@/entiti
 import { isInbox, shouldShowCompleted } from "@/entities/task/lib"
 
 import { routes } from "@/shared/routing"
-import { combine } from "effector"
 
 export const inboxRoute = routes.inbox
 

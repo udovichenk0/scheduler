@@ -1,5 +1,6 @@
-import { routes } from "@/shared/routing"
 import { lazy } from "react"
+
+import { routes } from "@/shared/routing"
 
 
 const Today = lazy(() => import("./today.page"))

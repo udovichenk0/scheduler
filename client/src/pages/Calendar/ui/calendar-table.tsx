@@ -2,7 +2,7 @@ import dayjs, { Dayjs } from "dayjs"
 import { memo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Task, TaskId, TaskStatus } from "@/entities/task"
+import { Task, TaskId, Status } from "@/entities/task"
 
 import { generateCalendar } from "@/shared/lib/date/generate-calendar"
 import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
@@ -16,7 +16,7 @@ type CalendarProps = {
   onTaskClick: (e: HTMLButtonElement, task: Task) => void
   onCellClick: (e: HTMLButtonElement, date: Date) => void
   onShowMoreTasks: (tasks: Task[]) => void
-  onUpdateStatus: ({ id, status }: { id: TaskId; status: TaskStatus }) => void
+  onUpdateStatus: ({ id, status }: { id: TaskId; status: Status }) => void
   setDate: (date: Dayjs) => void
   date: Dayjs
 }

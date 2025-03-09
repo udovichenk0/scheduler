@@ -1,5 +1,6 @@
 import { t } from "i18next"
 import { useList, useUnit } from "effector-react"
+import { useState } from "react"
 
 import { Layout } from "@/widgets/layout/main"
 
@@ -8,13 +9,12 @@ import { TaskItem } from "@/entities/task"
 import { useDocumentTitle } from "@/shared/lib/react"
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { Button } from "@/shared/ui/buttons/main-button"
+import { useSelectItem } from "@/shared/lib/use-select-item"
 
 import {
   $$deleteTask,
   $trashTasks,
 } from "./trash.model"
-import { useState } from "react"
-import { useSelectItem } from "@/shared/lib/use-select-item"
 
 const Trash = () => {
   useDocumentTitle(t("task.trash"))

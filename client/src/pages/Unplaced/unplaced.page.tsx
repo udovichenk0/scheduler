@@ -1,14 +1,21 @@
 import { useList, useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
+import { useState } from "react"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { Layout } from "@/widgets/layout/main"
+import { EditableTask } from "@/widgets/editable-task"
 
 import { Sort } from "@/entities/task"
+import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
 
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { useDocumentTitle } from "@/shared/lib/react"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
+import { ModalName } from "@/shared/lib/modal/modal-names"
+import { useSelectItem } from "@/shared/lib/use-select-item"
 
+import { SORT_CONFIG } from "./config"
 import {
   $$createTask,
   $$trashTask,
@@ -17,13 +24,7 @@ import {
   $unplacedTasks,
   $$taskModel,
 } from "./unplaced.model"
-import { SORT_CONFIG } from "./config"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { ModalName } from "@/shared/lib/modal/modal-names"
-import { EditableTask } from "@/widgets/editable-task"
-import { useState } from "react"
-import { useSelectItem } from "@/shared/lib/use-select-item"
-import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
+
 
 const Unplaced = () => {
   const { t } = useTranslation()

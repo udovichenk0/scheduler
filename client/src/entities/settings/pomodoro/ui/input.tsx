@@ -1,7 +1,7 @@
 import { clsx } from "clsx"
+import { useEffect, useRef } from "react"
 
 import style from "./style.module.css"
-import { useEffect, useRef } from "react"
 export const PomodoroInput = ({
   value,
   onChange,

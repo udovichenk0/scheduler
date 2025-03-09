@@ -1,16 +1,17 @@
-import { $$session } from '@/entities/session';
 import { createEvent, createStore, sample, split } from "effector"
 import { interval, equals } from "patronum"
 import { createGate } from "effector-react"
 import { t } from "i18next"
-import { UNEXPECTED_ERROR_MESSAGE, isHttpError } from "@/shared/lib/error"
 
-// import { $email, resetEmailTriggered } from "../authentication/check-email"
+import { $$session } from '@/entities/session';
+
+import { UNEXPECTED_ERROR_MESSAGE, isHttpError } from "@/shared/lib/error"
+import { authApi } from "@/shared/api/auth"
+import { prepend } from '@/shared/lib/effector';
+
+import { resetEmailTriggered } from "../authentication/check-email"
 
 import { INVALID_CODE_MESSAGE } from "./constants"
-import { authApi } from "@/shared/api/auth"
-import { resetEmailTriggered } from "../authentication/check-email"
-import { prepend } from '@/shared/lib/effector';
 const RESEND_TIME = 10
 export const CODE_LENGTH = 6
 export const codeChanged = createEvent<string>()
@@ -56,7 +57,7 @@ sample({
   clock: submitTriggered,
   source: { code: $code, session: $$session.$user },
   filter: ({ code, session }) => !!code && !!session?.id,
-  fn: ({ code, session }) => ({ code: code!, userId: session?.id! }),
+  fn: ({ code, session }) => ({ code: code!, userId: session!.id }),
   target: authApi.verifyEmailQuery.start,
 })
 

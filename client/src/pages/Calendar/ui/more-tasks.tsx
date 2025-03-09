@@ -1,8 +1,10 @@
-import { Task, TaskId, TaskStatus, TaskStatuses } from "@/entities/task"
-
 import { useUnit } from "effector-react"
-import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { Store } from "effector"
+
+import { Task, TaskId, Status, TaskStatuses } from "@/entities/task"
+
+import { Checkbox } from "@/shared/ui/data-entry/checkbox"
+
 
 export const MoreTasks = ({
   $tasks,
@@ -11,7 +13,7 @@ export const MoreTasks = ({
 }: {
   $tasks: Store<Task[]>
   onTaskClick: (target: HTMLButtonElement, task: Task) => void
-  onUpdateStatus: (data: {id: TaskId, status: TaskStatus}) => void,
+  onUpdateStatus: (data: {id: TaskId, status: Status}) => void,
 }) => {
   const tasks = useUnit($tasks)
   return (

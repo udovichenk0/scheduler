@@ -1,4 +1,11 @@
 import { createEvent, createStore, sample, split } from "effector"
+import { z } from "zod"
+
+import { $$session } from "@/entities/session"
+
+import { authApi } from "@/shared/api/auth"
+import { bridge, prepend } from "@/shared/lib/effector"
+import { UNEXPECTED_ERROR_MESSAGE, isHttpError } from "@/shared/lib/error"
 
 import { $email, resetEmailTriggered } from "../check-email"
 
@@ -9,11 +16,7 @@ import {
   TOO_LONG_PASSWORD_MESSAGE,
   TOO_SHORT_PASSWORD_MESSAGE,
 } from "./constants"
-import { z } from "zod"
-import { authApi } from "@/shared/api/auth"
-import { bridge, prepend } from "@/shared/lib/effector"
-import { UNEXPECTED_ERROR_MESSAGE, isHttpError } from "@/shared/lib/error"
-import { $$session } from "@/entities/session"
+
 
 export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()

@@ -1,11 +1,16 @@
 import { useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
+import { useState } from "react"
 
 import { Layout } from "@/widgets/layout/main"
 
 import { Sort } from "@/entities/task"
+import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
 
 import { useDocumentTitle } from "@/shared/lib/react"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
+import { ModalName } from "@/shared/lib/modal/modal-names"
+import { Root } from "@/shared/ui/tab"
 
 import { UpcomingTasks } from "./sections/upcoming-tasks"
 import {
@@ -25,13 +30,9 @@ import {
 } from "./upcoming.model"
 import { TasksByDate } from "./sections/tasks-by-date"
 import { HeaderTitle } from "./ui/header-title"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer/variant-changer"
 import { SORT_CONFIG } from "./config"
-import { ModalName } from "@/shared/lib/modal/modal-names"
-import { useState } from "react"
-import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
-import { Root } from "@/shared/ui/tab"
+
 
 const Upcoming = () => {
   const { t } = useTranslation()

@@ -2,6 +2,9 @@ import { createEvent, createStore, sample } from "effector"
 import { z } from "zod"
 import { t } from "i18next"
 
+import { authApi } from "@/shared/api/auth"
+import { UNEXPECTED_ERROR_MESSAGE } from "@/shared/lib/error"
+
 import {
   MAX_LENGTH,
   MIN_LENGTH,
@@ -9,8 +12,6 @@ import {
   TOO_LONG_MESSAGE,
   TOO_SHORT_MESSAGE,
 } from "./constants"
-import { authApi } from "@/shared/api/auth"
-import { UNEXPECTED_ERROR_MESSAGE } from "@/shared/lib/error"
 
 export const emailChanged = createEvent<string>()
 export const submitTriggered = createEvent()

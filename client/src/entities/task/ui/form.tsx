@@ -8,13 +8,13 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { onMount } from "@/shared/lib/react"
-
 import { Modal } from "@/shared/ui/modal"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { getToday } from "@/shared/lib/date"
 import { EditableContent } from "@/shared/ui/data-entry/editable-content"
-import { TaskStatus as Status, TaskType as Type } from "../type"
+
+import { Status as Status, Type as Type } from "../type"
 import { formatTaskDate } from "../lib"
 import { TaskStatus, TaskType } from "../model/task.model"
 

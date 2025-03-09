@@ -1,5 +1,6 @@
-import { isToday } from "@/shared/lib/date"
 import { $$taskModel } from "@/entities/task"
+
+import { isToday } from "@/shared/lib/date"
 
 export const $inboxCounter = $$taskModel.$tasks.map((tasks) => {
   return tasks?.reduce((counter, task) => {

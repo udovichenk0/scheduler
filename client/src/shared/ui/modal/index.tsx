@@ -1,6 +1,8 @@
-import { focusTrap } from "@/shared/lib/key-utils/focus-trap"
 import { clsx } from "clsx"
 import { ReactNode, RefObject, createContext, useContext, useEffect, useRef } from "react"
+
+import { focusTrap } from "@/shared/lib/key-utils/focus-trap"
+
 import { Button, ButtonProps } from "../buttons/main-button"
 
 interface ModalProps {

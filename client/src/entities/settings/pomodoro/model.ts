@@ -1,8 +1,10 @@
 import { createEvent, createStore, sample, Event } from "effector"
+import { z } from "zod"
 
 import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
 import { singleton } from "@/shared/lib/effector/singleton"
 import { bridge } from "@/shared/lib/effector"
+import { boolStr } from "@/shared/lib/validation"
 
 import {
   DEFAULT_WORK_DURATION,
@@ -15,8 +17,6 @@ import {
   MIN_LONG_BREAK,
   MAX_LONG_BREAK,
 } from "./config"
-import { z } from "zod"
-import { boolStr } from "@/shared/lib/validation"
 
 export const $$pomodoroSettings = singleton(() => {
   const init = createEvent()

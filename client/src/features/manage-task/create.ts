@@ -1,9 +1,9 @@
 import { attachOperation } from '@farfetched/core';
-import { ModifyTaskFactory, Task, TaskModel } from '@/entities/task';
 import { merge, sample, createEvent } from "effector"
 import { and } from "patronum"
 import { v4 } from 'uuid';
 
+import { ModifyTaskFactory, Task, TaskModel } from '@/entities/task';
 import { $$session } from "@/entities/session"
 
 import { taskApi } from "@/shared/api/task"
