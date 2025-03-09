@@ -7,6 +7,8 @@ services:
       - db_password
       - db_user
       - database
+    volumes:
+      - db:/var/lib/mysql
     deploy:
       restart_policy:
         condition: any
@@ -84,3 +86,5 @@ secrets:
 networks:
   scheduler:
     external: true
+volumes:
+  db:
