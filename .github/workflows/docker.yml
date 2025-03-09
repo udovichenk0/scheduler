@@ -28,7 +28,7 @@ jobs:
         with:
           push: true
           context: ./server
-          file: ./server/app/Dockerfile
+          file: ./app/Dockerfile
           cache-to: type=gha,mode=max
           cache-from: type=gha
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/app:latest
@@ -61,7 +61,7 @@ jobs:
         with:
           push: true
           context: ./client
-          file: ./client/Dockerfile
+          file: ./Dockerfile
           cache-to: type=gha,mode=max
           cache-from: type=gha
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/web:latest
@@ -81,7 +81,7 @@ jobs:
         with:
           push: true
           context: ./server
-          file: ./server/migrations/Dockerfile
+          file: ./migrations/Dockerfile
           cache-to: type=gha,mode=max
           cache-from: type=gha
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/migrations:latest
