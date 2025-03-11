@@ -9,19 +9,21 @@ export function focusTrap(dialogEl: HTMLElement | null){
     const focusableEls = findFocusableElements(dialogEl!)
     const isActive = modals[modals.length - 1] == dialogEl
     if(!isActive) return
-    if(isFirstElementUnfocused(e, firstEl)){
+    const target = e.target as HTMLElement
+
+    if(isFirstElementUnfocused(e, firstEl) && !focusableEls.includes(target)){
       tabPrev(focusableEls)
       return
-    } else if(isLastElementUnfocused(e, lastEl)){
+    } else if(isLastElementUnfocused(e, lastEl) && !focusableEls.includes(target)){
       tabNext(focusableEls)
       return
     }
-    if(![...focusableEls].includes(e.target as HTMLElement)){
+    if(!focusableEls.includes(target)){
       getFirstEl(focusableEls)?.focus()
     }
   }
   if(focusableEls.length){
-    const isCorrectFocusedElement = [...focusableEls].includes(document.activeElement as HTMLElement)
+    const isCorrectFocusedElement = focusableEls.includes(document.activeElement as HTMLElement)
     if(!isCorrectFocusedElement){
       focusFirstElement(focusableEls)
     }
@@ -33,7 +35,7 @@ export function focusTrap(dialogEl: HTMLElement | null){
   }
 }
 
-function focusFirstElement(el: NodeListOf<Element>){
+function focusFirstElement(el: HTMLElement[]){
   const firstEl = el[0] as HTMLElement
   if(firstEl.focus){
     firstEl?.focus()
@@ -41,7 +43,7 @@ function focusFirstElement(el: NodeListOf<Element>){
   }
 }
 
-function tabNext(elements: NodeListOf<Element>){
+function tabNext(elements: HTMLElement[]){
   const preLastEl = elements[elements.length - 2]
   if(preLastEl !== document.activeElement){
     const firstEl = getFirstEl(elements)
@@ -50,7 +52,7 @@ function tabNext(elements: NodeListOf<Element>){
     }
   }
 }
-function tabPrev(elements: NodeListOf<Element>){
+function tabPrev(elements: HTMLElement[]){
   const secondEl = elements[1]
   if(secondEl !== document.activeElement){
     const lastEl = getLastEl(elements)
@@ -60,17 +62,17 @@ function tabPrev(elements: NodeListOf<Element>){
   }
 }
 
-function getFirstEl(elements: NodeListOf<Element>)  {
+function getFirstEl(elements: HTMLElement[])  {
   const firstElement = elements[0]
   if(firstElement){
-    return firstElement as HTMLElement
+    return firstElement
   }
 }
 
-function getLastEl(elements: NodeListOf<Element>)  {
+function getLastEl(elements: HTMLElement[])  {
   const firstElement = elements[elements.length - 1]
   if(firstElement){
-    return firstElement as HTMLElement
+    return firstElement
   }
 }
 
@@ -82,5 +84,5 @@ function isLastElementUnfocused(e: FocusEvent, lastEl: HTMLElement | undefined){
   return e.relatedTarget === lastEl
 }
 function findFocusableElements(elem: HTMLElement){
-  return elem.querySelectorAll("a[href], button:not(:disabled), input, textarea, select, details, [tabindex]:not([tabindex='-1'])")
+  return [...elem.querySelectorAll("a[href], button:not(:disabled), input, textarea, select, details, [tabindex]:not([tabindex='-1'])")] as HTMLElement[]
 }
