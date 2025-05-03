@@ -9,7 +9,7 @@
     background-color: white;
   }
   &[data-color="dark"] {
-    background-color:#182533;
+    background-color: #182533;
   }
   &[data-color="light"] {
     background-color: #c7d6eb;
@@ -23,19 +23,19 @@
   width: 100%;
   border-radius: 2px;
   &[data-color="space"] {
-    background-color: #121227 
+    background-color: #121227;
   }
   &[data-color="default"] {
-    background-color: #76899b 
+    background-color: #76899b;
   }
   &[data-color="dark"] {
-    background-color: #262626 
+    background-color: #262626;
   }
   &[data-color="light"] {
-    background-color: #76899b 
+    background-color: #76899b;
   }
   &[data-color="grey"] {
-    background-color: #dfe7f0 
+    background-color: #dfe7f0;
   }
 }
 .text {
@@ -70,13 +70,13 @@
     background-color: #2ebcff;
   }
   &[data-color="dark"] {
-    background-color: #4683cb
+    background-color: #4683cb;
   }
   &[data-color="light"] {
-    background-color: #4683cb
+    background-color: #4683cb;
   }
   &[data-color="grey"] {
-    background-color: #54759c
+    background-color: #54759c;
   }
 }
 .mainBg {
@@ -92,7 +92,7 @@
     border: 1px solid var(--cBorder);
   }
   &[data-color="space"] {
-    background-color: var(--dark-blue)
+    background-color: var(--dark-blue);
   }
   &[data-color="default"] {
     background-color: #23242b;

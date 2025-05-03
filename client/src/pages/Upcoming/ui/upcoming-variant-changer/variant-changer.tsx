@@ -15,6 +15,7 @@ import { Root } from "@/shared/ui/tab"
 import { generateDaysOfWeek } from "../../config"
 
 import style from "./style.module.css"
+import { getToday } from "@/shared/lib/date"
 
 export function UpcomingVariantChanger({
   setUpcomingVariant,
@@ -35,8 +36,8 @@ export function UpcomingVariantChanger({
     setDayList(generateDaysOfWeek(week))
   }
   return (
-    <div className="sticky top-0 z-10 flex w-full bg-main">
-      <div className="flex w-full border-b border-accent/50 px-9 text-cIconDefault">
+    <div className="bg-main sticky top-0 z-10 flex w-full">
+      <div className="border-accent/50 text-cIconDefault flex w-full border-b px-9">
         <div className="flex">
           <Root.Trigger
             value="upcoming"
@@ -51,7 +52,7 @@ export function UpcomingVariantChanger({
             value="date"
             title={t("task.today")}
             className={clsx(style.active, "px-2 pb-2")}
-            onClick={() => setUpcomingVariant(dayjs().startOf("day"))}
+            onClick={() => setUpcomingVariant(getToday())}
             data-active={dayjs(upcomingDate).isToday()}
           >
             <Icon name="common/outlined-star" className="text-[21px]" />
@@ -68,13 +69,13 @@ export function UpcomingVariantChanger({
                 data-active={date.isSame(upcomingDate)}
                 className={clsx(
                   style.active,
-                  "relative w-full py-2 text-sm text-cIconDefault",
+                  "text-cIconDefault relative w-full py-2 text-sm",
                 )}
               >
                 <span>{t(SHORT_WEEKS_NAMES[date.day()]).slice(0, 2)}. </span>
                 <span className="mr-1 font-bold">{date.date()}</span>
                 {isAnyTask && (
-                  <span className="after:absolute after:top-1/2 after:h-[5px] after:w-[5px] after:-translate-y-1/2 after:rounded-full after:bg-cIconDefault after:content-['']"></span>
+                  <span className="after:bg-cIconDefault after:absolute after:top-1/2 after:h-[5px] after:w-[5px] after:-translate-y-1/2 after:rounded-full after:content-['']"></span>
                 )}
               </Root.Trigger>
             )
@@ -124,7 +125,7 @@ const ArrowsChangers = ({
       >
         <Icon
           name="common/arrow"
-          className="rotate-90 text-[12px] text-accent"
+          className="text-accent rotate-90 text-[12px]"
         />
       </Button>
     </div>

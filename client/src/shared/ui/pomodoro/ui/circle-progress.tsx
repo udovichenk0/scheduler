@@ -7,10 +7,9 @@ import { State } from "@/shared/lib/pomodoro"
 
 const CIRCLE_DIAMETER = 260
 const LINE_WIDTH = 7
-const CIRCLE_RADIUS = (CIRCLE_DIAMETER / 2) - LINE_WIDTH
-const DEFAULT_PROGRESS_BAR = (2 * Math.PI * CIRCLE_RADIUS) - 2
+const CIRCLE_RADIUS = CIRCLE_DIAMETER / 2 - LINE_WIDTH
+const DEFAULT_PROGRESS_BAR = 2 * Math.PI * CIRCLE_RADIUS - 2
 const CIRCLE_CENTERED_POSITION = CIRCLE_DIAMETER / 2
-
 
 export const ProgressCircle = ({
   $time,
@@ -35,7 +34,9 @@ export const ProgressCircle = ({
   return (
     <div className="relative flex h-full w-full justify-center">
       <div
-        className={`${isWorkTime ? "fill-cPomodoroRed" : "fill-cPomodoroGreen"} absolute text-5xl top-1/2 -translate-y-1/2`}
+        className={`${
+          isWorkTime ? "fill-cPomodoroRed" : "fill-cPomodoroGreen"
+        } absolute top-1/2 -translate-y-1/2 text-5xl`}
       >
         {normalizeSeconds(time)}
       </div>
@@ -71,7 +72,7 @@ export const ProgressCircle = ({
           strokeDasharray="772"
         ></circle>
       </svg>
-      <div className="absolute bottom-[70px] pt-2 grid h-10 grid-cols-4 grid-rows-3 gap-x-2 gap-y-1">
+      <div className="absolute bottom-[70px] grid h-10 grid-cols-4 grid-rows-3 gap-x-2 gap-y-1 pt-2">
         {stages.map(({ fulfilled }, id) => {
           return (
             <div

@@ -1,18 +1,18 @@
-import { attachOperation } from '@farfetched/core';
+import { attachOperation } from "@farfetched/core"
 import { merge, sample, createEvent } from "effector"
 import { and } from "patronum"
-import { v4 } from 'uuid';
+import { v4 } from "uuid"
 
-import { ModifyTaskFactory, Task, TaskModel } from '@/entities/task';
+import { ModifyTaskFactory, Task, TaskModel } from "@/entities/task"
 import { $$session } from "@/entities/session"
 
 import { taskApi } from "@/shared/api/task"
 import { bridge } from "@/shared/lib/effector/bridge"
-import { toApiTaskFields } from '@/shared/api/task/task.dto';
+import { toApiTaskFields } from "@/shared/api/task/task.dto"
 
 export const createTaskFactory = ({
   $$modifyTask,
-  taskModel
+  taskModel,
 }: {
   $$modifyTask: ModifyTaskFactory
   taskModel: TaskModel
@@ -34,20 +34,21 @@ export const createTaskFactory = ({
       source: $fields,
       filter: and($isAllowToSubmit, $$session.$isAuthenticated),
       fn: (fields) => {
-        const optimisticTask:Task = {
+        const optimisticTask: Task = {
           id: v4(),
           title: fields.title,
           description: fields.description,
           status: fields.status,
           type: fields.type,
           start_date: fields.start_date,
+          due_date: fields.due_date,
           user_id: "",
           date_created: new Date(),
-          is_trashed: false
+          is_trashed: false,
         }
         return optimisticTask
       },
-      target: optimisticTaskCreated
+      target: optimisticTaskCreated,
     })
     sample({
       clock: optimisticTaskCreated,
@@ -73,12 +74,12 @@ export const createTaskFactory = ({
         const tempId = params?.["tempId"]
         return tempId
       },
-      target: taskModel.taskDeleted
+      target: taskModel.taskDeleted,
     })
-    
+
     sample({
       clock: createTaskTriggered,
-      target: resetFieldsTriggered
+      target: resetFieldsTriggered,
     })
 
     // sample({

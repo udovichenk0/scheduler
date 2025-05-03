@@ -4,111 +4,118 @@
  * Swagger Scheduler
  * OpenAPI spec version: 1.0.0
  */
+export type PatchTasksIdStatusBody = {
+  status: TaskStatus
+}
+
 export type PatchTasksIdDateBody = {
-  start_date: StartDate;
-};
+  due_date: DueDate
+  start_date: StartDate
+}
 
 export type PostAuthResendBody = {
-  email: Email;
-  userId: Id;
-};
-
-export type PostAuthVerifyBody = {
-  code: Code;
-  userId: Id;
-};
+  email: Email
+  userId: Id
+}
 
 export type GetEmailExistsParams = {
-email: Email;
-};
+  email: Email
+}
 
 export type AuthEmailCredsBody = {
-  email: Email;
-  password: string;
-};
-
-/**
- * User response
- */
-export type UserResponse = UserDto;
+  email: Email
+  password: string
+}
 
 export type GetEmailExists200Response = {
-  exists: boolean;
-};
+  exists: boolean
+}
 
-export type TaskType = typeof TaskType[keyof typeof TaskType];
+export type TaskType = (typeof TaskType)[keyof typeof TaskType]
 
-
- 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const TaskType = {
-  inbox: 'inbox',
-  unplaced: 'unplaced',
-} as const;
+  inbox: "inbox",
+  unplaced: "unplaced",
+} as const
 
-export type TaskStatus = typeof TaskStatus[keyof typeof TaskStatus];
+export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
 
-
- 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const TaskStatus = {
-  inprogress: 'inprogress',
-  finished: 'finished',
-} as const;
-
-export type PatchTasksIdStatusBody = {
-  status: TaskStatus;
-};
+  inprogress: "inprogress",
+  finished: "finished",
+} as const
 
 export interface TaskDto {
-  date_created: string;
+  date_created: string
   /** @nullable */
-  description: string | null;
-  id: Id;
-  is_trashed: boolean;
+  description: string | null
   /** @nullable */
-  start_date: number | null;
-  status: TaskStatus;
-  title: string;
-  type: TaskType;
-  user_id: Id;
+  due_date: number | null
+  id: Id
+  is_trashed: boolean
+  /** @nullable */
+  start_date: number | null
+  status: TaskStatus
+  title: string
+  type: TaskType
+  user_id: Id
 }
 
 export interface TaskFields {
   /** @nullable */
-  description: string | null;
+  description: string | null
   /** @nullable */
-  start_date: number | null;
-  status: TaskStatus;
-  title: string;
-  type: TaskType;
+  due_date: number | null
+  /** @nullable */
+  start_date: number | null
+  status: TaskStatus
+  title: string
+  type: TaskType
 }
 
-export type Id = string;
+export type Id = string
+
+export type PostAuthVerifyBody = {
+  code: Code
+  userId: Id
+}
+
+export interface UserDto {
+  email: Email
+  id: Id
+  verified: boolean
+}
+
+/**
+ * User response
+ */
+export type UserResponse = UserDto
 
 /**
  * @minLength 6
  * @maxLength 6
  */
-export type Code = string;
+export type Code = string
 
 /**
  * Email address
  * @minLength 4
  */
-export type Email = string;
-
-export interface UserDto {
-  email: Email;
-  id: Id;
-  verified: boolean;
-}
+export type Email = string
 
 /**
  * @nullable
  */
-export type StartDate = number | null;
+export type DueDate = number | null
 
 /**
  * @nullable
  */
-export type Description = string | null;
+export type StartDate = number | null
 
+/**
+ * @nullable
+ */
+export type Description = string | null

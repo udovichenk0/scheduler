@@ -25,9 +25,13 @@ export function Trigger({
       {...props}
       onClick={(e) => {
         setValue(value)
-        if(onClick) onClick(e, value)
+        if (onClick) onClick(e, value)
       }}
-      className={clsx(className, currentValue == value && activeClass, "focus-visible:text-accent")}
+      className={clsx(
+        className,
+        currentValue == value && activeClass,
+        "focus-visible:text-accent",
+      )}
     >
       {children}
     </button>

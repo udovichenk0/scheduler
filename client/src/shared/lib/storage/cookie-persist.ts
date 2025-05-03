@@ -16,7 +16,7 @@ import { getCookie } from "./get-cookie"
 export const cookiePersist = <T>({
   source,
   name,
-  schema
+  schema,
 }: {
   source: StoreWritable<T>
   name: string
@@ -24,12 +24,12 @@ export const cookiePersist = <T>({
 }) => {
   const init = createEvent()
   const $isInited = createStore(false)
-  
+
   const getFx = attach({
     effect: createEffect(async () => {
       const value = getCookie(name)
       const a = schema.safeParse(value)
-      if(a.success){
+      if (a.success) {
         return a.data
       }
       throw Error(a.error.message)
@@ -59,7 +59,7 @@ export const cookiePersist = <T>({
   })
   sample({
     clock: getFx.fail,
-    fn: ({error}) => console.log(error)
+    fn: ({ error }) => console.log(error),
   })
 
   sample({

@@ -11,7 +11,7 @@ import { ModalName } from "@/shared/lib/modal/modal-names"
 import { ExpandedTask } from "../expanded-task"
 
 type EditableTaskProps = {
-  task: Task,
+  task: Task
   $$updateTask: UpdateTaskFactory
   onSelect: () => void
   onBlur: (el: Element) => void
@@ -32,7 +32,7 @@ export const EditableTask = ({
   onBlur,
   formDateModifier = true,
   formSideDatePicker = true,
-  ref
+  ref,
 }: EditableTaskProps) => {
   const onInitFields = useUnit($$updateTask.init)
   const onUpdateTask = useUnit($$updateTask.updateTaskTriggered)
@@ -40,10 +40,10 @@ export const EditableTask = ({
   const onUpdateDate = useUnit($$updateTask.dateChangedAndUpdated)
 
   const {
-    isOpened: isUpdateFormOpened, 
-    open: onOpenUpdateForm, 
+    isOpened: isUpdateFormOpened,
+    open: onOpenUpdateForm,
     close: onCloseUpdateForm,
-  } = useDisclosure({prefix: ModalName.UpdateTaskForm, onClose: onUpdateTask})
+  } = useDisclosure({ prefix: ModalName.UpdateTaskForm, onClose: onUpdateTask })
 
   return (
     <div className="not-last:mb-2">

@@ -12,6 +12,7 @@ type CreateInput struct {
 	Type        string
 	Status      string
 	StartDate   string
+	DueDate     string
 	UserId      string
 	TaskId      string
 }
@@ -22,12 +23,14 @@ type UpdateInput struct {
 	Type        string
 	Status      string
 	StartDate   string
+	DueDate     string
 	TaskId      string
 	UserId      string
 }
 
 type UpdateDateInput struct {
 	StartDate string
+	DueDate   string
 	Type      string
 	TaskId    string
 	UserId    string

@@ -10,8 +10,6 @@ import { routes } from "@/shared/routing"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 import { Modal } from "@/shared/ui/modal"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { ModalName } from "@/shared/lib/modal/modal-names"
 
 import { TaskStatuses } from "../config"
 import { Task, TaskId, Status, Type } from "../type"
@@ -29,9 +27,17 @@ export const TaskItem = ({
   typeLabel = false,
 }: {
   ref: Ref<HTMLButtonElement>
-  isShown: boolean,
+  isShown: boolean
   task: Task
-  onUpdateDate?: ({ date, id }: { date: Date; id: TaskId }) => void
+  onUpdateDate?: ({
+    startDate,
+    dueDate,
+    id,
+  }: {
+    startDate: Nullable<Date>
+    dueDate: Nullable<Date>
+    id: TaskId
+  }) => void
   onUpdateStatus?: ({ id, status }: { status: Status; id: TaskId }) => void
   onDoubleClick?: () => void
   dateLabel?: boolean
@@ -39,66 +45,49 @@ export const TaskItem = ({
   onBlur: (el: Element) => void
   typeLabel?: boolean
 }) => {
-  const { title, status, start_date } = task
+  const { title, status, start_date, due_date } = task
 
-  const {
-    isOpened: isDateModalOpened, 
-    open: onOpenDateModal, 
-    close: onCloseDateModal,
-    cancel: onCancelDateModal
-  } = useDisclosure({ prefix: ModalName.DateModal })
-
-  const onChangeDate = (date: Date) => {
-    onCloseDateModal()
-    onUpdateDate?.({ date, id: task.id })
-  }
   const isSameDateOrAfter = dayjs(start_date).isSameOrAfter(dayjs())
 
-  if(!isShown){
+  if (!isShown) {
     return null
   }
 
   return (
     <div className="group flex">
-      <Modal 
-        label="Choose date" 
-        isOpened={isDateModalOpened} 
-        closeModal={onCloseDateModal}>
-        <div className="w-5 mr-2">
-          {onUpdateDate && (
-            <Modal.Trigger 
-              className="size-5" 
-              intent="base" 
-              onClick={() => onOpenDateModal()}
-            >
-              <Icon
-                data-testid="task-date-button"
-                name="common/upcoming"
-                className="invisible translate-y-1 text-lg text-accent group-hover:visible"
-              />
-            </Modal.Trigger>
-          )}
-        </div>
-        <Modal.Overlay>
-          <Modal.Body>
-            <Modal.Content>
-              <DatePicker
-                currentDate={task.start_date || new Date()}
-                onDateChange={onChangeDate}
-                onCancel={onCancelDateModal}
-                onSave={onCloseDateModal}
-              />
-            </Modal.Content>
-          </Modal.Body>
-        </Modal.Overlay>
-      </Modal>
+      <DatePicker
+        dueDate={due_date}
+        CustomInput={({ onClick }) => {
+          return (
+            <div className="mr-2 w-5">
+              {onUpdateDate && (
+                <Modal.Trigger
+                  className="size-5"
+                  intent="base"
+                  onClick={onClick}
+                >
+                  <Icon
+                    data-testid="task-date-button"
+                    name="common/upcoming"
+                    className="text-accent invisible translate-y-1 text-lg group-hover:visible"
+                  />
+                </Modal.Trigger>
+              )}
+            </div>
+          )
+        }}
+        onDateChange={({startDate, dueDate}) => {
+          onUpdateDate?.({startDate, dueDate, id: task.id})
+        }}
+        startDate={start_date}
+      />
       <Button
         aria-label={`Event ${title}`}
         onClick={(e) => {
-          if(!e.detail && onDoubleClick){
+          if (!e.detail && onDoubleClick) {
             onDoubleClick()
           }
-          if(e.detail){
+          if (e.detail) {
             onSelect()
           }
         }}
@@ -112,17 +101,14 @@ export const TaskItem = ({
         ref={elem}
         className={`task focus:bg-cFocus flex w-full items-center px-2 text-sm transition-none`}
       >
-        <div id="task" className="flex items-center w-full h-full gap-3">
+        <div id="task" className="flex h-full w-full items-center gap-3">
           <Checkbox
-            disabled={!onUpdateDate}
+            disabled={!onUpdateStatus}
             iconClassName="fill-cTaskEditDefault"
             onChange={() => onUpdateStatus?.({ id: task.id, status })}
             checked={status == TaskStatuses.FINISHED}
           />
-          <div
-            className="w-full h-full py-2"
-            onDoubleClick={onDoubleClick}
-          >
+          <div className="h-full w-full py-2" onDoubleClick={onDoubleClick}>
             <div className="flex">
               {dateLabel && start_date && !dayjs(start_date).isToday() && (
                 <span
@@ -139,19 +125,20 @@ export const TaskItem = ({
                 {dayjs(start_date).isToday() && (
                   <Icon
                     name="common/filled-star"
-                    className="mr-[6px] text-[9px] text-accent"
+                    className="text-accent mr-[6px] text-[9px]"
                   />
                 )}
                 <h3
                   className={`text-sm font-medium ${
-                    status == TaskStatuses.FINISHED && "text-cOpacitySecondFont line-through"
+                    status == TaskStatuses.FINISHED &&
+                    "text-cOpacitySecondFont line-through"
                   }`}
                 >
                   {title}
                 </h3>
               </div>
             </div>
-            <TypeLable isVisible={typeLabel} taskType={task.type}/>
+            <TypeLable isVisible={typeLabel} taskType={task.type} />
           </div>
         </div>
         {task.description && (
@@ -162,17 +149,23 @@ export const TaskItem = ({
   )
 }
 
-const TypeLable = ({isVisible, taskType}:{isVisible: boolean, taskType: Type}) => {
+const TypeLable = ({
+  isVisible,
+  taskType,
+}: {
+  isVisible: boolean
+  taskType: Type
+}) => {
   const ref = useRef<HTMLDivElement>(null)
-  if(!isVisible){
+  if (!isVisible) {
     return null
   }
   return (
     <div ref={ref} className="mt-1 flex items-center gap-2">
-      <span className="size-2 rounded-full bg-accent"></span>
+      <span className="bg-accent size-2 rounded-full"></span>
       <Link
         onKeyDown={(e) => e.stopPropagation()}
-        className="text-xs leading-3 text-cOpacitySecondFont hover:underline"
+        className="text-cOpacitySecondFont text-xs leading-3 hover:underline"
         to={routes[taskType]}
       >
         {t(`task.${taskType}`)}
@@ -191,5 +184,3 @@ function normilizeDate(date: Date) {
     )} ${dayjsDate.date()}`
   }
 }
-
-

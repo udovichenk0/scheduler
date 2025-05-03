@@ -1,44 +1,44 @@
-openai: '3.0.0'
-info: 
-  title: 'Swagger Scheduler'
-  version: '1.0.0'
+openai: "3.0.0"
+info:
+  title: "Swagger Scheduler"
+  version: "1.0.0"
 paths:
   /email/exists:
     get:
-      summary: 'Check if verified email exists'
-      parameters: 
+      summary: "Check if verified email exists"
+      parameters:
         - name: email
-          in: query  
+          in: query
           allowReserved: true
           required: true
           schema:
-            $ref: '#/components/schemas/Email'
+            $ref: "#/components/schemas/Email"
       responses:
-        '200':
-          $ref: '#/components/responses/GetEmailExists200'
+        "200":
+          $ref: "#/components/responses/GetEmailExists200"
   /auth/signin:
     post:
       summary: "Sign in a user"
       requestBody:
-        $ref: '#/components/requestBodies/AuthEmailCreds'
+        $ref: "#/components/requestBodies/AuthEmailCreds"
       responses:
-        '200':
-          $ref: '#/components/responses/User'
+        "200":
+          $ref: "#/components/responses/User"
   /auth/signup:
     post:
       requestBody:
-        $ref: '#/components/requestBodies/AuthEmailCreds'
+        $ref: "#/components/requestBodies/AuthEmailCreds"
       responses:
-        '200':
-          $ref: '#/components/responses/User'
+        "200":
+          $ref: "#/components/responses/User"
   /auth/signout:
     post:
       responses:
-        '204':
-          description: 'User signed out'
+        "204":
+          description: "User signed out"
   /auth/verify:
     post:
-      summary: 'Verify email'
+      summary: "Verify email"
       requestBody:
         required: true
         content:
@@ -47,23 +47,23 @@ paths:
               type: object
               properties:
                 code:
-                  $ref: '#/components/schemas/Code'
+                  $ref: "#/components/schemas/Code"
                 userId:
-                  $ref: '#/components/schemas/Id'
+                  $ref: "#/components/schemas/Id"
               required:
                 - code
                 - userId
       responses:
-        '200':
+        "200":
   /auth/session:
     get:
       summary: "Check user`s session"
       responses:
-        '200':
-          $ref: '#/components/responses/User'
+        "200":
+          $ref: "#/components/responses/User"
   /auth/resend:
     post:
-      summary: 'Resend verification code'
+      summary: "Resend verification code"
       requestBody:
         required: true
         content:
@@ -72,26 +72,26 @@ paths:
               type: object
               properties:
                 email:
-                  $ref: '#/components/schemas/Email'
+                  $ref: "#/components/schemas/Email"
                 userId:
-                  $ref: '#/components/schemas/Id'
+                  $ref: "#/components/schemas/Id"
               required:
                 - email
                 - userId
       responses:
-        '200':
+        "200":
 
   #*task endpoints
   /tasks:
     get:
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/TaskDto'
+                  $ref: "#/components/schemas/TaskDto"
     post:
       summary: Create task
       requestBody:
@@ -99,17 +99,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TaskFields'
+              $ref: "#/components/schemas/TaskFields"
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskDto'
+                $ref: "#/components/schemas/TaskDto"
     delete:
       summary: Delete all trashed tasks
       responses:
-        '200':
+        "200":
   /tasks/{id}:
     put:
       summary: Update task's fields
@@ -118,17 +118,16 @@ paths:
           in: path
           required: true
           schema:
-            $ref:
-              '#/components/schemas/Id'
+            $ref: "#/components/schemas/Id"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TaskFields'
-      responses:  
-        '200':
-          content: 
+              $ref: "#/components/schemas/TaskFields"
+      responses:
+        "200":
+          content:
             application/json:
               schema:
                 $ref: "#/components/schemas/TaskDto"
@@ -139,9 +138,9 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/Id'
+            $ref: "#/components/schemas/Id"
       responses:
-        '200':
+        "200":
   /tasks/{id}/date:
     patch:
       summary: Update task's date
@@ -150,7 +149,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/Id'
+            $ref: "#/components/schemas/Id"
       requestBody:
         required: true
         content:
@@ -159,22 +158,25 @@ paths:
               type: object
               properties:
                 start_date:
-                  $ref: '#/components/schemas/StartDate'
+                  $ref: "#/components/schemas/StartDate"
+                due_date:
+                  $ref: "#/components/schemas/DueDate"
               required:
                 - start_date
+                - due_date
       responses:
-        '200':
+        "200":
           content:
             application/json:
-              schema: 
-                $ref: '#/components/schemas/TaskDto'
+              schema:
+                $ref: "#/components/schemas/TaskDto"
   /tasks/{id}/status:
     patch:
       parameters:
         - name: id
           in: path
           schema:
-            $ref: '#/components/schemas/Id'
+            $ref: "#/components/schemas/Id"
           required: true
       requestBody:
         content:
@@ -183,21 +185,21 @@ paths:
               type: object
               properties:
                 status:
-                  $ref: '#/components/schemas/TaskStatus'
+                  $ref: "#/components/schemas/TaskStatus"
               required:
                 - status
       responses:
-        '200':
+        "200":
   /tasks/{id}/trash:
     post:
       parameters:
         - name: id
           in: path
           schema:
-            $ref: '#/components/schemas/Id'
+            $ref: "#/components/schemas/Id"
           required: true
       responses:
-        '200':
+        "200":
 
 components:
   responses:
@@ -207,16 +209,16 @@ components:
           schema:
             type: object
             properties:
-              exists: 
+              exists:
                 type: boolean
-            required: 
+            required:
               - exists
     User:
-      description: 'User response'
+      description: "User response"
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/UserDto'
+            $ref: "#/components/schemas/UserDto"
   schemas:
     Description:
       type: string
@@ -224,10 +226,13 @@ components:
     StartDate:
       type: integer
       nullable: true
+    DueDate:
+      type: integer
+      nullable: true
     Email:
       type: string
       format: email
-      description: 'Email address'
+      description: "Email address"
       minLength: 4
     Code:
       type: string
@@ -240,9 +245,9 @@ components:
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: "#/components/schemas/Id"
         email:
-          $ref: '#/components/schemas/Email'
+          $ref: "#/components/schemas/Email"
         verified:
           type: boolean
       required:
@@ -253,8 +258,8 @@ components:
     TaskStatus:
       type: string
       enum:
-      - inprogress
-      - finished
+        - inprogress
+        - finished
     TaskType:
       type: string
       enum:
@@ -269,37 +274,44 @@ components:
           type: string
           nullable: true
         status:
-          $ref: '#/components/schemas/TaskStatus'
+          $ref: "#/components/schemas/TaskStatus"
         start_date:
           type: integer
           nullable: true
+        due_date:
+          type: integer
+          nullable: true
         type:
-          $ref: '#/components/schemas/TaskType'
+          $ref: "#/components/schemas/TaskType"
       required:
         - title
         - description
         - status
         - start_date
+        - due_date
         - type
     TaskDto:
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: "#/components/schemas/Id"
         title:
           type: string
         description:
           type: string
           nullable: true
         status:
-          $ref: '#/components/schemas/TaskStatus'
+          $ref: "#/components/schemas/TaskStatus"
         start_date:
           type: integer
           nullable: true
-        user_id: 
-          $ref: '#/components/schemas/Id'
+        due_date:
+          type: integer
+          nullable: true
+        user_id:
+          $ref: "#/components/schemas/Id"
         type:
-          $ref: '#/components/schemas/TaskType'
+          $ref: "#/components/schemas/TaskType"
         date_created:
           type: string
         is_trashed:
@@ -310,6 +322,7 @@ components:
         - description
         - status
         - start_date
+        - due_date
         - user_id
         - type
         - date_created
@@ -324,8 +337,8 @@ components:
             type: object
             properties:
               email:
-                $ref: '#/components/schemas/Email'
-              password: 
+                $ref: "#/components/schemas/Email"
+              password:
                 type: string
             required:
               - email

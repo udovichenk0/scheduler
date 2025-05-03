@@ -2,6 +2,7 @@ package task
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/udovichenk0/scheduler/internal/entity"
@@ -49,6 +50,13 @@ func (ts *Service) CreateTask(ctx context.Context, params taskservice.CreateInpu
 		UserId:      params.UserId,
 		TaskId:      uuid.String(),
 	}
+
+	isValidDateRange := entity.IsValidateDateRange(params.StartDate, params.DueDate)
+
+	if !isValidDateRange {
+		return entity.Task{}, errs.NewBadRequestError(errors.New("start date should be before due date"))
+	}
+
 	if params.StartDate != 0 {
 		createTaskParams.StartDate = pkg.UnixToDateTime(params.StartDate)
 	}
@@ -87,9 +95,20 @@ func (ts *Service) UpdateTask(ctx context.Context, params taskservice.UpdateInpu
 		TaskId:      params.TaskId,
 		UserId:      params.UserId,
 	}
+
+	isValidDateRange := entity.IsValidateDateRange(params.StartDate, params.DueDate)
+
+	if !isValidDateRange {
+		return entity.Task{}, errs.NewBadRequestError(errors.New("start date should be before due date"))
+	}
+
 	if params.StartDate != 0 {
 		updateTaskParams.StartDate = pkg.UnixToDateTime(params.StartDate)
 	}
+	if params.DueDate != 0 {
+		updateTaskParams.DueDate = pkg.UnixToDateTime(params.DueDate)
+	}
+
 	if err := ts.taskRepo.Update(ctx, updateTaskParams); err != nil {
 		return entity.Task{}, errs.CheckSqlError(err, "Task")
 	}
@@ -110,17 +129,27 @@ func (ts *Service) UpdateTaskDate(ctx context.Context, params taskservice.Update
 	}
 
 	task := ToEntity(repoTask)
-	taskType := entity.ChangeTypeBasedOnDate(params.Date, task.Type)
+	isValidDateRange := entity.IsValidateDateRange(task.StartDate, task.DueDate)
+
+	if !isValidDateRange {
+		return entity.Task{}, errs.NewBadRequestError(errors.New("start date should be before due date"))
+	}
+
+	taskType := entity.ChangeTypeBasedOnDate(params.StartDate, task.Type)
 	task.Type = taskType
-	task.StartDate = params.Date
+	task.StartDate = params.StartDate
+	task.DueDate = params.DueDate
 
 	updateDateAndTypeInput := taskRepo.UpdateDateInput{
 		Type:   string(taskType),
 		TaskId: params.TaskId,
 		UserId: params.UserId,
 	}
-	if params.Date != 0 {
-		updateDateAndTypeInput.StartDate = pkg.UnixToDateTime(params.Date)
+	if params.StartDate != 0 {
+		updateDateAndTypeInput.StartDate = pkg.UnixToDateTime(params.StartDate)
+	}
+	if params.DueDate != 0 {
+		updateDateAndTypeInput.DueDate = pkg.UnixToDateTime(params.DueDate)
 	}
 
 	if err := ts.taskRepo.UpdateDate(ctx, updateDateAndTypeInput); err != nil {
@@ -188,6 +217,7 @@ func ToEntity(task model.Task) entity.Task {
 		Type:        entity.TaskType(task.Type),
 		Status:      entity.TaskStatus(task.Status),
 		StartDate:   task.StartDate.Int64,
+		DueDate:     task.DueDate.Int64,
 		IsTrashed:   task.IsTrashed,
 		CreatedAt:   task.CreatedAt,
 	}

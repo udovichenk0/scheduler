@@ -6,7 +6,7 @@ export const NoTasks = ({ isTaskListEmpty }: { isTaskListEmpty: boolean }) => {
   const { t } = useTranslation()
   if (!isTaskListEmpty) return null
   return (
-    <div className="flex h-full w-full grow flex-col items-center justify-center text-cIconDefault">
+    <div className="text-cIconDefault flex h-full w-full grow flex-col items-center justify-center">
       <Typography.Heading size="lg" className="mb-3">
         {t("noTasks.title")}
       </Typography.Heading>

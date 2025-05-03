@@ -12,6 +12,7 @@ type CreateTaskRequestBody struct {
 	Type        entity.TaskType   `json:"type" validate:"required,type"`
 	Status      entity.TaskStatus `json:"status" validate:"required,status"`
 	StartDate   int64             `json:"start_date" validate:"startDate"`
+	DueDate     int64             `json:"due_date" validate:"startDate"`
 }
 
 type UpdateTaskRequestBody struct {
@@ -20,6 +21,7 @@ type UpdateTaskRequestBody struct {
 	Type        entity.TaskType   `json:"type" validate:"required,type"`
 	Status      entity.TaskStatus `json:"status" validate:"required,status"`
 	StartDate   int64             `json:"start_date" validate:"startDate"`
+	DueDate     int64             `json:"due_date" validate:"startDate"`
 }
 type UpdateTaskRequestParams struct {
 	TaskId string `json:"taskId" validate:"required"`
@@ -30,7 +32,8 @@ type TrashTaskRequestParams struct {
 }
 
 type UpdateTaskDateRequestBody struct {
-	StartDate int64 `json:"start_date" validate:"required,startDate"`
+	StartDate int64 `json:"start_date" validate:"startDate"`
+	DueDate   int64 `json:"due_date" validate:"startDate"`
 }
 type UpdateDateRequestParams struct {
 	TaskId string `json:"taskId" validate:"required"`

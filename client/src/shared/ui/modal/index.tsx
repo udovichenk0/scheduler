@@ -1,5 +1,12 @@
 import { clsx } from "clsx"
-import { ReactNode, RefObject, createContext, useContext, useEffect, useRef } from "react"
+import {
+  ReactNode,
+  RefObject,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+} from "react"
 
 import { focusTrap } from "@/shared/lib/key-utils/focus-trap"
 
@@ -15,8 +22,8 @@ interface ModalProps {
 }
 
 type Context = {
-  isOpened: boolean,
-  label: string,
+  isOpened: boolean
+  label: string
   focusAfterClose?: Nullable<RefObject<any>>
   closeModal: () => void
 }
@@ -35,26 +42,23 @@ export const Modal = ({
   label,
   focusAfterClose = null,
 }: ModalProps) => {
-
   return (
-    <ModalContext value={{isOpened, label, closeModal, focusAfterClose}}>
+    <ModalContext value={{ isOpened, label, closeModal, focusAfterClose }}>
       {children}
     </ModalContext>
   )
 }
 
-export const CloseButton = ({ close }: { close: () => void}) => {
+export const CloseButton = ({ close }: { close: () => void }) => {
   return (
     <button
       title={"Close modal"}
       onClick={close}
-      className={
-        "relative h-[22px] w-[22px] rounded-[4px] hover:bg-hover"
-      }
+      className={"hover:bg-hover relative h-[22px] w-[22px] rounded-[4px]"}
     >
       <span
         className={
-          'before:absolute before:left-[5px] before:top-[10px] before:h-[1px] before:w-[12px] before:rotate-[-45deg] before:bg-cFont before:content-[""] after:absolute after:left-[5px] after:top-[10px] after:h-[1px] after:w-[12px] after:rotate-[45deg] after:bg-cFont after:content-[""]'
+          'before:bg-cFont after:bg-cFont before:absolute before:left-[5px] before:top-[10px] before:h-[1px] before:w-[12px] before:rotate-[-45deg] before:content-[""] after:absolute after:left-[5px] after:top-[10px] after:h-[1px] after:w-[12px] after:rotate-[45deg] after:content-[""]'
         }
       ></span>
       <span className="sr-only">Close the modal</span>
@@ -67,25 +71,28 @@ type DefaultProps = {
   children: ReactNode
 }
 
-const Overlay = ({children, className}:DefaultProps) => {
+const Overlay = ({ children, className }: DefaultProps) => {
   const { isOpened } = useContext(ModalContext)
 
-  if(!isOpened){
+  if (!isOpened) {
     return null
   }
 
   return (
-    <div className={clsx("absolute left-0 z-50 flex items-center justify-center top-0 h-screen w-full bg-black/40", className)}>
+    <div
+      className={clsx(
+        "absolute left-0 top-0 z-50 flex h-screen w-full items-center justify-center bg-black/40",
+        className,
+      )}
+    >
       {children}
     </div>
   )
 }
 
-const Header = ({children, className}: DefaultProps) => {
+const Header = ({ children, className }: DefaultProps) => {
   return (
-    <div className={clsx("flex items-center p-2", className)}>
-      {children}
-    </div>
+    <div className={clsx("flex items-center p-2", className)}>{children}</div>
   )
 }
 
@@ -105,60 +112,66 @@ const Content = ({ children, className }: ContentProps) => {
   )
 }
 
-const Body = ({children, className}: DefaultProps) => {
+const Body = ({ children, className }: DefaultProps) => {
   const ref = useRef<HTMLDivElement>(null)
 
-  const {label, closeModal, focusAfterClose, isOpened} = useContext(ModalContext)
+  const { label, closeModal, focusAfterClose, isOpened } =
+    useContext(ModalContext)
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement)
-      if(ref.current && !ref.current.contains(target)){
-        e.stopPropagation()
+      const target = e.target as HTMLElement
+      if (ref.current && !ref.current.contains(target)) {
+        // e.stopPropagation()
         closeModal()
       }
     }
 
-    if(isOpened){
+    if (isOpened) {
       document.addEventListener("click", close, true)
     }
     return () => {
-      if(isOpened){
+      if (isOpened) {
         document.removeEventListener("click", close, true)
-        if(focusAfterClose && focusAfterClose.current && focusAfterClose.current.focus){
+        if (
+          focusAfterClose &&
+          focusAfterClose.current &&
+          focusAfterClose.current.focus
+        ) {
           focusAfterClose.current.focus()
         }
       }
     }
   }, [isOpened])
-  
-  if(!isOpened){
+
+  if (!isOpened) {
     return null
   }
 
   return (
-      <div
-        ref={ref}
-        id="mymodal"
-        onClick={(e) => e.stopPropagation()}
-        aria-label={label}
-        aria-modal
-        role="dialog"
-        className={clsx(
-          "rounded-[5px] border-[1px] border-cBorder bg-main ", //!drop-shadow-base behaves like position relative
-          className,
-        )}
-      >
-        {children}
-      </div>
+    <div
+      ref={ref}
+      id="mymodal"
+      onClick={(e) => e.stopPropagation()}
+      aria-label={label}
+      aria-modal
+      role="dialog"
+      className={clsx(
+        "border-cBorder bg-main rounded-[5px] border-[1px] ", //!drop-shadow-base behaves like position relative
+        className,
+      )}
+    >
+      {children}
+    </div>
   )
 }
 
-type TriggerProps = DefaultProps & Omit<ButtonProps, "onClick"> & {
-  onClick: () => void
-}
+type TriggerProps = DefaultProps &
+  Omit<ButtonProps, "onClick"> & {
+    onClick: () => void
+  }
 
-const Trigger = ({children, onClick, ...rest}: TriggerProps) => {
+const Trigger = ({ children, onClick, ...rest }: TriggerProps) => {
   return (
     <Button {...rest} onClick={onClick}>
       {children}

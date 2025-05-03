@@ -15,7 +15,7 @@ export const MonthSwitcher = ({
   const isCurrentMonth =
     dayjs().isSame(date, "month") && dayjs().isSame(date, "year")
   return (
-    <div className="sticky top-0 p-1 z-50 mb-2 flex items-center justify-end gap-2 bg-main">
+    <div className="bg-main sticky top-0 z-50 mb-2 flex items-center justify-end gap-2 p-1">
       <Button
         disabled={isCurrentMonth}
         intent={"primary"}
@@ -30,7 +30,9 @@ export const MonthSwitcher = ({
       <button
         onClick={() => changeMonth(dayjs())}
         disabled={isCurrentMonth}
-        className={`focus-visible:ring outline-none rounded-[5px] py-2, px-2 font-bold text-accent ${isCurrentMonth && "opacity-80"}`}
+        className={`py-2, text-accent rounded-[5px] px-2 font-bold outline-none focus-visible:ring ${
+          isCurrentMonth && "opacity-80"
+        }`}
       >
         {t("calendar.today")}
       </button>

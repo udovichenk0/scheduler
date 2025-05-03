@@ -11,10 +11,7 @@ import { NoTasks } from "@/shared/ui/no-tasks"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { useSelectItem } from "@/shared/lib/use-select-item"
 
-import {
-  $$deleteTask,
-  $trashTasks,
-} from "./trash.model"
+import { $$deleteTask, $trashTasks } from "./trash.model"
 
 const Trash = () => {
   useDocumentTitle(t("task.trash"))
@@ -38,13 +35,9 @@ const Trash = () => {
     )
   })
   const [selectedTaskId, setSelectedTaskId] = useState<Nullable<string>>(null)
-  const {
-    onSelect, 
-    onUnselect, 
-    addNode,
-  } = useSelectItem({
+  const { onSelect, onUnselect, addNode } = useSelectItem({
     items: tasks,
-    onChange: (task) => setSelectedTaskId(task?.id || null)
+    onChange: (task) => setSelectedTaskId(task?.id || null),
   })
 
   return (
@@ -79,9 +72,9 @@ const Trash = () => {
 const Cross = () => {
   return (
     <div
-      className="relative mt-[2px] h-[10px] w-[10px]
-      before:absolute before:bottom-0 before:left-1/2 before:h-3 before:w-[2px] before:-rotate-45 before:bg-accent before:content-['']
-      after:absolute after:bottom-0 after:left-1/2 after:h-3 after:w-[2px] after:rotate-45 after:bg-accent after:content-['']
+      className="before:bg-accent after:bg-accent relative mt-[2px]
+      h-[10px] w-[10px] before:absolute before:bottom-0 before:left-1/2 before:h-3 before:w-[2px] before:-rotate-45
+      before:content-[''] after:absolute after:bottom-0 after:left-1/2 after:h-3 after:w-[2px] after:rotate-45 after:content-['']
     "
     ></div>
   )

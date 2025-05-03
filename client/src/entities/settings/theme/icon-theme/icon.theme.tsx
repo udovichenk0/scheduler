@@ -9,7 +9,6 @@ import { Typography } from "@/shared/ui/general/typography"
 import { $$accentSettings, Accent } from "./icon-theme.model"
 import style from "./style.module.css"
 
-
 const { accentChanged, $accent } = $$accentSettings
 export const AccentThemeChanger = () => {
   const { t } = useTranslation()
@@ -24,7 +23,11 @@ export const AccentThemeChanger = () => {
   ] as const)
   return (
     <>
-      <Typography.Heading size="xs" id="accent" className="mb-6 text-center text-cFont">
+      <Typography.Heading
+        size="xs"
+        id="accent"
+        className="text-cFont mb-6 text-center"
+      >
         {t("setting.theme.accentTitle")}
       </Typography.Heading>
       <div className="flex justify-center gap-6">
@@ -33,7 +36,6 @@ export const AccentThemeChanger = () => {
         })}
       </div>
     </>
-
   )
 }
 const AccentThemeBox = ({ accent }: { accent: Accent }) => {

@@ -13,7 +13,7 @@ export function Checkbox({
   borderClassName,
   iconClassName,
   ref,
-  disabled
+  disabled,
 }: {
   onChange: () => void
   checked: boolean
@@ -30,7 +30,7 @@ export function Checkbox({
         disabled={disabled}
         aria-checked={checked}
         onKeyDown={(e) => {
-          if(isEnter(e) || isSpace(e)){
+          if (isEnter(e) || isSpace(e)) {
             e.stopPropagation()
             onChange()
           }
@@ -45,7 +45,7 @@ export function Checkbox({
       <span
         className={clsx(
           borderClassName,
-          "checkbox flex h-5 w-5 items-center justify-center rounded-[3px] border-[2px] border-cTaskEditDefault",
+          "checkbox border-cTaskEditDefault flex h-5 w-5 items-center justify-center rounded-[3px] border-[2px]",
         )}
       >
         {checked && <DoneSvg className={clsx(iconClassName, "checker")} />}

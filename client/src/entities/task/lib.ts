@@ -1,15 +1,12 @@
-
 import dayjs from "dayjs"
 import { t } from "i18next"
 
-import { dateToUnix } from "@/shared/lib/date/date-to-unix"
-import { TaskDto } from '@/shared/api/scheduler.schemas'
+import { TaskDto } from "@/shared/api/scheduler.schemas"
 import { unixToDate } from "@/shared/lib/date/unix-to-date"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 
 import { TaskStatuses } from "./config"
 import { EditableTaskFields, Task, TaskId, Status } from "./type"
-
 
 export const findTaskById = (tasks: Task[], id: TaskId) =>
   tasks.find((task) => task.id === id)!
@@ -33,18 +30,12 @@ export const isUnplaced = (task: Task) => task.type == "unplaced"
 
 export const isInbox = (task: Task) => task.type == "inbox"
 
-export const taskFieldsToDto = ({start_date, ...rest}: EditableTaskFields) => {
-  return {
-    ...rest,
-    start_date: start_date ? dateToUnix(start_date) : null
-  }
-}
-
 export const taskToDomain = (taskDto: TaskDto): Task => {
   return {
     ...taskDto,
     start_date: unixToDate(taskDto.start_date),
-    date_created: new Date(taskDto.date_created)
+    due_date: unixToDate(taskDto.due_date),
+    date_created: new Date(taskDto.date_created),
   }
 }
 
@@ -52,18 +43,26 @@ export const tasksToDomain = (tasksDto: TaskDto[]) => {
   return tasksDto.map(taskToDomain)
 }
 
-export const getTaskFields = ({title, description, status, start_date, type}: Task): EditableTaskFields => {
+export const getTaskFields = ({
+  title,
+  description,
+  status,
+  start_date,
+  type,
+  due_date,
+}: Task): EditableTaskFields => {
   return {
     title,
     description,
     status,
     start_date,
+    due_date,
     type,
   }
 }
 
 export const shouldShowCompleted = (isToggled: boolean, task: Task) => {
-  return task.status != 'finished' || isToggled
+  return task.status != "finished" || isToggled
 }
 
 export function formatTaskDate(date: Date) {

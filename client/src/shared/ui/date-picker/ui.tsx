@@ -1,171 +1,167 @@
-import dayjs, { Dayjs } from "dayjs"
-import { Fragment, useEffect, useRef, useState } from "react"
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react"
 
-import { addLeadingZero } from "@/shared/lib/date/add-leading-zero"
+import { Modal } from "../modal"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
+import { ModalName } from "@/shared/lib/modal/modal-names"
+import { Button } from "../buttons/main-button"
+import { Icon } from "../icon"
+import { Calendar } from "./ui/calendar"
+import dayjs from "dayjs"
+import { DateInput } from "./ui/input"
+import { DateShortcutPicker } from "./ui/date-shortcut-picker"
 
-import { Cell } from "./ui/calendar-cell"
-import { WeeksName } from "./ui/week-names"
-import { SectionRow, generateCalendar, sub, sum } from "./lib"
-import { Footer } from "./ui/footer"
+const DateAction = {
+  Start: "change-start",
+  End: "change-end",
+} as const
+
+type ChangeDateTypeAction = typeof DateAction[keyof typeof DateAction]
 
 export function DatePicker({
-  currentDate,
-  onDateChange,
-  onCancel,
-  onSave,
+  startDate,
+  dueDate,
+  CustomInput,
+  onDateChange
 }: {
-  currentDate: Date
-  onDateChange: (date: Date) => void
-  onCancel: () => void
-  onSave: () => void
+  startDate: Nullable<Date>
+  dueDate: Nullable<Date>
+  CustomInput?: ({ onClick }: { onClick: () => void }) => ReactNode
+  onDateChange: (data: {startDate: Nullable<Date>, dueDate: Nullable<Date>}) => void
 }) {
-  const [calendars, setCalendars] = useState(generateCalendar)
-  const [weeksCount, setWeeksCount] = useState(5)
-  const [top, setTop] = useState(0)
-  const endTarget = useRef<HTMLDivElement>(null)
-  const root = useRef<HTMLDivElement>(null)
-  const startTarget = useRef<HTMLDivElement>(null)
+  const [tempStartDate, setTempStartDate] = useState(startDate)
+  const [tempDueDate, setTempDueDate] = useState(dueDate)
+  const dueDateInput = useRef<HTMLInputElement>(null)
+  const [dateAction, setDateAction] = useState<ChangeDateTypeAction>(DateAction.Start)
+  const {
+    isOpened: isDateModalOpened,
+    open: onOpenDateModal,
+    close: onCloseDateModal,
+    cancel: onCancelDateModal,
+  } = useDisclosure({ 
+    prefix: ModalName.DateModal, 
+    onClose: () => {
+      onDateChange({startDate: tempStartDate, dueDate: tempDueDate})
+    }
+  })
 
-  const endObserver = new IntersectionObserver(
-    (elem) => {
-      if (elem[0].isIntersecting) {
-        const newCalendars = generateCalendar(dayjs().add(weeksCount, "month"))
-        const calendarsLength = newCalendars.length
-        setWeeksCount(sum(calendarsLength))
-        if (weeksCount >= 20) {
-          setTop(sum(calendarsLength))
-          setCalendars((prev) =>
-            prev.concat(newCalendars).slice(calendarsLength),
-          )
-        } else {
-          setCalendars((prev) => prev.concat(newCalendars))
-        }
-      }
-    },
-    {
-      root: root.current,
-      threshold: 0,
-    },
-  )
-  const startObserver = new IntersectionObserver(
-    (elem) => {
-      if (elem[0].isIntersecting && top > 0) {
-        const newCalendars = generateCalendar(
-          dayjs().add(weeksCount - 25, "month"),
-        )
-        const calendarsLength = newCalendars.length
-        if (weeksCount > 20) {
-          setTop(sub(calendarsLength))
-          setWeeksCount(sub(calendarsLength))
-          setCalendars((prev) => {
-            const n = newCalendars.concat(prev)
-            return n.slice(0, n.length - newCalendars.length)
-          })
-        }
-      }
-    },
-    {
-      root: root.current,
-      threshold: 0,
-    },
-  )
+  const onCancel = () => {
+    onCancelDateModal()
+    setTempDueDate(dueDate)
+    setTempStartDate(startDate)
+  }
+
   useEffect(() => {
-    if (endTarget.current && startTarget.current) {
-      endObserver.observe(endTarget.current)
-      startObserver.observe(startTarget.current)
-    }
-    return () => {
-      if (endTarget.current && startTarget.current) {
-        endObserver.unobserve(endTarget.current)
-        startObserver.unobserve(startTarget.current)
+    setTempDueDate(dueDate)
+    setTempStartDate(startDate)
+  }, [startDate, dueDate])
+
+  
+  const onSetDate = useCallback((date: Date) => {
+    const dueDateBeforeStart = tempStartDate && dateAction == DateAction.End && date < tempStartDate
+    const startDateAfterDue = tempDueDate && dateAction == DateAction.Start && date >  tempDueDate
+
+    if(dateAction == DateAction.Start) {
+      setTempStartDate(date)
+      setDateAction(DateAction.End)
+      if(startDateAfterDue){
+        setTempDueDate(null)
+      }
+      dueDateInput.current?.focus()
+    } else {
+      setTempDueDate(date)
+      if(dueDateBeforeStart){
+        setTempStartDate(null)
       }
     }
-  }, [weeksCount])
+  }, [tempStartDate, tempDueDate, dateAction])
+
+  const onCellClick = (date: Date) => {
+    const d = dayjs(date)
+    const sdh = tempStartDate?.getHours() || 0
+    const sdm = tempStartDate?.getMinutes() || 0
+
+    const ddh = tempDueDate?.getHours() || 0
+    const ddm = tempDueDate?.getMinutes() || 0
+
+    const newStartDate = d.set("hour", sdh).set("minute", sdm).toDate()
+    const newDueDate = d.set("hour", ddh).set("minute", ddm).toDate()
+
+    const newDate = dateAction === DateAction.Start ? newStartDate : newDueDate
+
+    onSetDate(newDate)
+  }
 
   return (
-    <div className="p-3">
-      <div className="relative mb-4">
-        <WeeksName />
-        <div className="overflow-auto">
-          <div ref={root} className="noScroll h-[240px] overflow-y-scroll">
-            <ul
-              data-testid="date-list"
-              style={{
-                height: calendars.length * 160,
-                position: "relative",
-                top: top * 160,
-              }}
-            >
-              {calendars.map(({ rows, date }, id) => {
-                return (
-                  <Fragment key={id}>
-                    {id == 1 && <div ref={startTarget}></div>}
-                    <Calendar
-                      rows={rows}
-                      sectionDate={date}
-                      onDateChange={onDateChange}
-                      currentDate={currentDate}
-                    />
-                    {id == calendars.length - 1 && <div ref={endTarget}></div>}
-                  </Fragment>
-                )
-              })}
-            </ul>
-          </div>
+    <Modal
+      label="Select task date"
+      isOpened={isDateModalOpened}
+      closeModal={onCloseDateModal}
+    >
+      {CustomInput ? (
+        <CustomInput onClick={onOpenDateModal} />
+      ) : (
+        <div>
+          <Button
+            onClick={onOpenDateModal}
+            size={"sm"}
+            intent={"primary"}
+            className="flex"
+          >
+            <Icon
+              name={"common/upcoming"}
+              className="text-cTaskEditDefault mr-4 size-[18px]"
+            />
+          </Button>
         </div>
-      </div>
-      <Footer onCancel={onCancel} onSave={onSave} />
-    </div>
+      )}
+      <Modal.Overlay>
+        <Modal.Body>
+          <Modal.Content className="contents">
+            <div>
+              <div className="flex gap-x-2 border-b-1 border-b-cBorder p-2">
+                <DateInput
+                  className="py-1"
+                  onSelectDate={onSetDate}
+                  value={tempStartDate}
+                  onClick={() => setDateAction(DateAction.Start)}
+                  placeholder="Start Date"
+                  icon={
+                    <Icon
+                      name="common/calendar-start-date"
+                      className="text-cSecondBorder"
+                    />
+                  }
+                />
+                <DateInput
+                  className="py-1"
+                  onSelectDate={onSetDate}
+                  value={tempDueDate}
+                  onClick={() => setDateAction(DateAction.End)}
+                  placeholder="Due Date"
+                  ref={dueDateInput}
+                  icon={
+                    <Icon
+                      name="common/calendar-due-date"
+                      className="text-cSecondBorder"
+                    />
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2">
+                <DateShortcutPicker onSetDate={onSetDate}/>
+                <Calendar 
+                  onChange={onCellClick}
+                  tempDueDate={tempDueDate} 
+                  tempStartDate={tempStartDate} 
+                  onCancel={onCancel}
+                  onClose={onCloseDateModal}
+                />
+              </div>
+            </div>
+          </Modal.Content>
+        </Modal.Body>
+      </Modal.Overlay>
+    </Modal>
   )
 }
-const Calendar = ({
-  rows,
-  onDateChange,
-  currentDate,
-  sectionDate,
-}: {
-  rows: SectionRow[]
-  onDateChange: (date: Date) => void
-  currentDate: Date
-  sectionDate: Dayjs
-}) => {
-  return (
-    <div className="relative">
-      <div className="absolute left-[30%] top-[50%] -z-[10] flex h-[50px] items-center text-[90px] font-bold text-main opacity-10 invert">
-        {addLeadingZero(sectionDate.month() + 1)}
-      </div>
-      {rows.map((row, rowId) => {
-        return (
-          <li className="flex justify-around" key={rowId}>
-            {row.map((cellDate, id) => {
-              const isTopDateBigger =
-                rowId != rows.length - 1 &&
-                rows[rowId][id].date > rows[rowId + 1][id].date
-              const isLeftDateBigger =
-                id != row.length - 1 &&
-                rows[rowId][id].date > rows[rowId][id + 1].date
-              const isBottomDateBigger =
-                !rows[rowId - 1] && rows[rowId][id].date <= 7
 
-              return (
-                <div
-                  className={`h-[40px] w-full border-cBorder py-[2px] 
-                    ${isBottomDateBigger && "border-t-[1px]"} 
-                    ${isTopDateBigger && "border-b-[1px]"} 
-                    ${isLeftDateBigger && "border-b-[1px] border-r-[1px]"}`}
-                  key={`${cellDate.date}/${cellDate.month}/${cellDate.year}`}
-                >
-                  <Cell
-                    onDateChange={onDateChange}
-                    cellDate={cellDate}
-                    currentDate={currentDate}
-                  />
-                </div>
-              )
-            })}
-          </li>
-        )
-      })}
-    </div>
-  )
-}

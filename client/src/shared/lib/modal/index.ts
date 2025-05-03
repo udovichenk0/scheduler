@@ -6,7 +6,6 @@ import { singleton } from "../effector"
 import { isEsc } from "../key-utils"
 import { setupListener } from "../effector/setup-listener"
 
-
 export const createModalsManager = () => {
   const $ids = createStore<string[]>([])
   const $onCloseCallbacks = createStore<Record<string, () => void>>({})
@@ -19,7 +18,7 @@ export const createModalsManager = () => {
   const startListener = createEvent()
   const stopListener = createEvent()
   const destroy = createEvent<string>()
-  const registerOnCloseCallback = createEvent<{id: string, fn: () => void}>()
+  const registerOnCloseCallback = createEvent<{ id: string; fn: () => void }>()
   const keydown = setupListener<KeyboardEvent>({
     event: "keydown",
     start: startListener,
@@ -29,14 +28,14 @@ export const createModalsManager = () => {
     clock: open,
     source: $ids,
     filter: (ids) => !ids.length,
-    target: startListener
+    target: startListener,
   })
-  
+
   sample({
     clock: open,
     source: $ids,
     fn: (ids, id) => [...ids, id],
-    target: $ids
+    target: $ids,
   })
 
   sample({
@@ -55,20 +54,20 @@ export const createModalsManager = () => {
     target: $ids,
   })
   sample({
-    clock: keydown, 
+    clock: keydown,
     source: $ids,
     filter: (ids, keyEvent) => isEsc(keyEvent) && ids.length > 0,
     target: close,
   })
-sample({
+  sample({
     clock: close,
     source: $ids,
     filter: (ids) => !ids.length,
-    target: stopListener
+    target: stopListener,
   })
 
   sample({
-    clock: closeAll, 
+    clock: closeAll,
     source: $ids,
     filter: (ids) => ids.length > 0,
     target: [$ids.reinit, stopListener],
@@ -85,14 +84,14 @@ sample({
     clock: cancel,
     source: $ids,
     filter: (ids) => !ids.length,
-    target: stopListener
+    target: stopListener,
   })
 
   sample({
     clock: keydown,
     source: $ids,
     filter: (ids, keyEvent) => isEsc(keyEvent) && !ids.length,
-    target: stopListener
+    target: stopListener,
   })
 
   sample({
@@ -102,18 +101,20 @@ sample({
     target: closeAll,
   })
 
-  const triggerOnCloseCallbackFx = createEffect(({cbs, id}: {cbs: Record<string, () => void>, id: string}) => {
-    const callback = cbs[id]
-    if(callback){
-      callback()
-    }
-  })
+  const triggerOnCloseCallbackFx = createEffect(
+    ({ cbs, id }: { cbs: Record<string, () => void>; id: string }) => {
+      const callback = cbs[id]
+      if (callback) {
+        callback()
+      }
+    },
+  )
   sample({
     clock: modalClosed,
     source: $onCloseCallbacks,
     filter: (cbs, id) => !!cbs[id],
-    fn: (cbs, id) => ({cbs, id}),
-    target: triggerOnCloseCallbackFx
+    fn: (cbs, id) => ({ cbs, id }),
+    target: triggerOnCloseCallbackFx,
   })
   sample({
     clock: destroy,
@@ -121,24 +122,24 @@ sample({
     filter: (cbs, id) => !!cbs[id],
     fn: (cbs, id) => {
       let obj = {}
-      for(const key in cbs){
-        if(key != id){
-          obj = {...obj, [key]: cbs[key]}
+      for (const key in cbs) {
+        if (key != id) {
+          obj = { ...obj, [key]: cbs[key] }
         }
       }
       return obj
     },
-    target: $onCloseCallbacks
+    target: $onCloseCallbacks,
   })
 
   sample({
     clock: registerOnCloseCallback,
     source: $onCloseCallbacks,
-    fn: (cbs, {id, fn}) => ({...cbs, [id]: fn}),
-    target: $onCloseCallbacks
+    fn: (cbs, { id, fn }) => ({ ...cbs, [id]: fn }),
+    target: $onCloseCallbacks,
   })
 
-  function isOpen(ids: string[]){
+  function isOpen(ids: string[]) {
     return (id: string) => ids.includes(id)
   }
 
@@ -150,10 +151,9 @@ sample({
     modalClosed,
     isOpen,
     registerOnCloseCallback,
-    destroy
+    destroy,
   }
 }
-
 
 export const $$modal = singleton(createModalsManager)
 

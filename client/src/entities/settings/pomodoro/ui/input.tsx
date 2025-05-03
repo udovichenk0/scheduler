@@ -7,7 +7,7 @@ export const PomodoroInput = ({
   onChange,
   className,
   onSubmit,
-  autoFocus = false
+  autoFocus = false,
 }: {
   value: number
   onChange: (value: string) => void
@@ -17,7 +17,7 @@ export const PomodoroInput = ({
 }) => {
   const ref = useRef<HTMLInputElement>(null)
   useEffect(() => {
-    if(autoFocus){
+    if (autoFocus) {
       ref?.current?.focus()
     }
   }, [autoFocus])
@@ -27,7 +27,7 @@ export const PomodoroInput = ({
       onBlur={(e) => onSubmit(e.target.value)}
       className={clsx(
         style.removeArrow,
-        "w-16 appearance-none rounded-[5px] border border-cSecondBorder bg-transparent text-center",
+        "border-cSecondBorder w-16 appearance-none rounded-[5px] border bg-transparent text-center",
         className,
       )}
       maxLength={3}

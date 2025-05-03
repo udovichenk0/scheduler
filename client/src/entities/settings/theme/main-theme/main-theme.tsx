@@ -24,7 +24,11 @@ export const MainThemeChanger = () => {
   const changeTheme = useUnit(themeChanged)
   return (
     <>
-      <Typography.Heading size="xs" id="theme" className="mb-6 text-center text-cFont">
+      <Typography.Heading
+        size="xs"
+        id="theme"
+        className="text-cFont mb-6 text-center"
+      >
         {t("setting.theme.themeTitle")}
       </Typography.Heading>
       <div className="mb-12 flex items-center justify-around px-10">
@@ -48,7 +52,7 @@ const ThemeBox = ({
   title,
   theme,
   activeTheme,
-  changeTheme
+  changeTheme,
 }: {
   title: string
   theme: Theme
@@ -58,22 +62,29 @@ const ThemeBox = ({
   const ref = useRef<HTMLButtonElement>(null)
   const isActive = activeTheme == theme
   useEffect(() => {
-    if(isActive){
+    if (isActive) {
       ref.current?.focus()
     }
   }, [])
   return (
     <button
       ref={ref}
-      aria-describedby="theme" 
-      className="flex w-[60px] flex-col items-center group"
+      aria-describedby="theme"
+      className="group flex w-[60px] flex-col items-center"
       key={title}
       onClick={() => changeTheme(theme)}
     >
-      <div data-color={theme} data-active={isActive} className={clsx(style.mainBg, "group-focus-visible:ring") }>
+      <div
+        data-color={theme}
+        data-active={isActive}
+        className={clsx(style.mainBg, "group-focus-visible:ring")}
+      >
         <div className="flex w-10 items-center justify-center gap-[3px]">
           <div className="w-full">
-            <div data-color={theme} className={`h-[8px] w-full rounded-[2px] ${style.topBox}`} />
+            <div
+              data-color={theme}
+              className={`h-[8px] w-full rounded-[2px] ${style.topBox}`}
+            />
             <div className="mt-[2px] flex w-full gap-[2px]">
               <div data-color={theme} className={style.leftBox} />
               <div data-color={theme} className={style.rightBox} />
@@ -83,7 +94,7 @@ const ThemeBox = ({
             A
           </span>
         </div>
-        <div className="group absolute -bottom-5 flex justify-end gap-x-1 text-[12px] text-cFont">
+        <div className="text-cFont group absolute -bottom-5 flex justify-end gap-x-1 text-[12px]">
           <div className="absolute -left-[12px] w-[10px]">
             <Icon
               name="common/done"

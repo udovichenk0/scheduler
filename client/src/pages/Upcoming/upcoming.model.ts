@@ -6,7 +6,12 @@ import { createTaskFactory } from "@/features/manage-task/create"
 import { updateTaskFactory } from "@/features/manage-task/update"
 import { trashTaskFactory } from "@/features/manage-task/trash"
 
-import { Task, createSorting, getTaskModelInstance, modifyTaskFactory } from "@/entities/task"
+import {
+  Task,
+  createSorting,
+  getTaskModelInstance,
+  modifyTaskFactory,
+} from "@/entities/task"
 import { isUnplaced, shouldShowCompleted } from "@/entities/task/lib"
 
 import { routes } from "@/shared/routing"
@@ -28,20 +33,31 @@ export const $$sort = createSorting()
 
 export const $$taskModel = getTaskModelInstance()
 
-export const $upcomingTasks = combine($$taskModel.$tasks, $$taskModel.$isCompletedShown, (tasks, isCompletedShown) => {
-  return tasks?.filter((task) => isUnplaced(task) && !task.is_trashed && shouldShowCompleted(isCompletedShown, task)) || []
-})
+export const $upcomingTasks = combine(
+  $$taskModel.$tasks,
+  $$taskModel.$isCompletedShown,
+  (tasks, isCompletedShown) => {
+    return (
+      tasks?.filter(
+        (task) =>
+          isUnplaced(task) &&
+          !task.is_trashed &&
+          shouldShowCompleted(isCompletedShown, task),
+      ) || []
+    )
+  },
+)
 
-export const $$updateTask = updateTaskFactory({taskModel: $$taskModel})
+export const $$updateTask = updateTaskFactory({ taskModel: $$taskModel })
 export const $$createTask = createTaskFactory({
   $$modifyTask: modifyTaskFactory({
     defaultType: "unplaced",
-    defaultDate: getToday(),
+    defaultDate: getToday().toDate(),
   }),
-  taskModel: $$taskModel
+  taskModel: $$taskModel,
 })
 
-export const $$trashTask = trashTaskFactory({taskModel: $$taskModel})
+export const $$trashTask = trashTaskFactory({ taskModel: $$taskModel })
 
 export const TaskManagerContext = createContext({
   $$updateTask,

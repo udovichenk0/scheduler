@@ -19,7 +19,7 @@ const Tab = {
 const Settings = ({
   defaultTab = Tab.general,
   onClose: onCloseSettings,
-  isOpen: isSettingsOpened
+  isOpen: isSettingsOpened,
 }: {
   defaultTab?: Keys<typeof Tab>
   onClose: () => void
@@ -31,66 +31,73 @@ const Settings = ({
 
   return (
     <Modal
-      label={t("setting.title")} 
-      closeModal={onCloseSettings} 
-      isOpened={isSettingsOpened}>
+      label={t("setting.title")}
+      closeModal={onCloseSettings}
+      isOpened={isSettingsOpened}
+    >
       <Modal.Overlay>
         <Modal.Body className="w-[600px]">
           <Modal.Header>
-            <span className="w-full pl-6 text-center text-[12px]">{t("setting.title")}</span>
-            <CloseButton close={onCloseSettings}/>
+            <span className="w-full pl-6 text-center text-[12px]">
+              {t("setting.title")}
+            </span>
+            <CloseButton close={onCloseSettings} />
           </Modal.Header>
           <Modal.Content initialFocus={ref}>
-          <Root value={tab} onChange={setTab} className="text-sm">
-            <Root.List className="flex gap-5 border-b-[1px] border-cBorder px-6 pb-4">
-              <Root.Trigger
-                value={Tab.general}
-                activeClass={"text-cFont"}
-                className={`flex flex-col items-center gap-3 text-[#76899b] hover:text-primary`}
-              >
-                <Icon name="common/settings" className="h-8 w-8" />
-                <span className="text-inherit">{t("setting.tab.general")}</span>
-              </Root.Trigger>
-              <Root.Trigger
-                value={Tab.synchronization}
-                activeClass={"text-cFont"}
-                className={`flex flex-col items-center gap-3 text-[#76899b] hover:text-primary`}
-              >
-                <Icon name="common/cloud" className="h-8 w-8" />
-                <span className="text-inherit">
-                  {t("setting.tab.synchronization")}
-                </span>
-              </Root.Trigger>
-              <Root.Trigger
-                value={Tab.theme}
-                activeClass={"text-cFont"}
-                className={`flex flex-col items-center gap-3 text-[#76899b] hover:text-primary`}
-              >
-                <Icon name="common/palette" className="h-8 w-8" />
-                <span className="text-inherit">{t("setting.tab.theme")}</span>
-              </Root.Trigger>
-              <Root.Trigger
-                value={Tab.pomodoro}
-                activeClass={"text-cFont"}
-                className={`flex flex-col items-center gap-3 text-[#76899b] hover:text-primary`}
-              >
-                <Icon name="common/timer" className="h-8 w-8" />
-                <span className="text-inherit">{t("setting.tab.pomodoro")}</span>
-              </Root.Trigger>
-            </Root.List>
-            <Root.Content label={Tab.general}>
-              <GeneralSettings/>
-            </Root.Content>
-            <Root.Content label={Tab.synchronization}>
-              <Authentication/>
-            </Root.Content>
-            <Root.Content label={Tab.theme}>
-              <ThemeChanger/>
-            </Root.Content>
-            <Root.Content label={Tab.pomodoro}>
-              <PomodoroSettings/>
-            </Root.Content>
-          </Root>
+            <Root value={tab} onChange={setTab} className="text-sm">
+              <Root.List className="border-cBorder flex gap-5 border-b-[1px] px-6 pb-4">
+                <Root.Trigger
+                  value={Tab.general}
+                  activeClass={"text-cFont"}
+                  className={`hover:text-primary flex flex-col items-center gap-3 text-[#76899b]`}
+                >
+                  <Icon name="common/settings" className="h-8 w-8" />
+                  <span className="text-inherit">
+                    {t("setting.tab.general")}
+                  </span>
+                </Root.Trigger>
+                <Root.Trigger
+                  value={Tab.synchronization}
+                  activeClass={"text-cFont"}
+                  className={`hover:text-primary flex flex-col items-center gap-3 text-[#76899b]`}
+                >
+                  <Icon name="common/cloud" className="h-8 w-8" />
+                  <span className="text-inherit">
+                    {t("setting.tab.synchronization")}
+                  </span>
+                </Root.Trigger>
+                <Root.Trigger
+                  value={Tab.theme}
+                  activeClass={"text-cFont"}
+                  className={`hover:text-primary flex flex-col items-center gap-3 text-[#76899b]`}
+                >
+                  <Icon name="common/palette" className="h-8 w-8" />
+                  <span className="text-inherit">{t("setting.tab.theme")}</span>
+                </Root.Trigger>
+                <Root.Trigger
+                  value={Tab.pomodoro}
+                  activeClass={"text-cFont"}
+                  className={`hover:text-primary flex flex-col items-center gap-3 text-[#76899b]`}
+                >
+                  <Icon name="common/timer" className="h-8 w-8" />
+                  <span className="text-inherit">
+                    {t("setting.tab.pomodoro")}
+                  </span>
+                </Root.Trigger>
+              </Root.List>
+              <Root.Content label={Tab.general}>
+                <GeneralSettings />
+              </Root.Content>
+              <Root.Content label={Tab.synchronization}>
+                <Authentication />
+              </Root.Content>
+              <Root.Content label={Tab.theme}>
+                <ThemeChanger />
+              </Root.Content>
+              <Root.Content label={Tab.pomodoro}>
+                <PomodoroSettings />
+              </Root.Content>
+            </Root>
           </Modal.Content>
         </Modal.Body>
       </Modal.Overlay>

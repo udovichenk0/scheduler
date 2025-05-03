@@ -4,13 +4,17 @@ import { spread } from "patronum"
 
 import { bridge } from "@/shared/lib/effector/bridge"
 
-import type { Status as Status, Type as Type, EditableTaskFields } from '../type.ts'
+import type {
+  Status as Status,
+  Type as Type,
+  EditableTaskFields,
+} from "../type.ts"
 
 import { TaskStatus, TaskType } from "./task.model.ts"
 
 export const modifyTaskFactory = ({
   defaultType = "inbox",
-  defaultDate = null
+  defaultDate = null,
 }: {
   defaultType?: Type
   defaultDate?: Nullable<Date>
@@ -18,7 +22,7 @@ export const modifyTaskFactory = ({
   const statusChanged = createEvent<Status>()
   const titleChanged = createEvent<string>()
   const typeChanged = createEvent<Type>()
-  const dateChanged = createEvent<Date>()
+  const dateChanged = createEvent<{startDate: Nullable<Date>, dueDate: Nullable<Date>}>()
   const setDate = createEvent<Nullable<Date>>()
   const descriptionChanged = createEvent<Nullable<string>>()
   const setStatus = createEvent<Status>()
@@ -28,6 +32,7 @@ export const modifyTaskFactory = ({
   const $description = createStore<Nullable<string>>(null)
   const $status = createStore<Status>(TaskStatus.INPROGRESS)
   const $startDate = createStore<Nullable<Date>>(defaultDate)
+  const $dueDate = createStore<Nullable<Date>>(null)
   const $type = createStore<Type>(defaultType)
   const $isDirty = createStore(false)
   const $isAllowToSubmit = createStore(false)
@@ -38,19 +43,17 @@ export const modifyTaskFactory = ({
     $status,
     $type,
     $startDate,
-    (title, description, status, type, start_date) => ({
+    $dueDate,
+    (title, description, status, type, start_date, due_date) => ({
       title,
       description,
       status,
       type,
       start_date,
+      due_date,
     }),
   )
 
-  sample({
-    clock: setDate,
-    fn: (d) => console.log(d)
-  })
   sample({
     source: {
       d: $isDirty,
@@ -68,7 +71,7 @@ export const modifyTaskFactory = ({
     clock: setStatus,
     target: $status,
   })
-  
+
   sample({
     clock: setFieldsTriggered,
     target: spread({
@@ -77,6 +80,7 @@ export const modifyTaskFactory = ({
       status: $status,
       start_date: $startDate,
       type: $type,
+      due_date: $dueDate,
     }),
   })
 
@@ -97,8 +101,15 @@ export const modifyTaskFactory = ({
   })
 
   bridge(() => {
+    spread({
+      source: dateChanged,
+      targets: {
+        startDate: $startDate,
+        dueDate: $dueDate
+      }
+    })
     sample({
-      clock: [dateChanged,setDate],
+      clock: [setDate],
       target: $startDate,
     })
 
@@ -161,6 +172,7 @@ export const modifyTaskFactory = ({
       $isDirty.reinit,
       $type.reinit,
       $startDate.reinit,
+      $dueDate.reinit,
     ],
   })
 
@@ -178,6 +190,7 @@ export const modifyTaskFactory = ({
     $status,
     $type,
     $startDate,
+    $dueDate,
     $isAllowToSubmit,
     $fields,
     $isDirty,

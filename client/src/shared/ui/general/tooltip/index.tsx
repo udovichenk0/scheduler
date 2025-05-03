@@ -27,12 +27,12 @@ export const Tooltip = ({
         data-dir={dir}
         className={clsx(
           style.tooltip,
-          "hidden max-w-[150px] rounded-[5px] text-ellipsis bg-cCalendarTooltip px-3 py-1 group-hover:block select-none",
+          "bg-cCalendarTooltip hidden max-w-[150px] select-none text-ellipsis rounded-[5px] px-3 py-1 group-hover:block",
         )}
       >
         <div
           data-size={size}
-          className={clsx(style.size, "truncate text-cTooltipFont")}
+          className={clsx(style.size, "text-cTooltipFont truncate")}
         >
           {text}
         </div>

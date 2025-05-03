@@ -12,7 +12,6 @@ import { $$createTask } from "../calendar.model"
 
 import { CellHeader } from "./cell-header"
 
-
 export type CellProps = {
   date: number
   month: number
@@ -29,7 +28,7 @@ export const Cell = ({
   cell: CellProps
   tasks?: Task[]
   onTaskClick: (target: HTMLButtonElement, task: Task) => void
-  onShowMoreTasks: (tasks: Task[]) => void,
+  onShowMoreTasks: (tasks: Task[]) => void
   onClick: (target: HTMLButtonElement, date: Date) => void
   onUpdateStatus: ({ id, status }: { id: TaskId; status: Status }) => void
 }) => {
@@ -40,7 +39,7 @@ export const Cell = ({
   const [showMore, setShowMore] = useState(false)
 
   const { date, month, year } = cell
-  
+
   const setDate = useUnit($$createTask.setDate)
 
   const cellDate = new Date(year, month, date)
@@ -51,7 +50,7 @@ export const Cell = ({
   }
 
   const onKeyDown = (e: KeyboardEvent) => {
-    if(isEnter(e)){
+    if (isEnter(e)) {
       clickOnCell()
     }
   }
@@ -88,9 +87,9 @@ export const Cell = ({
       onClick={clickOnCell}
       tabIndex={0}
       onKeyDown={onKeyDown}
-      className={`w-full flex flex-col min-h-[100px] focus-visible:ring border-b overflow-x-clip ${
-        isToday && "border-t border-t-accent"
-      } border-r border-cBorder p-2 text-cCalendarFont`}
+      className={`flex min-h-[100px] w-full flex-col overflow-x-clip border-b focus-visible:ring ${
+        isToday && "border-t-accent border-t"
+      } border-cBorder text-cCalendarFont border-r p-2`}
     >
       <CellHeader cell={cell} />
       <div
@@ -100,10 +99,10 @@ export const Cell = ({
         {tasks?.map((task) => {
           const { id, status, title } = task
           return (
-            <div key={id} className="relative w-full group">
+            <div key={id} className="group relative w-full">
               <Checkbox
                 iconClassName="fill-white"
-                className="left-[2px] top-[2px] absolute bg-[#607d8b] hidden group-hover:flex"
+                className="absolute left-[2px] top-[2px] hidden bg-[#607d8b] group-hover:flex"
                 borderClassName="border-white"
                 onChange={() => onUpdateStatus({ id, status })}
                 checked={status == TaskStatuses.FINISHED}
@@ -114,7 +113,7 @@ export const Cell = ({
                   e.stopPropagation()
                   onTaskClick(e.target as HTMLButtonElement, task)
                 }}
-                className="select-none w-full truncate cursor-pointer focus-visible:ring rounded-[5px] bg-[#607d8b] text-start text-white px-1"
+                className="w-full cursor-pointer select-none truncate rounded-[5px] bg-[#607d8b] px-1 text-start text-white focus-visible:ring"
               >
                 {title}
               </button>
@@ -128,7 +127,7 @@ export const Cell = ({
             e.stopPropagation()
             onShowMoreTasks(tasks || [])
           }}
-          className="w-full text-start text-sm text-cIconDefault hover:text-primary"
+          className="text-cIconDefault hover:text-primary w-full text-start text-sm"
         >
           {t("calendar.showAll")}
         </button>

@@ -12,6 +12,7 @@ type CreateInput struct {
 	Type        entity.TaskType   `json:"type"`
 	Status      entity.TaskStatus `json:"status"`
 	StartDate   int64             `json:"start_date"`
+	DueDate     int64             `json:"due_date"`
 	UserId      string            `json:"user_id"`
 }
 
@@ -23,6 +24,7 @@ type UpdateInput struct {
 	Type        entity.TaskType   `json:"type"`
 	Status      entity.TaskStatus `json:"status"`
 	StartDate   int64             `json:"start_date"`
+	DueDate     int64             `json:"due_date"`
 }
 
 type DeleteInput struct {
@@ -36,9 +38,10 @@ type TrashInput struct {
 }
 
 type UpdateDateInput struct {
-	TaskId string
-	UserId string
-	Date   int64
+	TaskId    string
+	UserId    string
+	StartDate int64
+	DueDate   int64
 }
 
 type UpdateStatusInput struct {

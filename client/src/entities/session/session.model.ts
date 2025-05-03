@@ -5,14 +5,13 @@ import { authApi } from "@/shared/api/auth"
 
 import { User } from "./type"
 
-
 export const $$session = singleton(() => {
   const sessionSet = createEvent<User>()
   const reset = createEvent()
   const init = createEvent()
 
   const $user = createStore<Nullable<User>>(null)
-  
+
   const $isAuthenticated = createStore(false)
 
   sample({
@@ -31,13 +30,13 @@ export const $$session = singleton(() => {
 
   sample({
     clock: init,
-    target: authApi.checkSession.start
+    target: authApi.checkSession.start,
   })
 
   sample({
     clock: authApi.checkSession.finished.success,
     fn: (r) => r.result,
-    target: sessionSet
+    target: sessionSet,
   })
 
   return {
@@ -45,6 +44,6 @@ export const $$session = singleton(() => {
     $isAuthenticated,
     reset,
     sessionSet,
-    init
+    init,
   }
 })

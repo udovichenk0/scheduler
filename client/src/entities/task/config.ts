@@ -32,12 +32,14 @@ export const Sorts = {
   },
 }
 
-export const TaskTypes = { //!FIX rename
+export const TaskTypes = {
+  //!FIX rename
   INBOX: "inbox",
   UNPLACED: "unplaced",
 } as const
 
-export const TaskStatuses = { //!FIX rename
+export const TaskStatuses = {
+  //!FIX rename
   INPROGRESS: "inprogress",
   FINISHED: "finished",
 } as const

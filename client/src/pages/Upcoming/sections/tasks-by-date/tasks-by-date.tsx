@@ -13,9 +13,7 @@ import { ModalName } from "@/shared/lib/modal/modal-names"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { useSelectItem } from "@/shared/lib/use-select-item"
 
-import {
-  TaskManagerContext,
-} from "../../upcoming.model"
+import { TaskManagerContext } from "../../upcoming.model"
 
 export const TasksByDate = ({
   onSelectTaskId,
@@ -26,28 +24,21 @@ export const TasksByDate = ({
   tasks: Task[]
   date: Dayjs
 }) => {
-  const { $$updateTask, $$createTask } =
-    useContext(TaskManagerContext)
+  const { $$updateTask, $$createTask } = useContext(TaskManagerContext)
 
   const onCreateTask = useUnit($$createTask.createTaskTriggered)
   const onChangeCreateDate = useUnit($$createTask.dateChanged)
 
-  const {
-    onSelect, 
-    onUnselect, 
-    addNode,
-  } = useSelectItem({
+  const { onSelect, onUnselect, addNode } = useSelectItem({
     items: tasks,
-    onChange: (task) => onSelectTaskId(task?.id || null)
+    onChange: (task) => onSelectTaskId(task?.id || null),
   })
 
-  const {
-    isOpened: isCreateFormOpened, 
-    close: onCloseCreateForm
-  } = useDisclosure({id: ModalName.CreateTaskForm, onClose: onCreateTask})
+  const { isOpened: isCreateFormOpened, close: onCloseCreateForm } =
+    useDisclosure({ id: ModalName.CreateTaskForm, onClose: onCreateTask })
 
   useEffect(() => {
-    onChangeCreateDate(date.toDate())
+    onChangeCreateDate({startDate: date.toDate(), dueDate: null})
   }, [date])
 
   return (

@@ -20,7 +20,7 @@ export const CellHeader = ({ cell }: { cell: CellProps }) => {
       <div
         className={`${isPast && "opacity-30"} text-end ${
           isToday &&
-          "flex h-6 w-6 items-center justify-center rounded-full bg-cFocus p-2"
+          "bg-cFocus flex h-6 w-6 items-center justify-center rounded-full p-2"
         }`}
       >
         <span>{date}</span>

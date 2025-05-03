@@ -4,8 +4,8 @@ import * as path from "path"
 import svg from "@neodx/svg/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
-import unusedCode from 'vite-plugin-unused-code'
-import tailwindcss from '@tailwindcss/vite';
+import unusedCode from "vite-plugin-unused-code"
+import tailwindcss from "@tailwindcss/vite"
 // import checker from "vite-plugin-checker"
 import tsconfigPaths from "vite-tsconfig-paths"
 // https://vitejs.dev/config/
@@ -39,8 +39,8 @@ export default defineConfig({
         path: "src/shared/ui/icon/sprite.h.ts",
         runtime: {
           size: true,
-          viewBox: true
-        }
+          viewBox: true,
+        },
       },
       resetColors: {
         replaceUnknown: "#000",

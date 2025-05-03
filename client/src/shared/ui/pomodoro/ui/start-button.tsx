@@ -18,7 +18,7 @@ export const StartButton = ({
   const isWorkTime = state == "work"
   return (
     <button
-      className={`focus-visible:ring flex h-8 w-8 justify-center rounded-full outline-none ${
+      className={`flex h-8 w-8 justify-center rounded-full outline-none focus-visible:ring ${
         isWorkTime ? "border-cPomodoroRed" : "border-cPomodoroGreen"
       } items-center  border-2`}
       onClick={isTicking ? stop : start}

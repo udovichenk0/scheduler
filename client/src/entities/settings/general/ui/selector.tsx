@@ -15,7 +15,7 @@ export const Selector = ({
   $selectedValue,
   options,
   onSelect,
-  ref: focusRef
+  ref: focusRef,
 }: SelectorProps) => {
   const { selectedValue } = useUnit({ selectedValue: $selectedValue })
   const [isShown, setIsShown] = useState(false)
@@ -38,18 +38,18 @@ export const Selector = ({
       <button
         ref={focusRef}
         onClick={() => setIsShown((prev) => !prev)}
-        className="h-[24px] w-full rounded-[5px] border border-cSecondBorder px-4 text-center focus-visible:ring"
+        className="border-cSecondBorder h-[24px] w-full rounded-[5px] border px-4 text-center focus-visible:ring"
       >
         {selectedValue}
       </button>
       {isShown && (
-        <div className="absolute top-[23px] w-full border border-cSecondBorder bg-main">
+        <div className="border-cSecondBorder bg-main absolute top-[23px] w-full border">
           {options.map(({ value, label }) => {
             return (
               <button
                 onClick={() => onSelect(value)}
                 key={label}
-                className={`w-full px-4 text-cOpacitySecondFont hover:bg-blue-500 hover:text-white 
+                className={`text-cOpacitySecondFont w-full px-4 hover:bg-blue-500 hover:text-white 
                   ${label === selectedValue && "bg-hover"}`}
               >
                 {label}

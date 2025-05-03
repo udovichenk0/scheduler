@@ -16,19 +16,19 @@ export const calendarRoute = routes.calendar
 export const setMoreTasks = createEvent<Task[]>()
 export const $moreTasks = restore(setMoreTasks, [])
 
-export const $$trashTask = trashTaskFactory({taskModel: $$taskModel})
+export const $$trashTask = trashTaskFactory({ taskModel: $$taskModel })
 
 const $unplacedTasks = combine($$taskModel.$tasks, (tasks) => {
   return tasks?.filter((task) => isUnplaced(task) && !task.is_trashed) || []
 })
 
-export const $$updateTask = updateTaskFactory({taskModel: $$taskModel})
+export const $$updateTask = updateTaskFactory({ taskModel: $$taskModel })
 export const $$createTask = createTaskFactory({
   $$modifyTask: modifyTaskFactory({
     defaultType: "unplaced",
-    defaultDate: getToday(),
+    defaultDate: getToday().toDate(),
   }),
-  taskModel: $$taskModel
+  taskModel: $$taskModel,
 })
 
 export const $mappedTasks = $unplacedTasks.map((tasks) => {

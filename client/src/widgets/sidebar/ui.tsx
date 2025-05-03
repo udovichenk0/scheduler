@@ -20,15 +20,15 @@ export const Sidebar = () => {
   const todayTasksCount = useUnit($todayCounter)
 
   const {
-    isOpened: isSettingsOpened, 
-    open: onOpenSettings, 
-    close: onCloseSettings
+    isOpened: isSettingsOpened,
+    open: onOpenSettings,
+    close: onCloseSettings,
   } = useDisclosure({ id: ModalName.SidebarSettingsModal })
-  
+
   return (
-    <aside className={`border-r-[1px] border-cBorder bg-brand text-primary`}>
+    <aside className={`border-cBorder bg-brand text-primary border-r-[1px]`}>
       <div className="grid h-full w-[250px] grid-rows-[auto_1fr_auto] flex-col">
-        <Container className="border-b-[1px] border-cBorder">
+        <Container className="border-cBorder border-b-[1px]">
           <div className="mb-2 flex items-center justify-between px-2">
             <div className="flex items-center gap-1">
               <Logo />
@@ -48,7 +48,7 @@ export const Sidebar = () => {
               <div className="flex items-center justify-center">
                 <Icon
                   name={"common/inbox"}
-                  className="mr-4 fill-accent text-[20px]"
+                  className="fill-accent mr-4 text-[20px]"
                 />
                 {t("task.inbox")}
               </div>
@@ -66,7 +66,7 @@ export const Sidebar = () => {
               <div className="flex items-center justify-center">
                 <Icon
                   name={"common/outlined-star"}
-                  className="mr-4 fill-accent text-[20px]"
+                  className="fill-accent mr-4 text-[20px]"
                 />
                 {t("task.today")}
               </div>
@@ -83,7 +83,7 @@ export const Sidebar = () => {
             >
               <Icon
                 name={"common/upcoming"}
-                className="mr-4 fill-accent text-[20px]"
+                className="fill-accent mr-4 text-[20px]"
               />
               {t("task.upcoming")}
             </Button>
@@ -98,7 +98,7 @@ export const Sidebar = () => {
             >
               <Icon
                 name={"common/calendar"}
-                className="mr-4 fill-accent text-[20px]"
+                className="fill-accent mr-4 text-[20px]"
               />
               {t("task.calendar")}
             </Button>
@@ -106,13 +106,13 @@ export const Sidebar = () => {
         </Container>
         <Container>
           <Button size={"sm"} className="w-full text-start" intent={"primary"}>
-            <Icon name="common/plus" className="mr-4 text-cOpacitySecondFont" />
-            <span className="text-[12px] text-primary">
+            <Icon name="common/plus" className="text-cOpacitySecondFont mr-4" />
+            <span className="text-primary text-[12px]">
               {t("sidebar.project")}
             </span>
           </Button>
         </Container>
-        <Container className="flex gap-2 border-t-[1px] border-cBorder text-cIconDefault">
+        <Container className="border-cBorder text-cIconDefault flex gap-2 border-t-[1px]">
           <Tooltip text={t("setting.title")} dir="tr">
             <Button
               title={t("setting.title")}

@@ -25,6 +25,7 @@ type Task struct {
 	Type        TaskType   `json:"type"`
 	Status      TaskStatus `json:"status"`
 	StartDate   int64      `json:"start_date"`
+	DueDate     int64      `json:"due_date"`
 	UserId      string     `json:"user_id"`
 	CreatedAt   string     `json:"date_created"`
 	IsTrashed   bool       `json:"is_trashed"`
@@ -64,4 +65,11 @@ func ChangeTypeBasedOnDate(date int64, taskType TaskType) TaskType {
 		return Inbox
 	}
 	return taskType
+}
+
+func IsValidateDateRange(startDate, dueDate int64) bool {
+	if startDate != 0 && dueDate != 0 {
+		return startDate <= dueDate
+	}
+	return true
 }

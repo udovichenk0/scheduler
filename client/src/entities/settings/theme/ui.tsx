@@ -4,7 +4,7 @@ import { AccentThemeChanger } from "./icon-theme"
 export const ThemeChanger = () => {
   return (
     <div>
-      <MainThemeChanger/>
+      <MainThemeChanger />
       <AccentThemeChanger />
     </div>
   )

@@ -27,31 +27,34 @@ type HeaderProps = {
 }
 
 export const Header = ({ iconName, title, slot }: HeaderProps) => {
-  const { 
+  const {
     isOpened: isSettingsOpened,
     open: onOpenSettings,
-    close: onCloseSettings
-  } = useDisclosure({id: ModalName.PomodoroSettingsModal})
+    close: onCloseSettings,
+  } = useDisclosure({ id: ModalName.PomodoroSettingsModal })
 
-  const { 
+  const {
     isOpened: isPomodoroOpened,
     open: onOpenPomodoro,
-    close: onClosePomodoro
-  } = useDisclosure({id: ModalName.PomodoroModal})
+    close: onClosePomodoro,
+  } = useDisclosure({ id: ModalName.PomodoroModal })
 
   return (
     <Container padding="xl" className="text-primary">
       <div className="mb-2 flex h-10 items-center justify-end">
-        <Modal 
-          label="Pomodoro" 
-          isOpened={isPomodoroOpened} 
-          closeModal={onClosePomodoro}>
-          <PomodoroButton onOpenPomodoro={onOpenPomodoro}/>
+        <Modal
+          label="Pomodoro"
+          isOpened={isPomodoroOpened}
+          closeModal={onClosePomodoro}
+        >
+          <PomodoroButton onOpenPomodoro={onOpenPomodoro} />
           <Modal.Overlay className="bg-transparent">
             <Modal.Body>
-              <Modal.Header >
-                <span className="w-full pl-6 text-center text-[12px]">Pomodoro</span>
-                <CloseButton close={onClosePomodoro}/>
+              <Modal.Header>
+                <span className="w-full pl-6 text-center text-[12px]">
+                  Pomodoro
+                </span>
+                <CloseButton close={onClosePomodoro} />
               </Modal.Header>
               <Modal.Content>
                 <Pomodoro
@@ -59,14 +62,22 @@ export const Header = ({ iconName, title, slot }: HeaderProps) => {
                   $customDuration={$$pomodoroSettings.$customDuration}
                   leftSlot={
                     <>
-                      <Button intent="primary" size="xs" onClick={onOpenSettings}>
+                      <Button
+                        intent="primary"
+                        size="xs"
+                        onClick={onOpenSettings}
+                      >
                         <Icon
-                          className="text-[24px] text-cIconDefault"
+                          className="text-cIconDefault text-[24px]"
                           name="common/settings"
                         />
                         <span className="sr-only">Open settings</span>
                       </Button>
-                      <Settings isOpen={isSettingsOpened} onClose={onCloseSettings} defaultTab="pomodoro" />
+                      <Settings
+                        isOpen={isSettingsOpened}
+                        onClose={onCloseSettings}
+                        defaultTab="pomodoro"
+                      />
                     </>
                   }
                 />
@@ -114,10 +125,7 @@ const PomodoroButton = ({ onOpenPomodoro }: { onOpenPomodoro: () => void }) => {
           size={"xs"}
           onClick={onOpenPomodoro}
         >
-          <Icon
-            className="text-2xl text-cIconDefault"
-            name="common/timer"
-          />
+          <Icon className="text-cIconDefault text-2xl" name="common/timer" />
           <span className="sr-only">Open pomodoro</span>
         </Modal.Trigger>
       )}

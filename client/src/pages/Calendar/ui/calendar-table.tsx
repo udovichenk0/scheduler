@@ -67,7 +67,7 @@ export const Calendar = memo(
 export const WeekNames = () => {
   const { t } = useTranslation()
   return (
-    <div className="flex justify-around border-y border-r border-cBorder font-bold text-primary">
+    <div className="border-cBorder text-primary flex justify-around border-y border-r font-bold">
       {SHORT_WEEKS_NAMES.map((week) => {
         return <span key={week}>{t(week)}</span>
       })}

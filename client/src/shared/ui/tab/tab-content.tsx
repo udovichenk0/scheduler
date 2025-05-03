@@ -10,12 +10,8 @@ export function Content({
   children: ReactNode
 }) {
   const { value } = useContext(TabContext)
-  if(value != label){
+  if (value != label) {
     return null
   }
-  return (
-    <div className="px-6 py-4">
-      {children}
-    </div>
-  )
+  return <div className="px-6 py-4">{children}</div>
 }

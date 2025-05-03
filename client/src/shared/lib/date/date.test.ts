@@ -29,17 +29,23 @@ describe("parseDate function", () => {
 
 describe("isToday function", () => {
   test("should tell if its today", () => {
-    expect(isToday(getToday())).toBeTruthy()
-    expect(isToday(dayjs(getToday()).add(59, "minute").add(59, 'second').toDate())).toBeTruthy()
-    expect(isToday(dayjs(getToday()).subtract(1, 'day').toDate())).toBeFalsy()
+    expect(isToday(getToday().toDate())).toBeTruthy()
+    expect(
+      isToday(dayjs(getToday()).add(59, "minute").add(59, "second").toDate()),
+    ).toBeTruthy()
+    expect(isToday(dayjs(getToday()).subtract(1, "day").toDate())).toBeFalsy()
   })
 })
 
 describe("isBeforeToday function", () => {
   test("should tell if its before specific date", () => {
     console.log(getToday())
-    expect(isBeforeToday(getToday())).toBeFalsy()
-    expect(isBeforeToday(dayjs(getToday()).add(59, "minute").add(59, 'second').toDate())).toBeFalsy()
+    expect(isBeforeToday(getToday().toDate())).toBeFalsy()
+    expect(
+      isBeforeToday(
+        dayjs(getToday()).add(59, "minute").add(59, "second").toDate(),
+      ),
+    ).toBeFalsy()
     expect(isBeforeToday("Thu May 01 2024 23:59:59")).toBeTruthy()
   })
 })
@@ -47,7 +53,13 @@ describe("isBeforeToday function", () => {
 describe("isAfterToday function", () => {
   test("should tell if its after specific date", () => {
     expect(isAfterToday(dayjs(getToday()).add(1, "day").toDate())).toBeTruthy()
-    expect(isAfterToday(dayjs(getToday()).add(59, "minute").add(59, 'second').toDate())).toBeFalsy()
-    expect(isAfterToday(dayjs(getToday()).subtract(1, 'day').toDate())).toBeFalsy()
+    expect(
+      isAfterToday(
+        dayjs(getToday()).add(59, "minute").add(59, "second").toDate(),
+      ),
+    ).toBeFalsy()
+    expect(
+      isAfterToday(dayjs(getToday()).subtract(1, "day").toDate()),
+    ).toBeFalsy()
   })
 })

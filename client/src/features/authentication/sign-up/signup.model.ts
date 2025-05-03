@@ -1,11 +1,11 @@
 import { createEvent, createStore, sample } from "effector"
 import { z } from "zod"
 
-import { $$session } from '@/entities/session';
+import { $$session } from "@/entities/session"
 
 import { authApi } from "@/shared/api/auth"
 import { bridge } from "@/shared/lib/effector/bridge"
-import { UNEXPECTED_ERROR_MESSAGE } from '@/shared/lib/error';
+import { UNEXPECTED_ERROR_MESSAGE } from "@/shared/lib/error"
 
 import { $email } from "../check-email"
 
@@ -39,14 +39,14 @@ bridge(() => {
   })
   sample({
     clock: authApi.signUp.finished.success,
-    fn: ({result}) => result,
-    target: [$$session.$user]
+    fn: ({ result }) => result,
+    target: [$$session.$user],
   })
 
   sample({
     clock: authApi.signUp.finished.failure,
     fn: () => UNEXPECTED_ERROR_MESSAGE,
-    target: $error
+    target: $error,
   })
 
   sample({

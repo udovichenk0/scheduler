@@ -43,7 +43,7 @@ sample({
 sample({
   clock: authApi.checkVerifiedEmailExists.finished.failure,
   fn: () => t(UNEXPECTED_ERROR_MESSAGE),
-  target: $error
+  target: $error,
 })
 
 sample({

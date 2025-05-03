@@ -10,9 +10,7 @@ import { Sort } from "@/entities/task"
 import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
 
 import { NoTasks } from "@/shared/ui/no-tasks"
-import {
-  useDocumentTitle,
-} from "@/shared/lib/react"
+import { useDocumentTitle } from "@/shared/lib/react"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { useSelectItem } from "@/shared/lib/use-select-item"
@@ -24,7 +22,7 @@ import {
   $$createTask,
   $$sort,
   $inboxTasks,
-  $$taskModel
+  $$taskModel,
 } from "./inbox.model"
 
 const Inbox = () => {
@@ -40,20 +38,16 @@ const Inbox = () => {
   const onToggleCompleted = useUnit($$taskModel.toggleCompletedShown)
   const isCompletedShown = useUnit($$taskModel.$isCompletedShown)
   const [selectedPayload, setSelectedPayload] = useState<Nullable<string>>(null)
-  const {
-    onSelect, 
-    onUnselect, 
-    addNode,
-  } = useSelectItem({
+  const { onSelect, onUnselect, addNode } = useSelectItem({
     items: tasks,
-    onChange: (task) => setSelectedPayload(task?.id || null)
+    onChange: (task) => setSelectedPayload(task?.id || null),
   })
 
   const {
-    isOpened: isCreateFormOpened, 
-    open: onOpenCreateForm, 
-    close: onCloseCreateForm
-  } = useDisclosure({id: ModalName.CreateTaskForm, onClose: onCreateTask})
+    isOpened: isCreateFormOpened,
+    open: onOpenCreateForm,
+    close: onCloseCreateForm,
+  } = useDisclosure({ id: ModalName.CreateTaskForm, onClose: onCreateTask })
 
   const list = useList($inboxTasks, (task, index) => {
     return (
@@ -81,7 +75,10 @@ const Inbox = () => {
                 config: SORT_CONFIG,
               }}
             />
-            <CompletedToggle checked={isCompletedShown} onToggle={onToggleCompleted}/>
+            <CompletedToggle
+              checked={isCompletedShown}
+              onToggle={onToggleCompleted}
+            />
           </>
         }
         iconName="common/inbox"

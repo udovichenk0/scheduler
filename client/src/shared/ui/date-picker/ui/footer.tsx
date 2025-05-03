@@ -11,7 +11,7 @@ export const Footer = ({
 }) => {
   const { t } = useTranslation()
   return (
-    <div className="flex gap-3 text-primary">
+    <div className="text-primary flex gap-3">
       <Button onClick={onCancel} className="w-full p-[1px] text-[12px]">
         {t("calendar.cancel")}
       </Button>

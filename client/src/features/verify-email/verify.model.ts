@@ -3,11 +3,11 @@ import { interval, equals } from "patronum"
 import { createGate } from "effector-react"
 import { t } from "i18next"
 
-import { $$session } from '@/entities/session';
+import { $$session } from "@/entities/session"
 
 import { UNEXPECTED_ERROR_MESSAGE, isHttpError } from "@/shared/lib/error"
 import { authApi } from "@/shared/api/auth"
-import { prepend } from '@/shared/lib/effector';
+import { prepend } from "@/shared/lib/effector"
 
 import { resetEmailTriggered } from "../authentication/check-email"
 
@@ -72,7 +72,10 @@ split({
     invalidCode: isHttpError(400),
   },
   cases: {
-    invalidCode: prepend<Nullable<string>, void>($error, t(INVALID_CODE_MESSAGE)),
+    invalidCode: prepend<Nullable<string>, void>(
+      $error,
+      t(INVALID_CODE_MESSAGE),
+    ),
     __: prepend<Nullable<string>, void>($error, t(UNEXPECTED_ERROR_MESSAGE)),
   },
 })
@@ -86,7 +89,7 @@ sample({
   clock: resent,
   source: $$session.$user,
   filter: Boolean,
-  fn: ({id, email}) => ({userId: id, email}),
+  fn: ({ id, email }) => ({ userId: id, email }),
   target: authApi.resendCodeQuery.start,
 })
 
@@ -98,7 +101,7 @@ sample({
 sample({
   clock: authApi.resendCodeQuery.finished.finally,
   fn: () => RESEND_TIME,
-  target: [$time, timerStarted]
+  target: [$time, timerStarted],
 })
 
 sample({

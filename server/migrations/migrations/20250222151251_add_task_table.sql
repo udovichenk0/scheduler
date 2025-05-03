@@ -8,6 +8,7 @@ CREATE TABLE task (
   type enum('inbox', 'unplaced') NOT NULL,
   status enum('finished', 'inprogress') DEFAULT 'inprogress',
   start_date TIMESTAMP,
+  due_date TIMESTAMP,
   user_id VARCHAR(36) NOT NULL REFERENCES user(id),
   date_created TIMESTAMP DEFAULT NOW(),
   is_trashed tinyint(1) DEFAULT 0

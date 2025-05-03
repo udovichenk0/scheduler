@@ -1,5 +1,7 @@
 import dayjs, { Dayjs } from "dayjs"
 
+import { parseTokens } from "./parser"
+
 export type SectionRow = {
   date: number
   month: number
@@ -48,5 +50,15 @@ export const generateCalendar = (dayjsDate: Dayjs = dayjs()) => {
   return result
 }
 
+
 export const sum = (a: number) => (b: number) => a + b
 export const sub = (a: number) => (b: number) => b - a
+
+export function parseDateInput(input: string) {
+  const tokens = getTokens(input);
+  return parseTokens(tokens);
+}
+
+function getTokens(input: string) {
+  return input.split(" ");
+}

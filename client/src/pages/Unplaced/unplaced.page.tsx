@@ -25,7 +25,6 @@ import {
   $$taskModel,
 } from "./unplaced.model"
 
-
 const Unplaced = () => {
   const { t } = useTranslation()
   useDocumentTitle(t("task.unplaced"))
@@ -38,10 +37,10 @@ const Unplaced = () => {
   const onSortChange = useUnit($$sort.sort)
 
   const {
-    isOpened: isCreateFormOpened, 
-    open: onOpenCreateForm, 
-    close: onCloseCreateForm
-  } = useDisclosure({id: ModalName.CreateTaskForm, onClose: onCreateTask})
+    isOpened: isCreateFormOpened,
+    open: onOpenCreateForm,
+    close: onCloseCreateForm,
+  } = useDisclosure({ id: ModalName.CreateTaskForm, onClose: onCreateTask })
 
   const onToggleCompleted = useUnit($$taskModel.toggleCompletedShown)
   const isCompletedShown = useUnit($$taskModel.$isCompletedShown)
@@ -58,16 +57,13 @@ const Unplaced = () => {
           onBlur={onUnselect}
         />
       </div>
-    )})
+    )
+  })
 
   const [selectedTaskId, setSelectedTaskId] = useState<Nullable<string>>(null)
-  const {
-    onSelect, 
-    onUnselect, 
-    addNode,
-  } = useSelectItem({
+  const { onSelect, onUnselect, addNode } = useSelectItem({
     items: tasks,
-    onChange: (task) => setSelectedTaskId(task?.id || null)
+    onChange: (task) => setSelectedTaskId(task?.id || null),
   })
 
   return (
@@ -84,7 +80,10 @@ const Unplaced = () => {
                 config: SORT_CONFIG,
               }}
             />
-            <CompletedToggle checked={isCompletedShown} onToggle={onToggleCompleted}/>
+            <CompletedToggle
+              checked={isCompletedShown}
+              onToggle={onToggleCompleted}
+            />
           </>
         }
       />

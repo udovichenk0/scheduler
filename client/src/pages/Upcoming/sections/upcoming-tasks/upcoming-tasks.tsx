@@ -28,10 +28,10 @@ export const UpcomingTasks = ({
     date: Dayjs
   }[]
 }) => {
-  const { close: onClose } = useDisclosure({id: ModalName.CreateTaskForm})
+  const { close: onClose } = useDisclosure({ id: ModalName.CreateTaskForm })
   const [selectedSection, setSelectedSection] = useState<Nullable<Date>>(null)
   useEffect(() => {
-    setSelectedSection(getToday())
+    setSelectedSection(getToday().toDate())
   }, [])
   return (
     <>
@@ -60,15 +60,23 @@ export const UpcomingTasks = ({
   )
 }
 
-const Header = ({onClick, isSelected, children}:{onClick: () => void, isSelected: boolean, children: ReactNode}) => {
+const Header = ({
+  onClick,
+  isSelected,
+  children,
+}: {
+  onClick: () => void
+  isSelected: boolean
+  children: ReactNode
+}) => {
   return (
-    <div className="border-b border-cBorder p-2 px-3 pl-9 text-primary">
+    <div className="border-cBorder text-primary border-b p-2 px-3 pl-9">
       <button
         onMouseDown={onClick}
         onFocus={onClick}
         className={`${
-          isSelected && "cursor-pointer bg-cFocus"
-        } flex focus-visible:border-4 w-full items-center gap-2 rounded-[5px] px-3 text-lg enabled:hover:bg-hover `}
+          isSelected && "bg-cFocus cursor-pointer"
+        } enabled:hover:bg-hover flex w-full items-center gap-2 rounded-[5px] px-3 text-lg focus-visible:border-4 `}
       >
         {children}
       </button>
@@ -76,46 +84,54 @@ const Header = ({onClick, isSelected, children}:{onClick: () => void, isSelected
   )
 }
 
-const Section = ({tasks, onSelectTaskId, isSelected}: {tasks: Task[], onSelectTaskId: (taskId: Nullable<TaskId>) => void, isSelected: boolean}) => {
+const Section = ({
+  tasks,
+  onSelectTaskId,
+  isSelected,
+}: {
+  tasks: Task[]
+  onSelectTaskId: (taskId: Nullable<TaskId>) => void
+  isSelected: boolean
+}) => {
   const { $$createTask, $$updateTask } = useContext(TaskManagerContext)
   const onCreateTask = useUnit($$createTask.createTaskTriggered)
-  const {isOpened: isCreateTaskFormOpened, close: onCloseCreateTaskForm} = useDisclosure({id: ModalName.CreateTaskForm, onClose: onCreateTask})
-  const {
-    onSelect, 
-    onUnselect, 
-    addNode,
-  } = useSelectItem({
+  const { isOpened: isCreateTaskFormOpened, close: onCloseCreateTaskForm } =
+    useDisclosure({ id: ModalName.CreateTaskForm, onClose: onCreateTask })
+  const { onSelect, onUnselect, addNode } = useSelectItem({
     items: tasks,
-    onChange: (task) => onSelectTaskId(task?.id || null)
+    onChange: (task) => onSelectTaskId(task?.id || null),
   })
 
   return (
     <>
       {!!tasks.length && (
-        <div className="select-none border-cBorder text-primary">
-            <div className="pt-2">
-              {tasks.map((task, id) => {
-                return (
-                  <div className="border-cBorder px-3 pb-2 last:border-b" key={task.id}>
-                    <EditableTask
-                      ref={(node) => addNode(node!, id)}
-                      key={task.id}
-                      $$updateTask={$$updateTask}
-                      task={task}
-                      typeLabel
-                      dateLabel
-                      onSelect={() => onSelect(id)}
-                      onBlur={onUnselect}
-                    />
-                  </div>
-                )
-              })}
-            </div>
+        <div className="border-cBorder text-primary select-none">
+          <div className="pt-2">
+            {tasks.map((task, id) => {
+              return (
+                <div
+                  className="border-cBorder px-3 pb-2 last:border-b"
+                  key={task.id}
+                >
+                  <EditableTask
+                    ref={(node) => addNode(node!, id)}
+                    key={task.id}
+                    $$updateTask={$$updateTask}
+                    task={task}
+                    typeLabel
+                    dateLabel
+                    onSelect={() => onSelect(id)}
+                    onBlur={onUnselect}
+                  />
+                </div>
+              )
+            })}
+          </div>
         </div>
       )}
       <ExpandedTask
         isExpanded={isCreateTaskFormOpened && isSelected}
-        className="border-b border-cBorder px-3 py-2"
+        className="border-cBorder border-b px-3 py-2"
         dateModifier={true}
         modifyTaskModel={$$createTask}
         closeTaskForm={onCloseCreateTaskForm}

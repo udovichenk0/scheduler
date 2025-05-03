@@ -41,12 +41,12 @@ split({
   source: authApi.checkVerifiedEmailExists.finished.success,
   match: {
     signin: (r) => r.result.exists,
-    signup: (r) => !r.result.exists
+    signup: (r) => !r.result.exists,
   },
   cases: {
     signin: prepend<Flow, void>($flow, Flow.login),
-    signup: prepend<Flow, void>($flow, Flow.register)
-  }
+    signup: prepend<Flow, void>($flow, Flow.register),
+  },
 })
 
 sample({
@@ -63,8 +63,8 @@ sample({
 
 sample({
   clock: [
-    authApi.checkSession.finished.success, 
-    authApi.signIn.finished.success, 
+    authApi.checkSession.finished.success,
+    authApi.signIn.finished.success,
   ],
   fn: () => Flow.logout,
   target: $flow,

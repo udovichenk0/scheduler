@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { ReactNode, RefObject, useEffect, useRef, useState } from "react"
+import { ReactNode, RefObject, useEffect, useRef } from "react"
 import { EventCallable, StoreWritable } from "effector"
 import clsx from "clsx"
 
@@ -10,11 +10,6 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { Container } from "@/shared/ui/general/container"
-import { Modal } from "@/shared/ui/modal"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { ModalName } from "@/shared/lib/modal/modal-names"
-import { getToday } from "@/shared/lib/date"
-
 
 type TaskFactory = {
   $title: StoreWritable<string>
@@ -22,11 +17,12 @@ type TaskFactory = {
   $status: StoreWritable<Status>
   $type: StoreWritable<Type>
   $startDate: StoreWritable<Nullable<Date>>
+  $dueDate: StoreWritable<Nullable<Date>>
   statusChanged: EventCallable<Status>
   descriptionChanged: EventCallable<Nullable<string>>
   titleChanged: EventCallable<string>
   typeChanged: EventCallable<Type>
-  dateChanged: EventCallable<Date>
+  dateChanged: EventCallable<{startDate: Nullable<Date>, dueDate: Nullable<Date>}>
 }
 
 export const ExpandedTask = ({
@@ -38,31 +34,19 @@ export const ExpandedTask = ({
   className,
   closeTaskForm,
 }: {
-  isExpanded?: boolean,
+  isExpanded?: boolean
   taskRef?: RefObject<HTMLDivElement>
   dateModifier?: boolean
   modifyTaskModel: TaskFactory
   sideDatePicker?: boolean
   rightPanelSlot?: ReactNode
-  className?: string,
+  className?: string
   closeTaskForm?: () => void
 }) => {
   const ref = useRef<HTMLDivElement>(null)
-  const taskDate = useUnit(modifyTaskModel.$startDate)
-  const [tempDate, setTempDate] = useState(taskDate)
-  const changeDate = useUnit(modifyTaskModel.dateChanged)
-
-  const onChangeDate = () => {
-    if(tempDate){
-      changeDate(tempDate)
-    }
-  }
-  const {
-    isOpened: isDateModalOpened, 
-    open: onOpenDateModal, 
-    close: onCloseDateModal,
-    cancel: onCancelDateModal
-  } = useDisclosure({ id: ModalName.DateModal, onClose: onChangeDate })
+  const startDate = useUnit(modifyTaskModel.$startDate)
+  const dueDate = useUnit(modifyTaskModel.$dueDate)
+  const onChangeDate = useUnit(modifyTaskModel.dateChanged)
 
 
   useEffect(() => {
@@ -71,65 +55,66 @@ export const ExpandedTask = ({
         closeTaskForm?.()
       }
     }
-    if(isExpanded){
+    if (isExpanded) {
       document.addEventListener("click", onClickOutside, true)
     }
     return () => {
-      if(isExpanded){
+      if (isExpanded) {
         document.removeEventListener("click", onClickOutside, true)
       }
     }
   }, [isExpanded])
 
-  if(!isExpanded){
+  if (!isExpanded) {
     return null
   }
 
   return (
     <div ref={ref} className={clsx("group flex", className)}>
-      <Modal 
-        label="Choose date" 
-        isOpened={isDateModalOpened} 
-        closeModal={onCloseDateModal}>
-          {sideDatePicker && (
-            <Modal.Trigger className="size-5 mr-2" intent="base" onClick={onOpenDateModal}>
+      {sideDatePicker && (
+        <DatePicker
+          CustomInput={({onClick}) => (
+            <Button
+              className="mr-2 size-5"
+              intent="base"
+              onClick={onClick}
+            >
               <Icon
                 name="common/upcoming"
-                className="invisible translate-y-1 text-lg text-accent group-hover:visible"
-              />
-            </Modal.Trigger>
-          )}
-        <Modal.Overlay>
-          <Modal.Body>
-            <Modal.Content>
-              <DatePicker
-                currentDate={tempDate || getToday()}
-                onDateChange={setTempDate}
-                onCancel={() => {
-                  onCancelDateModal()
-                  setTempDate(taskDate)
-                }}
-                onSave={onCloseDateModal}
-              />
-            </Modal.Content>
-          </Modal.Body>
-        </Modal.Overlay>
-      </Modal>
-        <Container className="rounded-[5px] w-full bg-cTaskEdit">
-          <ModifyTaskForm
-            dateModifier={dateModifier}
-            modifyTaskModel={modifyTaskModel}
-          />
-          <div className="flex items-center justify-end space-x-1">
-            <Button aria-label="Choose date" onClick={onOpenDateModal} intent={"primary"} size={"xs"}>
-              <Icon
-                name="common/upcoming"
-                className="p-[3px] text-[19px] text-cIconDefault"
+                className="text-accent invisible translate-y-1 text-lg group-hover:visible"
               />
             </Button>
-            {rightPanelSlot}
-          </div>
-        </Container>
+          )}
+          startDate={startDate}
+          dueDate={dueDate}
+          onDateChange={onChangeDate} 
+        />
+      )}
+      <Container className="bg-cTaskEdit w-full rounded-[5px]">
+        <ModifyTaskForm
+          dateModifier={dateModifier}
+          modifyTaskModel={modifyTaskModel}
+        />
+        <div className="flex items-center justify-end space-x-1 mr-2">
+          <DatePicker
+            CustomInput={({onClick}) => (
+              <Button
+                intent="base"
+                onClick={onClick}
+              >
+                <Icon
+                  name="common/upcoming"
+                  className="text-accent text-lg"
+                />
+              </Button>
+            )}
+            startDate={startDate}
+            dueDate={dueDate}
+            onDateChange={onChangeDate} 
+          />
+          {rightPanelSlot}
+        </div>
+      </Container>
     </div>
   )
 }

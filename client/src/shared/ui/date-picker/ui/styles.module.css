@@ -1,0 +1,40 @@
+.cell[data-active="true"] {
+  background: var(--color-accent);
+}
+.cell[data-istoday="true"]:after {
+  position: absolute;
+  content: "";
+  right: 1/2;
+  top: 1/2;
+  width: 80%;
+  height: 80%;
+  border-radius: 100%;
+  background-color: var(--color-red-400);
+  z-index: -1;
+}
+.cellWrapper {
+  position: relative;
+}
+.cellWrapper[data-between="true"] {
+  background-color: var(--color-hover);
+}
+
+.cellWrapper[data-startdate="true"]:after {
+  position: absolute;
+  content: "";
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background-color: var(--color-hover);
+}
+
+.cellWrapper[data-duedate="true"]:after {
+  position: absolute;
+  content: "";
+  left: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background-color: var(--color-hover);
+}

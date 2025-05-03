@@ -5,15 +5,14 @@ import { Task, TaskId, Status, TaskStatuses } from "@/entities/task"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 
-
 export const MoreTasks = ({
   $tasks,
   onUpdateStatus,
-  onTaskClick
+  onTaskClick,
 }: {
   $tasks: Store<Task[]>
   onTaskClick: (target: HTMLButtonElement, task: Task) => void
-  onUpdateStatus: (data: {id: TaskId, status: Status}) => void,
+  onUpdateStatus: (data: { id: TaskId; status: Status }) => void
 }) => {
   const tasks = useUnit($tasks)
   return (
@@ -21,7 +20,7 @@ export const MoreTasks = ({
       {tasks?.map((task) => {
         const { id, status } = task
         return (
-          <div key={task.id} className="flex w-full gap-x-2 items-center">
+          <div key={task.id} className="flex w-full items-center gap-x-2">
             <Checkbox
               iconClassName="fill-white"
               className="left-[2px] top-[2px]"
@@ -31,7 +30,7 @@ export const MoreTasks = ({
             />
             <button
               onClick={(e) => onTaskClick(e.target as HTMLButtonElement, task)}
-              className="w-full select-none truncate cursor-pointer focus-visible:ring rounded-[5px] bg-[#607d8b] text-start text-white px-1"
+              className="w-full cursor-pointer select-none truncate rounded-[5px] bg-[#607d8b] px-1 text-start text-white focus-visible:ring"
             >
               {task.title}
             </button>

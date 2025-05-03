@@ -10,9 +10,13 @@ export const removeTaskFactory = (taskModel: TaskModel) => {
   const taskDeletedById = createEvent<string>()
   const allTasksDeleted = createEvent()
 
-  const deleteTrashedTaskAttach = attachOperation(taskApi.deleteTrashedTaskMutation)
+  const deleteTrashedTaskAttach = attachOperation(
+    taskApi.deleteTrashedTaskMutation,
+  )
 
-  const deleteTrashedTasksAttach = attachOperation(taskApi.deleteTrashedTasksMutation)
+  const deleteTrashedTasksAttach = attachOperation(
+    taskApi.deleteTrashedTasksMutation,
+  )
 
   const taskSuccessfullyDeleted = merge([
     deleteTrashedTaskAttach.finished.success,
@@ -23,9 +27,9 @@ export const removeTaskFactory = (taskModel: TaskModel) => {
   ])
 
   sample({
-    clock:  taskDeletedById,
+    clock: taskDeletedById,
     filter: $$session.$isAuthenticated,
-    fn: (taskId) => ({taskId}),
+    fn: (taskId) => ({ taskId }),
     target: deleteTrashedTaskAttach.start,
   })
   sample({
@@ -44,7 +48,7 @@ export const removeTaskFactory = (taskModel: TaskModel) => {
     clock: tasksSuccessfullyDeleted,
     source: taskModel.$tasks,
     fn: (tasks) => tasks!.filter((task) => !task.is_trashed),
-    target: taskModel.setTasksTriggered
+    target: taskModel.setTasksTriggered,
   })
 
   return {

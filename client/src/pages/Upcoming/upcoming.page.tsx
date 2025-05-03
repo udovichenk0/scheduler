@@ -33,7 +33,6 @@ import { HeaderTitle } from "./ui/header-title"
 import { UpcomingVariantChanger } from "./ui/upcoming-variant-changer/variant-changer"
 import { SORT_CONFIG } from "./config"
 
-
 const Upcoming = () => {
   const { t } = useTranslation()
   useDocumentTitle(t("task.upcoming"))
@@ -46,10 +45,12 @@ const Upcoming = () => {
   const onSelectViewVariant = useUnit(upcomingDateSelected)
   const onSortChange = useUnit($$sort.sort)
   const setDate = useUnit($$createTask.setDate)
-  const { open: onOpenCreateForm } = useDisclosure({id: ModalName.CreateTaskForm})
+  const { open: onOpenCreateForm } = useDisclosure({
+    id: ModalName.CreateTaskForm,
+  })
   const onToggleCompleted = useUnit($$taskModel.toggleCompletedShown)
   const isCompletedShown = useUnit($$taskModel.$isCompletedShown)
-  
+
   const [selectedTaskId, setSelectedTaskId] = useState<Nullable<string>>(null)
 
   return (
@@ -64,7 +65,10 @@ const Upcoming = () => {
                 config: SORT_CONFIG,
               }}
             />
-            <CompletedToggle checked={isCompletedShown} onToggle={onToggleCompleted}/>
+            <CompletedToggle
+              checked={isCompletedShown}
+              onToggle={onToggleCompleted}
+            />
           </>
         }
         iconName="common/upcoming"

@@ -13,9 +13,7 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { TaskId } from "@/shared/api/task"
-import {
-  useDocumentTitle,
-} from "@/shared/lib/react"
+import { useDocumentTitle } from "@/shared/lib/react"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { useSelectItem } from "@/shared/lib/use-select-item"
@@ -47,7 +45,9 @@ const Today = () => {
   const todayTasks = useUnit($todayTasks)
 
   const onDeleteTask = useUnit($$trashTask.taskTrashedById)
-  const { isOpened, open: onOpen } = useDisclosure({id: ModalName.CreateTaskForm})
+  const { isOpened, open: onOpen } = useDisclosure({
+    id: ModalName.CreateTaskForm,
+  })
 
   const [selectedTaskId, setSelectedTaskId] = useState<Nullable<string>>(null)
   useGate(gate)
@@ -59,20 +59,23 @@ const Today = () => {
         title={t("task.today")}
         slot={
           <>
-          <Sort
-            sorting={{
-              onChange: onSortChange,
-              active: activeSort,
-              config: SORT_CONFIG,
-            }}
-          />
-          <CompletedToggle checked={isCompletedShown} onToggle={onToggleCompleted}/>
+            <Sort
+              sorting={{
+                onChange: onSortChange,
+                active: activeSort,
+                config: SORT_CONFIG,
+              }}
+            />
+            <CompletedToggle
+              checked={isCompletedShown}
+              onToggle={onToggleCompleted}
+            />
           </>
         }
       />
       <Layout.Content className="flex flex-col">
-        <OverdueTasks onSelectTaskId={setSelectedTaskId}/>
-        <TodayTasks onSelectTaskId={setSelectedTaskId}/>
+        <OverdueTasks onSelectTaskId={setSelectedTaskId} />
+        <TodayTasks onSelectTaskId={setSelectedTaskId} />
         <NoTasks
           isTaskListEmpty={
             !todayTasks?.length && !overdueTasks?.length && !isOpened
@@ -100,13 +103,9 @@ const OverdueTasks = ({
 
   const onToggleVisibility = useUnit(toggleOverdueTasksOpened)
 
-  const {
-    onSelect, 
-    onUnselect, 
-    addNode,
-  } = useSelectItem({
+  const { onSelect, onUnselect, addNode } = useSelectItem({
     items: tasks,
-    onChange: (task) => onSelectTaskId(task?.id || null)
+    onChange: (task) => onSelectTaskId(task?.id || null),
   })
 
   const list = useList($overdueTasks, (task, index) => {
@@ -125,16 +124,15 @@ const OverdueTasks = ({
 
   return (
     <section className={`${tasks?.length ? "block" : "hidden"}`}>
-      <div className="flex items-center gap-1 border-b-1 border-t-1 border-cBorder px-5 py-2">
+      <div className="border-b-1 border-t-1 border-cBorder flex items-center gap-1 px-5 py-2">
         <Icon
           name="common/outlined-star"
-          className="mr-1 h-5 w-5 text-cIconDefault"
+          className="text-cIconDefault mr-1 h-5 w-5"
         />
         <Button
           aria-expanded={isExpanded}
           intent={"primary"}
           size={"sm"}
-
           onClick={onToggleVisibility}
           className="flex w-full items-center justify-between px-2"
         >
@@ -152,11 +150,7 @@ const OverdueTasks = ({
           </span>
         </Button>
       </div>
-        {isExpanded && (
-          <div className="mt-2 px-3">
-            {list}
-          </div>
-        )}
+      {isExpanded && <div className="mt-2 px-3">{list}</div>}
     </section>
   )
 }
@@ -171,14 +165,11 @@ const TodayTasks = ({
   const overdueTasks = useUnit($overdueTasks)
 
   const onCreateTask = useUnit($$createTask.createTaskTriggered)
-  const {isOpened: isCreateTaskFormOpened, close: onCloseCreateTaskForm} = useDisclosure({id: ModalName.CreateTaskForm, onClose: onCreateTask})
-  const {
-    onSelect, 
-    onUnselect, 
-    addNode,
-  } = useSelectItem({
+  const { isOpened: isCreateTaskFormOpened, close: onCloseCreateTaskForm } =
+    useDisclosure({ id: ModalName.CreateTaskForm, onClose: onCreateTask })
+  const { onSelect, onUnselect, addNode } = useSelectItem({
     items: tasks,
-    onChange: (task) => onSelectTaskId(task?.id || null)
+    onChange: (task) => onSelectTaskId(task?.id || null),
   })
   const list = useList($todayTasks, (task, index) => {
     return (
@@ -198,11 +189,11 @@ const TodayTasks = ({
     <section>
       {!!overdueTasks?.length && !!tasks?.length && (
         <div
-          className={`flex items-center gap-1 border-b-1 border-cBorder px-5 py-2 text-primary mb-2`}
+          className={`border-b-1 border-cBorder text-primary mb-2 flex items-center gap-1 px-5 py-2`}
         >
           <Icon
             name="common/outlined-star"
-            className="mr-1 h-5 w-5 text-accent"
+            className="text-accent mr-1 h-5 w-5"
           />
           <Button
             intent={"primary"}
@@ -213,9 +204,7 @@ const TodayTasks = ({
           </Button>
         </div>
       )}
-      <div className="mx-3">
-        {list}
-      </div>
+      <div className="mx-3">{list}</div>
       <ExpandedTask
         className="mx-3"
         isExpanded={isCreateTaskFormOpened}

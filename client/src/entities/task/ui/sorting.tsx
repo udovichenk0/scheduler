@@ -20,8 +20,8 @@ export const Sort = ({ sorting }: { sorting?: SortProps }) => {
   const { t } = useTranslation()
 
   const {
-    isOpened: isSortModalOpened, 
-    open: onOpenSortModal, 
+    isOpened: isSortModalOpened,
+    open: onOpenSortModal,
     close: onCloseSortModal,
   } = useDisclosure({ id: ModalName.SortModal })
 
@@ -33,33 +33,34 @@ export const Sort = ({ sorting }: { sorting?: SortProps }) => {
             <Button
               ref={ref}
               aria-label="Choose sorting method"
-              style={{pointerEvents: isSortModalOpened ? "none" : "unset"}}
+              style={{ pointerEvents: isSortModalOpened ? "none" : "unset" }}
               intent={"primary"}
               size={"xs"}
               onClick={() => onOpenSortModal()}
             >
               <Icon
                 name={`sort/${sorting.active}`}
-                className="text-2xl text-cIconDefault"
+                className="text-cIconDefault text-2xl"
               />
             </Button>
           </Tooltip>
-            <Modal 
-              label="Sort tasks" 
-              isOpened={isSortModalOpened} 
-              closeModal={onCloseSortModal}>
-              <Modal.Body className="absolute right-0 top-full mt-5 z-100">
-                <TaskSortingPopup
-                  onChange={(value) => {
-                    sorting.onChange(value)
-                    onCloseSortModal()
-                    ref.current?.focus()
-                  }}
-                  config={sorting.config}
-                  active={sorting.active}
-                />
-              </Modal.Body>
-            </Modal>
+          <Modal
+            label="Sort tasks"
+            isOpened={isSortModalOpened}
+            closeModal={onCloseSortModal}
+          >
+            <Modal.Body className="z-100 absolute right-0 top-full mt-5">
+              <TaskSortingPopup
+                onChange={(value) => {
+                  sorting.onChange(value)
+                  onCloseSortModal()
+                  ref.current?.focus()
+                }}
+                config={sorting.config}
+                active={sorting.active}
+              />
+            </Modal.Body>
+          </Modal>
         </div>
       )}
     </div>
@@ -75,13 +76,13 @@ export const TaskSortingPopup = ({
   active: SortType
 }) => {
   return (
-    <div className="right-0 z-[1000] flex w-[215px] flex-col bg-main">
+    <div className="bg-main right-0 z-[1000] flex w-[215px] flex-col">
       {config.map(({ value, label }, id) => {
         return (
           <button
             autoFocus={id == 0}
             key={value}
-            className={`focus-visible:ring py-3 pl-8 pr-4  text-left text-[12px] hover:bg-hover ${
+            className={`hover:bg-hover py-3 pl-8 pr-4  text-left text-[12px] focus-visible:ring ${
               value === active && "bg-hover"
             }`}
             onClick={() => onChange(value)}

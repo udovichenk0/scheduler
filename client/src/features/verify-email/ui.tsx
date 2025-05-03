@@ -85,7 +85,7 @@ export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
 const Error = ({ error }: { error: Nullable<string> }) => {
   return (
     <div className="h-5">
-      {error && <div className="text-sm text-error">{error}</div>}
+      {error && <div className="text-error text-sm">{error}</div>}
     </div>
   )
 }

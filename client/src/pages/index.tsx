@@ -12,17 +12,17 @@ import { routes } from "@/shared/routing"
 import { NotFoundPage } from "./404/404.page"
 
 const pageRoutes = [
-  {view: Home, route: routes.home},
-  {view: Inbox, route: routes.inbox},
-  {view: Upcoming, route: routes.upcoming},
-  {view: Unplaced, route: routes.unplaced},
-  {view: Calendar, route: routes.calendar},
-  {view: Trash, route: routes.trash},
+  { view: Home, route: routes.home },
+  { view: Inbox, route: routes.inbox },
+  { view: Upcoming, route: routes.upcoming },
+  { view: Unplaced, route: routes.unplaced },
+  { view: Calendar, route: routes.calendar },
+  { view: Trash, route: routes.trash },
 ]
 
 export const RoutesView = createRoutesView({
   routes: pageRoutes,
   otherwise() {
-    return <NotFoundPage/>
+    return <NotFoundPage />
   },
 })

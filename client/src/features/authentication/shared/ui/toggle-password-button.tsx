@@ -10,7 +10,7 @@ export const TogglePasswordButton = ({
   return (
     <div
       onClick={() => togglePasswordVisibility(!isPasswordVisible)}
-      className="cursor-pointer stroke-cFont"
+      className="stroke-cFont cursor-pointer"
     >
       {isPasswordVisible ? (
         <Icon name="common/eye-opened" />

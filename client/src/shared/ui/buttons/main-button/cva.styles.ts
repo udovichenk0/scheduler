@@ -9,7 +9,7 @@ export const buttonCva = cva(
         primary: ["hover:bg-hover", "text-primary"],
         accent: ["hover:bg-hover", "text-accent"],
         filled: ["bg-cButtonBg", "hover:bg-hover", "text-cButtonText"],
-        base: []
+        base: [],
       },
       size: {
         xs: ["p-1 text-[14px]"],

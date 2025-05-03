@@ -5,4 +5,4 @@ declare global {
   type Nullable<T> = null | T
 }
 
-declare module "*.css" {} 
+declare module "*.css" {}

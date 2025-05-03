@@ -6,11 +6,7 @@ import { TaskModel } from "@/entities/task"
 
 import { taskApi } from "@/shared/api/task"
 
-export const trashTaskFactory = ({
-  taskModel
-}:{
-  taskModel: TaskModel
-}) => {
+export const trashTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
   const taskTrashedById = createEvent<string>()
 
   const trashTaskAttach = attachOperation(taskApi.trashTaskMutation)
@@ -24,8 +20,10 @@ export const trashTaskFactory = ({
     clock: taskSuccessfullyTrashed,
     source: taskModel.$tasks,
     filter: Boolean,
-    fn: (tasks, {params: taskId}) => {
-      return tasks.map((task) => task.id == taskId ? {...task, is_trashed: true} : task)
+    fn: (tasks, { params: taskId }) => {
+      return tasks.map((task) =>
+        task.id == taskId ? { ...task, is_trashed: true } : task,
+      )
     },
     target: taskModel.setTasksTriggered,
   })

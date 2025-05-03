@@ -10,11 +10,11 @@ export const isToday = (date: Nullable<InputDate>) => {
 
 export const isBeforeToday = (date: Nullable<InputDate>) => {
   if (!date) return false
-  return parseDate(date) < getToday()
+  return parseDate(date) < getToday().toDate()
 }
 export const isAfterToday = (date: Nullable<InputDate>) => {
   if (!date) return false
-  return parseDate(date) > dayjs(getToday()).endOf("date").toDate()
+  return parseDate(date) > getToday().endOf("date").toDate()
 }
 
 export function parseDate(date: InputDate) {

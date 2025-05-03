@@ -1,6 +1,8 @@
 export interface SpritesMap {
   common:
     | "arrow"
+    | "calendar-due-date"
+    | "calendar-start-date"
     | "calendar"
     | "cloud"
     | "cross-arrows"
@@ -41,6 +43,16 @@ export const SPRITES_META: {
         viewBox: "0 0 1024 1024",
         width: 512,
         height: 512,
+      },
+      "calendar-due-date": {
+        viewBox: "0 0 24 24",
+        width: 24,
+        height: 24,
+      },
+      "calendar-start-date": {
+        viewBox: "0 0 24 24",
+        width: 24,
+        height: 24,
       },
       calendar: {
         viewBox: "0 0 16 16",

@@ -1,6 +1,6 @@
 import { EventCallable, StoreWritable } from "effector"
 import { useUnit } from "effector-react"
-import { useCallback, useRef, useState } from "react"
+import { useRef } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
@@ -11,7 +11,6 @@ import { onMount } from "@/shared/lib/react"
 import { Modal } from "@/shared/ui/modal"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { getToday } from "@/shared/lib/date"
 import { EditableContent } from "@/shared/ui/data-entry/editable-content"
 
 import { Status as Status, Type as Type } from "../type"
@@ -24,11 +23,12 @@ type TaskFactory = {
   $status: StoreWritable<Status>
   $type: StoreWritable<Type>
   $startDate: StoreWritable<Nullable<Date>>
+  $dueDate: StoreWritable<Nullable<Date>>
   statusChanged: EventCallable<Status>
   descriptionChanged: EventCallable<Nullable<string>>
   titleChanged: EventCallable<string>
   typeChanged: EventCallable<Type>
-  dateChanged: EventCallable<Date>
+  dateChanged: EventCallable<{startDate: Nullable<Date>, dueDate: Nullable<Date>}>
 }
 
 export const ModifyTaskForm = ({
@@ -47,35 +47,25 @@ export const ModifyTaskForm = ({
   const description = useUnit(modifyTaskModel.$description)
   const status = useUnit(modifyTaskModel.$status)
   const taskType = useUnit(modifyTaskModel.$type)
-  const taskDate = useUnit(modifyTaskModel.$startDate)
-  const [tempDate, setTempDate] = useState(taskDate)
+  const startDate = useUnit(modifyTaskModel.$startDate)
+  const dueDate = useUnit(modifyTaskModel.$dueDate)
+  const onChangeDate = useUnit(modifyTaskModel.dateChanged)
   const onChangeStatus = useUnit(modifyTaskModel.statusChanged)
   const onChangeDescription = useUnit(modifyTaskModel.descriptionChanged)
   const onChangeTitle = useUnit(modifyTaskModel.titleChanged)
   const onChangeType = useUnit(modifyTaskModel.typeChanged)
-  const onChangeDate = useUnit(modifyTaskModel.dateChanged)
-  const changeDate = useCallback(() => {
-    if(tempDate){
-      onChangeDate(tempDate)
-    }
-  }, [tempDate])
+
   const {
-    isOpened: isTypeModalOpened, 
-    open: onOpenTypeModal, 
-    close: onCloseTypeModal
+    isOpened: isTypeModalOpened,
+    open: onOpenTypeModal,
+    close: onCloseTypeModal,
   } = useDisclosure({ id: ModalName.TypeModal })
 
-  const {
-    isOpened: isDateModalOpened, 
-    open: onOpenDateModal, 
-    close: onCloseDateModal,
-    cancel: onCancelDateModal
-  } = useDisclosure({ id: ModalName.TaskFormDateModal, onClose: changeDate })
 
   onMount(() => inputRef.current?.focus())
-  
+
   return (
-    <div className="flex w-full gap-2 rounded-[5px] text-cTaskEditDefault">
+    <div className="text-cTaskEditDefault flex w-full gap-2 rounded-[5px]">
       <Checkbox
         iconClassName="fill-cTaskEditDefault"
         checked={status == TaskStatus.FINISHED}
@@ -87,76 +77,66 @@ export const ModifyTaskForm = ({
           onChange={(e) => onChangeTitle(e.target.value)}
           value={title}
           placeholder={title ? "" : t("taskForm.newTask")}
-          className="text-sm font-medium text-cFont outline-none"
+          className="text-cFont text-sm font-medium outline-none"
         />
-        <EditableContent aria-label="Add note" onSave={onChangeDescription} content={description || ""} placeholder="Note"/>
-        <div className="space-y-1">
+        <EditableContent
+          aria-label="Add note"
+          onSave={onChangeDescription}
+          content={description || ""}
+          placeholder="Note"
+        />
+        <div>
           <Button
             aria-label={`${taskType}: Choose type`}
             ref={typePickerRef}
             onClick={() => onOpenTypeModal()}
             size={"sm"}
             intent={"primary"}
-            className="flex gap-4 text-sm"
+            className="flex gap-4 text-sm mb-1"
           >
-            <Icon
-              name={"common/inbox"}
-              className="size-[18px] text-accent"
-            />
+            <Icon name={"common/inbox"} className="text-accent size-[18px]" />
             {t(`task.${taskType}`)}
           </Button>
 
           {dateModifier && (
-            <Button
-              onClick={() => onOpenDateModal()}
-              size={"sm"}
-              intent={"primary"}
-              className="flex"
-            >
-              <Icon
-                name={"common/upcoming"}
-                className="mr-4 size-[18px] text-cTaskEditDefault"
-              />
-              <span className="text-sm">{t("taskForm.date")}:</span>
-              <span className="ml-2 text-accent text-sm">
-                {taskDate && formatTaskDate(new Date(taskDate))}
-              </span>
-            </Button>
+            <DatePicker
+              CustomInput={({onClick}) => (
+                <Button
+                  onClick={onClick}
+                  size={"sm"}
+                  intent={"primary"}
+                  className="flex"
+                >
+                  <Icon
+                    name={"common/upcoming"}
+                    className="text-cTaskEditDefault mr-4 size-[18px]"
+                  />
+                  <span className="text-sm">{t("taskForm.date")}:</span>
+                  <span className="text-accent ml-2 text-sm">
+                    {startDate && formatTaskDate(new Date(startDate))}
+                  </span>
+                </Button>
+              )}
+              startDate={startDate}
+              dueDate={dueDate}
+              onDateChange={onChangeDate}
+            />
           )}
         </div>
-        <Modal 
-          label="Select event type" 
-          isOpened={isTypeModalOpened} 
-          closeModal={onCloseTypeModal}>
+        <Modal
+          label="Select event type"
+          isOpened={isTypeModalOpened}
+          closeModal={onCloseTypeModal}
+        >
           <Modal.Overlay>
             <Modal.Body>
               <Modal.Content className="contents">
-                <TypePicker 
-                  currentType={taskType} 
+                <TypePicker
+                  currentType={taskType}
                   changeType={(type) => {
                     onChangeType(type)
                     onCloseTypeModal()
-                  }} 
-                />
-              </Modal.Content>
-            </Modal.Body>
-          </Modal.Overlay>
-        </Modal>
-        <Modal 
-          label="Choose date" 
-          isOpened={isDateModalOpened} 
-          closeModal={onCloseDateModal}>
-          <Modal.Overlay>
-            <Modal.Body>
-              <Modal.Content>
-                <DatePicker
-                  currentDate={tempDate || getToday()}
-                  onDateChange={setTempDate}
-                  onCancel={() => {
-                    onCancelDateModal()
-                    setTempDate(taskDate)
                   }}
-                  onSave={onCloseDateModal}
                 />
               </Modal.Content>
             </Modal.Body>
@@ -183,7 +163,10 @@ const TypePicker = ({
   const ref = useRef<HTMLDivElement>(null)
 
   return (
-    <div ref={ref} className="flex w-[280px] cursor-pointer flex-col gap-y-1 rounded-[5px] bg-main p-3">
+    <div
+      ref={ref}
+      className="bg-main flex w-[280px] cursor-pointer flex-col gap-y-1 rounded-[5px] p-3"
+    >
       {types.map(({ type, iconName }, id) => {
         const active = type == currentType
         return (
@@ -192,13 +175,15 @@ const TypePicker = ({
             size={"xs"}
             onClick={() => changeType(type)}
             className={`text-left ${
-              active && "block w-full bg-cFocus"
+              active && "bg-cFocus block w-full focus:ring"
             }`}
             intent={"primary"}
           >
             <Icon
               name={iconName}
-              className={`mr-4 h-5 w-5 text-accent ${active && "text-hover"}`}
+              className={`text-accent mr-4 h-5 w-5 focus:ring ${
+                active && "text-hover"
+              }`}
             />
             {t(`task.${type}`)}
           </Button>

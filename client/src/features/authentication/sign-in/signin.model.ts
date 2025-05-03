@@ -17,7 +17,6 @@ import {
   TOO_SHORT_PASSWORD_MESSAGE,
 } from "./constants"
 
-
 export const passwordChanged = createEvent<string>()
 export const submitTriggered = createEvent()
 export const resetSigninPasswordTriggered = createEvent()
@@ -58,12 +57,13 @@ split({
     isWrongPassword: isHttpError(400),
   },
   cases: {
-    isWrongPassword: prepend<Nullable<string>, void>($error, INVALID_PASSWORD_MESSAGE),
+    isWrongPassword: prepend<Nullable<string>, void>(
+      $error,
+      INVALID_PASSWORD_MESSAGE,
+    ),
     __: prepend<Nullable<string>, void>($error, UNEXPECTED_ERROR_MESSAGE),
   },
 })
-
-
 
 sample({
   clock: resetSigninPasswordTriggered,

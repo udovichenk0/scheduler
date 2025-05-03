@@ -26,7 +26,7 @@ export const AuthTemplate = ({
     onSubmit?.()
   }
   return (
-    <div className="relative text-center text-cFont">
+    <div className="text-cFont relative text-center">
       <Button
         className="absolute -left-[20px]"
         onClick={onArrowClick}
@@ -35,7 +35,7 @@ export const AuthTemplate = ({
       >
         <Icon
           name="common/arrow"
-          className="text-4 -rotate-90 text-cIconDefault"
+          className="text-4 text-cIconDefault -rotate-90"
         />
       </Button>
       <Typography.Heading size="base" className="mb-3 font-semibold">

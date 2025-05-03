@@ -21,7 +21,7 @@ export const Authentication = () => {
   useGate(gate)
   return (
     <div className="flex justify-center">
-      <div className="w-[420px] text-primary">
+      <div className="text-primary w-[420px]">
         {currentFlow === Flow.email && (
           <CheckEmailForm goBack={() => selectForm(Flow.options)} />
         )}
@@ -32,7 +32,7 @@ export const Authentication = () => {
           <Signup goBack={() => selectForm(Flow.email)} />
         )}
         {currentFlow === Flow.logout && <Logout />}
-        {currentFlow === Flow.options && <AuthOptions/>}
+        {currentFlow === Flow.options && <AuthOptions />}
         {currentFlow === Flow.verify && (
           <VerifyEmail goBack={() => selectForm(Flow.email)} />
         )}
@@ -49,7 +49,7 @@ const AuthOptions = () => {
     ref.current?.focus()
   }, [])
   return (
-    <div className="text-center text-cFont">
+    <div className="text-cFont text-center">
       <Typography.Heading size="base" className="mb-2 font-semibold">
         {t("setting.synchronization.main.title")}
       </Typography.Heading>
@@ -58,7 +58,7 @@ const AuthOptions = () => {
       </Typography.Paragraph>
       <div className="text- inline-flex flex-col gap-5">
         <Button ref={ref} onClick={() => selectForm(Flow.email)} size={"lg"}>
-          <Icon name="common/mail" className="mr-4 w-[15px] text-primary" />
+          <Icon name="common/mail" className="text-primary mr-4 w-[15px]" />
           {t("setting.synchronization.main.withEmailButtonTitle")}
         </Button>
       </div>

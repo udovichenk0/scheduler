@@ -15,444 +15,408 @@ import type {
   PostAuthVerifyBody,
   TaskDto,
   TaskFields,
-  UserResponse
-} from './scheduler.schemas'
-import getEmailExistsMutator from './fetch';
-import postAuthSigninMutator from './fetch';
-import postAuthSignupMutator from './fetch';
-import postAuthSignoutMutator from './fetch';
-import postAuthVerifyMutator from './fetch';
-import getAuthSessionMutator from './fetch';
-import postAuthResendMutator from './fetch';
-import getTasksMutator from './fetch';
-import postTasksMutator from './fetch';
-import deleteTasksMutator from './fetch';
-import putTasksIdMutator from './fetch';
-import deleteTasksIdMutator from './fetch';
-import patchTasksIdDateMutator from './fetch';
-import patchTasksIdStatusMutator from './fetch';
-import postTasksIdTrashMutator from './fetch';
+  UserResponse,
+} from "./scheduler.schemas"
+import getEmailExistsMutator from "./fetch"
+import postAuthSigninMutator from "./fetch"
+import postAuthSignupMutator from "./fetch"
+import postAuthSignoutMutator from "./fetch"
+import postAuthVerifyMutator from "./fetch"
+import getAuthSessionMutator from "./fetch"
+import postAuthResendMutator from "./fetch"
+import getTasksMutator from "./fetch"
+import postTasksMutator from "./fetch"
+import deleteTasksMutator from "./fetch"
+import putTasksIdMutator from "./fetch"
+import deleteTasksIdMutator from "./fetch"
+import patchTasksIdDateMutator from "./fetch"
+import patchTasksIdStatusMutator from "./fetch"
+import postTasksIdTrashMutator from "./fetch"
 
 /**
  * @summary Check if verified email exists
  */
 export type getEmailExistsResponse = {
-  data: GetEmailExists200Response;
-  status: number;
-  headers: Headers;
+  data: GetEmailExists200Response
+  status: number
+  headers: Headers
 }
 
-export const getGetEmailExistsUrl = (params: GetEmailExistsParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getGetEmailExistsUrl = (params: GetEmailExistsParams) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString())
     }
-  });
+  })
 
-  return normalizedParams.size ? `/email/exists?${normalizedParams.toString()}` : `/email/exists`
+  return normalizedParams.size
+    ? `/email/exists?${normalizedParams.toString()}`
+    : `/email/exists`
 }
 
-export const getEmailExists = async (params: GetEmailExistsParams, options?: RequestInit): Promise<getEmailExistsResponse> => {
-  
-  return getEmailExistsMutator<Promise<getEmailExistsResponse>>(getGetEmailExistsUrl(params),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-);}
-
-
+export const getEmailExists = async (
+  params: GetEmailExistsParams,
+  options?: RequestInit,
+): Promise<getEmailExistsResponse> => {
+  return getEmailExistsMutator<Promise<getEmailExistsResponse>>(
+    getGetEmailExistsUrl(params),
+    {
+      ...options,
+      method: "GET",
+    },
+  )
+}
 
 /**
  * @summary Sign in a user
  */
 export type postAuthSigninResponse = {
-  data: UserResponse;
-  status: number;
-  headers: Headers;
+  data: UserResponse
+  status: number
+  headers: Headers
 }
 
 export const getPostAuthSigninUrl = () => {
-
-
   return `/auth/signin`
 }
 
-export const postAuthSignin = async (authEmailCredsBody: AuthEmailCredsBody, options?: RequestInit): Promise<postAuthSigninResponse> => {
-  
-  return postAuthSigninMutator<Promise<postAuthSigninResponse>>(getPostAuthSigninUrl(),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      authEmailCredsBody,)
-  }
-);}
-
-
+export const postAuthSignin = async (
+  authEmailCredsBody: AuthEmailCredsBody,
+  options?: RequestInit,
+): Promise<postAuthSigninResponse> => {
+  return postAuthSigninMutator<Promise<postAuthSigninResponse>>(
+    getPostAuthSigninUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(authEmailCredsBody),
+    },
+  )
+}
 
 export type postAuthSignupResponse = {
-  data: UserResponse;
-  status: number;
-  headers: Headers;
+  data: UserResponse
+  status: number
+  headers: Headers
 }
 
 export const getPostAuthSignupUrl = () => {
-
-
   return `/auth/signup`
 }
 
-export const postAuthSignup = async (authEmailCredsBody: AuthEmailCredsBody, options?: RequestInit): Promise<postAuthSignupResponse> => {
-  
-  return postAuthSignupMutator<Promise<postAuthSignupResponse>>(getPostAuthSignupUrl(),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      authEmailCredsBody,)
-  }
-);}
-
-
+export const postAuthSignup = async (
+  authEmailCredsBody: AuthEmailCredsBody,
+  options?: RequestInit,
+): Promise<postAuthSignupResponse> => {
+  return postAuthSignupMutator<Promise<postAuthSignupResponse>>(
+    getPostAuthSignupUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(authEmailCredsBody),
+    },
+  )
+}
 
 export type postAuthSignoutResponse = {
-  data: void;
-  status: number;
-  headers: Headers;
+  data: void
+  status: number
+  headers: Headers
 }
 
 export const getPostAuthSignoutUrl = () => {
-
-
   return `/auth/signout`
 }
 
-export const postAuthSignout = async ( options?: RequestInit): Promise<postAuthSignoutResponse> => {
-  
-  return postAuthSignoutMutator<Promise<postAuthSignoutResponse>>(getPostAuthSignoutUrl(),
-  {      
-    ...options,
-    method: 'POST'
-    
-    
-  }
-);}
-
-
+export const postAuthSignout = async (
+  options?: RequestInit,
+): Promise<postAuthSignoutResponse> => {
+  return postAuthSignoutMutator<Promise<postAuthSignoutResponse>>(
+    getPostAuthSignoutUrl(),
+    {
+      ...options,
+      method: "POST",
+    },
+  )
+}
 
 /**
  * @summary Verify email
  */
 export type postAuthVerifyResponse = {
-  data: unknown;
-  status: number;
-  headers: Headers;
+  data: unknown
+  status: number
+  headers: Headers
 }
 
 export const getPostAuthVerifyUrl = () => {
-
-
   return `/auth/verify`
 }
 
-export const postAuthVerify = async (postAuthVerifyBody: PostAuthVerifyBody, options?: RequestInit): Promise<postAuthVerifyResponse> => {
-  
-  return postAuthVerifyMutator<Promise<postAuthVerifyResponse>>(getPostAuthVerifyUrl(),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      postAuthVerifyBody,)
-  }
-);}
-
-
+export const postAuthVerify = async (
+  postAuthVerifyBody: PostAuthVerifyBody,
+  options?: RequestInit,
+): Promise<postAuthVerifyResponse> => {
+  return postAuthVerifyMutator<Promise<postAuthVerifyResponse>>(
+    getPostAuthVerifyUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postAuthVerifyBody),
+    },
+  )
+}
 
 /**
  * @summary Check user`s session
  */
 export type getAuthSessionResponse = {
-  data: UserResponse;
-  status: number;
-  headers: Headers;
+  data: UserResponse
+  status: number
+  headers: Headers
 }
 
 export const getGetAuthSessionUrl = () => {
-
-
   return `/auth/session`
 }
 
-export const getAuthSession = async ( options?: RequestInit): Promise<getAuthSessionResponse> => {
-  
-  return getAuthSessionMutator<Promise<getAuthSessionResponse>>(getGetAuthSessionUrl(),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-);}
-
-
+export const getAuthSession = async (
+  options?: RequestInit,
+): Promise<getAuthSessionResponse> => {
+  return getAuthSessionMutator<Promise<getAuthSessionResponse>>(
+    getGetAuthSessionUrl(),
+    {
+      ...options,
+      method: "GET",
+    },
+  )
+}
 
 /**
  * @summary Resend verification code
  */
 export type postAuthResendResponse = {
-  data: unknown;
-  status: number;
-  headers: Headers;
+  data: unknown
+  status: number
+  headers: Headers
 }
 
 export const getPostAuthResendUrl = () => {
-
-
   return `/auth/resend`
 }
 
-export const postAuthResend = async (postAuthResendBody: PostAuthResendBody, options?: RequestInit): Promise<postAuthResendResponse> => {
-  
-  return postAuthResendMutator<Promise<postAuthResendResponse>>(getPostAuthResendUrl(),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      postAuthResendBody,)
-  }
-);}
-
-
+export const postAuthResend = async (
+  postAuthResendBody: PostAuthResendBody,
+  options?: RequestInit,
+): Promise<postAuthResendResponse> => {
+  return postAuthResendMutator<Promise<postAuthResendResponse>>(
+    getPostAuthResendUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(postAuthResendBody),
+    },
+  )
+}
 
 export type getTasksResponse = {
-  data: TaskDto[];
-  status: number;
-  headers: Headers;
+  data: TaskDto[]
+  status: number
+  headers: Headers
 }
 
 export const getGetTasksUrl = () => {
-
-
   return `/tasks`
 }
 
-export const getTasks = async ( options?: RequestInit): Promise<getTasksResponse> => {
-  
-  return getTasksMutator<Promise<getTasksResponse>>(getGetTasksUrl(),
-  {      
+export const getTasks = async (
+  options?: RequestInit,
+): Promise<getTasksResponse> => {
+  return getTasksMutator<Promise<getTasksResponse>>(getGetTasksUrl(), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-);}
-
-
+    method: "GET",
+  })
+}
 
 /**
  * @summary Create task
  */
 export type postTasksResponse = {
-  data: TaskDto;
-  status: number;
-  headers: Headers;
+  data: TaskDto
+  status: number
+  headers: Headers
 }
 
 export const getPostTasksUrl = () => {
-
-
   return `/tasks`
 }
 
-export const postTasks = async (taskFields: TaskFields, options?: RequestInit): Promise<postTasksResponse> => {
-  
-  return postTasksMutator<Promise<postTasksResponse>>(getPostTasksUrl(),
-  {      
+export const postTasks = async (
+  taskFields: TaskFields,
+  options?: RequestInit,
+): Promise<postTasksResponse> => {
+  return postTasksMutator<Promise<postTasksResponse>>(getPostTasksUrl(), {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      taskFields,)
-  }
-);}
-
-
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(taskFields),
+  })
+}
 
 /**
  * @summary Delete all trashed tasks
  */
 export type deleteTasksResponse = {
-  data: unknown;
-  status: number;
-  headers: Headers;
+  data: unknown
+  status: number
+  headers: Headers
 }
 
 export const getDeleteTasksUrl = () => {
-
-
   return `/tasks`
 }
 
-export const deleteTasks = async ( options?: RequestInit): Promise<deleteTasksResponse> => {
-  
-  return deleteTasksMutator<Promise<deleteTasksResponse>>(getDeleteTasksUrl(),
-  {      
+export const deleteTasks = async (
+  options?: RequestInit,
+): Promise<deleteTasksResponse> => {
+  return deleteTasksMutator<Promise<deleteTasksResponse>>(getDeleteTasksUrl(), {
     ...options,
-    method: 'DELETE'
-    
-    
-  }
-);}
-
-
+    method: "DELETE",
+  })
+}
 
 /**
  * @summary Update task's fields
  */
 export type putTasksIdResponse = {
-  data: TaskDto;
-  status: number;
-  headers: Headers;
+  data: TaskDto
+  status: number
+  headers: Headers
 }
 
-export const getPutTasksIdUrl = (id: Id,) => {
-
-
+export const getPutTasksIdUrl = (id: Id) => {
   return `/tasks/${id}`
 }
 
-export const putTasksId = async (id: Id,
-    taskFields: TaskFields, options?: RequestInit): Promise<putTasksIdResponse> => {
-  
-  return putTasksIdMutator<Promise<putTasksIdResponse>>(getPutTasksIdUrl(id),
-  {      
+export const putTasksId = async (
+  id: Id,
+  taskFields: TaskFields,
+  options?: RequestInit,
+): Promise<putTasksIdResponse> => {
+  return putTasksIdMutator<Promise<putTasksIdResponse>>(getPutTasksIdUrl(id), {
     ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      taskFields,)
-  }
-);}
-
-
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(taskFields),
+  })
+}
 
 /**
  * @summary Delete trashed task by taskId
  */
 export type deleteTasksIdResponse = {
-  data: unknown;
-  status: number;
-  headers: Headers;
+  data: unknown
+  status: number
+  headers: Headers
 }
 
-export const getDeleteTasksIdUrl = (id: Id,) => {
-
-
+export const getDeleteTasksIdUrl = (id: Id) => {
   return `/tasks/${id}`
 }
 
-export const deleteTasksId = async (id: Id, options?: RequestInit): Promise<deleteTasksIdResponse> => {
-  
-  return deleteTasksIdMutator<Promise<deleteTasksIdResponse>>(getDeleteTasksIdUrl(id),
-  {      
-    ...options,
-    method: 'DELETE'
-    
-    
-  }
-);}
-
-
+export const deleteTasksId = async (
+  id: Id,
+  options?: RequestInit,
+): Promise<deleteTasksIdResponse> => {
+  return deleteTasksIdMutator<Promise<deleteTasksIdResponse>>(
+    getDeleteTasksIdUrl(id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  )
+}
 
 /**
  * @summary Update task's date
  */
 export type patchTasksIdDateResponse = {
-  data: TaskDto;
-  status: number;
-  headers: Headers;
+  data: TaskDto
+  status: number
+  headers: Headers
 }
 
-export const getPatchTasksIdDateUrl = (id: Id,) => {
-
-
+export const getPatchTasksIdDateUrl = (id: Id) => {
   return `/tasks/${id}/date`
 }
 
-export const patchTasksIdDate = async (id: Id,
-    patchTasksIdDateBody: PatchTasksIdDateBody, options?: RequestInit): Promise<patchTasksIdDateResponse> => {
-  
-  return patchTasksIdDateMutator<Promise<patchTasksIdDateResponse>>(getPatchTasksIdDateUrl(id),
-  {      
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      patchTasksIdDateBody,)
-  }
-);}
-
-
-
-export type patchTasksIdStatusResponse = {
-  data: unknown;
-  status: number;
-  headers: Headers;
+export const patchTasksIdDate = async (
+  id: Id,
+  patchTasksIdDateBody: PatchTasksIdDateBody,
+  options?: RequestInit,
+): Promise<patchTasksIdDateResponse> => {
+  return patchTasksIdDateMutator<Promise<patchTasksIdDateResponse>>(
+    getPatchTasksIdDateUrl(id),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(patchTasksIdDateBody),
+    },
+  )
 }
 
-export const getPatchTasksIdStatusUrl = (id: Id,) => {
+export type patchTasksIdStatusResponse = {
+  data: unknown
+  status: number
+  headers: Headers
+}
 
-
+export const getPatchTasksIdStatusUrl = (id: Id) => {
   return `/tasks/${id}/status`
 }
 
-export const patchTasksIdStatus = async (id: Id,
-    patchTasksIdStatusBody: PatchTasksIdStatusBody, options?: RequestInit): Promise<patchTasksIdStatusResponse> => {
-  
-  return patchTasksIdStatusMutator<Promise<patchTasksIdStatusResponse>>(getPatchTasksIdStatusUrl(id),
-  {      
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      patchTasksIdStatusBody,)
-  }
-);}
-
-
-
-export type postTasksIdTrashResponse = {
-  data: unknown;
-  status: number;
-  headers: Headers;
+export const patchTasksIdStatus = async (
+  id: Id,
+  patchTasksIdStatusBody: PatchTasksIdStatusBody,
+  options?: RequestInit,
+): Promise<patchTasksIdStatusResponse> => {
+  return patchTasksIdStatusMutator<Promise<patchTasksIdStatusResponse>>(
+    getPatchTasksIdStatusUrl(id),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(patchTasksIdStatusBody),
+    },
+  )
 }
 
-export const getPostTasksIdTrashUrl = (id: Id,) => {
+export type postTasksIdTrashResponse = {
+  data: unknown
+  status: number
+  headers: Headers
+}
 
-
+export const getPostTasksIdTrashUrl = (id: Id) => {
   return `/tasks/${id}/trash`
 }
 
-export const postTasksIdTrash = async (id: Id, options?: RequestInit): Promise<postTasksIdTrashResponse> => {
-  
-  return postTasksIdTrashMutator<Promise<postTasksIdTrashResponse>>(getPostTasksIdTrashUrl(id),
-  {      
-    ...options,
-    method: 'POST'
-    
-    
-  }
-);}
-
-
-
+export const postTasksIdTrash = async (
+  id: Id,
+  options?: RequestInit,
+): Promise<postTasksIdTrashResponse> => {
+  return postTasksIdTrashMutator<Promise<postTasksIdTrashResponse>>(
+    getPostTasksIdTrashUrl(id),
+    {
+      ...options,
+      method: "POST",
+    },
+  )
+}

@@ -1,6 +1,7 @@
 import dayjs from "dayjs"
 import { useTranslation } from "react-i18next"
 import { useRef } from "react"
+import styles from "./styles.module.css"
 
 import {
   LONG_MONTHS_NAMES,
@@ -8,56 +9,75 @@ import {
   SHORT_MONTHS_NAMES,
 } from "@/shared/config/constants"
 import { onMount } from "@/shared/lib/react"
-
-import { Icon } from "../../icon"
+import { removeTimePart } from "@/shared/lib/date"
 
 export const Cell = ({
   onDateChange,
   cellDate,
-  currentDate,
+  startDate,
+  dueDate,
 }: {
   onDateChange: (date: Date) => void
-  cellDate: {
-    day: number
-    year: number
-    month: number
-    date: number
-  }
-  currentDate: Date
+  cellDate: Date
+  startDate: Nullable<Date>
+  dueDate: Nullable<Date>
 }) => {
   const focusRef = useRef<HTMLButtonElement>(null)
-  const { year, month, date, day } = cellDate
-  const isToday = dayjs(new Date(year, month, date)).isSame(dayjs(), "date")
-  const isPast = dayjs(new Date(year, month, date)).isBefore(dayjs(), "date")
-  const isTaskDate = dayjs(new Date(year, month, date)).isSame(
-    currentDate,
+  const isToday = dayjs(cellDate).isSame(dayjs(), "date")
+  const isPast = dayjs(cellDate).isBefore(dayjs(), "date")
+
+  const { t } = useTranslation()
+
+  const isStartDate = startDate && dayjs(cellDate).isSame(
+    removeTimePart(startDate),
     "date",
   )
-  const { t } = useTranslation()
+
+
+  const isDueDate = dueDate && dayjs(cellDate).isSame(
+    removeTimePart(dueDate),
+    "date",
+  )
+  
+  const isBetween = startDate && dueDate && dayjs(cellDate).isBetween(removeTimePart(startDate),removeTimePart(dueDate))
+
   onMount(() => {
     if (isToday) {
       focusRef.current && focusRef.current.focus()
     }
   })
+
+  const date = cellDate.getDate()
+  const day = cellDate.getDay()
+  const month = cellDate.getMonth()
+  const year = cellDate.getFullYear()
+
   return (
-    <button
-      ref={focusRef}
-      onClick={() => onDateChange(new Date(year, month, date))}
-      disabled={isPast || isTaskDate}
-      className={`size-[35px] text-[13px] focus-visible:ring ${
-        !isTaskDate && !isPast && "hover:bg-hover"
-      } 
-      ${isTaskDate && 'bg-hover'}
-        flex items-center justify-center rounded-[5px] text-cCalendarFont 
-        ${isPast && "text-cSecondBorder"} 
-        `}
+    <div
+      data-startdate={dueDate && isStartDate}
+      data-duedate={startDate && isDueDate}
+      data-between={isBetween}
+      className={`${styles.cellWrapper}`}
     >
-      {isToday ? (
-        <Icon name="common/filled-star" className="text-accent" />
-      ) : (
+      <button
+        ref={focusRef}
+        onClick={() => {
+          if(isPast || isStartDate || isDueDate) return
+          onDateChange(cellDate)
+        }}
+        data-active={isStartDate || isDueDate}
+        data-istoday={isToday && !isStartDate && !isDueDate}
+        className={`
+          ${styles.cell} 
+          focus-visible:border-cSecondBorder relative z-20 size-[35px] text-[13px] focus-visible:border text-cCalendarFont flex items-center justify-center rounded-[5px]
+          ${!isStartDate && !isDueDate && !isPast && "hover:bg-hover"} 
+          ${isPast && "text-cSecondBorder"}
+          ${!isPast && "cursor-pointer"}
+        `}
+      >
         <div>
-          {date === 1 || isTaskDate ? (
-            <div className="grid text-[9px] leading-[9px]">
+          {date === 1 || isStartDate ? (
+            <div className="text-[9px] leading-[9px]">
               <div>{date}</div>
               <div>{year}</div>
               <span>{t(SHORT_MONTHS_NAMES[month])}</span>
@@ -66,10 +86,10 @@ export const Cell = ({
             <span>{date}</span>
           )}
         </div>
-      )}
-      <span className="sr-only">
-        {t(LONG_WEEKS_NAMES[day])} {t(LONG_MONTHS_NAMES[month])} {date} {year}
-      </span>
-    </button>
+        <span className="sr-only">
+          {t(LONG_WEEKS_NAMES[day])} {t(LONG_MONTHS_NAMES[month])} {date} {year}
+        </span>
+      </button>
+    </div>
   )
 }

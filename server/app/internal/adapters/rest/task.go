@@ -148,10 +148,12 @@ func (th *TaskHandler) UpdateDate(fc *fiber.Ctx) error {
 	}
 
 	updateTaskDateParams := taskservice.UpdateDateInput{
-		TaskId: params.TaskId,
-		UserId: user.Id,
-		Date:   data.StartDate,
+		TaskId:    params.TaskId,
+		UserId:    user.Id,
+		StartDate: data.StartDate,
+		DueDate:   data.DueDate,
 	}
+
 	task, err := th.task.UpdateTaskDate(fc.Context(), updateTaskDateParams)
 	if err != nil {
 		return err
