@@ -32,6 +32,6 @@ jobs:
       - name: Install deps
         run: cd client && yarn install --frozen-lockfile
       - name: Lint
-        run: cd client && 
+        run: cd client && yarn lint
       - name: Build web
         run: cd client && yarn build
