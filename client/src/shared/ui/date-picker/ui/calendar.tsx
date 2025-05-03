@@ -1,8 +1,11 @@
-import { addLeadingZero } from "@/shared/lib/date"
 import dayjs from "dayjs"
 import { useRef, useState, useEffect } from "react"
 import { Fragment } from "react/jsx-runtime"
+
+import { addLeadingZero } from "@/shared/lib/date"
+
 import { generateCalendar, sum, sub } from "../lib"
+
 import { Cell } from "./calendar-cell"
 import { WeeksName } from "./week-names"
 import { Footer } from "./footer"

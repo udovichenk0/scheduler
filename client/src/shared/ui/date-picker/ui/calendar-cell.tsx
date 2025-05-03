@@ -1,7 +1,7 @@
 import dayjs from "dayjs"
 import { useTranslation } from "react-i18next"
 import { useRef } from "react"
-import styles from "./styles.module.css"
+
 
 import {
   LONG_MONTHS_NAMES,
@@ -10,6 +10,8 @@ import {
 } from "@/shared/config/constants"
 import { onMount } from "@/shared/lib/react"
 import { removeTimePart } from "@/shared/lib/date"
+
+import styles from "./styles.module.css"
 
 export const Cell = ({
   onDateChange,

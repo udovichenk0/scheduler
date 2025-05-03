@@ -1,5 +1,6 @@
 import createFuzzySearch from "@nozbe/microfuzz";
 import dayjs, { Dayjs, UnitType } from "dayjs";
+
 import { validateAmPm, validateHour, validateMin } from "./validator";
 import { formatDate } from "./formator";
 import { dateShortCuts, mapKeyWordToDate, timeList } from "./config";
@@ -37,7 +38,7 @@ export function parseTokens(tokens: string[]) {
         const relativeDate = parseRelativeDate(tokens[++i]);
         if (relativeDate) {
           const time = getTime(tokens.slice(++i));
-          let date = setTime(dayjs().set(relativeDate as UnitType, relativeNum), time);
+          const date = setTime(dayjs().set(relativeDate as UnitType, relativeNum), time);
           const hint = formatDate(date);
           return [{ hint, date }];
         }
@@ -48,7 +49,7 @@ export function parseTokens(tokens: string[]) {
       }
       if (dayjs(token).isValid()) {
         const time = getTime(tokens.slice(++i));
-        let date = setTime(dayjs(token), time);
+        const date = setTime(dayjs(token), time);
         const hint = formatDate(date);
         return [{ hint, date }];
       }

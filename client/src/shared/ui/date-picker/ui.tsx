@@ -1,12 +1,14 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react"
+import dayjs from "dayjs"
 
-import { Modal } from "../modal"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
+
+import { Modal } from "../modal"
 import { Button } from "../buttons/main-button"
 import { Icon } from "../icon"
+
 import { Calendar } from "./ui/calendar"
-import dayjs from "dayjs"
 import { DateInput } from "./ui/input"
 import { DateShortcutPicker } from "./ui/date-shortcut-picker"
 

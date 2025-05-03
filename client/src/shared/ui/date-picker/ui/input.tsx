@@ -1,13 +1,15 @@
 import { ReactNode, RefObject, useEffect, useState } from "react"
 import dayjs from "dayjs"
+import clsx from "clsx"
+
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
+
 import { Modal } from "../../modal"
 import {
   parseDateInput,
 } from "../lib"
 import { formatDate } from "../formator"
 import { Hint } from "../type"
-import clsx from "clsx"
 
 type DateInputProps = {
   placeholder: string
@@ -30,7 +32,7 @@ export const DateInput = ({
 }: DateInputProps) => {
   const [input, setInput] = useState(value ? formatDate(dayjs(value)) : "")
   const [hints, setHints] = useState<Hint[]>([])
-  const [activeHint, setActiveHint] = useState(0)
+  const [activeHint] = useState(0)
   const { open, close, isOpened } = useDisclosure({ prefix: "date-hint" })
 
   const handleInput = (str: string) => {
