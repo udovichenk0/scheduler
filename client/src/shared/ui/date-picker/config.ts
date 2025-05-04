@@ -103,6 +103,13 @@ export const DateShortCut = {
   Today: "today",
   Tomorrow: "tomorrow",
   Later: "later",
+  Sunday: "sunday",
+  Saturday: "saturday",
+  Friday: "friday",
+  Thursday: "thursday",
+  Wednesday: "wednesday",
+  Tuesday: "tuesday",
+  Monday: "monday",
 }
 
 export const dateShortCuts = Object.values(DateShortCut) as string[]
@@ -113,6 +120,13 @@ export const mapKeyWordToDate = (word: typeof DateShortCut[keyof typeof DateShor
     today: { date: dayjs().startOf("date"), hasTimePart: false },
     tomorrow: { date: dayjs().add(1, "day").startOf("date"), hasTimePart: false },
     later: { date: dayjs().add(2, "hour"), hasTimePart: true },
+    sunday: {date: dayjs().weekday(7).startOf('date'), hasTimePart: false},
+    saturday: {date: dayjs().weekday(6).startOf('date'), hasTimePart: false},
+    friday: {date: dayjs().weekday(5).startOf('date'), hasTimePart: false},
+    thursday: {date: dayjs().weekday(4).startOf('date'), hasTimePart: false},
+    wednesday: {date: dayjs().weekday(3).startOf('date'), hasTimePart: false},
+    tuesday: {date: dayjs().weekday(2).startOf('date'), hasTimePart: false},
+    monday: {date: dayjs().weekday(1).startOf('date'), hasTimePart: false},
   }
   return data[word]
 }

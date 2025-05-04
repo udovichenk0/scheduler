@@ -85,7 +85,7 @@ export const DateInput = ({
         closeModal={close}
       >
         <Modal.Body className="border-0!">
-          <div className="bg-main-dark max-h-80 overflow-y-auto text-cFont absolute top-full mt-2 flex w-full flex-col items-start rounded-lg p-2 shadow-lg">
+          <div className="bg-main-dark max-h-80 overflow-y-auto z-100 text-cFont absolute top-full mt-2 flex w-full flex-col items-start rounded-lg p-2 shadow-lg">
             {hints.map((hint, i) => (
               <button
                 onClick={() => onSelect(hint)}
