@@ -1,5 +1,6 @@
-import { hasTimePart } from "@/shared/lib/date/has-time-part"
 import dayjs, { Dayjs } from "dayjs"
+
+import { hasTimePart } from "@/shared/lib/date/has-time-part"
 
 export function formatDate(date: Dayjs) {
   const hasTime = hasTimePart(date)

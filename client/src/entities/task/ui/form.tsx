@@ -2,6 +2,7 @@ import { EventCallable, StoreWritable } from "effector"
 import { useUnit } from "effector-react"
 import { useRef } from "react"
 import { useTranslation } from "react-i18next"
+import dayjs from "dayjs"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
@@ -16,7 +17,6 @@ import { EditableContent } from "@/shared/ui/data-entry/editable-content"
 import { Status as Status, Type as Type } from "../type"
 import { formatTaskDate } from "../lib"
 import { TaskStatus, TaskType } from "../model/task.model"
-import dayjs from "dayjs"
 
 type TaskFactory = {
   $title: StoreWritable<string>

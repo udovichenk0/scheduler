@@ -4,10 +4,10 @@ import { t } from "i18next"
 import { TaskDto } from "@/shared/api/scheduler.schemas"
 import { unixToDate } from "@/shared/lib/date/unix-to-date"
 import { SHORT_MONTHS_NAMES } from "@/shared/config/constants"
+import { hasTimePart } from "@/shared/lib/date/has-time-part"
 
 import { TaskStatuses } from "./config"
 import { EditableTaskFields, Task, TaskId, Status } from "./type"
-import { hasTimePart } from "@/shared/lib/date/has-time-part"
 
 export const findTaskById = (tasks: Task[], id: TaskId) =>
   tasks.find((task) => task.id === id)!
