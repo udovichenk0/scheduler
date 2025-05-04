@@ -1,5 +1,6 @@
 export interface SpritesMap {
   common:
+    | "arrow-right"
     | "arrow"
     | "calendar-due-date"
     | "calendar-start-date"
@@ -39,6 +40,11 @@ export const SPRITES_META: {
   common: {
     filePath: "common.svg",
     items: {
+      "arrow-right": {
+        viewBox: "0 0 24 24",
+        width: 24,
+        height: 24,
+      },
       arrow: {
         viewBox: "0 0 1024 1024",
         width: 512,

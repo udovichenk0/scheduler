@@ -1,6 +1,6 @@
 import dayjs from "dayjs"
 
-import { getToday } from "./get-today"
+import { getToday } from "./get-date"
 
 type InputDate = Date | string
 export const isToday = (date: Nullable<InputDate>) => {

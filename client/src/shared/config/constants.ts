@@ -12,7 +12,7 @@ export const SHORT_MONTHS_NAMES = [
   "date.shortNameMonth.november",
   "date.shortNameMonth.december",
 ]
-export const test = ["inbox", "today"]
+
 export const LONG_MONTHS_NAMES = [
   "date.fullNameMonth.january",
   "date.fullNameMonth.february",

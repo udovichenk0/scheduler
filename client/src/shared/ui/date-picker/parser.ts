@@ -31,7 +31,6 @@ export function parseRelativeNum(token: string) {
 export function parseTokens(tokens: string[]) {
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
-    console.log(tokens)
     if (i === 0) {
       const relativeNum = parseRelativeNum(token);
       if (relativeNum) {
@@ -55,7 +54,6 @@ export function parseTokens(tokens: string[]) {
       }
       const keyWords = findKeyWords(token);
       if (keyWords) {
-        console.log(keyWords)
         const keyWordsWithHints = keyWords.map(({ item }) => mapKeyWordToDate(item));
         if (keyWordsWithHints.length > 1) {
           return keyWordsWithHints.map(({ date }) => ({ hint: formatDate(date), date }));

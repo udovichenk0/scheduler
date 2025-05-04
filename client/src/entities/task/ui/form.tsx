@@ -16,6 +16,7 @@ import { EditableContent } from "@/shared/ui/data-entry/editable-content"
 import { Status as Status, Type as Type } from "../type"
 import { formatTaskDate } from "../lib"
 import { TaskStatus, TaskType } from "../model/task.model"
+import dayjs from "dayjs"
 
 type TaskFactory = {
   $title: StoreWritable<string>
@@ -105,15 +106,20 @@ export const ModifyTaskForm = ({
                   onClick={onClick}
                   size={"sm"}
                   intent={"primary"}
-                  className="flex"
+                  className="flex items-center"
                 >
                   <Icon
                     name={"common/upcoming"}
                     className="text-cTaskEditDefault mr-4 size-[18px]"
                   />
-                  <span className="text-sm">{t("taskForm.date")}:</span>
-                  <span className="text-accent ml-2 text-sm">
-                    {startDate && formatTaskDate(new Date(startDate))}
+                  <span className="text-accent text-sm mr-1">
+                    {startDate && formatTaskDate(dayjs(startDate))}
+                    {!startDate && "Start"}
+                  </span>
+                  <Icon name="common/arrow-right" className="text-cTaskEditDefault mr-1"/>
+                  <span className="text-accent text-sm">
+                    {dueDate && formatTaskDate(dayjs(dueDate))}
+                    {!dueDate && "Due"}
                   </span>
                 </Button>
               )}

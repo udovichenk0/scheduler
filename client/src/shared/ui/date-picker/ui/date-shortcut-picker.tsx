@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 import { getToday } from "@/shared/lib/date"
-import { getLater, getNextWeek, getNextWeekend, getTomorrow } from "@/shared/lib/date/get-today"
+import { getLater, getNextWeek, getNextWeekend, getTomorrow } from "@/shared/lib/date/get-date"
 
 export const DateShortcutPicker = ({onSetDate}: {onSetDate: (date: Date) => void}) => {
   const [dates] = useState([

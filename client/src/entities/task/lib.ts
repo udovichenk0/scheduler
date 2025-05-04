@@ -1,12 +1,13 @@
-import dayjs from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import { t } from "i18next"
 
 import { TaskDto } from "@/shared/api/scheduler.schemas"
 import { unixToDate } from "@/shared/lib/date/unix-to-date"
-import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
+import { SHORT_MONTHS_NAMES } from "@/shared/config/constants"
 
 import { TaskStatuses } from "./config"
 import { EditableTaskFields, Task, TaskId, Status } from "./type"
+import { hasTimePart } from "@/shared/lib/date/has-time-part"
 
 export const findTaskById = (tasks: Task[], id: TaskId) =>
   tasks.find((task) => task.id === id)!
@@ -65,16 +66,16 @@ export const shouldShowCompleted = (isToggled: boolean, task: Task) => {
   return task.status != "finished" || isToggled
 }
 
-export function formatTaskDate(date: Date) {
-  if (dayjs(date).isSame(dayjs(), "day")) {
-    return t("date.today")
-  } else if (dayjs(date).isTomorrow()) {
-    return t("date.tomorrow")
-  } else if (dayjs(date).isSame(dayjs(), "year")) {
-    return `${t(LONG_MONTHS_NAMES[dayjs(date).month()])} ${dayjs(date).date()}`
+export function formatTaskDate(date: Dayjs) {
+  const hasTime = hasTimePart(date)
+  const time = hasTime ? date.format("h:mm a") : ''
+  if (date.isSame(dayjs(), "day")) {
+    return `${t("date.today")} ${time}`
+  } else if (date.isTomorrow()) {
+    return `${t("date.tomorrow")} ${time}`
+  } else if (date.isSame(dayjs(), "year")) {
+    return `${t(SHORT_MONTHS_NAMES[date.month()])} ${date.date()} ${time}`
   } else {
-    return `${t(LONG_MONTHS_NAMES[dayjs(date).month()])} ${dayjs(
-      date,
-    ).date()} ${dayjs(date).year()}`
+    return `${date.format("MM/DD/YY")} ${time}`
   }
 }
