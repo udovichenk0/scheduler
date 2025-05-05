@@ -114,8 +114,7 @@ export const DateShortCut = {
 
 export const dateShortCuts = Object.values(DateShortCut) as string[]
 
-
-export const mapKeyWordToDate = (word: typeof DateShortCut[keyof typeof DateShortCut]) => {
+export const mapShortcutToDate = (word: typeof DateShortCut[keyof typeof DateShortCut]) => {
   const data: Record<string, {date: Dayjs, hasTimePart: boolean}> = {
     today: { date: dayjs().startOf("date"), hasTimePart: false },
     tomorrow: { date: dayjs().add(1, "day").startOf("date"), hasTimePart: false },
@@ -129,4 +128,15 @@ export const mapKeyWordToDate = (word: typeof DateShortCut[keyof typeof DateShor
     monday: {date: dayjs().weekday(1).startOf('date'), hasTimePart: false},
   }
   return data[word]
+}
+
+export const baseWords = [
+  "day",
+  "week",
+  "month",
+  "year",
+]
+
+export const relativeNumbers: Record<string, number> = {
+  next: 1
 }

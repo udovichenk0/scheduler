@@ -1,17 +1,11 @@
 import createFuzzySearch from "@nozbe/microfuzz";
-import dayjs, { Dayjs, UnitType } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 import { validateAmPm, validateHour, validateMin } from "./validator";
 import { formatDate } from "./formator";
-import { dateShortCuts, mapKeyWordToDate, timeList } from "./config";
+import { baseWords, dateShortCuts, mapShortcutToDate, relativeNumbers, timeList } from "./config";
 import { BaseWord, Time } from "./type";
-const baseWords = [
-  "day",
-  "week",
-  "month",
-  "year",
-]
-
+import { hasTimePart } from "@/shared/lib/date/has-time-part";
 
 export function parseRelativeDate(token?: string) {
   if (!token) return;
@@ -23,79 +17,91 @@ export function parseRelativeDate(token?: string) {
 }
 
 export function parseRelativeNum(token: string) {
-  if (token === "next") return 1;
+  const relativeNumber = relativeNumbers[token]
+  if(relativeNumber) return relativeNumber
   const n = Number(token);
   if (!isNaN(n)) return n;
 }
 
 export function parseTokens(tokens: string[]) {
-  for (let i = 0; i < tokens.length; i++) {
-    const token = tokens[i];
-    if (i === 0) {
-      const relativeNum = parseRelativeNum(token);
-      if (relativeNum) {
-        const relativeDate = parseRelativeDate(tokens[++i]);
-        if (relativeDate) {
-          const time = getTime(tokens.slice(++i));
-          const date = setTime(dayjs().set(relativeDate as UnitType, relativeNum), time);
-          const hint = formatDate(date);
-          return [{ hint, date }];
-        }
-      }
-      const times = findTimes(token);
-      if(times){
-        return times
-      }
-      if (dayjs(token).isValid()) {
-        const time = getTime(tokens.slice(++i));
-        const date = setTime(dayjs(token), time);
-        const hint = formatDate(date);
-        return [{ hint, date }];
-      }
-      const keyWords = findKeyWords(token);
-      if (keyWords) {
-        const keyWordsWithHints = keyWords.map(({ item }) => mapKeyWordToDate(item));
-        if (keyWordsWithHints.length > 1) {
-          return keyWordsWithHints.map(({ date }) => ({ hint: formatDate(date), date }));
-        }
-        if (keyWordsWithHints.length === 1) {
-          const time = getTime(tokens.slice(++i));
-          const date = setKeyWordTime(keyWordsWithHints[0], time);
-          return [{ hint: formatDate(date), date }];
-        }
-      }
+  const naturalDates = parseNaturalDates(tokens)
+  if(naturalDates) return naturalDates
+  const relativeDates = parseRelativeDates(tokens)
+  if(relativeDates) return relativeDates
+  const times = parseTime(tokens)
+  if(times) return times
+  const dates = parseDate(tokens)
+  if(dates) return dates
+
+  return []
+}
+
+function parseNaturalDates(tokens: string[]){
+  const naturalDate = tokens[0]
+  const naturalDatesSearch = createFuzzySearch(dateShortCuts);
+  const naturalDatesResult = naturalDatesSearch(naturalDate);
+  const time = getTime(tokens.slice(1));
+  const dates = naturalDatesResult.map(({ item }) => mapShortcutToDate(item));
+
+  if(dates.length > 1){
+    return dates.map(({ date }) => ({ hint: formatDate(date), date }));
+  } else if(dates.length === 1){
+    const {date, hasTimePart} = dates[0]
+    if(!hasTimePart){
+      const dateWithTime = setTime(date, time)
+      return [{ hint: formatDate(dateWithTime), date: dateWithTime }]
     }
+    return [{ hint: formatDate(date), date }];
   }
 }
+function parseRelativeDates(tokens: string[]){
+  if(tokens.length < 2) return
+  const baseWordSearch = createFuzzySearch(baseWords);
 
-function findKeyWords(token: string) {
-  const commonWordSearch = createFuzzySearch(dateShortCuts);
-  const commonWordResult = commonWordSearch(token);
-  if(commonWordResult.length){
-    return commonWordResult
+  const relativeNum = parseRelativeNum(tokens[0]);
+  const relativeDates = baseWordSearch(tokens[1])
+  const time = getTime(tokens.slice(2))
+
+  if (relativeDates.length && relativeNum) {
+    const relativeDate = relativeDates[0].item as BaseWord
+    const dateWithTime = setTime(dayjs().add(relativeNum, relativeDate), time);
+
+    return [{
+      date: dateWithTime,
+      hint: formatDate(dateWithTime)
+    }]
   }
 }
+function parseDate(tokens: string[]){
+  const dateStr = tokens[0]
+  if(!dayjs(dateStr).isValid()) return
+  const time = getTime(tokens.slice(1))
+  const dateWithTime = setTime(dayjs(dateStr), time);
+  return [{ hint: formatDate(dateWithTime), date: dateWithTime }];
+}
 
-function findTimes(token: string){
+function parseTime(tokens: string[]){
+  const timePart = tokens[0]
+  const ampm = tokens[1] || ""
   const timeSearch = createFuzzySearch(timeList)
-  const timeResult = timeSearch(token)
+  const timeResult = timeSearch(`${timePart} ${ampm}`) 
+
   if(timeResult.length){
     return timeResult.map(({ item }) => {
-      const date = dayjs().format("MM/DD/YY")
-      const timedate = dayjs(`${date} ${item}`)
+      const dateWithTime = setTime(dayjs(), getTime(tokens))
       return {
         hint: item,
-        date: timedate,
+        date: dateWithTime,
       }
     })
+  } else {
+    const dateWithTime = setTime(dayjs(), getTime(tokens))
+    if(!hasTimePart(dateWithTime)) return
+    return [{
+      hint: dateWithTime.format("h:mm a"),
+      date: dateWithTime,
+    }]
   }
-}
-
-function setKeyWordTime(keyword: {date: Dayjs, hasTimePart: boolean}, time: Nullable<Time>) {
-  if (!keyword.hasTimePart) {
-    return setTime(keyword.date, time);
-  }
-  return keyword.date;
 }
 
 function getTime(tokens: string[]): Nullable<Time> {
@@ -115,7 +121,7 @@ function setTime(date: Dayjs, time: Nullable<Time>) {
   if (time) {
     return date.set("hour", time.hour).set("minute", time.minute);
   }
-  return date;
+  return date.set("hour", 0).set("minute", 0).set("second", 0);
 }
 
 function constructTime(inputTime: string, ampm?: string): Time {

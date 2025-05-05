@@ -1,4 +1,4 @@
-import { ReactNode, RefObject, useEffect, useState } from "react"
+import { ReactNode, RefObject, useEffect, useRef, useState } from "react"
 import dayjs from "dayjs"
 import clsx from "clsx"
 
@@ -30,6 +30,7 @@ export const DateInput = ({
   className,
   ref
 }: DateInputProps) => {
+  const dialog = useRef<HTMLDivElement>(null)
   const [input, setInput] = useState(value ? formatDate(dayjs(value)) : "")
   const [hints, setHints] = useState<Hint[]>([])
   const [activeHint] = useState(0)
@@ -37,29 +38,30 @@ export const DateInput = ({
 
   const handleInput = (str: string) => {
     try {
-    const test = parseDateInput(str)
+    const hints = parseDateInput(str)
     setInput(str)
-    if (!test) {
+    if (!hints) {
       if (isOpened) {
         close()
         setHints([])
       }
-      return
     } else {
-      setHints(test)
+      setHints(hints)
       if (!isOpened) {
         open()
       }
     }
     } catch (error) {
-    console.log(error) 
+      console.log(error) 
     }
   }
+
   const onSelect = (hint: { date: dayjs.Dayjs; hint: string }) => {
     setInput(hint.hint)
     onSelectDate(hint.date.toDate())
     close()
   }
+
   useEffect(() => {
     setInput(value ? formatDate(dayjs(value)) : "")
   }, [value])
@@ -85,7 +87,7 @@ export const DateInput = ({
         closeModal={close}
       >
         <Modal.Body className="border-0!">
-          <div className="bg-main-dark max-h-80 overflow-y-auto z-100 text-cFont absolute top-full mt-2 flex w-full flex-col items-start rounded-lg p-2 shadow-lg">
+          <div ref={dialog} className="bg-main-dark max-h-80 overflow-y-auto z-100 text-cFont absolute top-full mt-2 flex w-full flex-col items-start rounded-lg p-2 shadow-lg">
             {hints.map((hint, i) => (
               <button
                 onClick={() => onSelect(hint)}
