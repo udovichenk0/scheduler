@@ -95,7 +95,7 @@ export const ExpandedTask = ({
           dateModifier={dateModifier}
           modifyTaskModel={modifyTaskModel}
         />
-        <div className="flex items-center justify-end space-x-1 mr-2">
+        <div className="flex items-center justify-end mr-2">
           <DatePicker
             CustomInput={({onClick}) => (
               <Button

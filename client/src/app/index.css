@@ -14,6 +14,15 @@ html {
 }
 
 @theme {
+  --animate-dialog: dialog 0.07s ease-in forwards;
+  @keyframes dialog {
+    0% {
+      transform: scale(0.98);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
   --drop-shadow-base: 0 35px 35px rgba(0, 0, 0, 0.56);
 
   --color-main: var(--main);
