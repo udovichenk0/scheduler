@@ -31,7 +31,7 @@ func (tr *TaskRepository) GetByUserId(ctx context.Context, userId string) ([]mod
 func (tr *TaskRepository) GetByTaskId(ctx context.Context, taskId string) (model.Task, error) {
 	task := model.Nil
 
-	err := tr.db.GetContext(ctx, &task, "SELECT id, title, description, type, status, user_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(start_date) AS start_date FROM task WHERE id = ?", taskId)
+	err := tr.db.GetContext(ctx, &task, "SELECT id, title, description, type, status, user_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(due_date) AS due_date FROM task WHERE id = ?", taskId)
 
 	if err != nil {
 		return model.Nil, err

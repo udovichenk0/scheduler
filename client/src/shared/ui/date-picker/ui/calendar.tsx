@@ -2,13 +2,12 @@ import dayjs from "dayjs"
 import { useRef, useState, useEffect } from "react"
 import { Fragment } from "react/jsx-runtime"
 
-import { addLeadingZero } from "@/shared/lib/date"
-
-import { generateCalendar, sum, sub } from "../lib"
+import { generateCalendar } from "../lib"
 
 import { Cell } from "./calendar-cell"
 import { WeeksName } from "./week-names"
-import { Footer } from "./footer"
+import { Button } from "../../buttons/main-button"
+import { useTranslation } from "react-i18next"
 
 export const Calendar = ({
   onChange,
@@ -26,24 +25,26 @@ export const Calendar = ({
   const endTarget = useRef<HTMLDivElement>(null)
   const startTarget = useRef<HTMLDivElement>(null)
   const root = useRef<HTMLDivElement>(null)
+  const { t } = useTranslation()
   
-  const [calendars, setCalendars] = useState(generateCalendar)
+  const [months, setMonths] = useState(generateCalendar)
   const [top, setTop] = useState(0)
-  const [weeksCount, setWeeksCount] = useState(5)
+  const [monthCount, setMonthCount] = useState(5)
 
   const endObserver = new IntersectionObserver(
     (elem) => {
       if (elem[0].isIntersecting) {
-        const newCalendars = generateCalendar(dayjs().add(weeksCount, "month"))
-        const calendarsLength = newCalendars.length
-        setWeeksCount(sum(calendarsLength))
-        if (weeksCount >= 20) {
-          setTop(sum(calendarsLength))
-          setCalendars((prev) =>
-            prev.concat(newCalendars).slice(calendarsLength),
+        const newCalendars = generateCalendar(dayjs().add(monthCount, "month"))
+        setMonthCount((prev) => prev + 5)
+
+        if (monthCount >= 20) {
+          const newTop = months.slice(0, 5).reduce((acc, {weeks}) => acc + weeks.length ,0)
+          setTop((top) => top + newTop)
+          setMonths((prev) =>
+            prev.concat(newCalendars).slice(5),
           )
         } else {
-          setCalendars((prev) => prev.concat(newCalendars))
+          setMonths((prev) => prev.concat(newCalendars))
         }
       }
     },
@@ -52,21 +53,17 @@ export const Calendar = ({
       threshold: 0,
     },
   )
-
   const startObserver = new IntersectionObserver(
     (elem) => {
       if (elem[0].isIntersecting && top > 0) {
         const newCalendars = generateCalendar(
-          dayjs().add(weeksCount - 25, "month"),
+          dayjs().add(monthCount - 25, "month"),
         )
-        const calendarsLength = newCalendars.length
-        if (weeksCount > 20) {
-          setTop(sub(calendarsLength))
-          setWeeksCount(sub(calendarsLength))
-          setCalendars((prev) => {
-            const n = newCalendars.concat(prev)
-            return n.slice(0, n.length - newCalendars.length)
-          })
+        if (monthCount > 20) {
+          const newTop = newCalendars.reduce((acc, {weeks}) => acc + weeks.length, 0)
+          setMonths((prev) => newCalendars.concat(prev).slice(0, newCalendars.length))
+          setTop((top) => top - newTop)
+          setMonthCount(prev => prev - 5)
         }
       }
     },
@@ -86,8 +83,7 @@ export const Calendar = ({
         startObserver.unobserve(startTarget.current)
       }
     }
-  }, [weeksCount])
-
+  }, [monthCount])
   return (
     <div className="p-2">
       <div className="relative mb-4">
@@ -98,35 +94,29 @@ export const Calendar = ({
               className="px-1"
               data-testid="date-list"
               style={{
-                height: calendars.length * 160,
-                position: "relative",
-                top: top * 160,
+                transform: `translateY(${top * 40}px)`
               }}
             >
-              {calendars.map(({ rows, date }, id) => {
+              {months?.map(({ weeks, date }, id) => {
                 return (
                   <Fragment key={id}>
                     {id == 1 && <div ref={startTarget}></div>}
                     <div className="relative">
                       <div className="text-main absolute left-[30%] top-[50%] -z-[10] flex h-[50px] items-center text-[90px] font-bold opacity-10 invert">
-                        {addLeadingZero(date.month() + 1)}
+                        {date.format("MM")}
                       </div>
-                      {rows.map((row, rowId) => {
+                      {weeks?.map(({dates}, rowId) => {
                         return (
                           <li className="flex justify-around" key={rowId}>
-                            {row.map((cellDate) => {
+                            {dates.map((date) => {
                               return (
                                 <div
                                   className={`border-cBorder h-[40px] w-full py-[2px]`}
-                                  key={`${cellDate.date}/${cellDate.month}/${cellDate.year}`}
+                                  key={date.toString()}
                                 >
                                   <Cell
                                     onDateChange={onChange}
-                                    cellDate={new Date(
-                                      cellDate.year,
-                                      cellDate.month,
-                                      cellDate.date,
-                                    )}
+                                    cellDate={date.toDate()}
                                     startDate={tempStartDate}
                                     dueDate={tempDueDate}
                                   />
@@ -137,7 +127,7 @@ export const Calendar = ({
                         )
                       })}
                     </div>
-                    {id == calendars.length - 1 && <div ref={endTarget}></div>}
+                    {id == months.length - 1 && <div ref={endTarget}></div>}
                   </Fragment>
                 )
               })}
@@ -145,9 +135,18 @@ export const Calendar = ({
           </div>
         </div>
       </div>
-      <Footer 
-      onCancel={onCancel} 
-      onSave={onClose}/>
+      <div className="flex gap-x-2">
+        <Button onClick={onCancel} className="w-full p-[1px] text-[12px]">
+          {t("calendar.cancel")}
+        </Button>
+        <Button
+          onClick={onClose}
+          intent={"filled"}
+          className="w-full p-[1px] text-[12px]"
+        >
+          {t("calendar.ok")}
+        </Button>
+      </div>
     </div>
   )
 }

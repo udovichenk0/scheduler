@@ -3,32 +3,25 @@ import dayjs, { Dayjs } from "dayjs"
 import { hasTimePart } from "@/shared/lib/date/has-time-part"
 
 export function formatDate(date: Dayjs) {
-  const hasTime = hasTimePart(date)
+  let formattedDate: string = ""
   if (date.isToday()) {
-    if(hasTime){
-      const time = date.format("MM/DD/YY [at] hh:mm a").split(" at ")[1]
-      return `Today at ${time}`
-    }
-    return "Today"
+    formattedDate = "Today"
   }
   if (date.isTomorrow()) {
-    if(hasTime){
-      const time = date.format("MM/DD/YY [at] hh:mm a").split(" at ")[1]
-      return `Tomorrow at ${time}`
-    }
-    return "Tomorrow"
+    formattedDate = "Tomorrow"
   }
   if (dayjs().endOf("w").isSame(date, "w")) {
-    if(hasTime){
-      const time = date.format("MM/DD/YY [at] hh:mm a").split(" at ")[1]
-      return `${date.format("dddd")} at ${time}`
-    }
-    return date.format("dddd")
+    formattedDate = date.format("dddd")
   }
 
+  if(!formattedDate){
+    formattedDate = date.format("MM/DD/YY")
+  }
+
+  const hasTime = hasTimePart(date)
   if(hasTime){
     const time = date.format("MM/DD/YY [at] hh:mm a").split(" at ")[1]
-    return `${date.format("MM/DD/YY")} at ${time}`
+    return `${formattedDate} at ${time}`
   }
-  return date.format("MM/DD/YY")
+  return formattedDate
 }

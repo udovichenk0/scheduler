@@ -34,18 +34,15 @@ export const Cell = ({
     removeTimePart(startDate),
     "date",
   )
-
-
   const isDueDate = dueDate && dayjs(cellDate).isSame(
     removeTimePart(dueDate),
     "date",
   )
-  
   const isBetween = startDate && dueDate && dayjs(cellDate).isBetween(removeTimePart(startDate),removeTimePart(dueDate))
 
   onMount(() => {
     if (isToday) {
-      focusRef.current && focusRef.current.focus()
+      focusRef.current && focusRef.current.focus({preventScroll: true})
     }
   })
 
