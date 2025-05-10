@@ -1,7 +1,6 @@
 import { Dayjs } from "dayjs"
 
-import { getToday } from "@/shared/lib/date"
-import { getFriday, getLater, getMonday, getSaturday, getSunday, getThursday, getTomorrow, getTuesday, getWednesday } from "@/shared/lib/date/get-date"
+import { getToday, getFriday, getLater, getMonday, getSaturday, getSunday, getThursday, getTomorrow, getTuesday, getWednesday } from "@/shared/lib/date/get-date"
 
 export const timeList = [
   "12:00 am",
