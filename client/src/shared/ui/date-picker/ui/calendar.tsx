@@ -1,13 +1,13 @@
 import dayjs from "dayjs"
 import { useRef, useState, useEffect } from "react"
 import { Fragment } from "react/jsx-runtime"
+import { useTranslation } from "react-i18next"
 
 import { generateCalendar } from "../lib"
+import { Button } from "../../buttons/main-button"
 
 import { Cell } from "./calendar-cell"
 import { WeeksName } from "./week-names"
-import { Button } from "../../buttons/main-button"
-import { useTranslation } from "react-i18next"
 
 export const Calendar = ({
   onChange,

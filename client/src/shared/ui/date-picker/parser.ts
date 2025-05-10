@@ -1,11 +1,12 @@
 import createFuzzySearch from "@nozbe/microfuzz";
 import dayjs, { Dayjs } from "dayjs";
 
+import { hasTimePart } from "@/shared/lib/date/has-time-part";
+
 import { validateAmPm, validateHour, validateMin } from "./validator";
 import { formatDate } from "./formator";
 import { baseWords, dateShortCuts, mapShortcutToDate, relativeNumbers, timeList } from "./config";
 import { BaseWord, Time } from "./type";
-import { hasTimePart } from "@/shared/lib/date/has-time-part";
 
 export function parseRelativeDate(token?: string) {
   if (!token) return;

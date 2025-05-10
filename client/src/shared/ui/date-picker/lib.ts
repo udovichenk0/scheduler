@@ -12,7 +12,7 @@ type Month = {
 }
 
 const generateWeek = (startOfWeek: Dayjs) => {
-  let week: Week = { dates: [] }
+  const week: Week = { dates: [] }
   for(let i = 0; i < 7; i++){
     const date = startOfWeek.add(i, "day")
     week.dates.push(date)

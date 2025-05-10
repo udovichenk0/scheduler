@@ -3,7 +3,7 @@ import dayjs, { Dayjs } from "dayjs"
 import { hasTimePart } from "@/shared/lib/date/has-time-part"
 
 export function formatDate(date: Dayjs) {
-  let formattedDate: string = ""
+  let formattedDate = ""
   if (date.isToday()) {
     formattedDate = "Today"
   }
