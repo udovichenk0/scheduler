@@ -10,7 +10,8 @@ export function formatDate(date: Dayjs) {
   if (date.isTomorrow()) {
     formattedDate = "Tomorrow"
   }
-  if (dayjs().endOf("w").isSame(date, "w")) {
+  const diff = date.diff(dayjs(), "day")
+  if (diff <= 6 && !formattedDate) {
     formattedDate = date.format("dddd")
   }
 
@@ -23,5 +24,6 @@ export function formatDate(date: Dayjs) {
     const time = date.format("MM/DD/YY [at] hh:mm a").split(" at ")[1]
     return `${formattedDate} at ${time}`
   }
+
   return formattedDate
 }

@@ -102,7 +102,7 @@ export const Calendar = ({
                   <Fragment key={id}>
                     {id == 1 && <div ref={startTarget}></div>}
                     <div className="relative">
-                      <div className="text-main absolute left-[30%] top-[50%] -z-[10] flex h-[50px] items-center text-[90px] font-bold opacity-10 invert">
+                      <div className="text-main absolute left-[30%] top-[50%] -translate-y-1/2 -z-[10] flex h-[50px] items-center text-[90px] font-bold opacity-10 invert">
                         {date.format("MM")}
                       </div>
                       {weeks?.map(({dates}, rowId) => {
