@@ -17,33 +17,38 @@ const DateAction = {
   End: "change-end",
 } as const
 
-type ChangeDateTypeAction = typeof DateAction[keyof typeof DateAction]
+type ChangeDateTypeAction = (typeof DateAction)[keyof typeof DateAction]
 
 export function DatePicker({
   startDate,
   dueDate,
   CustomInput,
-  onDateChange
+  onDateChange,
 }: {
   startDate: Nullable<Date>
   dueDate: Nullable<Date>
   CustomInput?: ({ onClick }: { onClick: () => void }) => ReactNode
-  onDateChange: (data: {startDate: Nullable<Date>, dueDate: Nullable<Date>}) => void
+  onDateChange: (data: {
+    startDate: Nullable<Date>
+    dueDate: Nullable<Date>
+  }) => void
 }) {
   const [tempStartDate, setTempStartDate] = useState(startDate)
   const [tempDueDate, setTempDueDate] = useState(dueDate)
   const dueDateInput = useRef<HTMLInputElement>(null)
-  const [dateAction, setDateAction] = useState<ChangeDateTypeAction>(DateAction.Start)
+  const [dateAction, setDateAction] = useState<ChangeDateTypeAction>(
+    DateAction.Start,
+  )
   const {
     isOpened: isDateModalOpened,
     open: onOpenDateModal,
     close: onCloseDateModal,
     cancel: onCancelDateModal,
-  } = useDisclosure({ 
-    prefix: ModalName.DateModal, 
+  } = useDisclosure({
+    prefix: ModalName.DateModal,
     onClose: () => {
-      onDateChange({startDate: tempStartDate, dueDate: tempDueDate})
-    }
+      onDateChange({ startDate: tempStartDate, dueDate: tempDueDate })
+    },
   })
 
   const onCancel = () => {
@@ -57,25 +62,29 @@ export function DatePicker({
     setTempStartDate(startDate)
   }, [startDate, dueDate])
 
-  
-  const onSetDate = useCallback((date: Date) => {
-    const dueDateBeforeStart = tempStartDate && dateAction == DateAction.End && date < tempStartDate
-    const startDateAfterDue = tempDueDate && dateAction == DateAction.Start && date >  tempDueDate
+  const onSetDate = useCallback(
+    (date: Date) => {
+      const dueDateBeforeStart =
+        tempStartDate && dateAction == DateAction.End && date < tempStartDate
+      const startDateAfterDue =
+        tempDueDate && dateAction == DateAction.Start && date > tempDueDate
 
-    if(dateAction == DateAction.Start) {
-      setTempStartDate(date)
-      setDateAction(DateAction.End)
-      if(startDateAfterDue){
-        setTempDueDate(null)
+      if (dateAction == DateAction.Start) {
+        setTempStartDate(date)
+        setDateAction(DateAction.End)
+        if (startDateAfterDue) {
+          setTempDueDate(null)
+        }
+        dueDateInput.current?.focus()
+      } else {
+        setTempDueDate(date)
+        if (dueDateBeforeStart) {
+          setTempStartDate(null)
+        }
       }
-      dueDateInput.current?.focus()
-    } else {
-      setTempDueDate(date)
-      if(dueDateBeforeStart){
-        setTempStartDate(null)
-      }
-    }
-  }, [tempStartDate, tempDueDate, dateAction])
+    },
+    [tempStartDate, tempDueDate, dateAction],
+  )
 
   const onCellClick = (date: Date) => {
     const d = dayjs(date)
@@ -120,7 +129,7 @@ export function DatePicker({
         <Modal.Body>
           <Modal.Content className="contents">
             <div>
-              <div className="flex gap-x-2 border-b-1 border-b-cBorder p-2">
+              <div className="border-b-1 border-b-cBorder flex gap-x-2 p-2">
                 <DateInput
                   className="py-1"
                   onSelectDate={onSetDate}
@@ -150,11 +159,11 @@ export function DatePicker({
                 />
               </div>
               <div className="grid grid-cols-2">
-                <DateShortcutPicker onSetDate={onSetDate}/>
-                <Calendar 
+                <DateShortcutPicker onSetDate={onSetDate} />
+                <Calendar
                   onChange={onCellClick}
-                  tempDueDate={tempDueDate} 
-                  tempStartDate={tempStartDate} 
+                  tempDueDate={tempDueDate}
+                  tempStartDate={tempStartDate}
                   onCancel={onCancel}
                   onClose={onCloseDateModal}
                 />
@@ -166,4 +175,3 @@ export function DatePicker({
     </Modal>
   )
 }
-

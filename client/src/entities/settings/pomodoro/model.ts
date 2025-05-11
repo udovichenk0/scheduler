@@ -1,10 +1,9 @@
 import { createEvent, createStore, sample, Event } from "effector"
-import { z } from "zod"
+import * as z from "@zod/mini"
 
 import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
 import { singleton } from "@/shared/lib/effector/singleton"
-import { bridge } from "@/shared/lib/effector"
-import { boolStr } from "@/shared/lib/validation"
+import { bridge } from "@/shared/lib/effector/bridge.ts"
 
 import {
   DEFAULT_WORK_DURATION,
@@ -39,13 +38,13 @@ export const $$pomodoroSettings = singleton(() => {
   const $shortBreakDuration = createStore(DEFAULT_SHORT_BREAK)
   const $longBreakDuration = createStore(DEFAULT_LONG_BREAK)
 
-  const $isEnabledAutomaticStart = createStore(false).on(
+  const $isEnabledAutomaticStart = createStore(0).on(
     automaticTimerStartEnabled,
-    (value) => !value,
+    (value) => Number(!value),
   )
-  const $isEnabledNotificationSound = createStore(false).on(
+  const $isEnabledNotificationSound = createStore(0).on(
     notificationSoundEnabled,
-    (value) => !value,
+    (value) => Number(!value),
   )
 
   function convertToNum(event: Event<string>) {
@@ -128,7 +127,7 @@ export const $$pomodoroSettings = singleton(() => {
     })
   })
   bridge(() => {
-    const strToNumSchema = z.string().pipe(z.coerce.number())
+    const strToNumSchema = z.coerce.number()
     const initWorkDuration = cookiePersist({
       source: $workDuration,
       name: "workDuration",
@@ -152,12 +151,12 @@ export const $$pomodoroSettings = singleton(() => {
     const initStartTimerAutomatically = cookiePersist({
       source: $isEnabledAutomaticStart,
       name: "startTimerAutomatically",
-      schema: boolStr,
+      schema: strToNumSchema,
     })
     const initNotificationSound = cookiePersist({
       source: $isEnabledNotificationSound,
       name: "notificationSound",
-      schema: boolStr,
+      schema: strToNumSchema,
     })
     sample({
       clock: init,
@@ -185,7 +184,7 @@ export const $$pomodoroSettings = singleton(() => {
     $workDuration,
     $shortBreakDuration,
     $longBreakDuration,
-    $isEnabledAutomaticStart,
-    $isEnabledNotificationSound,
+    $isEnabledAutomaticStart: $isEnabledAutomaticStart.map(Boolean),
+    $isEnabledNotificationSound: $isEnabledNotificationSound.map(Boolean),
   }
 })

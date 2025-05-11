@@ -22,7 +22,10 @@ export const modifyTaskFactory = ({
   const statusChanged = createEvent<Status>()
   const titleChanged = createEvent<string>()
   const typeChanged = createEvent<Type>()
-  const dateChanged = createEvent<{startDate: Nullable<Date>, dueDate: Nullable<Date>}>()
+  const dateChanged = createEvent<{
+    startDate: Nullable<Date>
+    dueDate: Nullable<Date>
+  }>()
   const setDate = createEvent<Nullable<Date>>()
   const descriptionChanged = createEvent<Nullable<string>>()
   const setStatus = createEvent<Status>()
@@ -105,8 +108,8 @@ export const modifyTaskFactory = ({
       source: dateChanged,
       targets: {
         startDate: $startDate,
-        dueDate: $dueDate
-      }
+        dueDate: $dueDate,
+      },
     })
     sample({
       clock: [setDate],

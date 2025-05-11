@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 
-import { Header } from "@/widgets/header"
+import { Header } from "@/widgets/header/header.tsx"
 import { Footer } from "@/widgets/footer"
 
 import { Content } from "./ui/content"

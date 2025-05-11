@@ -1,9 +1,9 @@
 import { useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
 
-import { Icon } from "@/shared/ui/icon/icon"
-import { routes } from "@/shared/routing"
-import { Button } from "@/shared/ui/buttons/main-button/ui"
+import { Icon } from "@/shared/ui/icon"
+import { routes } from "@/shared/routing/router.ts"
+import { Button } from "@/shared/ui/buttons/main-button"
 import { Container } from "@/shared/ui/general/container"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"

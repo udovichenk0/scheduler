@@ -1,7 +1,7 @@
 import { useUnit } from "effector-react"
 import { Store } from "effector"
 
-import { State } from "@/shared/lib/pomodoro"
+import { State } from "@/shared/lib/pomodoro/pomodoro.model.ts"
 
 export const ProgressBar = ({
   $currentStaticTime,

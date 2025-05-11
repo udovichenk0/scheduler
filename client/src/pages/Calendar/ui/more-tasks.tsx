@@ -1,7 +1,8 @@
 import { useUnit } from "effector-react"
 import { Store } from "effector"
 
-import { Task, TaskId, Status, TaskStatuses } from "@/entities/task"
+import { Status, Task, TaskId } from "@/entities/task/type"
+import { TaskStatuses } from "@/entities/task/config"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 

@@ -1,12 +1,13 @@
 import { createEvent, createStore, sample } from "effector"
 import { and } from "patronum"
+import * as z from "@zod/mini"
 
-import { $$session } from "@/entities/session"
+import { $$session } from "@/entities/session/session.model.ts"
 
-import { singleton } from "@/shared/lib/effector"
-import { TaskId, taskApi } from "@/shared/api/task"
-import { boolStr } from "@/shared/lib/validation"
-import { cookiePersist } from "@/shared/lib/storage"
+import { singleton } from "@/shared/lib/effector/singleton.ts"
+import { taskApi } from "@/shared/api/task/task.api.ts"
+import { TaskId } from "@/shared/api/task/task.dto.ts"
+import { cookiePersist } from "@/shared/lib/storage/cookie-persist.ts"
 
 import { EditableTaskFields, Task } from "../type"
 import { deleteById, tasksToDomain } from "../lib"
@@ -33,8 +34,10 @@ export const $$taskModel = singleton(() => {
   const updateFields = createEvent<{ id: TaskId; fields: EditableTaskFields }>()
   const reset = createEvent()
 
-  const $isCompletedShown = createStore(false)
   const toggleCompletedShown = createEvent()
+  const $isCompletedShown = createStore(0).on(toggleCompletedShown, (isShown) =>
+    Number(!isShown),
+  )
 
   sample({
     clock: addTaskTriggered,
@@ -98,13 +101,6 @@ export const $$taskModel = singleton(() => {
   // })
 
   sample({
-    clock: toggleCompletedShown,
-    source: $isCompletedShown,
-    fn: (t) => !t,
-    target: $isCompletedShown,
-  })
-
-  sample({
     clock: reset,
     target: [$tasks.reinit],
   })
@@ -112,11 +108,11 @@ export const $$taskModel = singleton(() => {
   const init = cookiePersist({
     source: $isCompletedShown,
     name: "isCompletedShown",
-    schema: boolStr,
+    schema: z.coerce.number(),
   })
   return {
     $tasks,
-    $isCompletedShown,
+    $isCompletedShown: $isCompletedShown.map(Boolean),
     toggleCompletedShown,
     addTaskTriggered,
     setTasksTriggered,

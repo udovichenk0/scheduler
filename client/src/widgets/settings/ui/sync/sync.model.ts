@@ -2,14 +2,14 @@ import { createEvent, createStore, sample, split } from "effector"
 import { createGate } from "effector-react"
 import { not } from "patronum"
 
-import { resetEmailTriggered } from "@/features/authentication/check-email"
-import { resetSigninPasswordTriggered } from "@/features/authentication/sign-in"
-import { resetSignupPasswordTriggered } from "@/features/authentication/sign-up"
+import { resetEmailTriggered } from "@/features/authentication/check-email/model.ts"
+import { resetSigninPasswordTriggered } from "@/features/authentication/sign-in/signin.model.ts"
+import { resetSignupPasswordTriggered } from "@/features/authentication/sign-up/signup.model.ts"
 
-import { $$session } from "@/entities/session"
+import { $$session } from "@/entities/session/session.model.ts"
 
-import { authApi } from "@/shared/api/auth"
-import { prepend } from "@/shared/lib/effector"
+import { authApi } from "@/shared/api/auth/auth.api.ts"
+import { prepend } from "@/shared/lib/effector/prepend.ts"
 
 export enum Flow {
   email = "email",
@@ -20,7 +20,7 @@ export enum Flow {
   verify = "verify",
 }
 export const flowChanged = createEvent<Flow>()
-export const reset = createEvent()
+const reset = createEvent()
 
 export const $flow = createStore<Flow>(Flow.options)
 

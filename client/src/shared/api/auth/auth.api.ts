@@ -25,26 +25,6 @@ import {
   PostAuthVerifyBody,
 } from "../scheduler.schemas"
 
-import { SessionUserSchema } from "./auth.dto"
-
-export const tokenQuery = createQuery({
-  handler: async ({ code, state }: { code: string; state: string }) => {
-    const response = await fetch(
-      import.meta.env.VITE_ORIGIN_URL +
-        `api/auth/token?code=${code}&state=${state}`,
-      {
-        credentials: "include",
-      },
-    )
-    const s = await response.json()
-    const user = SessionUserSchema.safeParse(s)
-    if (user.success) {
-      return user.data
-    }
-    throw user.error
-  },
-})
-
 export const checkSession = createQuery({
   handler: async () => {
     const response = await getAuthSession({ credentials: "include" })
@@ -105,3 +85,13 @@ export const resendCodeQuery = createQuery({
     throwIfError(response.data)
   },
 })
+
+export const authApi = {
+  checkSession,
+  signIn,
+  signUp,
+  checkVerifiedEmailExists,
+  signOut,
+  verifyEmailQuery,
+  resendCodeQuery,
+}

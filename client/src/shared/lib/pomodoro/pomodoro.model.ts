@@ -5,10 +5,11 @@ import {
   attach,
   createEffect,
   StoreWritable,
+  Store,
 } from "effector"
 import { spread, debug } from "patronum"
 
-import { prepend } from "../effector"
+import { prepend } from "../effector/prepend.ts"
 
 import { createTimer } from "./timer"
 import { State, defaultStgs } from "./config"
@@ -21,11 +22,11 @@ type PomodoroProps = {
   $workDuration: StoreWritable<number>
   $shortBreakDuration: StoreWritable<number>
   $longBreakDuration: StoreWritable<number>
-  $isEnabledNotificationSound: StoreWritable<boolean>
-  $isEnabledAutomaticStart: StoreWritable<boolean>
+  $isEnabledNotificationSound: Store<boolean>
+  $isEnabledAutomaticStart: Store<boolean>
 }
 
-export type Stage = { fulfilled: boolean }
+type Stage = { fulfilled: boolean }
 export type State = (typeof State)[keyof typeof State]
 
 export const createPomodoro = ({

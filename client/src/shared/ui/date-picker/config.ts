@@ -1,6 +1,17 @@
 import { Dayjs } from "dayjs"
 
-import { getToday, getFriday, getLater, getMonday, getSaturday, getSunday, getThursday, getTomorrow, getTuesday, getWednesday } from "@/shared/lib/date/get-date"
+import {
+  getToday,
+  getFriday,
+  getLater,
+  getMonday,
+  getSaturday,
+  getSunday,
+  getThursday,
+  getTomorrow,
+  getTuesday,
+  getWednesday,
+} from "@/shared/lib/date/get-date"
 
 export const timeList = [
   "12:00 am",
@@ -116,29 +127,26 @@ export const DateShortCut = {
 
 export const dateShortCuts = Object.values(DateShortCut) as string[]
 
-export const mapShortcutToDate = (word: typeof DateShortCut[keyof typeof DateShortCut]) => {
-  const data: Record<string, {date: Dayjs, hasTimePart: boolean}> = {
+export const mapShortcutToDate = (
+  word: (typeof DateShortCut)[keyof typeof DateShortCut],
+) => {
+  const data: Record<string, { date: Dayjs; hasTimePart: boolean }> = {
     today: { date: getToday(), hasTimePart: false },
     tomorrow: { date: getTomorrow(), hasTimePart: false },
     later: { date: getLater(), hasTimePart: true },
-    sunday: {date: getSunday().startOf('date'), hasTimePart: false},
-    saturday: {date: getSaturday().startOf("date"), hasTimePart: false},
-    friday: {date: getFriday().startOf('date'), hasTimePart: false},
-    thursday: {date: getThursday().startOf('date'), hasTimePart: false},
-    wednesday: {date: getWednesday().startOf('date'), hasTimePart: false},
-    tuesday: {date: getTuesday().startOf('date'), hasTimePart: false},
-    monday: {date: getMonday().startOf('date'), hasTimePart: false},
+    sunday: { date: getSunday().startOf("date"), hasTimePart: false },
+    saturday: { date: getSaturday().startOf("date"), hasTimePart: false },
+    friday: { date: getFriday().startOf("date"), hasTimePart: false },
+    thursday: { date: getThursday().startOf("date"), hasTimePart: false },
+    wednesday: { date: getWednesday().startOf("date"), hasTimePart: false },
+    tuesday: { date: getTuesday().startOf("date"), hasTimePart: false },
+    monday: { date: getMonday().startOf("date"), hasTimePart: false },
   }
   return data[word]
 }
 
-export const baseWords = [
-  "day",
-  "week",
-  "month",
-  "year",
-]
+export const baseWords = ["day", "week", "month", "year"]
 
 export const relativeNumbers: Record<string, number> = {
-  next: 1
+  next: 1,
 }

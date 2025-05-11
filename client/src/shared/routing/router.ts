@@ -12,7 +12,7 @@ export const routes = {
   trash: createRoute(),
   notFoundRoute: createRoute(),
 }
-export const controls = createRouterControls()
+const controls = createRouterControls()
 export const router = createHistoryRouter({
   base: "/:lang?",
   controls,

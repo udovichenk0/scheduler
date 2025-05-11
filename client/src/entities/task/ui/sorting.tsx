@@ -10,7 +10,7 @@ import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 
 import { SortConfig, SortType } from "../type"
-export type SortProps = {
+type SortProps = {
   config: SortConfig[]
   active: SortType
   onChange: (value: SortType) => SortType
@@ -66,7 +66,7 @@ export const Sort = ({ sorting }: { sorting?: SortProps }) => {
     </div>
   )
 }
-export const TaskSortingPopup = ({
+const TaskSortingPopup = ({
   config,
   onChange,
   active,

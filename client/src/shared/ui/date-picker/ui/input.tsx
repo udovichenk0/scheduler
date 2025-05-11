@@ -5,9 +5,7 @@ import clsx from "clsx"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 
 import { Modal } from "../../modal"
-import {
-  parseDateInput,
-} from "../lib"
+import { parseDateInput } from "../lib"
 import { formatDate } from "../formator"
 import { Hint } from "../type"
 
@@ -28,7 +26,7 @@ export const DateInput = ({
   onSelectDate,
   value,
   className,
-  ref
+  ref,
 }: DateInputProps) => {
   const dialog = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -52,7 +50,7 @@ export const DateInput = ({
         }
       }
     } catch (error) {
-      console.log(error) 
+      console.log(error)
     }
   }
 
@@ -69,11 +67,14 @@ export const DateInput = ({
   useEffect(() => {
     const onBlur = (e: MouseEvent) => {
       const target = e.target as HTMLElement
-      if(!dialog.current?.contains(target) && !inputRef.current?.contains(target)){
+      if (
+        !dialog.current?.contains(target) &&
+        !inputRef.current?.contains(target)
+      ) {
         setInput(value ? formatDate(dayjs(value)) : "")
       }
     }
-      document.addEventListener("mousedown", onBlur)
+    document.addEventListener("mousedown", onBlur)
     return () => {
       document.removeEventListener("mousedown", onBlur)
     }
@@ -81,7 +82,12 @@ export const DateInput = ({
 
   return (
     <div ref={inputRef} className="relative w-full">
-      <div className={clsx("ring-cSecondBorder bg-main-light group flex rounded-md px-2 focus-within:ring", className)}>
+      <div
+        className={clsx(
+          "ring-cSecondBorder bg-main-light group flex rounded-md px-2 focus-within:ring",
+          className,
+        )}
+      >
         {icon && <div className="mr-0.5">{icon}</div>}
         <input
           ref={ref}
@@ -100,11 +106,14 @@ export const DateInput = ({
         closeModal={close}
       >
         <Modal.Body className="border-0!">
-          <div ref={dialog} className="bg-main-dark max-h-80 overflow-y-auto z-100 text-cFont absolute top-full mt-2 flex w-full flex-col items-start rounded-lg p-2 shadow-lg">
+          <div
+            ref={dialog}
+            className="bg-main-dark z-100 text-cFont absolute top-full mt-2 flex max-h-80 w-full flex-col items-start overflow-y-auto rounded-lg p-2 shadow-lg"
+          >
             {hints.map((hint) => (
               <button
                 onClick={() => onSelect(hint)}
-                className="w-full cursor-pointer hover:bg-main-light rounded-md px-2 py-1.5 text-start text-sm"
+                className="hover:bg-main-light w-full cursor-pointer rounded-md px-2 py-1.5 text-start text-sm"
                 key={hint.hint}
               >
                 {hint.hint}

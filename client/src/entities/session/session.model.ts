@@ -1,7 +1,7 @@
 import { createEvent, createStore, sample } from "effector"
 
 import { singleton } from "@/shared/lib/effector/singleton"
-import { authApi } from "@/shared/api/auth"
+import { authApi } from "@/shared/api/auth/auth.api.ts"
 
 import { User } from "./type"
 

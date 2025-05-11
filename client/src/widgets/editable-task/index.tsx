@@ -3,7 +3,8 @@ import { ReactNode, Ref } from "react"
 
 import { UpdateTaskFactory } from "@/features/manage-task/update"
 
-import { Task, TaskItem } from "@/entities/task"
+import { Task } from "@/entities/task/type"
+import { TaskItem } from "@/entities/task/ui/item"
 
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"

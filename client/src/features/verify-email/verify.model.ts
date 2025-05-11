@@ -3,13 +3,13 @@ import { interval, equals } from "patronum"
 import { createGate } from "effector-react"
 import { t } from "i18next"
 
-import { $$session } from "@/entities/session"
+import { $$session } from "@/entities/session/session.model.ts"
 
 import { UNEXPECTED_ERROR_MESSAGE, isHttpError } from "@/shared/lib/error"
-import { authApi } from "@/shared/api/auth"
-import { prepend } from "@/shared/lib/effector"
+import { authApi } from "@/shared/api/auth/auth.api.ts"
+import { prepend } from "@/shared/lib/effector/prepend.ts"
 
-import { resetEmailTriggered } from "../authentication/check-email"
+import { resetEmailTriggered } from "../authentication/check-email/model.ts"
 
 import { INVALID_CODE_MESSAGE } from "./constants"
 const RESEND_TIME = 10
@@ -22,7 +22,7 @@ export const $code = createStore<Nullable<string>>(null)
 export const $error = createStore<Nullable<string>>(null)
 export const $time = createStore(RESEND_TIME)
 
-export const resetVerifyTriggered = createEvent()
+const resetVerifyTriggered = createEvent()
 const timerStarted = createEvent()
 const timerStopped = createEvent()
 

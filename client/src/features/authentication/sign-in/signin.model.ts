@@ -1,13 +1,14 @@
 import { createEvent, createStore, sample, split } from "effector"
-import { z } from "zod"
+import * as z from "@zod/mini"
 
-import { $$session } from "@/entities/session"
+import { $$session } from "@/entities/session/session.model.ts"
 
-import { authApi } from "@/shared/api/auth"
-import { bridge, prepend } from "@/shared/lib/effector"
+import { authApi } from "@/shared/api/auth/auth.api.ts"
 import { UNEXPECTED_ERROR_MESSAGE, isHttpError } from "@/shared/lib/error"
+import { bridge } from "@/shared/lib/effector/bridge.ts"
+import { prepend } from "@/shared/lib/effector/prepend.ts"
 
-import { $email, resetEmailTriggered } from "../check-email"
+import { $email, resetEmailTriggered } from "../check-email/model.ts"
 
 import {
   MAX_LENGTH,
@@ -27,7 +28,9 @@ export const $password = createStore<string>("").on(
 )
 export const $error = createStore<Nullable<string>>(null)
 
-const signinSchema = z.string().trim().min(MIN_LENGTH).max(MAX_LENGTH)
+const signinSchema = z
+  .string()
+  .check(z.trim(), z.minLength(MIN_LENGTH), z.maxLength(MAX_LENGTH))
 
 bridge(() => {
   sample({

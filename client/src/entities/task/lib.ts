@@ -68,7 +68,7 @@ export const shouldShowCompleted = (isToggled: boolean, task: Task) => {
 
 export function formatTaskDate(date: Dayjs) {
   const hasTime = hasTimePart(date)
-  const time = hasTime ? date.format("h:mm a") : ''
+  const time = hasTime ? date.format("h:mm a") : ""
   if (date.isSame(dayjs(), "day")) {
     return `${t("date.today")} ${time}`
   } else if (date.isTomorrow()) {

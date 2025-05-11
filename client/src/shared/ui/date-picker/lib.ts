@@ -13,7 +13,7 @@ type Month = {
 
 const generateWeek = (startOfWeek: Dayjs) => {
   const week: Week = { dates: [] }
-  for(let i = 0; i < 7; i++){
+  for (let i = 0; i < 7; i++) {
     const date = startOfWeek.add(i, "day")
     week.dates.push(date)
   }
@@ -21,7 +21,6 @@ const generateWeek = (startOfWeek: Dayjs) => {
 }
 
 export const generateCalendar = (dayjsDate: Dayjs = dayjs()) => {
-
   const months: Month[] = []
   for (let i = 0; i < 5; i++) {
     const startOfMonth = dayjsDate.startOf("month").add(i, "month")
@@ -30,19 +29,19 @@ export const generateCalendar = (dayjsDate: Dayjs = dayjs()) => {
     const weekCount = Math.floor((lastDate + day) / 7)
     const startOfWeek = startOfMonth.subtract(day, "day")
     const weeks: Week[] = []
-    for(let k = 0; k < weekCount; k++){
+    for (let k = 0; k < weekCount; k++) {
       weeks.push(generateWeek(startOfWeek.add(k, "week")))
     }
-    months.push({weeks: weeks, date: startOfMonth})
+    months.push({ weeks: weeks, date: startOfMonth })
   }
   return months
 }
 
 export function parseDateInput(input: string) {
-  const tokens = getTokens(input);
-  return parseTokens(tokens);
+  const tokens = getTokens(input)
+  return parseTokens(tokens)
 }
 
 function getTokens(input: string) {
-  return input.split(" ");
+  return input.split(" ")
 }

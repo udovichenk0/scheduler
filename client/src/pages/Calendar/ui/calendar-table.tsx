@@ -2,7 +2,7 @@ import dayjs, { Dayjs } from "dayjs"
 import { memo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Task, TaskId, Status } from "@/entities/task"
+import { Status, Task, TaskId } from "@/entities/task/type"
 
 import { generateCalendar } from "@/shared/lib/date/generate-calendar"
 import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
@@ -64,7 +64,7 @@ export const Calendar = memo(
   },
 )
 
-export const WeekNames = () => {
+const WeekNames = () => {
   const { t } = useTranslation()
   return (
     <div className="border-cBorder text-primary flex justify-around border-y border-r font-bold">

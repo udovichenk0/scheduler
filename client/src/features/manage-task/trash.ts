@@ -1,10 +1,10 @@
 import { createEvent, sample, merge } from "effector"
 import { attachOperation } from "@farfetched/core"
 
-import { $$session } from "@/entities/session"
-import { TaskModel } from "@/entities/task"
+import { $$session } from "@/entities/session/session.model.ts"
+import { TaskModel } from "@/entities/task/model/task.model.ts"
 
-import { taskApi } from "@/shared/api/task"
+import { taskApi } from "@/shared/api/task/task.api.ts"
 
 export const trashTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
   const taskTrashedById = createEvent<string>()
@@ -44,5 +44,3 @@ export const trashTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
     taskSuccessfullyDeleted: taskSuccessfullyTrashed,
   }
 }
-
-export type TrashTaskFactory = ReturnType<typeof trashTaskFactory>

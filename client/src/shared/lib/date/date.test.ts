@@ -2,7 +2,8 @@ import { describe, expect, test } from "vitest"
 import isTodayjs from "dayjs/plugin/isToday"
 import dayjs, { extend } from "dayjs"
 
-import { getToday, isAfterToday, isBeforeToday, isToday, parseDate } from "./"
+import { isAfterToday, isBeforeToday, isToday, parseDate } from "./comparison"
+import { getToday } from "./get-date"
 
 extend(isTodayjs)
 

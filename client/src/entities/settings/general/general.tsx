@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 import { useUnit } from "effector-react"
 import { useEffect, useRef } from "react"
 
-import { onMount } from "@/shared/lib/react"
+import { onMount } from "@/shared/lib/react/on-mount.ts"
 
 import { languages } from "./config"
 import { $currentLanguage, init, languageChanged } from "./general.modal"

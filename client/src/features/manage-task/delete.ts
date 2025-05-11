@@ -2,10 +2,10 @@ import { createEvent, sample, merge } from "effector"
 import { and } from "patronum"
 import { attachOperation } from "@farfetched/core"
 
-import { $$session } from "@/entities/session"
-import { TaskModel } from "@/entities/task"
+import { $$session } from "@/entities/session/session.model.ts"
+import { TaskModel } from "@/entities/task/model/task.model.ts"
 
-import { taskApi } from "@/shared/api/task"
+import { taskApi } from "@/shared/api/task/task.api.ts"
 export const removeTaskFactory = (taskModel: TaskModel) => {
   const taskDeletedById = createEvent<string>()
   const allTasksDeleted = createEvent()
@@ -57,5 +57,3 @@ export const removeTaskFactory = (taskModel: TaskModel) => {
     taskSuccessfullyDeleted,
   }
 }
-
-export type RemoveTaskFactory = ReturnType<typeof removeTaskFactory>

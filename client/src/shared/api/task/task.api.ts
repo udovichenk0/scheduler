@@ -92,7 +92,22 @@ export const updateDateMutation = createQuery({
     start_date: StartDate
     due_date: DueDate
   }) => {
-    const response = await patchTasksIdDate(id, {start_date, due_date}, {credentials: "include"})
+    const response = await patchTasksIdDate(
+      id,
+      { start_date, due_date },
+      { credentials: "include" },
+    )
     return handleResponse(response, patchTasksIdDateResponse)
   },
 })
+
+export const taskApi = {
+  tasksQuery,
+  createTaskMutation,
+  updateTaskMutation,
+  updateStatusMutation,
+  trashTaskMutation,
+  deleteTrashedTaskMutation,
+  deleteTrashedTasksMutation,
+  updateDateMutation,
+}

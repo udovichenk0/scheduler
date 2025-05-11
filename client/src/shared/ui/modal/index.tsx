@@ -157,7 +157,7 @@ const Body = ({ children, className }: DefaultProps) => {
       aria-modal
       role="dialog"
       className={clsx(
-        "border-cBorder bg-main rounded-[5px] border-[1px] animate-dialog", //!drop-shadow-base behaves like position relative
+        "border-cBorder bg-main animate-dialog rounded-[5px] border-[1px]", //!drop-shadow-base behaves like position relative
         className,
       )}
     >

@@ -9,7 +9,7 @@ import { extend } from "dayjs"
 
 import { RoutesView } from "@/pages"
 
-import { Sidebar } from "@/widgets/sidebar"
+import { Sidebar } from "@/widgets/sidebar/ui.tsx"
 
 extend(isSameOrAfter)
 extend(isSameOrBefore)

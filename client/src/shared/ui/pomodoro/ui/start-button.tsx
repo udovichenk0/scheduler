@@ -1,7 +1,7 @@
 import { Store } from "effector"
 import { useUnit } from "effector-react"
 
-import { State } from "@/shared/lib/pomodoro"
+import { State } from "@/shared/lib/pomodoro/pomodoro.model.ts"
 export const StartButton = ({
   start,
   stop,

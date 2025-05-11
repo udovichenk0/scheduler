@@ -1,4 +1,4 @@
-import { TaskId } from "@/shared/api/task"
+import { TaskId } from "@/shared/api/task/task.dto.ts"
 
 export const ModalName = {
   CreateTaskForm: "create-task-form",

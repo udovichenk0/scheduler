@@ -3,10 +3,12 @@ import { merge, sample, createEvent } from "effector"
 import { and } from "patronum"
 import { v4 } from "uuid"
 
-import { ModifyTaskFactory, Task, TaskModel } from "@/entities/task"
-import { $$session } from "@/entities/session"
+import { $$session } from "@/entities/session/session.model.ts"
+import { ModifyTaskFactory } from "@/entities/task/model/modify.model"
+import { TaskModel } from "@/entities/task/model/task.model"
+import { Task } from "@/entities/task/type"
 
-import { taskApi } from "@/shared/api/task"
+import { taskApi } from "@/shared/api/task/task.api.ts"
 import { bridge } from "@/shared/lib/effector/bridge"
 import { toApiTaskFields } from "@/shared/api/task/task.dto"
 
@@ -114,5 +116,3 @@ export const createTaskFactory = ({
     $isCreating: taskApi.createTaskMutation.$pending,
   }
 }
-
-export type CreateTaskFactory = ReturnType<typeof createTaskFactory>

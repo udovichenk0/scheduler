@@ -7,9 +7,9 @@ import {
   createStore,
 } from "effector"
 import { combineEvents, not } from "patronum"
-import { z } from "zod"
+import * as z from "@zod/mini"
 
-import { prepend } from "../effector"
+import { prepend } from "../effector/prepend.ts"
 
 import { getCookie } from "./get-cookie"
 
@@ -20,7 +20,7 @@ export const cookiePersist = <T>({
 }: {
   source: StoreWritable<T>
   name: string
-  schema: z.Schema<T, z.ZodTypeDef, string>
+  schema: z.ZodMiniType<T>
 }) => {
   const init = createEvent()
   const $isInited = createStore(false)

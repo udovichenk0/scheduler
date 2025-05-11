@@ -8,7 +8,7 @@ import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { DatePicker } from "@/shared/ui/date-picker"
-import { onMount } from "@/shared/lib/react"
+import { onMount } from "@/shared/lib/react/on-mount.ts"
 import { Modal } from "@/shared/ui/modal"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
@@ -29,7 +29,10 @@ type TaskFactory = {
   descriptionChanged: EventCallable<Nullable<string>>
   titleChanged: EventCallable<string>
   typeChanged: EventCallable<Type>
-  dateChanged: EventCallable<{startDate: Nullable<Date>, dueDate: Nullable<Date>}>
+  dateChanged: EventCallable<{
+    startDate: Nullable<Date>
+    dueDate: Nullable<Date>
+  }>
 }
 
 export const ModifyTaskForm = ({
@@ -62,7 +65,6 @@ export const ModifyTaskForm = ({
     close: onCloseTypeModal,
   } = useDisclosure({ id: ModalName.TypeModal })
 
-
   onMount(() => inputRef.current?.focus())
 
   return (
@@ -93,7 +95,7 @@ export const ModifyTaskForm = ({
             onClick={() => onOpenTypeModal()}
             size={"sm"}
             intent={"primary"}
-            className="flex gap-4 text-sm mb-1"
+            className="mb-1 flex gap-4 text-sm"
           >
             <Icon name={"common/inbox"} className="text-accent size-[18px]" />
             {t(`task.${taskType}`)}
@@ -101,7 +103,7 @@ export const ModifyTaskForm = ({
 
           {dateModifier && (
             <DatePicker
-              CustomInput={({onClick}) => (
+              CustomInput={({ onClick }) => (
                 <Button
                   onClick={onClick}
                   size={"sm"}
@@ -112,11 +114,14 @@ export const ModifyTaskForm = ({
                     name={"common/upcoming"}
                     className="text-cTaskEditDefault mr-4 size-[18px]"
                   />
-                  <span className="text-accent text-sm mr-1">
+                  <span className="text-accent mr-1 text-sm">
                     {startDate && formatTaskDate(dayjs(startDate))}
                     {!startDate && "Start"}
                   </span>
-                  <Icon name="common/arrow-right" className="text-cTaskEditDefault mr-1"/>
+                  <Icon
+                    name="common/arrow-right"
+                    className="text-cTaskEditDefault mr-1"
+                  />
                   <span className="text-accent text-sm">
                     {dueDate && formatTaskDate(dayjs(dueDate))}
                     {!dueDate && "Due"}

@@ -1,8 +1,8 @@
 import { createEvent, createStore, sample } from "effector"
-import { z } from "zod"
+import * as z from "@zod/mini"
 import { t } from "i18next"
 
-import { authApi } from "@/shared/api/auth"
+import { authApi } from "@/shared/api/auth/auth.api.ts"
 import { UNEXPECTED_ERROR_MESSAGE } from "@/shared/lib/error"
 
 import {
@@ -19,7 +19,9 @@ export const resetEmailTriggered = createEvent()
 
 export const $email = createStore<string>("")
 export const $error = createStore<Nullable<string>>(null)
-const emailSchema = z.string().email().min(MIN_LENGTH).max(MAX_LENGTH)
+const emailSchema = z
+  .string()
+  .check(z.email(), z.minLength(MIN_LENGTH), z.maxLength(MAX_LENGTH))
 
 sample({
   clock: emailChanged,

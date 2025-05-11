@@ -2,8 +2,8 @@ import { clsx } from "clsx"
 import { Store } from "effector"
 import { useUnit } from "effector-react"
 
-import { normalizeSeconds } from "@/shared/lib/date"
-import { State } from "@/shared/lib/pomodoro"
+import { normalizeSeconds } from "@/shared/lib/date/normalize-time.ts"
+import { State } from "@/shared/lib/pomodoro/pomodoro.model.ts"
 
 const CIRCLE_DIAMETER = 260
 const LINE_WIDTH = 7

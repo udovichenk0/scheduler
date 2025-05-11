@@ -1,6 +1,6 @@
 import dayjs, { Dayjs } from "dayjs"
 
-import { Sorts } from "@/entities/task"
+import { Sorts } from "@/entities/task/config.ts"
 
 export const MIN_DATES_LENGTH = 14
 export const MIN_MONTHS_LENGTH = 3

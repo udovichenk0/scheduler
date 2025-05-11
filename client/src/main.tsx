@@ -7,8 +7,8 @@ import { Provider } from "effector-react"
 import App from "./app/App"
 import "./app/index.css"
 import { appInitializer } from "./app/initializer"
-import { router } from "./shared/routing"
-import { $$i18n } from "./shared/i18n"
+import { router } from "./shared/routing/router.ts"
+import { $$i18n } from "./shared/i18n/i18n.ts"
 
 const { init } = appInitializer()
 

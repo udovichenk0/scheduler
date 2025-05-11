@@ -13,7 +13,6 @@ type TaskFieldsInput = {
   type: TaskType
 }
 
-
 export const toApiTaskFields = (fields: TaskFieldsInput): TaskFields => {
   const { start_date, due_date } = fields
   return {
@@ -29,7 +28,11 @@ type UpdateDateInput = {
   id: TaskId
 }
 
-export const createUpdateDateDto = ({startDate, dueDate, id}:UpdateDateInput) => {
+export const createUpdateDateDto = ({
+  startDate,
+  dueDate,
+  id,
+}: UpdateDateInput) => {
   return {
     start_date: startDate ? dateToUnix(startDate) : null,
     due_date: dueDate ? dateToUnix(dueDate) : null,

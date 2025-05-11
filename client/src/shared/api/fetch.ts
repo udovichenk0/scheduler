@@ -16,7 +16,7 @@ const getUrl = (contextUrl: string) => {
   return `${baseUrl}${contextUrl}`
 }
 
-export const customInstance = async <T>(
+const customInstance = async <T>(
   url: string,
   {
     method,

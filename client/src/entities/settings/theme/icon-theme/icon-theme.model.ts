@@ -1,8 +1,9 @@
 import { createEvent, createStore, sample, createEffect } from "effector"
-import { z } from "zod"
+import { z } from "@zod/mini"
 
 import { singleton } from "@/shared/lib/effector/singleton"
-import { parseCookieValue, setCookie } from "@/shared/lib/storage"
+import { parseCookieValue } from "@/shared/lib/storage/parse-cookie-value.ts"
+import { setCookie } from "@/shared/lib/storage/set-cookie.ts"
 import { getCookie } from "@/shared/lib/storage/get-cookie"
 const AccentSchema = z.enum([
   "blue",

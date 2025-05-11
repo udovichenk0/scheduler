@@ -1,6 +1,6 @@
 import { useUnit } from "effector-react"
 
-import { $$session } from "@/entities/session"
+import { $$session } from "@/entities/session/session.model.ts"
 
 import { Typography } from "@/shared/ui/general/typography"
 

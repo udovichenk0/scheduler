@@ -4,10 +4,10 @@ import isSameOrBefore from "dayjs/plugin/isSameOrBefore"
 import isTomorrow from "dayjs/plugin/isTomorrow"
 import isToday from "dayjs/plugin/isToday"
 
-import { Task } from "@/entities/task"
+import { Task } from "@/entities/task/type.ts"
 
-import { lowerCase } from "@/shared/lib/typography"
-import { i18n } from "@/shared/i18n"
+import { lowerCase } from "@/shared/lib/typography/lower-case.ts"
+import { i18n } from "@/shared/i18n/i18n.ts"
 import { LONG_MONTHS_NAMES, LONG_WEEKS_NAMES } from "@/shared/config/constants"
 
 import {

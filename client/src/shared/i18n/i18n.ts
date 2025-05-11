@@ -5,7 +5,7 @@ import LanguageDetector from "i18next-browser-languagedetector"
 import { RouteInstance } from "atomic-router"
 
 import { singleton } from "../lib/effector/singleton"
-import { router, routes } from "../routing"
+import { router, routes } from "../routing/router.ts"
 
 import ukLocale from "./locales/uk.json"
 import enLocale from "./locales/en.json"

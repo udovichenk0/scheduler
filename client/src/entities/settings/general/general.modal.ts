@@ -1,7 +1,7 @@
 import { createEvent, createStore, sample, createEffect } from "effector"
 
-import { $$i18n } from "@/shared/i18n"
-import { parseCookieValue } from "@/shared/lib/storage"
+import { $$i18n } from "@/shared/i18n/i18n.ts"
+import { parseCookieValue } from "@/shared/lib/storage/parse-cookie-value.ts"
 
 import { languages } from "./config"
 

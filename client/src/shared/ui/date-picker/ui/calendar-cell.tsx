@@ -2,14 +2,13 @@ import dayjs from "dayjs"
 import { useTranslation } from "react-i18next"
 import { useRef } from "react"
 
-
 import {
   LONG_MONTHS_NAMES,
   LONG_WEEKS_NAMES,
   SHORT_MONTHS_NAMES,
 } from "@/shared/config/constants"
-import { onMount } from "@/shared/lib/react"
-import { removeTimePart } from "@/shared/lib/date"
+import { onMount } from "@/shared/lib/react/on-mount.ts"
+import { removeTimePart } from "@/shared/lib/date/remove-time-part.ts"
 
 import styles from "./styles.module.css"
 
@@ -30,19 +29,21 @@ export const Cell = ({
 
   const { t } = useTranslation()
 
-  const isStartDate = startDate && dayjs(cellDate).isSame(
-    removeTimePart(startDate),
-    "date",
-  )
-  const isDueDate = dueDate && dayjs(cellDate).isSame(
-    removeTimePart(dueDate),
-    "date",
-  )
-  const isBetween = startDate && dueDate && dayjs(cellDate).isBetween(removeTimePart(startDate),removeTimePart(dueDate))
+  const isStartDate =
+    startDate && dayjs(cellDate).isSame(removeTimePart(startDate), "date")
+  const isDueDate =
+    dueDate && dayjs(cellDate).isSame(removeTimePart(dueDate), "date")
+  const isBetween =
+    startDate &&
+    dueDate &&
+    dayjs(cellDate).isBetween(
+      removeTimePart(startDate),
+      removeTimePart(dueDate),
+    )
 
   onMount(() => {
     if (isToday) {
-      focusRef.current && focusRef.current.focus({preventScroll: true})
+      focusRef.current && focusRef.current.focus({ preventScroll: true })
     }
   })
 
@@ -61,14 +62,14 @@ export const Cell = ({
       <button
         ref={focusRef}
         onClick={() => {
-          if(isPast || isStartDate || isDueDate) return
+          if (isPast || isStartDate || isDueDate) return
           onDateChange(cellDate)
         }}
         data-active={isStartDate || isDueDate}
         data-istoday={isToday && !isStartDate && !isDueDate}
         className={`
           ${styles.cell} 
-          focus-visible:border-cSecondBorder relative z-20 size-[35px] text-[13px] focus-visible:border text-cCalendarFont flex items-center justify-center rounded-[5px]
+          focus-visible:border-cSecondBorder text-cCalendarFont relative z-20 flex size-[35px] items-center justify-center rounded-[5px] text-[13px] focus-visible:border
           ${!isStartDate && !isDueDate && !isPast && "hover:bg-hover"} 
           ${isPast && "text-cSecondBorder"}
           ${!isPast && "cursor-pointer"}

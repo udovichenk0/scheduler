@@ -37,5 +37,3 @@ export const createSorting = () => {
     sort,
   }
 }
-
-export type TaskSortingFactory = ReturnType<typeof createSorting>

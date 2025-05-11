@@ -15,12 +15,12 @@ export function formatDate(date: Dayjs) {
     formattedDate = date.format("dddd")
   }
 
-  if(!formattedDate){
+  if (!formattedDate) {
     formattedDate = date.format("MM/DD/YY")
   }
 
   const hasTime = hasTimePart(date)
-  if(hasTime){
+  if (hasTime) {
     const time = date.format("MM/DD/YY [at] hh:mm a").split(" at ")[1]
     return `${formattedDate} at ${time}`
   }

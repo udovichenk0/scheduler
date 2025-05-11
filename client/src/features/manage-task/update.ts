@@ -8,12 +8,17 @@ import {
   getTaskFields,
   taskToDomain,
 } from "@/entities/task/lib"
-import { $$session } from "@/entities/session"
-import { modifyTaskFactory, TaskModel } from "@/entities/task"
+import { $$session } from "@/entities/session/session.model.ts"
 import { EditableTaskFields, Task, Status } from "@/entities/task/type"
+import { modifyTaskFactory } from "@/entities/task/model/modify.model"
+import { TaskModel } from "@/entities/task/model/task.model"
 
-import { taskApi, TaskId } from "@/shared/api/task"
-import { createUpdateDateDto, toApiTaskFields } from "@/shared/api/task/task.dto"
+import { taskApi } from "@/shared/api/task/task.api.ts"
+import {
+  TaskId,
+  createUpdateDateDto,
+  toApiTaskFields,
+} from "@/shared/api/task/task.dto.ts"
 
 export const updateTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
   const $$modifyTask = modifyTaskFactory({})

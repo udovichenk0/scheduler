@@ -1,6 +1,6 @@
 import { Dayjs } from "dayjs"
 
-export type BaseWord = 'day' | 'week' | 'month' | 'month'
+export type BaseWord = "day" | "week" | "month" | "month"
 
 export type Time = {
   hour: number

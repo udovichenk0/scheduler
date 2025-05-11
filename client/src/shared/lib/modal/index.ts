@@ -1,12 +1,12 @@
 import { createStore, createEvent, sample, createEffect } from "effector"
 
-import { router } from "@/shared/routing"
+import { router } from "@/shared/routing/router.ts"
 
-import { singleton } from "../effector"
+import { singleton } from "../effector/singleton.ts"
 import { isEsc } from "../key-utils"
 import { setupListener } from "../effector/setup-listener"
 
-export const createModalsManager = () => {
+const createModalsManager = () => {
   const $ids = createStore<string[]>([])
   const $onCloseCallbacks = createStore<Record<string, () => void>>({})
   const open = createEvent<string>()
@@ -156,5 +156,3 @@ export const createModalsManager = () => {
 }
 
 export const $$modal = singleton(createModalsManager)
-
-export type IdModalFactory = ReturnType<typeof createModalsManager>

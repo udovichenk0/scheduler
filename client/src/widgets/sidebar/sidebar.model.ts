@@ -1,6 +1,6 @@
-import { $$taskModel } from "@/entities/task"
+import { $$taskModel } from "@/entities/task/model/task.model.ts"
 
-import { isToday } from "@/shared/lib/date"
+import { isToday } from "@/shared/lib/date/comparison.ts"
 
 export const $inboxCounter = $$taskModel.$tasks.map((tasks) => {
   return (

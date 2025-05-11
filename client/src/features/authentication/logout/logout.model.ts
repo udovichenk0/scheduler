@@ -1,9 +1,9 @@
 import { createEvent, sample } from "effector"
 
-import { $$session } from "@/entities/session"
-import { getTaskModelInstance } from "@/entities/task"
+import { $$session } from "@/entities/session/session.model.ts"
+import { getTaskModelInstance } from "@/entities/task/model/task.model.ts"
 
-import { authApi } from "@/shared/api/auth"
+import { authApi } from "@/shared/api/auth/auth.api.ts"
 export const submitTriggered = createEvent()
 
 const $$taskModel = getTaskModelInstance()

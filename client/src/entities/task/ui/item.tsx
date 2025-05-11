@@ -6,7 +6,7 @@ import { t } from "i18next"
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
-import { routes } from "@/shared/routing"
+import { routes } from "@/shared/routing/router.ts"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 import { Modal } from "@/shared/ui/modal"
@@ -76,8 +76,8 @@ export const TaskItem = ({
             </div>
           )
         }}
-        onDateChange={({startDate, dueDate}) => {
-          onUpdateDate?.({startDate, dueDate, id: task.id})
+        onDateChange={({ startDate, dueDate }) => {
+          onUpdateDate?.({ startDate, dueDate, id: task.id })
         }}
         startDate={start_date}
       />

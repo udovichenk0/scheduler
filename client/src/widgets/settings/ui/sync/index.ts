@@ -1,1 +1,0 @@
-export { Authentication } from "./sync"

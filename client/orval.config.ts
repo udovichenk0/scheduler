@@ -16,11 +16,11 @@ export default defineConfig({
     //   afterAllFilesWrite: "npx prettier --write"
     // }
   },
-  zod: {
-    input: "./orval.yaml",
-    output: {
-      target: "./src/shared/api/zod.ts",
-      client: "zod",
-    },
-  },
+  // zod: {
+  //   input: "./orval.yaml",
+  //   output: {
+  //     target: "./src/shared/api/zod.ts",
+  //     client: "zod",
+  //   },
+  // },
 })

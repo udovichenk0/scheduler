@@ -1,15 +1,15 @@
 import { createRoutesView } from "atomic-router-react"
 import { lazy } from "react"
 
-const Unplaced = lazy(() => import("./Unplaced/unplaced.page"))
-const Inbox = lazy(() => import("./Inbox/inbox.page"))
-const Home = lazy(() => import("./Today/today.page"))
-const Trash = lazy(() => import("./Trash/trash.page"))
-const Calendar = lazy(() => import("./Calendar/calendar.page"))
-const Upcoming = lazy(() => import("./Upcoming/upcoming.page"))
-import { routes } from "@/shared/routing"
+const Unplaced = lazy(() => import("./Unplaced/page"))
+const Inbox = lazy(() => import("./Inbox/page"))
+const Home = lazy(() => import("./Today/page"))
+const Trash = lazy(() => import("./Trash/page"))
+const Calendar = lazy(() => import("./Calendar/page"))
+const Upcoming = lazy(() => import("./Upcoming/page"))
+import { routes } from "@/shared/routing/router.ts"
 
-import { NotFoundPage } from "./404/404.page"
+import { NotFoundPage } from "./404/page"
 
 const pageRoutes = [
   { view: Home, route: routes.home },

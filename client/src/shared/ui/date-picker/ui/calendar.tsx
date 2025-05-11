@@ -26,7 +26,7 @@ export const Calendar = ({
   const startTarget = useRef<HTMLDivElement>(null)
   const root = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
-  
+
   const [months, setMonths] = useState(generateCalendar)
   const [top, setTop] = useState(0)
   const [monthCount, setMonthCount] = useState(5)
@@ -38,11 +38,11 @@ export const Calendar = ({
         setMonthCount((prev) => prev + 5)
 
         if (monthCount >= 20) {
-          const newTop = months.slice(0, 5).reduce((acc, {weeks}) => acc + weeks.length ,0)
+          const newTop = months
+            .slice(0, 5)
+            .reduce((acc, { weeks }) => acc + weeks.length, 0)
           setTop((top) => top + newTop)
-          setMonths((prev) =>
-            prev.concat(newCalendars).slice(5),
-          )
+          setMonths((prev) => prev.concat(newCalendars).slice(5))
         } else {
           setMonths((prev) => prev.concat(newCalendars))
         }
@@ -60,10 +60,15 @@ export const Calendar = ({
           dayjs().add(monthCount - 25, "month"),
         )
         if (monthCount > 20) {
-          const newTop = newCalendars.reduce((acc, {weeks}) => acc + weeks.length, 0)
-          setMonths((prev) => newCalendars.concat(prev).slice(0, newCalendars.length))
+          const newTop = newCalendars.reduce(
+            (acc, { weeks }) => acc + weeks.length,
+            0,
+          )
+          setMonths((prev) =>
+            newCalendars.concat(prev).slice(0, newCalendars.length),
+          )
           setTop((top) => top - newTop)
-          setMonthCount(prev => prev - 5)
+          setMonthCount((prev) => prev - 5)
         }
       }
     },
@@ -94,7 +99,7 @@ export const Calendar = ({
               className="px-1"
               data-testid="date-list"
               style={{
-                transform: `translateY(${top * 40}px)`
+                transform: `translateY(${top * 40}px)`,
               }}
             >
               {months?.map(({ weeks, date }, id) => {
@@ -102,10 +107,10 @@ export const Calendar = ({
                   <Fragment key={id}>
                     {id == 1 && <div ref={startTarget}></div>}
                     <div className="relative">
-                      <div className="text-main absolute left-[30%] top-[50%] -translate-y-1/2 -z-[10] flex h-[50px] items-center text-[90px] font-bold opacity-10 invert">
+                      <div className="text-main absolute left-[30%] top-[50%] -z-[10] flex h-[50px] -translate-y-1/2 items-center text-[90px] font-bold opacity-10 invert">
                         {date.format("MM")}
                       </div>
-                      {weeks?.map(({dates}, rowId) => {
+                      {weeks?.map(({ dates }, rowId) => {
                         return (
                           <li className="flex justify-around" key={rowId}>
                             {dates.map((date) => {

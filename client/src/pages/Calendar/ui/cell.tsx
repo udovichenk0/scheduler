@@ -3,12 +3,13 @@ import { useRef, useState, useEffect, KeyboardEvent } from "react"
 import { useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
 
-import { Task, TaskId, Status, TaskStatuses } from "@/entities/task"
+import { Status, Task, TaskId } from "@/entities/task/type"
+import { TaskStatuses } from "@/entities/task/config"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { isEnter } from "@/shared/lib/key-utils"
 
-import { $$createTask } from "../calendar.model"
+import { $$createTask } from "../model"
 
 import { CellHeader } from "./cell-header"
 

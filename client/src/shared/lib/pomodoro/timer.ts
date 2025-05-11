@@ -6,7 +6,7 @@ import {
   createEvent,
 } from "effector"
 
-import { prepend } from "../effector"
+import { prepend } from "../effector/prepend.ts"
 
 import { Timer } from "./config"
 
