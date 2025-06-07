@@ -1,8 +1,8 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react"
 import dayjs from "dayjs"
 
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { ModalName } from "@/shared/lib/modal/modal-names"
+import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
+import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 
 import { Modal } from "../modal"
 import { Button } from "../buttons/main-button"
@@ -125,53 +125,49 @@ export function DatePicker({
           </Button>
         </div>
       )}
-      <Modal.Overlay>
-        <Modal.Body>
-          <Modal.Content className="contents">
-            <div>
-              <div className="border-b-1 border-b-cBorder flex gap-x-2 p-2">
-                <DateInput
-                  className="py-1"
-                  onSelectDate={onSetDate}
-                  value={tempStartDate}
-                  onClick={() => setDateAction(DateAction.Start)}
-                  placeholder="Start Date"
-                  icon={
-                    <Icon
-                      name="common/calendar-start-date"
-                      className="text-cSecondBorder"
-                    />
-                  }
+      <Modal.Content className="p-0! w-[540px]">
+        <div>
+          <div className="border-b-1 border-b-cBorder flex gap-x-2 p-2">
+            <DateInput
+              className="py-1"
+              onSelectDate={onSetDate}
+              value={tempStartDate}
+              onClick={() => setDateAction(DateAction.Start)}
+              placeholder="Start Date"
+              icon={
+                <Icon
+                  name="common/calendar-start-date"
+                  className="text-cSecondBorder"
                 />
-                <DateInput
-                  className="py-1"
-                  onSelectDate={onSetDate}
-                  value={tempDueDate}
-                  onClick={() => setDateAction(DateAction.End)}
-                  placeholder="Due Date"
-                  ref={dueDateInput}
-                  icon={
-                    <Icon
-                      name="common/calendar-due-date"
-                      className="text-cSecondBorder"
-                    />
-                  }
+              }
+            />
+            <DateInput
+              className="py-1"
+              onSelectDate={onSetDate}
+              value={tempDueDate}
+              onClick={() => setDateAction(DateAction.End)}
+              placeholder="Due Date"
+              ref={dueDateInput}
+              icon={
+                <Icon
+                  name="common/calendar-due-date"
+                  className="text-cSecondBorder"
                 />
-              </div>
-              <div className="grid grid-cols-2">
-                <DateShortcutPicker onSetDate={onSetDate} />
-                <Calendar
-                  onChange={onCellClick}
-                  tempDueDate={tempDueDate}
-                  tempStartDate={tempStartDate}
-                  onCancel={onCancel}
-                  onClose={onCloseDateModal}
-                />
-              </div>
-            </div>
-          </Modal.Content>
-        </Modal.Body>
-      </Modal.Overlay>
+              }
+            />
+          </div>
+          <div className="grid grid-cols-2">
+            <DateShortcutPicker onSetDate={onSetDate} />
+            <Calendar
+              onChange={onCellClick}
+              tempDueDate={tempDueDate}
+              tempStartDate={tempStartDate}
+              onCancel={onCancel}
+              onClose={onCloseDateModal}
+            />
+          </div>
+        </div>
+      </Modal.Content>
     </Modal>
   )
 }

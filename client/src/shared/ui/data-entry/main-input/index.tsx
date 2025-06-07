@@ -44,7 +44,7 @@ export const Input = ({
     }
   })
   return (
-    <label className={clsx("flex w-full flex-col", className)}>
+    <div className={clsx("flex w-full flex-col", className)}>
       <label className="text-cOpacitySecondFont text-left text-[12px]">
         {label}
       </label>
@@ -64,6 +64,6 @@ export const Input = ({
       <div className="h-5">
         {error && <span className="text-error text-sm">{error}</span>}
       </div>
-    </label>
+    </div>
   )
 }

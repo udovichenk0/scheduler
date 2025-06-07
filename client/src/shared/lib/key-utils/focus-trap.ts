@@ -10,7 +10,6 @@ export function focusTrap(dialogEl: HTMLElement | null) {
     const isActive = modals[modals.length - 1] == dialogEl
     if (!isActive) return
     const target = e.target as HTMLElement
-
     if (isFirstElementUnfocused(e, firstEl) && !focusableEls.includes(target)) {
       tabPrev(focusableEls)
       return

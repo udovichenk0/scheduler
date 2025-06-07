@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { ReactNode, RefObject, useEffect, useRef } from "react"
+import { ReactNode, RefObject, useEffect } from "react"
 import { EventCallable, StoreWritable } from "effector"
 import clsx from "clsx"
 
@@ -10,6 +10,8 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { Container } from "@/shared/ui/general/container"
+import { isEsc } from "@/shared/lib/key-utils"
+import { ClickOutsideLayer } from "@/shared/lib/click-outside"
 
 type TaskFactory = {
   $title: StoreWritable<string>
@@ -46,23 +48,23 @@ export const ExpandedTask = ({
   className?: string
   closeTaskForm?: () => void
 }) => {
-  const ref = useRef<HTMLDivElement>(null)
   const startDate = useUnit(modifyTaskModel.$startDate)
   const dueDate = useUnit(modifyTaskModel.$dueDate)
   const onChangeDate = useUnit(modifyTaskModel.dateChanged)
 
   useEffect(() => {
-    const onClickOutside = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) {
+    const onEscDown = (e: KeyboardEvent) => {
+      if(isEsc(e)){
         closeTaskForm?.()
       }
     }
-    if (isExpanded) {
-      document.addEventListener("click", onClickOutside, true)
+    if(isExpanded){
+      document.addEventListener("keydown", onEscDown)
     }
+
     return () => {
-      if (isExpanded) {
-        document.removeEventListener("click", onClickOutside, true)
+      if(isExpanded){
+        document.removeEventListener("keydown", onEscDown)
       }
     }
   }, [isExpanded])
@@ -72,7 +74,8 @@ export const ExpandedTask = ({
   }
 
   return (
-    <div ref={ref} className={clsx("group flex", className)}>
+    <ClickOutsideLayer onClickOutside={() => closeTaskForm?.()} 
+    className={clsx("group flex", className)}>
       {sideDatePicker && (
         <DatePicker
           CustomInput={({ onClick }) => (
@@ -107,6 +110,6 @@ export const ExpandedTask = ({
           {rightPanelSlot}
         </div>
       </Container>
-    </div>
+    </ClickOutsideLayer>
   )
 }
