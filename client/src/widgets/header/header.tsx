@@ -13,9 +13,8 @@ import { Pomodoro } from "@/shared/ui/pomodoro"
 import { Tooltip } from "@/shared/ui/general/tooltip"
 import { CloseButton, Modal } from "@/shared/ui/modal"
 import { normalizeSeconds } from "@/shared/lib/date/normalize-time.ts"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { ModalName } from "@/shared/lib/modal/modal-names"
-import { Button } from "@/shared/ui/buttons/main-button"
+import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
+import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 
 import { ProgressBar } from "./ui/progress-bar"
 import { $$pomodoro } from "./header.model"
@@ -27,12 +26,6 @@ type HeaderProps = {
 }
 
 export const Header = ({ iconName, title, slot }: HeaderProps) => {
-  const {
-    isOpened: isSettingsOpened,
-    open: onOpenSettings,
-    close: onCloseSettings,
-  } = useDisclosure({ id: ModalName.PomodoroSettingsModal })
-
   const {
     isOpened: isPomodoroOpened,
     open: onOpenPomodoro,
@@ -48,42 +41,19 @@ export const Header = ({ iconName, title, slot }: HeaderProps) => {
           closeModal={onClosePomodoro}
         >
           <PomodoroButton onOpenPomodoro={onOpenPomodoro} />
-          <Modal.Overlay className="bg-transparent">
-            <Modal.Body>
+            <Modal.Content>
               <Modal.Header>
                 <span className="w-full pl-6 text-center text-[12px]">
                   Pomodoro
                 </span>
                 <CloseButton close={onClosePomodoro} />
               </Modal.Header>
-              <Modal.Content>
                 <Pomodoro
                   pomodoroModel={$$pomodoro}
                   $customDuration={$$pomodoroSettings.$customDuration}
-                  leftSlot={
-                    <>
-                      <Button
-                        intent="primary"
-                        size="xs"
-                        onClick={onOpenSettings}
-                      >
-                        <Icon
-                          className="text-cIconDefault text-[24px]"
-                          name="common/settings"
-                        />
-                        <span className="sr-only">Open settings</span>
-                      </Button>
-                      <Settings
-                        isOpen={isSettingsOpened}
-                        onClose={onCloseSettings}
-                        defaultTab="pomodoro"
-                      />
-                    </>
-                  }
+                  leftSlot={<Settings defaultTab="pomodoro"/>}
                 />
-              </Modal.Content>
-            </Modal.Body>
-          </Modal.Overlay>
+            </Modal.Content>
         </Modal>
       </div>
       <div className="flex h-10 w-full items-center justify-between">

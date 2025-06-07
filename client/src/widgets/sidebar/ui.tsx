@@ -5,8 +5,6 @@ import { Icon } from "@/shared/ui/icon"
 import { routes } from "@/shared/routing/router.ts"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Container } from "@/shared/ui/general/container"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { ModalName } from "@/shared/lib/modal/modal-names"
 import { Tooltip } from "@/shared/ui/general/tooltip"
 
 import Settings from "../settings"
@@ -19,11 +17,6 @@ export const Sidebar = () => {
   const inboxTasksCount = useUnit($inboxCounter)
   const todayTasksCount = useUnit($todayCounter)
 
-  const {
-    isOpened: isSettingsOpened,
-    open: onOpenSettings,
-    close: onCloseSettings,
-  } = useDisclosure({ id: ModalName.SidebarSettingsModal })
 
   return (
     <aside className={`border-cBorder bg-brand text-primary border-r-[1px]`}>
@@ -114,14 +107,7 @@ export const Sidebar = () => {
         </Container>
         <Container className="border-cBorder text-cIconDefault flex gap-2 border-t-[1px]">
           <Tooltip text={t("setting.title")} dir="tr">
-            <Button
-              title={t("setting.title")}
-              onClick={onOpenSettings}
-              intent="primary"
-              size="xs"
-            >
-              <Icon name="common/settings" className="text-[24px]" />
-            </Button>
+          <Settings/>
           </Tooltip>
           <Tooltip text={t("task.unplaced")} dir="tc">
             <Button
@@ -146,7 +132,6 @@ export const Sidebar = () => {
             </Button>
           </Tooltip>
         </Container>
-        <Settings isOpen={isSettingsOpened} onClose={onCloseSettings} />
       </div>
     </aside>
   )

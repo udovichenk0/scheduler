@@ -2,7 +2,7 @@ import { ReactNode, RefObject, useEffect, useRef, useState } from "react"
 import dayjs from "dayjs"
 import clsx from "clsx"
 
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
+import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 
 import { Modal } from "../../modal"
 import { parseDateInput } from "../lib"
@@ -102,13 +102,14 @@ export const DateInput = ({
       <Modal
         label="Select date"
         isOpened={isOpened}
-        className="border-0!"
+        portal={false}
+        overlay={false}
         closeModal={close}
       >
-        <Modal.Body className="border-0!">
+        <Modal.Content className="w-full mt-2">
           <div
             ref={dialog}
-            className="bg-main-dark z-100 text-cFont absolute top-full mt-2 flex max-h-80 w-full flex-col items-start overflow-y-auto rounded-lg p-2 shadow-lg"
+            className="bg-main-dark z-100 text-cFont top-full flex max-h-80 w-full flex-col items-start overflow-y-auto rounded-lg shadow-lg"
           >
             {hints.map((hint) => (
               <button
@@ -120,7 +121,7 @@ export const DateInput = ({
               </button>
             ))}
           </div>
-        </Modal.Body>
+        </Modal.Content>
       </Modal>
     </div>
   )

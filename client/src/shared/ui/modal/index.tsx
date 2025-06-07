@@ -1,5 +1,6 @@
 import { clsx } from "clsx"
 import {
+  PropsWithChildren,
   ReactNode,
   RefObject,
   createContext,
@@ -7,43 +8,53 @@ import {
   useEffect,
   useRef,
 } from "react"
+import { createPortal } from "react-dom"
 
 import { focusTrap } from "@/shared/lib/key-utils/focus-trap"
+import { isEsc } from "@/shared/lib/key-utils"
+import { ClickOutsideLayer } from "@/shared/lib/click-outside"
 
 import { Button, ButtonProps } from "../buttons/main-button"
 
-interface ModalProps {
+import { useFocusGuards } from "./use-focus-guard"
+
+
+type DefaultModalProps = {
+  isOpened: boolean
+  label: string
+  focusAfterClose?: Nullable<RefObject<any>>
+  portal?: boolean
+  overlay?: boolean
+  closeModal: () => void
+}
+
+type ModalProps = {
   children: ReactNode
-  className?: string
-  isOpened: boolean
-  closeModal: () => void
-  label: string
-  focusAfterClose?: Nullable<RefObject<any>>
-}
+} & DefaultModalProps
 
-type Context = {
-  isOpened: boolean
-  label: string
-  focusAfterClose?: Nullable<RefObject<any>>
-  closeModal: () => void
-}
 
-const ModalContext = createContext<Context>({
+const ModalContext = createContext<DefaultModalProps>({
   isOpened: false,
   label: "",
   focusAfterClose: null,
+  overlay: true,
+  portal: true,
   closeModal: () => {},
 })
+
+const layers: RefObject<HTMLDivElement>[] = []
 
 export const Modal = ({
   children,
   isOpened,
-  closeModal,
   label,
-  focusAfterClose = null,
+  focusAfterClose,
+  overlay = true,
+  portal = true,
+  closeModal
 }: ModalProps) => {
   return (
-    <ModalContext value={{ isOpened, label, closeModal, focusAfterClose }}>
+    <ModalContext value={{isOpened, label, focusAfterClose, overlay, portal, closeModal}}>
       {children}
     </ModalContext>
   )
@@ -52,9 +63,9 @@ export const Modal = ({
 export const CloseButton = ({ close }: { close: () => void }) => {
   return (
     <button
-      title={"Close modal"}
+      title="Close modal"
       onClick={close}
-      className={"hover:bg-hover relative h-[22px] w-[22px] rounded-[4px]"}
+      className={"focus-visible:ring hover:bg-hover relative h-[22px] w-[22px] rounded-[4px]"}
     >
       <span
         className={
@@ -71,22 +82,18 @@ type DefaultProps = {
   children: ReactNode
 }
 
-const Overlay = ({ children, className }: DefaultProps) => {
-  const { isOpened } = useContext(ModalContext)
+const NewOverlay = () => {
+  const { overlay } = useContext(ModalContext)
 
-  if (!isOpened) {
+  if (!overlay) {
     return null
   }
 
   return (
     <div
       className={clsx(
-        "absolute left-0 top-0 z-50 flex h-screen w-full items-center justify-center bg-black/40",
-        className,
-      )}
-    >
-      {children}
-    </div>
+        "absolute left-0 top-0 flex h-screen w-full items-center justify-center bg-black/40")}
+    />
   )
 }
 
@@ -102,67 +109,82 @@ type ContentProps = DefaultProps & {
 
 const Content = ({ children, className }: ContentProps) => {
   const ref = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    return focusTrap(ref.current)
-  }, [])
-  return (
-    <div ref={ref} data-part className={clsx("mx-auto pb-6 pt-1", className)}>
-      {children}
-    </div>
-  )
-}
-
-const Body = ({ children, className }: DefaultProps) => {
-  const ref = useRef<HTMLDivElement>(null)
-
-  const { label, closeModal, focusAfterClose, isOpened } =
-    useContext(ModalContext)
-
-  useEffect(() => {
-    const close = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      if (ref.current && !ref.current.contains(target)) {
-        // e.stopPropagation()
-        closeModal()
-      }
-    }
-
-    if (isOpened) {
-      document.addEventListener("click", close, true)
-    }
-    return () => {
-      if (isOpened) {
-        document.removeEventListener("click", close, true)
-        if (
-          focusAfterClose &&
-          focusAfterClose.current &&
-          focusAfterClose.current.focus
-        ) {
-          focusAfterClose.current.focus()
-        }
-      }
-    }
-  }, [isOpened])
+  const { isOpened } = useContext(ModalContext)
 
   if (!isOpened) {
     return null
   }
 
   return (
-    <div
+    <>
+      <Portal>
+        <NewOverlay/>
+        <DialogModal ref={ref} className={className}>
+          {children}
+        </DialogModal>
+      </Portal>
+    </>
+  )
+}
+
+type DialogModalProps = {
+  children: ReactNode
+  ref: RefObject<any>
+  className?: string
+}
+
+const DialogModal = ({children, ref, className}: DialogModalProps) => {
+  const { label, closeModal, focusAfterClose, portal } =
+    useContext(ModalContext)
+
+  useEffect(() => {
+    return focusTrap(ref.current)
+  }, [])
+
+  useEffect(() => {
+    layers.push(ref.current)
+    return () => {
+      layers.pop()
+      if (focusAfterClose?.current.focus) {
+        focusAfterClose.current.focus()
+      }
+    }
+  }, [])
+
+
+  useEscape({onEscape: closeModal, modal: ref})
+
+  useFocusGuards()
+
+  const portalStyles = portal ? "left-1/2 top-1/2 -translate-1/2" : ""
+
+  return (
+    <ClickOutsideLayer
+      onClickOutside={closeModal}
       ref={ref}
-      id="mymodal"
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation()
+      }}
       aria-label={label}
+      data-part
       aria-modal
       role="dialog"
       className={clsx(
-        "border-cBorder bg-main animate-dialog rounded-[5px] border-[1px]", //!drop-shadow-base behaves like position relative
+        "absolute text-cFont border-cBorder m-auto p-2 bg-main animate-dialog rounded-[5px] border-[1px]", //!drop-shadow-base behaves like position relative
+        portalStyles,
         className,
       )}
     >
       {children}
-    </div>
+    </ClickOutsideLayer>
+  )
+}
+
+const Portal = ({children}: PropsWithChildren) => {
+  const {portal} = useContext(ModalContext)
+  if(!portal) return children
+  return (
+    createPortal(children, document.body)
   )
 }
 
@@ -179,8 +201,26 @@ const Trigger = ({ children, onClick, ...rest }: TriggerProps) => {
   )
 }
 
+
+export const useEscape = ({onEscape, modal}:{onEscape: () => void, modal: RefObject<any>}) => {
+  useEffect(() => {
+    const onEscDown = (e: KeyboardEvent) => {
+      if(isEsc(e)){
+        if(modal.current === layers[layers.length - 1]){
+          e.stopPropagation()
+          onEscape()
+        }
+      }
+    }
+
+    document.addEventListener("keydown", onEscDown, true)
+
+    return () => {
+      document.removeEventListener("keydown", onEscDown, true)
+    }
+  }, [])
+}
+
 Modal.Header = Header
 Modal.Content = Content
-Modal.Overlay = Overlay
-Modal.Body = Body
 Modal.Trigger = Trigger

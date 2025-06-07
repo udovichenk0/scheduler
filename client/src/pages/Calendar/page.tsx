@@ -12,8 +12,8 @@ import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { TaskId } from "@/shared/api/task/task.dto.ts"
 import { Icon } from "@/shared/ui/icon"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { ModalName } from "@/shared/lib/modal/modal-names"
+import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
+import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 
 import { Calendar } from "./ui/calendar-table"
 import {
@@ -78,27 +78,23 @@ const CalendarPage = () => {
           closeModal={onCloseUpdateTaskForm}
           focusAfterClose={taskRef}
         >
-          <Modal.Overlay className="z-[51]">
-            <Modal.Body className="w-[600px]">
-              <Modal.Content className="p-0!">
-                <ExpandedTask
-                  modifyTaskModel={$$updateTask}
-                  dateModifier={true}
-                  sideDatePicker={false}
-                  rightPanelSlot={
-                    <UpdateActionsButtons
-                      onSave={onCloseUpdateTaskForm}
-                      onCancel={() => {
-                        onCancelUpdateTaskForm()
-                        onResetUpdateTaskForm()
-                      }}
-                      taskId={updateTaskId!}
-                    />
-                  }
+          <Modal.Content className="p-0! w-[600px]">
+            <ExpandedTask
+              modifyTaskModel={$$updateTask}
+              dateModifier={true}
+              sideDatePicker={false}
+              rightPanelSlot={
+                <UpdateActionsButtons
+                  onSave={onCloseUpdateTaskForm}
+                  onCancel={() => {
+                    onCancelUpdateTaskForm()
+                    onResetUpdateTaskForm()
+                  }}
+                  taskId={updateTaskId!}
                 />
-              </Modal.Content>
-            </Modal.Body>
-          </Modal.Overlay>
+              }
+            />
+          </Modal.Content>
         </Modal>
         <Modal
           focusAfterClose={cellRef}
@@ -106,53 +102,45 @@ const CalendarPage = () => {
           isOpened={isCreateTaskFormOpened}
           closeModal={onCloseCreateTaskForm}
         >
-          <Modal.Overlay>
-            <Modal.Body className="w-[600px]">
-              <Modal.Content className="contents">
-                <ExpandedTask
-                  modifyTaskModel={$$createTask}
-                  dateModifier={true}
-                  sideDatePicker={false}
-                  rightPanelSlot={
-                    <ActionsButton
-                      onSave={onCloseCreateTaskForm}
-                      onCancel={() => {
-                        onCancelCreateTaskForm()
-                        onResetCreateTaskForm()
-                      }}
-                    />
-                  }
+          <Modal.Content className="contents w-[600px]">
+            <ExpandedTask
+              modifyTaskModel={$$createTask}
+              dateModifier={true}
+              sideDatePicker={false}
+              rightPanelSlot={
+                <ActionsButton
+                  onSave={onCloseCreateTaskForm}
+                  onCancel={() => {
+                    onCancelCreateTaskForm()
+                    onResetCreateTaskForm()
+                  }}
                 />
-              </Modal.Content>
-            </Modal.Body>
-          </Modal.Overlay>
+              }
+            />
+          </Modal.Content>
         </Modal>
         <Modal
           label="More tasks"
           isOpened={isMoreTasksModalOpened}
           closeModal={onCloseMoreTasksModal}
         >
-          <Modal.Overlay>
-            <Modal.Body>
-              <Modal.Header>
-                <span className="text-cFont w-full pl-6 text-center text-[12px]">
-                  All tasks
-                </span>
-                <CloseButton close={onCloseMoreTasksModal} />
-              </Modal.Header>
-              <Modal.Content className="flex w-[350px] flex-col gap-y-1 overflow-auto px-3">
-                <MoreTasks
-                  $tasks={$moreTasks}
-                  onTaskClick={(target, task) => {
-                    onOpenUpdateTaskForm()
-                    onInitFields(task)
-                    taskRef.current = target
-                  }}
-                  onUpdateStatus={onUpdateStatus}
-                />
-              </Modal.Content>
-            </Modal.Body>
-          </Modal.Overlay>
+          <Modal.Header>
+            <span className="text-cFont w-full pl-6 text-center text-[12px]">
+              All tasks
+            </span>
+            <CloseButton close={onCloseMoreTasksModal} />
+          </Modal.Header>
+          <Modal.Content className="flex w-[350px] flex-col gap-y-1 overflow-auto px-3">
+            <MoreTasks
+              $tasks={$moreTasks}
+              onTaskClick={(target, task) => {
+                onOpenUpdateTaskForm()
+                onInitFields(task)
+                taskRef.current = target
+              }}
+              onUpdateStatus={onUpdateStatus}
+            />
+          </Modal.Content>
         </Modal>
         <Calendar
           onTaskClick={(target, task) => {

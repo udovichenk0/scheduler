@@ -10,8 +10,8 @@ import { Icon } from "@/shared/ui/icon"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { onMount } from "@/shared/lib/react/on-mount.ts"
 import { Modal } from "@/shared/ui/modal"
-import { ModalName } from "@/shared/lib/modal/modal-names"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
+import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
+import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { EditableContent } from "@/shared/ui/data-entry/editable-content"
 
 import { Status as Status, Type as Type } from "../type"
@@ -89,17 +89,36 @@ export const ModifyTaskForm = ({
           placeholder="Note"
         />
         <div>
-          <Button
-            aria-label={`${taskType}: Choose type`}
-            ref={typePickerRef}
-            onClick={() => onOpenTypeModal()}
-            size={"sm"}
-            intent={"primary"}
-            className="mb-1 flex gap-4 text-sm"
-          >
-            <Icon name={"common/inbox"} className="text-accent size-[18px]" />
-            {t(`task.${taskType}`)}
-          </Button>
+          <div className="relative">
+            <Button
+              aria-label={`${taskType}: Choose type`}
+              ref={typePickerRef}
+              onClick={() => onOpenTypeModal()}
+              size={"sm"}
+              intent={"primary"}
+              className="mb-1 flex gap-4 text-sm"
+            >
+              <Icon name={"common/inbox"} className="text-accent size-[18px]" />
+              {t(`task.${taskType}`)}
+            </Button>
+            <Modal
+              label="Select event type"
+              isOpened={isTypeModalOpened}
+              closeModal={onCloseTypeModal}
+              overlay={false}
+              portal={false}
+            >
+              <Modal.Content className="w-[280px] top-full translate-y-2">
+                <TypePicker
+                  currentType={taskType}
+                  changeType={(type) => {
+                    onChangeType(type)
+                    onCloseTypeModal()
+                  }}
+                />
+              </Modal.Content>
+            </Modal>
+          </div>
 
           {dateModifier && (
             <DatePicker
@@ -134,25 +153,6 @@ export const ModifyTaskForm = ({
             />
           )}
         </div>
-        <Modal
-          label="Select event type"
-          isOpened={isTypeModalOpened}
-          closeModal={onCloseTypeModal}
-        >
-          <Modal.Overlay>
-            <Modal.Body>
-              <Modal.Content className="contents">
-                <TypePicker
-                  currentType={taskType}
-                  changeType={(type) => {
-                    onChangeType(type)
-                    onCloseTypeModal()
-                  }}
-                />
-              </Modal.Content>
-            </Modal.Body>
-          </Modal.Overlay>
-        </Modal>
       </div>
     </div>
   )
@@ -176,7 +176,7 @@ const TypePicker = ({
   return (
     <div
       ref={ref}
-      className="bg-main flex w-[280px] cursor-pointer flex-col gap-y-1 rounded-[5px] p-3"
+      className="bg-main flex cursor-pointer flex-col gap-y-1 rounded-[5px] p-1"
     >
       {types.map(({ type, iconName }, id) => {
         const active = type == currentType

@@ -6,8 +6,8 @@ import { UpdateTaskFactory } from "@/features/manage-task/update"
 import { Task } from "@/entities/task/type"
 import { TaskItem } from "@/entities/task/ui/item"
 
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { ModalName } from "@/shared/lib/modal/modal-names"
+import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
+import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 
 import { ExpandedTask } from "../expanded-task"
 

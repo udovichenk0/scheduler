@@ -24,7 +24,12 @@ export function Checkbox({
   disabled?: boolean
 }) {
   return (
-    <label className={clsx(className, "flex")}>
+    <label 
+      onClick={(e) => {
+        e.preventDefault()
+        onChange()
+      }}
+      className={clsx(className, "flex")}>
       <input
         ref={ref}
         disabled={disabled}
@@ -34,10 +39,6 @@ export function Checkbox({
             e.stopPropagation()
             onChange()
           }
-        }}
-        onClick={(e) => {
-          e.stopPropagation()
-          onChange()
         }}
         type="checkbox"
         className="checkbox_input h-0 appearance-none"
