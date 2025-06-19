@@ -41,19 +41,19 @@ export const Header = ({ iconName, title, slot }: HeaderProps) => {
           closeModal={onClosePomodoro}
         >
           <PomodoroButton onOpenPomodoro={onOpenPomodoro} />
-            <Modal.Content>
-              <Modal.Header>
-                <span className="w-full pl-6 text-center text-[12px]">
-                  Pomodoro
-                </span>
-                <CloseButton close={onClosePomodoro} />
-              </Modal.Header>
-                <Pomodoro
-                  pomodoroModel={$$pomodoro}
-                  $customDuration={$$pomodoroSettings.$customDuration}
-                  leftSlot={<Settings defaultTab="pomodoro"/>}
-                />
-            </Modal.Content>
+          <Modal.Content>
+            <Modal.Header>
+              <span className="w-full pl-6 text-center text-[12px]">
+                Pomodoro
+              </span>
+              <CloseButton close={onClosePomodoro} />
+            </Modal.Header>
+            <Pomodoro
+              pomodoroModel={$$pomodoro}
+              $customDuration={$$pomodoroSettings.$customDuration}
+              leftSlot={<Settings defaultTab="pomodoro" />}
+            />
+          </Modal.Content>
         </Modal>
       </div>
       <div className="flex h-10 w-full items-center justify-between">

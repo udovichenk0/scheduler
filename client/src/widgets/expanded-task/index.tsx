@@ -55,16 +55,16 @@ export const ExpandedTask = ({
 
   useEffect(() => {
     const onEscDown = (e: KeyboardEvent) => {
-      if(isEsc(e)){
+      if (isEsc(e)) {
         closeTaskForm?.()
       }
     }
-    if(isExpanded){
+    if (isExpanded) {
       document.addEventListener("keydown", onEscDown)
     }
 
     return () => {
-      if(isExpanded){
+      if (isExpanded) {
         document.removeEventListener("keydown", onEscDown)
       }
     }
@@ -75,8 +75,10 @@ export const ExpandedTask = ({
   }
 
   return (
-    <ClickOutsideLayer onClickOutside={() => closeTaskForm?.()} 
-    className={clsx("group flex", className)}>
+    <ClickOutsideLayer
+      onClickOutside={() => closeTaskForm?.()}
+      className={clsx("group flex", className)}
+    >
       {sideDatePicker && (
         <DatePicker
           CustomInput={({ onClick }) => (

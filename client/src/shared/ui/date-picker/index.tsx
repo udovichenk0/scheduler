@@ -1,6 +1,8 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react"
 
 import { SDate } from "@/shared/lib/date/lib"
+import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
+import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 
 import { Modal } from "../modal"
 import { Button } from "../buttons/main-button"
@@ -9,8 +11,6 @@ import { Icon } from "../icon"
 import { Calendar } from "./ui/calendar"
 import { DateInput } from "./ui/input"
 import { DateShortcutPicker } from "./ui/date-shortcut-picker"
-import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
-import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 
 const DateAction = {
   Start: "change-start",

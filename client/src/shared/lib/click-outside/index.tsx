@@ -1,6 +1,6 @@
-import { HTMLAttributes, ReactNode, RefObject } from "react";
+import { HTMLAttributes, ReactNode, RefObject } from "react"
 
-import { useClick } from "./use-click";
+import { useClick } from "./use-click"
 
 type ClickOutsideLayerProps = {
   onClickOutside: () => void
@@ -9,14 +9,14 @@ type ClickOutsideLayerProps = {
   ref?: RefObject<HTMLDivElement>
 } & HTMLAttributes<HTMLDivElement>
 
-export const ClickOutsideLayer = ({ 
+export const ClickOutsideLayer = ({
   onClickOutside,
-  children, 
+  children,
   listenerOptions,
   ref,
   ...rest
 }: ClickOutsideLayerProps) => {
-  const onPointerDown = useClick({onClickOutside, listenerOptions})
+  const onPointerDown = useClick({ onClickOutside, listenerOptions })
   return (
     <div {...rest} ref={ref} onPointerDown={onPointerDown}>
       {children}

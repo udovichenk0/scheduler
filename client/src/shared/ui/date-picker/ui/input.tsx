@@ -2,12 +2,12 @@ import { ReactNode, RefObject, useEffect, useRef, useState } from "react"
 import clsx from "clsx"
 
 import { SDate } from "@/shared/lib/date/lib"
+import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 
 import { Modal } from "../../modal"
 import { parseDateInput } from "../lib"
 import { formatDate } from "../formator"
 import { Hint } from "../type"
-import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 
 type DateInputProps = {
   placeholder: string
@@ -106,7 +106,7 @@ export const DateInput = ({
         overlay={false}
         closeModal={close}
       >
-        <Modal.Content className="w-full mt-2">
+        <Modal.Content className="mt-2 w-full">
           <div
             ref={dialog}
             className="bg-main-dark text-cFont top-full flex max-h-80 w-full flex-col items-start overflow-y-auto rounded-lg shadow-lg"

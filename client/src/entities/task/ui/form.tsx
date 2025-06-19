@@ -108,7 +108,7 @@ export const ModifyTaskForm = ({
               overlay={false}
               portal={false}
             >
-              <Modal.Content className="w-[280px] top-full translate-y-2">
+              <Modal.Content className="top-full w-[280px] translate-y-2">
                 <TypePicker
                   currentType={taskType}
                   changeType={(type) => {

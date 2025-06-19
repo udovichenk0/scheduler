@@ -24,12 +24,13 @@ export function Checkbox({
   disabled?: boolean
 }) {
   return (
-    <label 
+    <label
       onClick={(e) => {
         e.preventDefault()
         onChange()
       }}
-      className={clsx(className, "flex")}>
+      className={clsx(className, "flex")}
+    >
       <input
         ref={ref}
         disabled={disabled}

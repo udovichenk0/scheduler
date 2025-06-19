@@ -25,7 +25,7 @@ export const Sort = ({ sorting }: { sorting?: SortProps }) => {
     close: onCloseSortModal,
   } = useDisclosure({ id: ModalName.SortModal })
 
-  if(!sorting){
+  if (!sorting) {
     return null
   }
   return (
@@ -37,21 +37,22 @@ export const Sort = ({ sorting }: { sorting?: SortProps }) => {
         isOpened={isSortModalOpened}
         closeModal={onCloseSortModal}
       >
-      <Tooltip text={t("sort.title")} dir="bl">
-        <Button
-          ref={ref}
-          aria-label="Choose sorting method"
-          style={{ pointerEvents: isSortModalOpened ? "none" : "unset" }}
-          intent={"primary"}
-          size={"xs"}
-          onClick={() => onOpenSortModal()}>
+        <Tooltip text={t("sort.title")} dir="bl">
+          <Button
+            ref={ref}
+            aria-label="Choose sorting method"
+            style={{ pointerEvents: isSortModalOpened ? "none" : "unset" }}
+            intent={"primary"}
+            size={"xs"}
+            onClick={() => onOpenSortModal()}
+          >
             <Icon
               name={`sort/${sorting.active}`}
               className="text-cIconDefault text-2xl"
             />
           </Button>
         </Tooltip>
-        <Modal.Content className="p-2 w-[215px] z-100 top-full -translate-x-2/3">
+        <Modal.Content className="z-100 top-full w-[215px] -translate-x-2/3 p-2">
           <TaskSortingPopup
             onChange={(value) => {
               sorting.onChange(value)
@@ -82,7 +83,7 @@ const TaskSortingPopup = ({
           <button
             autoFocus={id == 0}
             key={value}
-            className={`hover:bg-hover rounded-md duration-100 py-3 px-4 w-full text-left text-[12px] focus-visible:ring ${
+            className={`hover:bg-hover w-full rounded-md px-4 py-3 text-left text-[12px] duration-100 focus-visible:ring ${
               value === active && "bg-hover"
             }`}
             onClick={() => onChange(value)}

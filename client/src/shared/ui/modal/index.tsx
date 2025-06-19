@@ -18,7 +18,6 @@ import { Button, ButtonProps } from "../buttons/main-button"
 
 import { useFocusGuards } from "./use-focus-guard"
 
-
 type DefaultModalProps = {
   isOpened: boolean
   label: string
@@ -31,7 +30,6 @@ type DefaultModalProps = {
 type ModalProps = {
   children: ReactNode
 } & DefaultModalProps
-
 
 const ModalContext = createContext<DefaultModalProps>({
   isOpened: false,
@@ -51,10 +49,12 @@ export const Modal = ({
   focusAfterClose,
   overlay = true,
   portal = true,
-  closeModal
+  closeModal,
 }: ModalProps) => {
   return (
-    <ModalContext value={{isOpened, label, focusAfterClose, overlay, portal, closeModal}}>
+    <ModalContext
+      value={{ isOpened, label, focusAfterClose, overlay, portal, closeModal }}
+    >
       {children}
     </ModalContext>
   )
@@ -65,7 +65,9 @@ export const CloseButton = ({ close }: { close: () => void }) => {
     <button
       title="Close modal"
       onClick={close}
-      className={"focus-visible:ring hover:bg-hover relative h-[22px] w-[22px] rounded-[4px]"}
+      className={
+        "hover:bg-hover relative h-[22px] w-[22px] rounded-[4px] focus-visible:ring"
+      }
     >
       <span
         className={
@@ -92,7 +94,8 @@ const NewOverlay = () => {
   return (
     <div
       className={clsx(
-        "absolute left-0 top-0 flex h-screen w-full items-center justify-center bg-black/40")}
+        "absolute left-0 top-0 flex h-screen w-full items-center justify-center bg-black/40",
+      )}
     />
   )
 }
@@ -118,7 +121,7 @@ const Content = ({ children, className }: ContentProps) => {
   return (
     <>
       <Portal>
-        <NewOverlay/>
+        <NewOverlay />
         <DialogModal ref={ref} className={className}>
           {children}
         </DialogModal>
@@ -133,7 +136,7 @@ type DialogModalProps = {
   className?: string
 }
 
-const DialogModal = ({children, ref, className}: DialogModalProps) => {
+const DialogModal = ({ children, ref, className }: DialogModalProps) => {
   const { label, closeModal, focusAfterClose, portal } =
     useContext(ModalContext)
 
@@ -151,8 +154,7 @@ const DialogModal = ({children, ref, className}: DialogModalProps) => {
     }
   }, [])
 
-
-  useEscape({onEscape: closeModal, modal: ref})
+  useEscape({ onEscape: closeModal, modal: ref })
 
   useFocusGuards()
 
@@ -170,7 +172,7 @@ const DialogModal = ({children, ref, className}: DialogModalProps) => {
       aria-modal
       role="dialog"
       className={clsx(
-        "absolute text-cFont border-cBorder m-auto p-2 bg-main animate-dialog rounded-[5px] border-[1px]", //!drop-shadow-base behaves like position relative
+        "text-cFont border-cBorder bg-main animate-dialog absolute m-auto rounded-[5px] border-[1px] p-2", //!drop-shadow-base behaves like position relative
         portalStyles,
         className,
       )}
@@ -180,12 +182,10 @@ const DialogModal = ({children, ref, className}: DialogModalProps) => {
   )
 }
 
-const Portal = ({children}: PropsWithChildren) => {
-  const {portal} = useContext(ModalContext)
-  if(!portal) return children
-  return (
-    createPortal(children, document.body)
-  )
+const Portal = ({ children }: PropsWithChildren) => {
+  const { portal } = useContext(ModalContext)
+  if (!portal) return children
+  return createPortal(children, document.body)
 }
 
 type TriggerProps = DefaultProps &
@@ -201,12 +201,17 @@ const Trigger = ({ children, onClick, ...rest }: TriggerProps) => {
   )
 }
 
-
-export const useEscape = ({onEscape, modal}:{onEscape: () => void, modal: RefObject<any>}) => {
+export const useEscape = ({
+  onEscape,
+  modal,
+}: {
+  onEscape: () => void
+  modal: RefObject<any>
+}) => {
   useEffect(() => {
     const onEscDown = (e: KeyboardEvent) => {
-      if(isEsc(e)){
-        if(modal.current === layers[layers.length - 1]){
+      if (isEsc(e)) {
+        if (modal.current === layers[layers.length - 1]) {
           e.stopPropagation()
           onEscape()
         }

@@ -62,9 +62,7 @@ const Settings = ({
               className={`hover:text-primary flex flex-col items-center gap-3 text-[#76899b]`}
             >
               <Icon name="common/settings" className="h-8 w-8" />
-              <span className="text-inherit">
-                {t("setting.tab.general")}
-              </span>
+              <span className="text-inherit">{t("setting.tab.general")}</span>
             </Root.Trigger>
             <Root.Trigger
               value={Tab.synchronization}
@@ -90,9 +88,7 @@ const Settings = ({
               className={`hover:text-primary flex flex-col items-center gap-3 text-[#76899b]`}
             >
               <Icon name="common/timer" className="h-8 w-8" />
-              <span className="text-inherit">
-                {t("setting.tab.pomodoro")}
-              </span>
+              <span className="text-inherit">{t("setting.tab.pomodoro")}</span>
             </Root.Trigger>
           </Root.List>
           <Root.Content label={Tab.general}>

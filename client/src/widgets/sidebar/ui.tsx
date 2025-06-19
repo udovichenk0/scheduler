@@ -17,7 +17,6 @@ export const Sidebar = () => {
   const inboxTasksCount = useUnit($inboxCounter)
   const todayTasksCount = useUnit($todayCounter)
 
-
   return (
     <aside className={`border-cBorder bg-brand text-primary border-r-[1px]`}>
       <div className="grid h-full w-[250px] grid-rows-[auto_1fr_auto] flex-col">
@@ -107,7 +106,7 @@ export const Sidebar = () => {
         </Container>
         <Container className="border-cBorder text-cIconDefault flex gap-2 border-t-[1px]">
           <Tooltip text={t("setting.title")} dir="tr">
-          <Settings/>
+            <Settings />
           </Tooltip>
           <Tooltip text={t("task.unplaced")} dir="tc">
             <Button

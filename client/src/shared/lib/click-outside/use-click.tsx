@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react"
 
 export const useClick = ({
-  onClickOutside, 
-  listenerOptions = true
+  onClickOutside,
+  listenerOptions = true,
 }: {
-  onClickOutside: () => void, 
+  onClickOutside: () => void
   listenerOptions?: EventListenerOptions | boolean
 }) => {
   const isPointerInsideReactTreeRef = useRef(false)
@@ -12,7 +12,7 @@ export const useClick = ({
   useEffect(() => {
     const close = (e: MouseEvent) => {
       const target = e.target as HTMLElement
-      if(target && !isPointerInsideReactTreeRef.current){
+      if (target && !isPointerInsideReactTreeRef.current) {
         e.stopPropagation()
         onClickOutside()
       } else {
@@ -24,6 +24,6 @@ export const useClick = ({
       document.removeEventListener("click", close, listenerOptions)
     }
   }, [])
-  
-  return () => isPointerInsideReactTreeRef.current = true
+
+  return () => (isPointerInsideReactTreeRef.current = true)
 }

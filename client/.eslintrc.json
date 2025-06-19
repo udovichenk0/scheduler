@@ -28,7 +28,7 @@
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/member-ordering": [
       "error",
-      { "default": ["signature", "field", "constructor", "method" ] }
+      { "default": ["signature", "field", "constructor", "method"] }
     ],
     "@typescript-eslint/no-require-imports": "error",
     "@typescript-eslint/no-explicit-any": "warn",
