@@ -1,10 +1,9 @@
-import dayjs, { Dayjs } from "dayjs"
 import { t } from "i18next"
 
 import { TaskDto } from "@/shared/api/scheduler.schemas"
-import { unixToDate } from "@/shared/lib/date/unix-to-date"
 import { SHORT_MONTHS_NAMES } from "@/shared/config/constants"
-import { hasTimePart } from "@/shared/lib/date/has-time-part"
+import { SDate, sdate } from "@/shared/lib/date/lib"
+import { unixToDate } from "@/shared/api/task/task.dto"
 
 import { TaskStatuses } from "./config"
 import { EditableTaskFields, Task, TaskId, Status } from "./type"
@@ -27,15 +26,16 @@ export function deleteById(tasks: Task[], deletedTaskId: TaskId) {
   return tasks.filter((task) => task.id != deletedTaskId)
 }
 
-export const isUnplaced = (task: Task) => task.type == "unplaced"
+export const isUnplaced = (task: Task) =>
+  task.type == "unplaced" && !!task.start_date
 
 export const isInbox = (task: Task) => task.type == "inbox"
 
 export const taskToDomain = (taskDto: TaskDto): Task => {
   return {
     ...taskDto,
-    start_date: unixToDate(taskDto.start_date),
-    due_date: unixToDate(taskDto.due_date),
+    start_date: sdate(unixToDate(taskDto.start_date)),
+    due_date: sdate(unixToDate(taskDto.due_date)),
     date_created: new Date(taskDto.date_created),
   }
 }
@@ -66,15 +66,17 @@ export const shouldShowCompleted = (isToggled: boolean, task: Task) => {
   return task.status != "finished" || isToggled
 }
 
-export function formatTaskDate(date: Dayjs) {
-  const hasTime = hasTimePart(date)
-  const time = hasTime ? date.format("h:mm a") : ""
-  if (date.isSame(dayjs(), "day")) {
+export function formatTaskDate(date: SDate) {
+  const currentDate = sdate()
+
+  const time = date.hasTime ? date.format("h:mm a") : ""
+
+  if (date.isSameDay(currentDate)) {
     return `${t("date.today")} ${time}`
-  } else if (date.isTomorrow()) {
+  } else if (date.isTomorrow) {
     return `${t("date.tomorrow")} ${time}`
-  } else if (date.isSame(dayjs(), "year")) {
-    return `${t(SHORT_MONTHS_NAMES[date.month()])} ${date.date()} ${time}`
+  } else if (date.isSameYear(currentDate)) {
+    return `${t(SHORT_MONTHS_NAMES[date.month])} ${date.date} ${time}`
   } else {
     return `${date.format("MM/DD/YY")} ${time}`
   }

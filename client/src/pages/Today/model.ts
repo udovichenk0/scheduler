@@ -12,8 +12,7 @@ import { createSorting } from "@/entities/task/model/sorting.model"
 import { isUnplaced, shouldShowCompleted } from "@/entities/task/lib"
 
 import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
-import { getToday } from "@/shared/lib/date/get-date.ts"
-import { isToday, isBeforeToday } from "@/shared/lib/date/comparison.ts"
+import { getToday } from "@/shared/lib/date/lib"
 
 export const gate = createGate()
 
@@ -24,7 +23,7 @@ export const $$updateTask = updateTaskFactory({ taskModel: $$taskModel })
 export const $$createTask = createTaskFactory({
   $$modifyTask: modifyTaskFactory({
     defaultType: "unplaced",
-    defaultDate: getToday().toDate(),
+    defaultDate: getToday(),
   }),
   taskModel: $$taskModel,
 })
@@ -50,7 +49,7 @@ export const $todayTasks = combine(
   $commonTasks,
   $$sort.$sortType,
   (tasks, sortType) => {
-    const todayTasks = tasks?.filter((task) => isToday(task.start_date)) || []
+    const todayTasks = tasks?.filter((task) => task.start_date?.isToday) || []
     return $$sort.sortBy(sortType, todayTasks)
   },
 )
@@ -60,7 +59,7 @@ export const $overdueTasks = combine(
   $$sort.$sortType,
   (tasks, sortType) => {
     const overdueTasks =
-      tasks?.filter((task) => isBeforeToday(task.start_date)) || []
+      tasks?.filter((task) => task.start_date?.isBeforeToday) || []
     return $$sort.sortBy(sortType, overdueTasks)
   },
 )

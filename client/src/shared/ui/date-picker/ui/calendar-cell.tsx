@@ -1,4 +1,3 @@
-import dayjs from "dayjs"
 import { useTranslation } from "react-i18next"
 import { useRef } from "react"
 
@@ -8,7 +7,7 @@ import {
   SHORT_MONTHS_NAMES,
 } from "@/shared/config/constants"
 import { onMount } from "@/shared/lib/react/on-mount.ts"
-import { removeTimePart } from "@/shared/lib/date/remove-time-part.ts"
+import { SDate, sdate } from "@/shared/lib/date/lib"
 
 import styles from "./styles.module.css"
 
@@ -18,39 +17,35 @@ export const Cell = ({
   startDate,
   dueDate,
 }: {
-  onDateChange: (date: Date) => void
-  cellDate: Date
-  startDate: Nullable<Date>
-  dueDate: Nullable<Date>
+  onDateChange: (date: SDate) => void
+  cellDate: SDate
+  startDate: Nullable<SDate>
+  dueDate: Nullable<SDate>
 }) => {
   const focusRef = useRef<HTMLButtonElement>(null)
-  const isToday = dayjs(cellDate).isSame(dayjs(), "date")
-  const isPast = dayjs(cellDate).isBefore(dayjs(), "date")
+  const isTodayDate = cellDate.isToday
+  const isPast = cellDate.isBeforeDate(sdate())
 
   const { t } = useTranslation()
 
-  const isStartDate =
-    startDate && dayjs(cellDate).isSame(removeTimePart(startDate), "date")
-  const isDueDate =
-    dueDate && dayjs(cellDate).isSame(removeTimePart(dueDate), "date")
+  const isStartDate = startDate && cellDate.isSameDate(startDate)
+  const isDueDate = dueDate && cellDate.isSameDate(dueDate)
   const isBetween =
     startDate &&
     dueDate &&
-    dayjs(cellDate).isBetween(
-      removeTimePart(startDate),
-      removeTimePart(dueDate),
-    )
+    cellDate.isAfterDate(startDate) &&
+    cellDate.isBeforeDate(dueDate)
 
   onMount(() => {
-    if (isToday) {
+    if (isTodayDate) {
       focusRef.current && focusRef.current.focus({ preventScroll: true })
     }
   })
 
-  const date = cellDate.getDate()
-  const day = cellDate.getDay()
-  const month = cellDate.getMonth()
-  const year = cellDate.getFullYear()
+  const date = cellDate.date
+  const day = cellDate.day
+  const month = cellDate.month
+  const year = cellDate.year
 
   return (
     <div
@@ -66,7 +61,7 @@ export const Cell = ({
           onDateChange(cellDate)
         }}
         data-active={isStartDate || isDueDate}
-        data-istoday={isToday && !isStartDate && !isDueDate}
+        data-istoday={isTodayDate && !isStartDate && !isDueDate}
         className={`
           ${styles.cell} 
           focus-visible:border-cSecondBorder text-cCalendarFont relative z-20 flex size-[35px] items-center justify-center rounded-[5px] text-[13px] focus-visible:border

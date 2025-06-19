@@ -1,17 +1,18 @@
 import { useState } from "react"
 
 import {
-  getToday,
+  SDate,
   getLater,
   getNextWeek,
   getNextWeekend,
+  getToday,
   getTomorrow,
-} from "@/shared/lib/date/get-date"
+} from "@/shared/lib/date/lib"
 
 export const DateShortcutPicker = ({
   onSetDate,
 }: {
-  onSetDate: (date: Date) => void
+  onSetDate: (date: SDate) => void
 }) => {
   const [dates] = useState([
     {
@@ -41,13 +42,13 @@ export const DateShortcutPicker = ({
     },
     {
       label: "2 weeks",
-      date: getToday().add(2, "week"),
-      expectedTime: getToday().add(2, "week").format("D MMM"),
+      date: getToday().addWeek(2),
+      expectedTime: getToday().addWeek(2).format("D MMM"),
     },
     {
       label: "4 weeks",
-      date: getToday().add(4, "week"),
-      expectedTime: getToday().add(4, "week").format("D MMM"),
+      date: getToday().addWeek(4),
+      expectedTime: getToday().addWeek(4).format("D MMM"),
     },
   ])
 
@@ -57,7 +58,7 @@ export const DateShortcutPicker = ({
         return (
           <button
             key={id}
-            onClick={() => onSetDate(date.toDate())}
+            onClick={() => onSetDate(date)}
             className="ring-cSecondBorder hover:bg-main-light text-cFont flex w-full cursor-pointer justify-between rounded-md px-3 py-2 text-sm focus-visible:ring"
           >
             <span>{label}</span>

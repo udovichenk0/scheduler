@@ -1,5 +1,4 @@
 import { useRef, useState } from "react"
-import dayjs, { Dayjs } from "dayjs"
 import { useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
 
@@ -14,6 +13,7 @@ import { TaskId } from "@/shared/api/task/task.dto.ts"
 import { Icon } from "@/shared/ui/icon"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { ModalName } from "@/shared/lib/modal/modal-names"
+import { SDate, sdate } from "@/shared/lib/date/lib"
 
 import { Calendar } from "./ui/calendar-table"
 import {
@@ -27,7 +27,7 @@ import {
 import { MoreTasks } from "./ui/more-tasks"
 
 const CalendarPage = () => {
-  const [headerDate, setHeaderDate] = useState(dayjs)
+  const [headerDate, setHeaderDate] = useState(() => sdate())
   const { t } = useTranslation()
   const taskRef = useRef<HTMLButtonElement>(null)
   const cellRef = useRef<HTMLButtonElement>(null)
@@ -179,16 +179,16 @@ const CalendarPage = () => {
     </Layout>
   )
 }
-const Title = ({ date }: { date: Dayjs }) => {
+const Title = ({ date }: { date: SDate }) => {
   const { t } = useTranslation()
-  const displayedMonth = date.month()
-  const displayedYear = date.year()
+  const month = date.month
+  const year = date.year
 
   return (
     <span>
       {t("task.calendar")},&nbsp;
-      {t(LONG_MONTHS_NAMES[displayedMonth])}&nbsp;
-      {displayedYear}
+      {t(LONG_MONTHS_NAMES[month])}&nbsp;
+      {year}
     </span>
   )
 }

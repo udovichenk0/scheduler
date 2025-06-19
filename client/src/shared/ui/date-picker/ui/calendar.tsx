@@ -1,7 +1,8 @@
-import dayjs from "dayjs"
 import { useRef, useState, useEffect } from "react"
 import { Fragment } from "react/jsx-runtime"
 import { useTranslation } from "react-i18next"
+
+import { SDate, sdate } from "@/shared/lib/date/lib"
 
 import { generateCalendar } from "../lib"
 import { Button } from "../../buttons/main-button"
@@ -16,11 +17,11 @@ export const Calendar = ({
   tempStartDate,
   tempDueDate,
 }: {
-  onChange: (date: Date) => void
+  onChange: (date: SDate) => void
   onCancel: () => void
   onClose: () => void
-  tempStartDate: Nullable<Date>
-  tempDueDate: Nullable<Date>
+  tempStartDate: Nullable<SDate>
+  tempDueDate: Nullable<SDate>
 }) => {
   const endTarget = useRef<HTMLDivElement>(null)
   const startTarget = useRef<HTMLDivElement>(null)
@@ -34,7 +35,7 @@ export const Calendar = ({
   const endObserver = new IntersectionObserver(
     (elem) => {
       if (elem[0].isIntersecting) {
-        const newCalendars = generateCalendar(dayjs().add(monthCount, "month"))
+        const newCalendars = generateCalendar(sdate().addMonth(monthCount))
         setMonthCount((prev) => prev + 5)
 
         if (monthCount >= 20) {
@@ -56,9 +57,7 @@ export const Calendar = ({
   const startObserver = new IntersectionObserver(
     (elem) => {
       if (elem[0].isIntersecting && top > 0) {
-        const newCalendars = generateCalendar(
-          dayjs().add(monthCount - 25, "month"),
-        )
+        const newCalendars = generateCalendar(sdate().addMonth(monthCount - 25))
         if (monthCount > 20) {
           const newTop = newCalendars.reduce(
             (acc, { weeks }) => acc + weeks.length,
@@ -121,7 +120,7 @@ export const Calendar = ({
                                 >
                                   <Cell
                                     onDateChange={onChange}
-                                    cellDate={date.toDate()}
+                                    cellDate={date}
                                     startDate={tempStartDate}
                                     dueDate={tempDueDate}
                                   />

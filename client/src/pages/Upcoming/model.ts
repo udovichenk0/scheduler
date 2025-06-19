@@ -1,5 +1,4 @@
 import { combine, createEvent, createStore } from "effector"
-import dayjs, { Dayjs } from "dayjs"
 import { createContext } from "react"
 
 import { createTaskFactory } from "@/features/manage-task/create"
@@ -12,7 +11,7 @@ import { getTaskModelInstance } from "@/entities/task/model/task.model"
 import { modifyTaskFactory } from "@/entities/task/model/modify.model"
 import { Task } from "@/entities/task/type"
 
-import { getToday } from "@/shared/lib/date/get-date.ts"
+import { SDate, getToday } from "@/shared/lib/date/lib"
 
 import {
   getTasksPerDate,
@@ -22,7 +21,7 @@ import {
   getTasksPerYear,
 } from "./lib"
 
-type Variant = Nullable<Dayjs>
+type Variant = Nullable<SDate>
 
 export const $$sort = createSorting()
 
@@ -47,7 +46,7 @@ export const $$updateTask = updateTaskFactory({ taskModel: $$taskModel })
 export const $$createTask = createTaskFactory({
   $$modifyTask: modifyTaskFactory({
     defaultType: "unplaced",
-    defaultDate: getToday().toDate(),
+    defaultDate: getToday(),
   }),
   taskModel: $$taskModel,
 })
@@ -91,9 +90,7 @@ export const $tasksByDate = combine(
   $upcomingDate,
   (tasks, variant) => {
     if (!!variant && tasks) {
-      return tasks.filter(({ start_date }) => {
-        return dayjs(start_date).startOf("date").isSame(variant.startOf("date"))
-      })
+      return tasks.filter(({ start_date }) => start_date?.isSameDate(variant))
     }
     return []
   },
@@ -102,7 +99,7 @@ export const $tasksByDate = combine(
 export const $tasksByDateKv = combine($upcomingTasks, (tasks) => {
   if (!tasks) return null
   return tasks.reduce((acc: Record<string, Task[]>, item) => {
-    const date = dayjs(item.start_date).format("YYYY-MM-DD")
+    const date = item.start_date!.format("YYYY-MM-DD")
     if (!acc[date]) {
       acc[date] = []
     }

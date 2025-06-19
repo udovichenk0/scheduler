@@ -1,4 +1,5 @@
 import { SpritesMap } from "@/shared/ui/icon/sprite.h"
+import { SDate } from "@/shared/lib/date/lib"
 
 import { TaskStatus, TaskType } from "./model/task.model"
 
@@ -12,8 +13,8 @@ export type Task = {
   description: Nullable<string>
   status: Status
   type: Type
-  start_date: Nullable<Date>
-  due_date: Nullable<Date>
+  start_date: Nullable<SDate>
+  due_date: Nullable<SDate>
   user_id: Nullable<string>
   date_created: Date
   is_trashed: boolean
@@ -23,8 +24,8 @@ export type EditableTaskFields = {
   title: string
   description: Nullable<string>
   status: Status
-  start_date: Nullable<Date>
-  due_date: Nullable<Date>
+  start_date: Nullable<SDate>
+  due_date: Nullable<SDate>
   type: Type
 }
 

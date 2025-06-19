@@ -1,4 +1,3 @@
-import dayjs from "dayjs"
 import { useRef, useState, useEffect, KeyboardEvent } from "react"
 import { useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
@@ -8,29 +7,25 @@ import { TaskStatuses } from "@/entities/task/config"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { isEnter } from "@/shared/lib/key-utils"
+import { SDate } from "@/shared/lib/date/lib"
 
 import { $$createTask } from "../model"
 
 import { CellHeader } from "./cell-header"
 
-export type CellProps = {
-  date: number
-  month: number
-  year: number
-}
 export const Cell = ({
-  cell,
+  date,
   tasks,
   onTaskClick,
   onShowMoreTasks,
   onClick,
   onUpdateStatus,
 }: {
-  cell: CellProps
+  date: SDate
   tasks?: Task[]
   onTaskClick: (target: HTMLButtonElement, task: Task) => void
   onShowMoreTasks: (tasks: Task[]) => void
-  onClick: (target: HTMLButtonElement, date: Date) => void
+  onClick: (target: HTMLButtonElement, date: SDate) => void
   onUpdateStatus: ({ id, status }: { id: TaskId; status: Status }) => void
 }) => {
   const taskContainerRef = useRef<HTMLDivElement>(null)
@@ -39,15 +34,12 @@ export const Cell = ({
 
   const [showMore, setShowMore] = useState(false)
 
-  const { date, month, year } = cell
-
   const setDate = useUnit($$createTask.setDate)
 
-  const cellDate = new Date(year, month, date)
   const clickOnCell = () => {
     const target = cellRef.current as unknown as HTMLButtonElement
-    onClick(target, cellDate)
-    setDate(cellDate)
+    onClick(target, date)
+    setDate(date)
   }
 
   const onKeyDown = (e: KeyboardEvent) => {
@@ -55,8 +47,6 @@ export const Cell = ({
       clickOnCell()
     }
   }
-
-  const isToday = dayjs(cellDate).isSame(dayjs(), "date")
 
   function shouldShowMore() {
     const taskContainer = taskContainerRef.current as HTMLDivElement
@@ -89,10 +79,10 @@ export const Cell = ({
       tabIndex={0}
       onKeyDown={onKeyDown}
       className={`flex min-h-[100px] w-full flex-col overflow-x-clip border-b focus-visible:ring ${
-        isToday && "border-t-accent border-t"
+        date.isToday && "border-t-accent border-t"
       } border-cBorder text-cCalendarFont border-r p-2`}
     >
-      <CellHeader cell={cell} />
+      <CellHeader cell={date} />
       <div
         ref={taskContainerRef}
         className="flex h-[calc(100%-3rem)] w-full flex-col flex-wrap gap-x-2 gap-y-1"

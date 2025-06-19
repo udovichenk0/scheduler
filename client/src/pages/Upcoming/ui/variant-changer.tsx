@@ -1,5 +1,4 @@
 import { clsx } from "clsx"
-import dayjs, { Dayjs } from "dayjs"
 import { useUnit } from "effector-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -11,7 +10,7 @@ import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
 import { Root } from "@/shared/ui/tab"
-import { getToday } from "@/shared/lib/date/get-date.ts"
+import { SDate, getToday, sdate } from "@/shared/lib/date/lib"
 
 import { generateDaysOfWeek } from "../config"
 
@@ -22,13 +21,13 @@ export function UpcomingVariantChanger({
   upcomingDate,
   $tasksByDateKv,
 }: {
-  setUpcomingVariant: (date: Nullable<Dayjs>) => void
-  upcomingDate: Nullable<Dayjs>
+  setUpcomingVariant: (date: Nullable<SDate>) => void
+  upcomingDate: Nullable<SDate>
   $tasksByDateKv: Store<Nullable<Record<string, Task[]>>>
 }) {
   const [week, setWeek] = useState(0)
   const [dayList, setDayList] = useState(() => generateDaysOfWeek(week))
-  const isWeekSameOrAfter = dayjs(dayList[0]).add(-7, "day").isBefore(dayjs())
+  const isWeekSameOrAfter = dayList[0].subDay(6).isBeforeDate(sdate())
   const tasksByDate = useUnit($tasksByDateKv)
   const { t } = useTranslation()
   const changeWeek = (week: number) => {
@@ -53,7 +52,7 @@ export function UpcomingVariantChanger({
             title={t("task.today")}
             className={clsx(style.active, "px-2 pb-2")}
             onClick={() => setUpcomingVariant(getToday())}
-            data-active={dayjs(upcomingDate).isToday()}
+            data-active={upcomingDate?.isToday}
           >
             <Icon name="common/outlined-star" className="text-[21px]" />
           </Root.Trigger>
@@ -66,14 +65,14 @@ export function UpcomingVariantChanger({
                 value="date"
                 key={id}
                 onClick={() => setUpcomingVariant(date)}
-                data-active={date.isSame(upcomingDate)}
+                data-active={upcomingDate && date.isSameDate(upcomingDate)}
                 className={clsx(
                   style.active,
                   "text-cIconDefault relative w-full py-2 text-sm",
                 )}
               >
-                <span>{t(SHORT_WEEKS_NAMES[date.day()]).slice(0, 2)}. </span>
-                <span className="mr-1 font-bold">{date.date()}</span>
+                <span>{t(SHORT_WEEKS_NAMES[date.day]).slice(0, 2)}. </span>
+                <span className="mr-1 font-bold">{date.date}</span>
                 {isAnyTask && (
                   <span className="after:bg-cIconDefault after:absolute after:top-1/2 after:h-[5px] after:w-[5px] after:-translate-y-1/2 after:rounded-full after:content-['']"></span>
                 )}

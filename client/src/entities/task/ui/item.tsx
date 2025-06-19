@@ -1,4 +1,3 @@
-import dayjs from "dayjs"
 import { Ref, useRef } from "react"
 import { Link } from "atomic-router-react"
 import { t } from "i18next"
@@ -10,6 +9,7 @@ import { routes } from "@/shared/routing/router.ts"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 import { Modal } from "@/shared/ui/modal"
+import { SDate, sdate } from "@/shared/lib/date/lib"
 
 import { TaskStatuses } from "../config"
 import { Task, TaskId, Status, Type } from "../type"
@@ -34,8 +34,8 @@ export const TaskItem = ({
     dueDate,
     id,
   }: {
-    startDate: Nullable<Date>
-    dueDate: Nullable<Date>
+    startDate: Nullable<SDate>
+    dueDate: Nullable<SDate>
     id: TaskId
   }) => void
   onUpdateStatus?: ({ id, status }: { status: Status; id: TaskId }) => void
@@ -47,7 +47,7 @@ export const TaskItem = ({
 }) => {
   const { title, status, start_date, due_date } = task
 
-  const isSameDateOrAfter = dayjs(start_date).isSameOrAfter(dayjs())
+  const isSameDateOrAfter = start_date?.isSameDateOrAfter(sdate())
 
   if (!isShown) {
     return null
@@ -110,7 +110,7 @@ export const TaskItem = ({
           />
           <div className="h-full w-full py-2" onDoubleClick={onDoubleClick}>
             <div className="flex">
-              {dateLabel && start_date && !dayjs(start_date).isToday() && (
+              {dateLabel && start_date && start_date.isToday && (
                 <span
                   className={`mr-2 rounded-[5px] px-[5px] text-xs ${
                     isSameDateOrAfter
@@ -122,7 +122,7 @@ export const TaskItem = ({
                 </span>
               )}
               <div className="flex items-center">
-                {dayjs(start_date).isToday() && (
+                {start_date?.isToday && (
                   <Icon
                     name="common/filled-star"
                     className="text-accent mr-[6px] text-[9px]"
@@ -174,13 +174,11 @@ const TypeLable = ({
   )
 }
 
-function normilizeDate(date: Date) {
-  const dayjsDate = dayjs(date)
-  if (dayjsDate.year() == dayjs().year()) {
-    return `${t(LONG_MONTHS_NAMES[dayjsDate.month()])} ${dayjsDate.date()}`
+function normilizeDate(date: SDate) {
+  const curDate = sdate()
+  if (date.isSameYear(curDate)) {
+    return `${t(LONG_MONTHS_NAMES[date.month])} ${date.date}`
   } else {
-    return `${dayjsDate.year()} ${t(
-      LONG_MONTHS_NAMES[dayjsDate.month()],
-    )} ${dayjsDate.date()}`
+    return `${date.year} ${t(LONG_MONTHS_NAMES[date.month])} ${date.date}`
   }
 }

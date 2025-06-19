@@ -19,6 +19,7 @@ import {
   createUpdateDateDto,
   toApiTaskFields,
 } from "@/shared/api/task/task.dto.ts"
+import { SDate } from "@/shared/lib/date/lib"
 
 export const updateTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
   const $$modifyTask = modifyTaskFactory({})
@@ -37,8 +38,8 @@ export const updateTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
   }>()
   const dateChangedAndUpdated = createEvent<{
     id: TaskId
-    startDate: Nullable<Date>
-    dueDate: Nullable<Date>
+    startDate: Nullable<SDate>
+    dueDate: Nullable<SDate>
   }>()
   const init = createEvent<Task>()
 

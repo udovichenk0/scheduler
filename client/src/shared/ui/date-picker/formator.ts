@@ -1,16 +1,14 @@
-import dayjs, { Dayjs } from "dayjs"
+import { SDate, sdate } from "@/shared/lib/date/lib"
 
-import { hasTimePart } from "@/shared/lib/date/has-time-part"
-
-export function formatDate(date: Dayjs) {
+export function formatDate(date: SDate) {
   let formattedDate = ""
-  if (date.isToday()) {
+  if (date.isToday) {
     formattedDate = "Today"
   }
-  if (date.isTomorrow()) {
+  if (date.isTomorrow) {
     formattedDate = "Tomorrow"
   }
-  const diff = date.diff(dayjs(), "day")
+  const diff = date.dayDiff(sdate())
   if (diff <= 6 && !formattedDate) {
     formattedDate = date.format("dddd")
   }
@@ -19,7 +17,7 @@ export function formatDate(date: Dayjs) {
     formattedDate = date.format("MM/DD/YY")
   }
 
-  const hasTime = hasTimePart(date)
+  const hasTime = date.hasTime
   if (hasTime) {
     const time = date.format("MM/DD/YY [at] hh:mm a").split(" at ")[1]
     return `${formattedDate} at ${time}`

@@ -1,6 +1,5 @@
 import { useUnit } from "effector-react"
 import { useContext, useEffect } from "react"
-import { Dayjs } from "dayjs"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { EditableTask } from "@/widgets/editable-task"
@@ -12,6 +11,7 @@ import { TaskId } from "@/shared/api/task/task.dto.ts"
 import { ModalName } from "@/shared/lib/modal/modal-names"
 import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { useSelectItem } from "@/shared/lib/use-select-item"
+import { SDate } from "@/shared/lib/date/lib"
 
 import { TaskManagerContext } from "../model"
 
@@ -22,7 +22,7 @@ export const TasksByDate = ({
 }: {
   onSelectTaskId: (task: Nullable<TaskId>) => void
   tasks: Task[]
-  date: Dayjs
+  date: SDate
 }) => {
   const { $$updateTask, $$createTask } = useContext(TaskManagerContext)
 
@@ -38,7 +38,7 @@ export const TasksByDate = ({
     useDisclosure({ id: ModalName.CreateTaskForm, onClose: onCreateTask })
 
   useEffect(() => {
-    onChangeCreateDate({ startDate: date.toDate(), dueDate: null })
+    onChangeCreateDate({ startDate: date, dueDate: null })
   }, [date])
 
   return (

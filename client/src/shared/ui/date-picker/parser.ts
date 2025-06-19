@@ -1,7 +1,6 @@
 import createFuzzySearch from "@nozbe/microfuzz"
-import dayjs, { Dayjs } from "dayjs"
 
-import { hasTimePart } from "@/shared/lib/date/has-time-part"
+import { SDate, sdate } from "@/shared/lib/date/lib"
 
 import { validateAmPm, validateHour, validateMin } from "./validator"
 import { formatDate } from "./formator"
@@ -40,12 +39,11 @@ function parseNaturalDates(tokens: string[]) {
   const naturalDatesResult = naturalDatesSearch(naturalDate)
   const time = getTime(tokens.slice(1))
   const dates = naturalDatesResult.map(({ item }) => mapShortcutToDate(item))
-
   if (dates.length > 1) {
     return dates.map(({ date }) => ({ hint: formatDate(date), date }))
   } else if (dates.length === 1) {
     const { date, hasTimePart } = dates[0]
-    if (!hasTimePart) {
+    if (hasTimePart) {
       const dateWithTime = setTime(date, time)
       return [{ hint: formatDate(dateWithTime), date: dateWithTime }]
     }
@@ -62,7 +60,24 @@ function parseRelativeDates(tokens: string[]) {
 
   if (relativeDates.length && relativeNum) {
     const relativeDate = relativeDates[0].item as BaseWord
-    const dateWithTime = setTime(dayjs().add(relativeNum, relativeDate), time)
+    let date: SDate = sdate()
+    switch (relativeDate) {
+      case "day":
+        date = date.addDay(relativeNum)
+        break
+      case "week":
+        date = date.addWeek(relativeNum)
+        break
+      case "month":
+        date = date.addMonth(relativeNum)
+        break
+      case "year":
+        date = date.addYear(relativeNum)
+        break
+    }
+
+    if (!date) return []
+    const dateWithTime = setTime(date, time)
 
     return [
       {
@@ -74,9 +89,10 @@ function parseRelativeDates(tokens: string[]) {
 }
 function parseDate(tokens: string[]) {
   const dateStr = tokens[0]
-  if (!dayjs(dateStr).isValid()) return
+  const date = sdate(dateStr)
+  if (!date.isValid || !dateStr.length) return
   const time = getTime(tokens.slice(1))
-  const dateWithTime = setTime(dayjs(dateStr), time)
+  const dateWithTime = setTime(date, time)
   return [{ hint: formatDate(dateWithTime), date: dateWithTime }]
 }
 
@@ -88,15 +104,15 @@ function parseTime(tokens: string[]) {
 
   if (timeResult.length) {
     return timeResult.map(({ item }) => {
-      const dateWithTime = setTime(dayjs(), getTime(tokens))
+      const dateWithTime = setTime(sdate(), getTime(tokens))
       return {
         hint: item,
         date: dateWithTime,
       }
     })
   } else {
-    const dateWithTime = setTime(dayjs(), getTime(tokens))
-    if (!hasTimePart(dateWithTime)) return
+    const dateWithTime = setTime(sdate(), getTime(tokens))
+    if (!dateWithTime.hasTime) return
     return [
       {
         hint: dateWithTime.format("h:mm a"),
@@ -119,11 +135,11 @@ function getTime(tokens: string[]): Nullable<Time> {
   }
 }
 
-function setTime(date: Dayjs, time: Nullable<Time>) {
+function setTime(date: SDate, time: Nullable<Time>) {
   if (time) {
-    return date.set("hour", time.hour).set("minute", time.minute)
+    return date.setHour(time.hour).setMinute(time.minute)
   }
-  return date.set("hour", 0).set("minute", 0).set("second", 0)
+  return date.setHour(0).setMinute(0).setSecond(0)
 }
 
 function constructTime(inputTime: string, ampm?: string): Time {
