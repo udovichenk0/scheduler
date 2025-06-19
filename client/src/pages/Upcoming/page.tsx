@@ -7,7 +7,6 @@ import { Layout } from "@/widgets/layout/main/ui.tsx"
 import { Sort } from "@/entities/task/ui/sorting.tsx"
 import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
 
-import { useDocumentTitle } from "@/shared/lib/react/use-document.title.ts"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { Root } from "@/shared/ui/tab"
@@ -35,7 +34,6 @@ import { SORT_CONFIG } from "./config"
 
 const Upcoming = () => {
   const { t } = useTranslation()
-  useDocumentTitle(t("task.upcoming"))
   const upcomingTasks = useUnit($tasks)
   const tasksByDate = useUnit($tasksByDate)
   const upcomingDate = useUnit($upcomingDate)
@@ -54,7 +52,7 @@ const Upcoming = () => {
   const [selectedTaskId, setSelectedTaskId] = useState<Nullable<string>>(null)
 
   return (
-    <Layout>
+    <Layout title={t("task.upcoming")}>
       <Layout.Header
         slot={
           <>

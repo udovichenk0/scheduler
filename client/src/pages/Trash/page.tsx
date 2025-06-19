@@ -6,7 +6,6 @@ import { Layout } from "@/widgets/layout/main/ui.tsx"
 
 import { TaskItem } from "@/entities/task/ui/item.tsx"
 
-import { useDocumentTitle } from "@/shared/lib/react/use-document.title.ts"
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { useSelectItem } from "@/shared/lib/use-select-item"
@@ -14,8 +13,6 @@ import { useSelectItem } from "@/shared/lib/use-select-item"
 import { $$deleteTask, $trashTasks } from "./model"
 
 const Trash = () => {
-  useDocumentTitle(t("task.trash"))
-
   const tasks = useUnit($trashTasks)
   const onDeleteTask = useUnit($$deleteTask.taskDeletedById)
   const onDeleteAllTasks = useUnit($$deleteTask.allTasksDeleted)
@@ -41,7 +38,7 @@ const Trash = () => {
   })
 
   return (
-    <Layout>
+    <Layout title={t("task.trash")}>
       <Layout.Header
         slot={
           <Button

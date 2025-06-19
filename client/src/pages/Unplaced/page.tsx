@@ -10,7 +10,6 @@ import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
 import { Sort } from "@/entities/task/ui/sorting"
 
 import { NoTasks } from "@/shared/ui/no-tasks"
-import { useDocumentTitle } from "@/shared/lib/react/use-document.title.ts"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { useSelectItem } from "@/shared/lib/use-select-item"
@@ -27,7 +26,6 @@ import {
 
 const Unplaced = () => {
   const { t } = useTranslation()
-  useDocumentTitle(t("task.unplaced"))
 
   const tasks = useUnit($unplacedTasks)
   const activeSort = useUnit($$sort.$sortType)
@@ -67,7 +65,7 @@ const Unplaced = () => {
   })
 
   return (
-    <Layout>
+    <Layout title={t("task.unplaced")}>
       <Layout.Header
         iconName="common/cross-arrows"
         title={t("task.unplaced")}

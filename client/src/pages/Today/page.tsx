@@ -13,7 +13,6 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { TaskId } from "@/shared/api/task/task.dto.ts"
-import { useDocumentTitle } from "@/shared/lib/react/use-document.title.ts"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { useSelectItem } from "@/shared/lib/use-select-item"
@@ -34,7 +33,6 @@ import {
 
 const Today = () => {
   const { t } = useTranslation()
-  useDocumentTitle(t("task.today"))
   const activeSort = useUnit($$sort.$sortType)
 
   const onSortChange = useUnit($$sort.sort)
@@ -53,7 +51,7 @@ const Today = () => {
   useGate(gate)
 
   return (
-    <Layout>
+    <Layout title={t("task.today")}>
       <Layout.Header
         iconName="common/outlined-star"
         title={t("task.today")}

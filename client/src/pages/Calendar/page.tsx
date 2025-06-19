@@ -6,14 +6,13 @@ import { Layout } from "@/widgets/layout/main/ui.tsx"
 import { ExpandedTask } from "@/widgets/expanded-task"
 
 import { CloseButton, Modal } from "@/shared/ui/modal"
-import { useDocumentTitle } from "@/shared/lib/react/use-document.title.ts"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { TaskId } from "@/shared/api/task/task.dto.ts"
 import { Icon } from "@/shared/ui/icon"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { ModalName } from "@/shared/lib/modal/modal-names"
 import { SDate, sdate } from "@/shared/lib/date/lib"
+import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
+import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 
 import { Calendar } from "./ui/calendar-table"
 import {
@@ -31,7 +30,6 @@ const CalendarPage = () => {
   const { t } = useTranslation()
   const taskRef = useRef<HTMLButtonElement>(null)
   const cellRef = useRef<HTMLButtonElement>(null)
-  useDocumentTitle(t("task.calendar"))
 
   const mappedTasks = useUnit($mappedTasks)
   const onSetMoreTasks = useUnit(setMoreTasks)
@@ -66,7 +64,7 @@ const CalendarPage = () => {
   } = useDisclosure({ id: ModalName.MoreTasksModal })
 
   return (
-    <Layout>
+    <Layout title={t("task.calendar")}>
       <Layout.Header
         iconName="common/calendar"
         title={<Title date={headerDate} />}

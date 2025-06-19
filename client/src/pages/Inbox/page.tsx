@@ -10,7 +10,6 @@ import { Sort } from "@/entities/task/ui/sorting.tsx"
 import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
 
 import { NoTasks } from "@/shared/ui/no-tasks"
-import { useDocumentTitle } from "@/shared/lib/react/use-document.title.ts"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { useSelectItem } from "@/shared/lib/use-select-item"
@@ -27,7 +26,6 @@ import {
 
 const Inbox = () => {
   const { t } = useTranslation()
-  useDocumentTitle(t("task.inbox"))
   const tasks = useUnit($inboxTasks)
 
   const activeSort = useUnit($$sort.$sortType)
@@ -64,7 +62,7 @@ const Inbox = () => {
   })
 
   return (
-    <Layout>
+    <Layout title={t("task.inbox")}>
       <Layout.Header
         slot={
           <>
