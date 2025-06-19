@@ -8,8 +8,8 @@ import { Task } from "@/entities/task/type"
 
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { TaskId } from "@/shared/api/task/task.dto.ts"
-import { ModalName } from "@/shared/lib/modal/modal-names"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
+import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
+import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { useSelectItem } from "@/shared/lib/use-select-item"
 import { SDate } from "@/shared/lib/date/lib"
 

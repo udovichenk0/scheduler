@@ -7,8 +7,8 @@ import { EditableTask } from "@/widgets/editable-task"
 import { Task } from "@/entities/task/type.ts"
 
 import { TaskId } from "@/shared/api/task/task.dto.ts"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { ModalName } from "@/shared/lib/modal/modal-names"
+import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
+import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { useSelectItem } from "@/shared/lib/use-select-item"
 import { SDate, getToday, sdate } from "@/shared/lib/date/lib"
 

@@ -11,8 +11,8 @@ import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
 
 import { NoTasks } from "@/shared/ui/no-tasks"
 import { useDocumentTitle } from "@/shared/lib/react/use-document.title.ts"
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
-import { ModalName } from "@/shared/lib/modal/modal-names"
+import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
+import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { useSelectItem } from "@/shared/lib/use-select-item"
 
 import { SORT_CONFIG } from "./config"

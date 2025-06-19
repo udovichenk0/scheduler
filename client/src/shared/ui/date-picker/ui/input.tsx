@@ -102,10 +102,11 @@ export const DateInput = ({
       <Modal
         label="Select date"
         isOpened={isOpened}
-        className="border-0!"
+        portal={false}
+        overlay={false}
         closeModal={close}
       >
-        <Modal.Body className="border-0!">
+        <Modal.Content className="w-full mt-2">
           <div
             ref={dialog}
             className="bg-main-dark text-cFont absolute top-full mt-2 flex max-h-80 w-full flex-col items-start overflow-y-auto rounded-lg p-2 shadow-lg"
@@ -120,7 +121,7 @@ export const DateInput = ({
               </button>
             ))}
           </div>
-        </Modal.Body>
+        </Modal.Content>
       </Modal>
     </div>
   )
