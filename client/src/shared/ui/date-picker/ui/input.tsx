@@ -1,13 +1,13 @@
 import { ReactNode, RefObject, useEffect, useRef, useState } from "react"
 import clsx from "clsx"
 
-import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
 import { SDate } from "@/shared/lib/date/lib"
 
 import { Modal } from "../../modal"
 import { parseDateInput } from "../lib"
 import { formatDate } from "../formator"
 import { Hint } from "../type"
+import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 
 type DateInputProps = {
   placeholder: string
@@ -109,7 +109,7 @@ export const DateInput = ({
         <Modal.Content className="w-full mt-2">
           <div
             ref={dialog}
-            className="bg-main-dark text-cFont absolute top-full mt-2 flex max-h-80 w-full flex-col items-start overflow-y-auto rounded-lg p-2 shadow-lg"
+            className="bg-main-dark text-cFont top-full flex max-h-80 w-full flex-col items-start overflow-y-auto rounded-lg shadow-lg"
           >
             {hints.map((hint) => (
               <button
