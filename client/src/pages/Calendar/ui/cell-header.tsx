@@ -1,16 +1,15 @@
-import dayjs from "dayjs"
 import { useTranslation } from "react-i18next"
 
 import { SHORT_MONTHS_NAMES } from "@/shared/config/constants"
+import { SDate, sdate } from "@/shared/lib/date/lib"
 
-import { CellProps } from "./cell"
-
-export const CellHeader = ({ cell }: { cell: CellProps }) => {
+export const CellHeader = ({ cell }: { cell: SDate }) => {
   const { t } = useTranslation()
-  const { date, month, year } = cell
-  const isToday = dayjs(new Date(year, month, date)).isSame(dayjs(), "date")
-  const isPast = dayjs(new Date(year, month, date)).isBefore(dayjs(), "date")
-  const isFirstDate = cell.date === 1
+
+  const isPast = cell.isBeforeDate(sdate())
+  const month = cell.month
+  const date = cell.date
+  const isFirstDate = date === 1
 
   return (
     <div className="mb-1 flex items-center justify-end gap-1">
@@ -19,7 +18,7 @@ export const CellHeader = ({ cell }: { cell: CellProps }) => {
       )}
       <div
         className={`${isPast && "opacity-30"} text-end ${
-          isToday &&
+          cell.isToday &&
           "bg-cFocus flex h-6 w-6 items-center justify-center rounded-full p-2"
         }`}
       >

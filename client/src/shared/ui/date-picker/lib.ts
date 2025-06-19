@@ -1,36 +1,37 @@
-import dayjs, { Dayjs } from "dayjs"
+import { SDate, sdate } from "@/shared/lib/date/lib"
 
 import { parseTokens } from "./parser"
 
 type Week = {
-  dates: Dayjs[]
+  dates: SDate[]
 }
 
 type Month = {
   weeks: Week[]
-  date: Dayjs
+  date: SDate
 }
 
-const generateWeek = (startOfWeek: Dayjs) => {
+const generateWeek = (startOfWeek: SDate) => {
   const week: Week = { dates: [] }
   for (let i = 0; i < 7; i++) {
-    const date = startOfWeek.add(i, "day")
+    const date = startOfWeek.addDay(i)
     week.dates.push(date)
   }
   return week
 }
 
-export const generateCalendar = (dayjsDate: Dayjs = dayjs()) => {
+export const generateCalendar = (date: SDate = sdate()) => {
   const months: Month[] = []
   for (let i = 0; i < 5; i++) {
-    const startOfMonth = dayjsDate.startOf("month").add(i, "month")
-    const lastDate = startOfMonth.endOf("month").date()
-    const day = startOfMonth.day()
+    const startOfMonth = date.startMonth().addMonth(i)
+
+    const lastDate = startOfMonth.endMonth().dayOfMonth
+    const day = startOfMonth.day
     const weekCount = Math.floor((lastDate + day) / 7)
-    const startOfWeek = startOfMonth.subtract(day, "day")
+    const startOfWeek = startOfMonth.subDay(day)
     const weeks: Week[] = []
     for (let k = 0; k < weekCount; k++) {
-      weeks.push(generateWeek(startOfWeek.add(k, "week")))
+      weeks.push(generateWeek(startOfWeek.addWeek(k)))
     }
     months.push({ weeks: weeks, date: startOfMonth })
   }

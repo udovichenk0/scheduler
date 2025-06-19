@@ -1,7 +1,5 @@
 import { $$taskModel } from "@/entities/task/model/task.model.ts"
 
-import { isToday } from "@/shared/lib/date/comparison.ts"
-
 export const $inboxCounter = $$taskModel.$tasks.map((tasks) => {
   return (
     tasks?.reduce((counter, task) => {
@@ -19,7 +17,7 @@ export const $todayCounter = $$taskModel.$tasks.map((tasks) => {
       if (
         task.type == "unplaced" &&
         !task.is_trashed &&
-        isToday(task.start_date)
+        task.start_date?.isToday
       ) {
         return counter + 1
       }

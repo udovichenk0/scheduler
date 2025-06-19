@@ -1,8 +1,8 @@
 import { ReactNode, RefObject, useEffect, useRef, useState } from "react"
-import dayjs from "dayjs"
 import clsx from "clsx"
 
-import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
+import { SDate } from "@/shared/lib/date/lib"
 
 import { Modal } from "../../modal"
 import { parseDateInput } from "../lib"
@@ -13,8 +13,8 @@ type DateInputProps = {
   placeholder: string
   icon?: ReactNode
   onClick?: () => void
-  onSelectDate: (date: Date) => void
-  value: Nullable<Date>
+  onSelectDate: (date: SDate) => void
+  value: Nullable<SDate>
   className?: string
   ref?: RefObject<Nullable<HTMLInputElement>>
 }
@@ -30,7 +30,7 @@ export const DateInput = ({
 }: DateInputProps) => {
   const dialog = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const [input, setInput] = useState(value ? formatDate(dayjs(value)) : "")
+  const [input, setInput] = useState(value ? formatDate(value) : "")
   const [hints, setHints] = useState<Hint[]>([])
   const { open, close, isOpened } = useDisclosure({ prefix: "date-hint" })
 
@@ -54,14 +54,14 @@ export const DateInput = ({
     }
   }
 
-  const onSelect = (hint: { date: dayjs.Dayjs; hint: string }) => {
+  const onSelect = (hint: { date: SDate; hint: string }) => {
     setInput(hint.hint)
-    onSelectDate(hint.date.toDate())
+    onSelectDate(hint.date)
     close()
   }
 
   useEffect(() => {
-    setInput(value ? formatDate(dayjs(value)) : "")
+    setInput(value ? formatDate(value) : "")
   }, [value])
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export const DateInput = ({
         !dialog.current?.contains(target) &&
         !inputRef.current?.contains(target)
       ) {
-        setInput(value ? formatDate(dayjs(value)) : "")
+        setInput(value ? formatDate(value) : "")
       }
     }
     document.addEventListener("mousedown", onBlur)
@@ -81,7 +81,7 @@ export const DateInput = ({
   }, [value])
 
   return (
-    <div ref={inputRef} className="relative w-full">
+    <div ref={inputRef} className="z-100 relative w-full">
       <div
         className={clsx(
           "ring-cSecondBorder bg-main-light group flex rounded-md px-2 focus-within:ring",
@@ -109,7 +109,7 @@ export const DateInput = ({
         <Modal.Content className="w-full mt-2">
           <div
             ref={dialog}
-            className="bg-main-dark z-100 text-cFont top-full flex max-h-80 w-full flex-col items-start overflow-y-auto rounded-lg shadow-lg"
+            className="bg-main-dark text-cFont absolute top-full mt-2 flex max-h-80 w-full flex-col items-start overflow-y-auto rounded-lg p-2 shadow-lg"
           >
             {hints.map((hint) => (
               <button

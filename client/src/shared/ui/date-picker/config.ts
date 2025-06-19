@@ -1,17 +1,17 @@
-import { Dayjs } from "dayjs"
-
 import {
-  getToday,
+  SDate,
   getFriday,
   getLater,
   getMonday,
   getSaturday,
   getSunday,
   getThursday,
+  getToday,
   getTomorrow,
   getTuesday,
   getWednesday,
-} from "@/shared/lib/date/get-date"
+  sdate,
+} from "@/shared/lib/date/lib"
 
 export const timeList = [
   "12:00 am",
@@ -130,17 +130,17 @@ export const dateShortCuts = Object.values(DateShortCut) as string[]
 export const mapShortcutToDate = (
   word: (typeof DateShortCut)[keyof typeof DateShortCut],
 ) => {
-  const data: Record<string, { date: Dayjs; hasTimePart: boolean }> = {
+  const data: Record<string, { date: SDate; hasTimePart: boolean }> = {
     today: { date: getToday(), hasTimePart: false },
     tomorrow: { date: getTomorrow(), hasTimePart: false },
     later: { date: getLater(), hasTimePart: true },
-    sunday: { date: getSunday().startOf("date"), hasTimePart: false },
-    saturday: { date: getSaturday().startOf("date"), hasTimePart: false },
-    friday: { date: getFriday().startOf("date"), hasTimePart: false },
-    thursday: { date: getThursday().startOf("date"), hasTimePart: false },
-    wednesday: { date: getWednesday().startOf("date"), hasTimePart: false },
-    tuesday: { date: getTuesday().startOf("date"), hasTimePart: false },
-    monday: { date: getMonday().startOf("date"), hasTimePart: false },
+    sunday: { date: sdate(getSunday()).startDate(), hasTimePart: false },
+    saturday: { date: sdate(getSaturday()).startDate(), hasTimePart: false },
+    friday: { date: sdate(getFriday()).startDate(), hasTimePart: false },
+    thursday: { date: sdate(getThursday()).startDate(), hasTimePart: false },
+    wednesday: { date: sdate(getWednesday()).startDate(), hasTimePart: false },
+    tuesday: { date: sdate(getTuesday()).startDate(), hasTimePart: false },
+    monday: { date: sdate(getMonday()).startDate(), hasTimePart: false },
   }
   return data[word]
 }

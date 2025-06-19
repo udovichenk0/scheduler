@@ -10,6 +10,7 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { Container } from "@/shared/ui/general/container"
+import { SDate } from "@/shared/lib/date/lib"
 import { isEsc } from "@/shared/lib/key-utils"
 import { ClickOutsideLayer } from "@/shared/lib/click-outside"
 
@@ -18,15 +19,15 @@ type TaskFactory = {
   $description: StoreWritable<Nullable<string>>
   $status: StoreWritable<Status>
   $type: StoreWritable<Type>
-  $startDate: StoreWritable<Nullable<Date>>
-  $dueDate: StoreWritable<Nullable<Date>>
+  $startDate: StoreWritable<Nullable<SDate>>
+  $dueDate: StoreWritable<Nullable<SDate>>
   statusChanged: EventCallable<Status>
   descriptionChanged: EventCallable<Nullable<string>>
   titleChanged: EventCallable<string>
   typeChanged: EventCallable<Type>
   dateChanged: EventCallable<{
-    startDate: Nullable<Date>
-    dueDate: Nullable<Date>
+    startDate: Nullable<SDate>
+    dueDate: Nullable<SDate>
   }>
 }
 

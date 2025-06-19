@@ -1,8 +1,8 @@
-import dayjs from "dayjs"
 import { combine, createEvent, createStore, sample, split } from "effector"
 import { spread } from "patronum"
 
 import { bridge } from "@/shared/lib/effector/bridge"
+import { SDate, getToday } from "@/shared/lib/date/lib.ts"
 
 import type {
   Status as Status,
@@ -17,16 +17,16 @@ export const modifyTaskFactory = ({
   defaultDate = null,
 }: {
   defaultType?: Type
-  defaultDate?: Nullable<Date>
+  defaultDate?: Nullable<SDate>
 }) => {
   const statusChanged = createEvent<Status>()
   const titleChanged = createEvent<string>()
   const typeChanged = createEvent<Type>()
   const dateChanged = createEvent<{
-    startDate: Nullable<Date>
-    dueDate: Nullable<Date>
+    startDate: Nullable<SDate>
+    dueDate: Nullable<SDate>
   }>()
-  const setDate = createEvent<Nullable<Date>>()
+  const setDate = createEvent<Nullable<SDate>>()
   const descriptionChanged = createEvent<Nullable<string>>()
   const setStatus = createEvent<Status>()
   const resetFieldsTriggered = createEvent()
@@ -34,8 +34,8 @@ export const modifyTaskFactory = ({
   const $title = createStore("")
   const $description = createStore<Nullable<string>>(null)
   const $status = createStore<Status>(TaskStatus.INPROGRESS)
-  const $startDate = createStore<Nullable<Date>>(defaultDate)
-  const $dueDate = createStore<Nullable<Date>>(null)
+  const $startDate = createStore<Nullable<SDate>>(defaultDate)
+  const $dueDate = createStore<Nullable<SDate>>(null)
   const $type = createStore<Type>(defaultType)
   const $isDirty = createStore(false)
   const $isAllowToSubmit = createStore(false)
@@ -150,7 +150,7 @@ export const modifyTaskFactory = ({
     sample({
       clock: typeChanged,
       filter: (type) => type == TaskType.UNPLACED,
-      fn: () => dayjs().startOf("day").toDate(),
+      fn: () => getToday(),
       target: $startDate,
     })
   })

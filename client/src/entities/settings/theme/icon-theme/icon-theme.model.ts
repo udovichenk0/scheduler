@@ -34,7 +34,6 @@ export const $$accentSettings = singleton(() => {
     if (AccentSchema.safeParse(accent).success) {
       return accent as Accent
     }
-    console.log("here")
     return "blue"
   })
   const initAccentFx = createEffect(() => {

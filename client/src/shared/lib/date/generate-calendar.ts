@@ -1,18 +1,14 @@
-import dayjs from "dayjs"
+import { sdate } from "./lib"
 
 export const generateCalendar = (
-  year = dayjs().year(),
-  month = dayjs().month(),
+  year = sdate().year,
+  month = sdate().month,
 ) => {
-  const firstDayOfMonth = dayjs(new Date(year, month)).day()
+  const firstDayOfMonth = sdate(new Date(year, month)).day
+
   let current = 0 - firstDayOfMonth
   return Array.from({ length: 35 }).map(() => {
     current += 1
-    const currentDate = dayjs(new Date(year, month, current))
-    return {
-      date: currentDate.date(),
-      month: currentDate.month(),
-      year: currentDate.year(),
-    }
+    return sdate(new Date(year, month, current))
   })
 }

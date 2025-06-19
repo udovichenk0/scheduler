@@ -1,6 +1,6 @@
-import { Dayjs } from "dayjs"
+import { SDate } from "@/shared/lib/date/lib"
 
-export type BaseWord = "day" | "week" | "month" | "month"
+export type BaseWord = "day" | "week" | "month" | "year"
 
 export type Time = {
   hour: number
@@ -8,6 +8,6 @@ export type Time = {
 }
 
 export type Hint = {
-  date: Dayjs
+  date: SDate
   hint: string
 }

@@ -1,8 +1,8 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react"
-import dayjs from "dayjs"
 
-import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
-import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
+import { useDisclosure } from "@/shared/lib/modal/use-disclosure"
+import { ModalName } from "@/shared/lib/modal/modal-names"
+import { SDate } from "@/shared/lib/date/lib"
 
 import { Modal } from "../modal"
 import { Button } from "../buttons/main-button"
@@ -25,12 +25,12 @@ export function DatePicker({
   CustomInput,
   onDateChange,
 }: {
-  startDate: Nullable<Date>
-  dueDate: Nullable<Date>
+  startDate: Nullable<SDate>
+  dueDate: Nullable<SDate>
   CustomInput?: ({ onClick }: { onClick: () => void }) => ReactNode
   onDateChange: (data: {
-    startDate: Nullable<Date>
-    dueDate: Nullable<Date>
+    startDate: Nullable<SDate>
+    dueDate: Nullable<SDate>
   }) => void
 }) {
   const [tempStartDate, setTempStartDate] = useState(startDate)
@@ -63,11 +63,15 @@ export function DatePicker({
   }, [startDate, dueDate])
 
   const onSetDate = useCallback(
-    (date: Date) => {
+    (date: SDate) => {
       const dueDateBeforeStart =
-        tempStartDate && dateAction == DateAction.End && date < tempStartDate
+        tempStartDate &&
+        dateAction == DateAction.End &&
+        date.isBefore(tempStartDate)
       const startDateAfterDue =
-        tempDueDate && dateAction == DateAction.Start && date > tempDueDate
+        tempDueDate &&
+        dateAction == DateAction.Start &&
+        date.isAfter(tempDueDate)
 
       if (dateAction == DateAction.Start) {
         setTempStartDate(date)
@@ -86,17 +90,15 @@ export function DatePicker({
     [tempStartDate, tempDueDate, dateAction],
   )
 
-  const onCellClick = (date: Date) => {
-    const d = dayjs(date)
-    const sdh = tempStartDate?.getHours() || 0
-    const sdm = tempStartDate?.getMinutes() || 0
+  const onCellClick = (date: SDate) => {
+    const sdh = tempStartDate?.hour || 0
+    const sdm = tempStartDate?.minute || 0
 
-    const ddh = tempDueDate?.getHours() || 0
-    const ddm = tempDueDate?.getMinutes() || 0
+    const ddh = tempDueDate?.hour || 0
+    const ddm = tempDueDate?.minute || 0
 
-    const newStartDate = d.set("hour", sdh).set("minute", sdm).toDate()
-    const newDueDate = d.set("hour", ddh).set("minute", ddm).toDate()
-
+    const newStartDate = date.setHour(sdh).setMinute(sdm)
+    const newDueDate = date.setHour(ddh).setMinute(ddm)
     const newDate = dateAction === DateAction.Start ? newStartDate : newDueDate
 
     onSetDate(newDate)

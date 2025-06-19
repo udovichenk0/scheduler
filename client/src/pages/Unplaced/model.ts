@@ -9,7 +9,7 @@ import { createSorting } from "@/entities/task/model/sorting.model"
 import { getTaskModelInstance } from "@/entities/task/model/task.model"
 import { modifyTaskFactory } from "@/entities/task/model/modify.model.ts"
 
-import { getToday } from "@/shared/lib/date/get-date.ts"
+import { getToday } from "@/shared/lib/date/lib"
 
 export const $$sort = createSorting()
 
@@ -37,7 +37,7 @@ export const $$updateTask = updateTaskFactory({ taskModel: $$taskModel })
 export const $$createTask = createTaskFactory({
   $$modifyTask: modifyTaskFactory({
     defaultType: "unplaced",
-    defaultDate: getToday().toDate(),
+    defaultDate: getToday(),
   }),
   taskModel: $$taskModel,
 })

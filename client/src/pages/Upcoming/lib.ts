@@ -1,14 +1,9 @@
-import dayjs, { Dayjs, extend } from "dayjs"
-import isSameOrAfter from "dayjs/plugin/isSameOrAfter"
-import isSameOrBefore from "dayjs/plugin/isSameOrBefore"
-import isTomorrow from "dayjs/plugin/isTomorrow"
-import isToday from "dayjs/plugin/isToday"
-
 import { Task } from "@/entities/task/type.ts"
 
 import { lowerCase } from "@/shared/lib/typography/lower-case.ts"
 import { i18n } from "@/shared/i18n/i18n.ts"
 import { LONG_MONTHS_NAMES, LONG_WEEKS_NAMES } from "@/shared/config/constants"
+import { SDate, sdate } from "@/shared/lib/date/lib"
 
 import {
   generateSequentialDates,
@@ -17,23 +12,16 @@ import {
   MIN_MONTHS_LENGTH,
 } from "./config"
 
-extend(isSameOrAfter)
-extend(isSameOrBefore)
-extend(isTomorrow)
-extend(isToday)
-
 export function getTasksPerDate(tasks: Task[]) {
   return generateSequentialDates().map((date) => {
     const t = tasks.filter(({ start_date }) => {
-      return dayjs(start_date).isSame(date, "date")
+      return start_date?.isSameDate(date)
     })
-    const isCurrentMonth = dayjs().isSame(date, "month")
+    const isCurrentMonth = date.isSameMonth(sdate())
     return {
       tasks: t,
-      title: `${date.date()} ${
-        !isCurrentMonth
-          ? lowerCase(i18n.t(LONG_MONTHS_NAMES[dayjs(date).month()]))
-          : ""
+      title: `${date.date} ${
+        !isCurrentMonth ? lowerCase(i18n.t(LONG_MONTHS_NAMES[date.month])) : ""
       } ${getFormattedDateSuffix(date)}`,
       date,
     }
@@ -41,9 +29,9 @@ export function getTasksPerDate(tasks: Task[]) {
 }
 
 export function getTasksForRemainingMonth(tasks: Task[]) {
-  const firstDay = dayjs().add(MIN_DATES_LENGTH, "day").startOf("date")
+  const firstDay = sdate().addDay(MIN_DATES_LENGTH).startDate()
 
-  const lastDay = dayjs(firstDay).endOf("month")
+  const lastDay = firstDay.endMonth()
 
   const t = tasks.filter(
     ({ start_date }) =>
@@ -56,9 +44,9 @@ export function getTasksForRemainingMonth(tasks: Task[]) {
   )
   return {
     tasks: t,
-    title: `${lowerCase(
-      i18n.t(LONG_MONTHS_NAMES[firstDay.month()]),
-    )} ${firstDay.date()}-${lastDay.date()}`,
+    title: `${lowerCase(i18n.t(LONG_MONTHS_NAMES[firstDay.month]))} ${
+      firstDay.date
+    }-${lastDay.date}`,
     date: firstDay,
   }
 }
@@ -66,26 +54,23 @@ export function getTasksPerMonth(tasks: Task[]) {
   return generateSequentialMonths().map((date) => {
     const row = tasks?.filter(({ start_date }) => {
       if (!start_date) return
-      return (
-        dayjs(start_date).isSame(date, "month") &&
-        dayjs(start_date).isSame(date, "year")
-      )
+      return start_date.isSameMonth(date) && start_date.isSameYear(date)
     })
 
     return {
       tasks: row,
       date,
-      title: `${lowerCase(i18n.t(LONG_MONTHS_NAMES[date.month()]))}`,
+      title: `${lowerCase(i18n.t(LONG_MONTHS_NAMES[date.month]))}`,
     }
   })
 }
 
 export function getTasksForRemainingYear(tasks: Task[]) {
-  const date = dayjs()
-    .add(MIN_DATES_LENGTH, "day")
-    .add(MIN_MONTHS_LENGTH + 1, "month")
-  const firstDate = date.startOf("month")
-  const lastDate = date.endOf("year")
+  const date = sdate()
+    .addDay(MIN_DATES_LENGTH)
+    .addMonth(MIN_MONTHS_LENGTH + 1)
+  const firstDate = date.startMonth()
+  const lastDate = date.endYear()
 
   const t = tasks?.filter(({ start_date }) => {
     return (
@@ -97,33 +82,33 @@ export function getTasksForRemainingYear(tasks: Task[]) {
       })
     )
   })
-  const isLastMonthOfYear = firstDate.isSame(lastDate, "month")
+  const isLastMonthOfYear = firstDate.isSameMonth(lastDate)
   return {
     title: isLastMonthOfYear
-      ? lowerCase(i18n.t(LONG_MONTHS_NAMES[firstDate.month()]))
+      ? lowerCase(i18n.t(LONG_MONTHS_NAMES[firstDate.month]))
       : `${lowerCase(
-          i18n.t(LONG_MONTHS_NAMES[firstDate.month()]),
-        )}\u2013${lowerCase(i18n.t(LONG_MONTHS_NAMES[lastDate.month()]))}`,
+          i18n.t(LONG_MONTHS_NAMES[firstDate.month]),
+        )}\u2013${lowerCase(i18n.t(LONG_MONTHS_NAMES[lastDate.month]))}`,
     tasks: t,
     date: firstDate,
   }
 }
 export function getTasksPerYear(tasks: Task[]) {
-  const futureYear = dayjs()
-    .add(MIN_DATES_LENGTH, "day")
-    .add(MIN_MONTHS_LENGTH, "month")
+  const futureYear = sdate()
+    .addDay(MIN_DATES_LENGTH)
+    .addMonth(MIN_MONTHS_LENGTH)
     .format("YYYY")
   const groupedTasksByYear = tasks.reduce(
     (acc, task) => {
       if (!task.start_date) return acc
-      const taskYear = dayjs(task?.start_date).format("YYYY")
+      const taskYear = task?.start_date.format("YYYY")
       if (taskYear > futureYear) {
         if (acc[taskYear]) {
           acc[taskYear].tasks.push(task)
         } else {
           acc[taskYear] = {
             tasks: [task],
-            date: dayjs(task.start_date).startOf("year"),
+            date: task.start_date.startYear(),
             title: taskYear,
           }
         }
@@ -131,17 +116,17 @@ export function getTasksPerYear(tasks: Task[]) {
       }
       return acc
     },
-    {} as Record<string, { tasks: Task[]; date: Dayjs; title: string }>,
+    {} as Record<string, { tasks: Task[]; date: SDate; title: string }>,
   )
   return Object.values(groupedTasksByYear)
 }
-function getFormattedDateSuffix(date: Dayjs) {
-  if (date.isToday()) {
+function getFormattedDateSuffix(date: SDate) {
+  if (date.isToday) {
     return lowerCase(i18n.t("date.today"))
-  } else if (date.isTomorrow()) {
+  } else if (date.isTomorrow) {
     return lowerCase(i18n.t("date.tomorrow"))
   }
-  return lowerCase(i18n.t(LONG_WEEKS_NAMES[date.day()]))
+  return lowerCase(i18n.t(LONG_WEEKS_NAMES[date.day]))
 }
 
 function isSameDateOrBetween({
@@ -149,12 +134,11 @@ function isSameDateOrBetween({
   firstDate,
   lastDate,
 }: {
-  date: Date
-  firstDate: Dayjs
-  lastDate: Dayjs
+  date: SDate
+  firstDate: SDate
+  lastDate: SDate
 }) {
   const isSameDateOrBetween =
-    dayjs(date).isSameOrAfter(firstDate, "date") &&
-    dayjs(date).isSameOrBefore(lastDate, "date")
+    date.isSameDateOrAfter(firstDate) && date.isSameDateOrBefore(lastDate)
   return isSameDateOrBetween
 }

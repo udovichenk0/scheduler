@@ -2,7 +2,6 @@ import { EventCallable, StoreWritable } from "effector"
 import { useUnit } from "effector-react"
 import { useRef } from "react"
 import { useTranslation } from "react-i18next"
-import dayjs from "dayjs"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { Button } from "@/shared/ui/buttons/main-button"
@@ -13,6 +12,7 @@ import { Modal } from "@/shared/ui/modal"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { EditableContent } from "@/shared/ui/data-entry/editable-content"
+import { SDate } from "@/shared/lib/date/lib"
 
 import { Status as Status, Type as Type } from "../type"
 import { formatTaskDate } from "../lib"
@@ -23,15 +23,15 @@ type TaskFactory = {
   $description: StoreWritable<Nullable<string>>
   $status: StoreWritable<Status>
   $type: StoreWritable<Type>
-  $startDate: StoreWritable<Nullable<Date>>
-  $dueDate: StoreWritable<Nullable<Date>>
+  $startDate: StoreWritable<Nullable<SDate>>
+  $dueDate: StoreWritable<Nullable<SDate>>
   statusChanged: EventCallable<Status>
   descriptionChanged: EventCallable<Nullable<string>>
   titleChanged: EventCallable<string>
   typeChanged: EventCallable<Type>
   dateChanged: EventCallable<{
-    startDate: Nullable<Date>
-    dueDate: Nullable<Date>
+    startDate: Nullable<SDate>
+    dueDate: Nullable<SDate>
   }>
 }
 
@@ -134,7 +134,7 @@ export const ModifyTaskForm = ({
                     className="text-cTaskEditDefault mr-4 size-[18px]"
                   />
                   <span className="text-accent mr-1 text-sm">
-                    {startDate && formatTaskDate(dayjs(startDate))}
+                    {startDate && formatTaskDate(startDate)}
                     {!startDate && "Start"}
                   </span>
                   <Icon
@@ -142,7 +142,7 @@ export const ModifyTaskForm = ({
                     className="text-cTaskEditDefault mr-1"
                   />
                   <span className="text-accent text-sm">
-                    {dueDate && formatTaskDate(dayjs(dueDate))}
+                    {dueDate && formatTaskDate(dueDate)}
                     {!dueDate && "Due"}
                   </span>
                 </Button>

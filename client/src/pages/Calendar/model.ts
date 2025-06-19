@@ -1,4 +1,3 @@
-import dayjs from "dayjs"
 import { combine, createEvent, restore } from "effector"
 
 import { createTaskFactory } from "@/features/manage-task/create"
@@ -10,7 +9,7 @@ import { isUnplaced } from "@/entities/task/lib"
 import { Task } from "@/entities/task/type"
 import { getTaskModelInstance } from "@/entities/task/model/task.model"
 
-import { getToday } from "@/shared/lib/date/get-date.ts"
+import { getToday } from "@/shared/lib/date/lib"
 
 export const setMoreTasks = createEvent<Task[]>()
 export const $moreTasks = restore(setMoreTasks, [])
@@ -27,7 +26,7 @@ export const $$updateTask = updateTaskFactory({ taskModel: $$taskModel })
 export const $$createTask = createTaskFactory({
   $$modifyTask: modifyTaskFactory({
     defaultType: "unplaced",
-    defaultDate: getToday().toDate(),
+    defaultDate: getToday(),
   }),
   taskModel: $$taskModel,
 })
@@ -36,7 +35,7 @@ export const $mappedTasks = $unplacedTasks.map((tasks) => {
   if (!tasks) return null
   return tasks.reduce(
     (acc, task) => {
-      const date = dayjs(task.start_date).format("YYYY-MM-DD")
+      const date = task.start_date!.format("YYYY-MM-DD") //!FIX start_date!.
       if (!task.start_date || task.is_trashed) {
         return acc
       }

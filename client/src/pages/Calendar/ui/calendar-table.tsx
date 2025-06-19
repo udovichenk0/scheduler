@@ -1,4 +1,3 @@
-import dayjs, { Dayjs } from "dayjs"
 import { memo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
@@ -7,6 +6,7 @@ import { Status, Task, TaskId } from "@/entities/task/type"
 import { generateCalendar } from "@/shared/lib/date/generate-calendar"
 import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
 import { Grid } from "@/shared/ui/general/grid"
+import { SDate } from "@/shared/lib/date/lib"
 
 import { MonthSwitcher } from "./month-switcher"
 import { Cell } from "./cell"
@@ -14,11 +14,11 @@ import { Cell } from "./cell"
 type CalendarProps = {
   tasks: Nullable<Record<string, Task[]>>
   onTaskClick: (e: HTMLButtonElement, task: Task) => void
-  onCellClick: (e: HTMLButtonElement, date: Date) => void
+  onCellClick: (e: HTMLButtonElement, date: SDate) => void
   onShowMoreTasks: (tasks: Task[]) => void
   onUpdateStatus: ({ id, status }: { id: TaskId; status: Status }) => void
-  setDate: (date: Dayjs) => void
-  date: Dayjs
+  setDate: (date: SDate) => void
+  date: SDate
 }
 export const Calendar = memo(
   ({
@@ -31,29 +31,27 @@ export const Calendar = memo(
     date,
   }: CalendarProps) => {
     const [calendar, setCalendar] = useState(generateCalendar)
-    const changeMonth = (date: Dayjs) => {
+    const changeMonth = (date: SDate) => {
       setDate(date)
-      setCalendar(generateCalendar(date.year(), date.month()))
+      setCalendar(generateCalendar(date.year, date.month))
     }
     return (
       <>
         <MonthSwitcher date={date} changeMonth={changeMonth} />
         <WeekNames />
         <Grid columns={7} rows={5} className="h-full">
-          {calendar.map((cell) => {
-            const date = dayjs(
-              new Date(cell.year, cell.month, cell.date),
-            ).format("YYYY-MM-DD")
-            const t = tasks?.[date] || []
+          {calendar.map((date) => {
+            const formattedDate = date.format("YYYY-MM-DD")
+            const t = tasks?.[formattedDate] || []
 
             return (
               <Cell
-                key={date}
+                key={formattedDate}
                 onTaskClick={onTaskClick}
                 onClick={onCellClick}
                 onUpdateStatus={onUpdateStatus}
                 onShowMoreTasks={onShowMoreTasks}
-                cell={cell}
+                date={date}
                 tasks={t}
               />
             )

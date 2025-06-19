@@ -1,4 +1,3 @@
-import dayjs, { Dayjs } from "dayjs"
 import { Fragment, ReactNode, useContext, useEffect, useState } from "react"
 import { useUnit } from "effector-react"
 
@@ -11,7 +10,7 @@ import { TaskId } from "@/shared/api/task/task.dto.ts"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { useSelectItem } from "@/shared/lib/use-select-item"
-import { getToday } from "@/shared/lib/date/get-date.ts"
+import { SDate, getToday, sdate } from "@/shared/lib/date/lib"
 
 import { TaskManagerContext } from "../model"
 
@@ -20,18 +19,18 @@ export const UpcomingTasks = ({
   onSelectTaskId,
   tasks,
 }: {
-  onChangeDate: (date: Date) => void
+  onChangeDate: (date: SDate) => void
   onSelectTaskId: (taskId: Nullable<TaskId>) => void
   tasks: {
     tasks: Task[]
     title: string
-    date: Dayjs
+    date: SDate
   }[]
 }) => {
   const { close: onClose } = useDisclosure({ id: ModalName.CreateTaskForm })
-  const [selectedSection, setSelectedSection] = useState<Nullable<Date>>(null)
+  const [selectedSection, setSelectedSection] = useState<Nullable<SDate>>(null)
   useEffect(() => {
-    setSelectedSection(getToday().toDate())
+    setSelectedSection(getToday())
   }, [])
   return (
     <>
@@ -41,16 +40,20 @@ export const UpcomingTasks = ({
             <Header
               onClick={() => {
                 onClose()
-                onChangeDate(new Date(date.toISOString()))
-                setSelectedSection(date.toDate())
+                onChangeDate(sdate(new Date(date.toDate().toISOString()))) //!FIX
+                setSelectedSection(date)
               }}
-              isSelected={dayjs(selectedSection).isSame(date, "day")}
+              isSelected={
+                selectedSection ? date.isSameDate(selectedSection) : false
+              }
             >
               {title}
             </Header>
             <Section
               onSelectTaskId={onSelectTaskId}
-              isSelected={date.isSame(selectedSection, "day")}
+              isSelected={
+                selectedSection ? date.isSameDay(selectedSection) : false
+              }
               tasks={tasks}
             />
           </Fragment>
