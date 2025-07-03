@@ -100,7 +100,7 @@ const CalendarPage = () => {
           isOpened={isCreateTaskFormOpened}
           closeModal={onCloseCreateTaskForm}
         >
-          <Modal.Content className="contents w-[600px]">
+          <Modal.Content className="p-0! w-[600px]">
             <ExpandedTask
               modifyTaskModel={$$createTask}
               dateModifier={true}
@@ -122,13 +122,13 @@ const CalendarPage = () => {
           isOpened={isMoreTasksModalOpened}
           closeModal={onCloseMoreTasksModal}
         >
+          <Modal.Content className="flex w-[400px] flex-col gap-y-1 overflow-auto px-4 pb-4">
           <Modal.Header>
             <span className="text-cFont w-full pl-6 text-center text-[12px]">
               All tasks
             </span>
             <CloseButton close={onCloseMoreTasksModal} />
           </Modal.Header>
-          <Modal.Content className="flex w-[350px] flex-col gap-y-1 overflow-auto px-3">
             <MoreTasks
               $tasks={$moreTasks}
               onTaskClick={(target, task) => {

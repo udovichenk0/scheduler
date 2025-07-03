@@ -102,7 +102,7 @@ const NewOverlay = () => {
 
 const Header = ({ children, className }: DefaultProps) => {
   return (
-    <div className={clsx("flex items-center p-2", className)}>{children}</div>
+    <div className={clsx("flex items-center px-2 pb-4", className)}>{children}</div>
   )
 }
 
