@@ -2,6 +2,7 @@ import { TaskId } from "@/shared/api/task/task.dto.ts"
 
 export const ModalName = {
   CreateTaskForm: "create-task-form",
+  PriorityPicker: "priority-picker",
   UpdateTaskForm: "update-task-form",
   MoreTasksModal: "calendar/more-tasks-modal",
   SidebarSettingsModal: "sidebar/settings-modal",

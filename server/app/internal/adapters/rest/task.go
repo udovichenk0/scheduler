@@ -51,6 +51,7 @@ func (th *TaskHandler) Create(fc *fiber.Ctx) error {
 		Type:        taskFields.Type,
 		Status:      taskFields.Status,
 		StartDate:   taskFields.StartDate,
+		Priority:    taskFields.Priority,
 	}
 
 	task, err := th.task.CreateTask(fc.Context(), newTask)
@@ -58,7 +59,6 @@ func (th *TaskHandler) Create(fc *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-
 	fc.JSON(task)
 	return nil
 }
@@ -116,6 +116,7 @@ func (th *TaskHandler) Update(fc *fiber.Ctx) error {
 		Type:        taskFields.Type,
 		Status:      taskFields.Status,
 		StartDate:   taskFields.StartDate,
+		Priority:    taskFields.Priority,
 	}
 
 	task, err := th.task.UpdateTask(fc.Context(), updateTaskParams)
@@ -183,6 +184,32 @@ func (th *TaskHandler) UpdateStatus(fc *fiber.Ctx) error {
 	}
 
 	if err := th.task.UpdateTaskStatus(fc.Context(), updateStatusParams); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (th *TaskHandler) UpdatePriority(fc *fiber.Ctx) error {
+	user := th.sm.Get(fc.UserContext(), "user").(entity.User)
+
+	params := new(dto.UpdatePriorityRequestParams)
+	if err := fc.ParamsParser(params); err != nil {
+		return errs.NewBadRequestError(err)
+	}
+
+	body := new(dto.UpdatePriorityRequestBody)
+	if err := fc.BodyParser(body); err != nil {
+		return errs.NewBadRequestError(err)
+	}
+
+	updatePriorityParams := taskservice.UpdatePriorityInput{
+		Priority: body.Priority,
+		TaskId:   params.TaskId,
+		UserId:   user.Id,
+	}
+
+	if err := th.task.UpdateTaskPriority(fc.Context(), updatePriorityParams); err != nil {
 		return err
 	}
 

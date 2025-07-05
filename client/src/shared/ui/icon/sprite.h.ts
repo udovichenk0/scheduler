@@ -5,12 +5,14 @@ export interface SpritesMap {
     | "calendar-due-date"
     | "calendar-start-date"
     | "calendar"
+    | "cancel"
     | "cloud"
     | "cross-arrows"
     | "done"
     | "eye-closed"
     | "eye-opened"
     | "filled-star"
+    | "flag"
     | "inbox"
     | "mail"
     | "note"
@@ -65,6 +67,11 @@ export const SPRITES_META: {
         width: 20,
         height: 20,
       },
+      cancel: {
+        viewBox: "0 0 24 24",
+        width: 32,
+        height: 32,
+      },
       cloud: {
         viewBox: "0 0 317.17 317.17",
         width: 317.17,
@@ -94,6 +101,11 @@ export const SPRITES_META: {
         viewBox: "0 0 473.486 473.486",
         width: 473.486,
         height: 473.486,
+      },
+      flag: {
+        viewBox: "0 0 24 24",
+        width: 36,
+        height: 36,
       },
       inbox: {
         viewBox: "0 0 512 512",

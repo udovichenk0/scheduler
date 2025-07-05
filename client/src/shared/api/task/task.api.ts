@@ -5,6 +5,7 @@ import {
   deleteTasksId,
   getTasks,
   patchTasksIdDate,
+  patchTasksIdPriority,
   patchTasksIdStatus,
   postTasks,
   postTasksIdTrash,
@@ -22,6 +23,7 @@ import {
   PatchTasksIdStatusBody,
   StartDate,
   TaskFields,
+  PatchTasksIdPriorityBody,
 } from "../scheduler.schemas"
 
 import { TaskId } from "./task.dto"
@@ -56,6 +58,21 @@ export const updateStatusMutation = createQuery({
     data: PatchTasksIdStatusBody
   }) => {
     const response = await patchTasksIdStatus(id, data, {
+      credentials: "include",
+    })
+    throwIfError(response.data)
+  },
+})
+
+const updatePriorityMutation = createQuery({
+  handler: async ({
+    id,
+    data,
+  }: {
+    id: TaskId
+    data: PatchTasksIdPriorityBody
+  }) => {
+    const response = await patchTasksIdPriority(id, data, {
       credentials: "include",
     })
     throwIfError(response.data)
@@ -106,6 +123,7 @@ export const taskApi = {
   createTaskMutation,
   updateTaskMutation,
   updateStatusMutation,
+  updatePriorityMutation,
   trashTaskMutation,
   deleteTrashedTaskMutation,
   deleteTrashedTasksMutation,

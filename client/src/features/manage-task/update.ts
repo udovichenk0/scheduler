@@ -20,6 +20,7 @@ import {
   toApiTaskFields,
 } from "@/shared/api/task/task.dto.ts"
 import { SDate } from "@/shared/lib/date/lib"
+import { Priority } from "@/shared/api/scheduler.schemas"
 
 export const updateTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
   const $$modifyTask = modifyTaskFactory({})
@@ -41,9 +42,17 @@ export const updateTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
     startDate: Nullable<SDate>
     dueDate: Nullable<SDate>
   }>()
+
+  const priorityChangedAndUpdated = createEvent<{
+    id: TaskId
+    priority: Priority
+  }>()
   const init = createEvent<Task>()
 
   const attachUpdateStatusQuery = attachOperation(taskApi.updateStatusMutation)
+  const attachUpdatePriorityQuery = attachOperation(
+    taskApi.updatePriorityMutation,
+  )
   const attachUpdateTaskDate = attachOperation(taskApi.updateDateMutation)
   const attachUpdateTaskQuery = attachOperation(taskApi.updateTaskMutation)
   const $oldFields = createStore<Record<TaskId, EditableTaskFields>>({})
@@ -80,27 +89,39 @@ export const updateTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
 
   sample({
     clock: statusChangedAndUpdated,
-    source: taskModel.$tasks,
-    filter: Boolean,
-    fn: (tasks, params) => {
-      const status = changeTaskStatus(params.status)
-      return tasks.map((task) =>
-        task.id == params.id ? { ...task, status } : task,
-      )
+    fn: ({ id, status }) => {
+      return { id, status: changeTaskStatus(status) }
     },
-    target: taskModel.setTasksTriggered,
+    target: taskModel.fieldsReplaced,
   })
   sample({
     clock: attachUpdateStatusQuery.finished.failure,
-    source: taskModel.$tasks,
-    filter: Boolean,
-    fn: (tasks, { params }) => {
-      const status = changeTaskStatus(params.data.status)
-      return tasks.map((task) =>
-        task.id == params.id ? { ...task, status } : task,
-      )
+    fn: ({ params }) => {
+      return { id: params.id, status: changeTaskStatus(params.data.status) }
     },
-    target: taskModel.setTasksTriggered,
+    target: taskModel.fieldsReplaced,
+  })
+
+  //* Update task priority
+  sample({
+    clock: priorityChangedAndUpdated,
+    filter: $$session.$isAuthenticated,
+    fn: ({ id, priority }) => {
+      return { id, data: { priority } }
+    },
+    target: attachUpdatePriorityQuery.start,
+  })
+
+  sample({
+    clock: priorityChangedAndUpdated,
+    target: taskModel.fieldsReplaced,
+  })
+  sample({
+    clock: attachUpdatePriorityQuery.finished.failure,
+    fn: ({ params }) => {
+      return { id: params.id, priority: params.data.priority }
+    },
+    target: taskModel.fieldsReplaced,
   })
 
   //* Update task
@@ -198,6 +219,7 @@ export const updateTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
     clock: [
       attachUpdateTaskQuery.finished.success,
       attachUpdateStatusQuery.finished.success,
+      attachUpdatePriorityQuery.finished.success,
       attachUpdateTaskDate.finished.success,
     ],
     target: resetFieldsTriggered,
@@ -208,6 +230,7 @@ export const updateTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
     taskSuccessfullyUpdated,
     statusChangedAndUpdated,
     dateChangedAndUpdated,
+    priorityChangedAndUpdated,
     init,
     $isUpdating: taskApi.updateTaskMutation.$pending,
     $id,

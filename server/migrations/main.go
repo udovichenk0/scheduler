@@ -14,7 +14,7 @@ import (
 var embedMigrations embed.FS
 
 func main() {
-	source := config.GetEnv("DATABASE_URL")
+	source := config.New().Db.URL
 	db, err := sql.Open("mysql", source)
 	if err != nil {
 		log.Fatal(err)

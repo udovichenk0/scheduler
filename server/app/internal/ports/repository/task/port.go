@@ -15,6 +15,7 @@ type CreateInput struct {
 	DueDate     string
 	UserId      string
 	TaskId      string
+	Priority    string
 }
 
 type UpdateInput struct {
@@ -26,6 +27,7 @@ type UpdateInput struct {
 	DueDate     string
 	TaskId      string
 	UserId      string
+	Priority    string
 }
 
 type UpdateDateInput struct {
@@ -41,6 +43,13 @@ type UpdateStatusInput struct {
 	TaskId string
 	UserId string
 }
+
+type UpdatePriorityInput struct {
+	Priority string
+	TaskId   string
+	UserId   string
+}
+
 type UpdateTrashInput struct {
 	TaskId string
 	UserId string
@@ -61,5 +70,6 @@ type Port interface {
 	Update(ctx context.Context, taskFields UpdateInput) error
 	UpdateDate(ctx context.Context, taskFields UpdateDateInput) error
 	UpdateStatus(ctx context.Context, taskFields UpdateStatusInput) error
+	UpdatePriority(ctx context.Context, taskFields UpdatePriorityInput) error
 	TrashTask(ctx context.Context, params UpdateTrashInput) error
 }

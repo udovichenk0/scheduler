@@ -7,24 +7,26 @@ import (
 )
 
 type CreateInput struct {
-	Title       string            `json:"title"`
-	Description string            `json:"description"`
-	Type        entity.TaskType   `json:"type"`
-	Status      entity.TaskStatus `json:"status"`
-	StartDate   int64             `json:"start_date"`
-	DueDate     int64             `json:"due_date"`
-	UserId      string            `json:"user_id"`
+	Title       string
+	Description string
+	Type        entity.TaskType
+	Status      entity.TaskStatus
+	StartDate   int64
+	DueDate     int64
+	UserId      string
+	Priority    entity.Priority
 }
 
 type UpdateInput struct {
 	UserId      string
 	TaskId      string
-	Title       string            `json:"title"`
-	Description string            `json:"description"`
-	Type        entity.TaskType   `json:"type"`
-	Status      entity.TaskStatus `json:"status"`
-	StartDate   int64             `json:"start_date"`
-	DueDate     int64             `json:"due_date"`
+	Title       string
+	Description string
+	Type        entity.TaskType
+	Status      entity.TaskStatus
+	StartDate   int64
+	DueDate     int64
+	Priority    entity.Priority
 }
 
 type DeleteInput struct {
@@ -44,6 +46,12 @@ type UpdateDateInput struct {
 	DueDate   int64
 }
 
+type UpdatePriorityInput struct {
+	TaskId   string
+	UserId   string
+	Priority entity.Priority
+}
+
 type UpdateStatusInput struct {
 	Status entity.TaskStatus
 	TaskId string
@@ -55,6 +63,7 @@ type Port interface {
 	CreateTask(ctx context.Context, params CreateInput) (entity.Task, error)
 	UpdateTask(ctx context.Context, taskDto UpdateInput) (entity.Task, error)
 	UpdateTaskDate(ctx context.Context, params UpdateDateInput) (entity.Task, error)
+	UpdateTaskPriority(ctx context.Context, params UpdatePriorityInput) error
 	UpdateTaskStatus(ctx context.Context, params UpdateStatusInput) error
 	DeleteTrashedTask(ctx context.Context, params DeleteInput) error
 	DeleteTrashedTasks(ctx context.Context, userId string) error

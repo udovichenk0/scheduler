@@ -49,6 +49,7 @@ func (ts *Service) CreateTask(ctx context.Context, params taskservice.CreateInpu
 		Status:      string(params.Status),
 		UserId:      params.UserId,
 		TaskId:      uuid.String(),
+		Priority:    string(params.Priority),
 	}
 
 	isValidDateRange := entity.IsValidateDateRange(params.StartDate, params.DueDate)
@@ -62,7 +63,6 @@ func (ts *Service) CreateTask(ctx context.Context, params taskservice.CreateInpu
 	}
 
 	isValid, err := entity.IsValidTaskTypeAndStartTime(params.Type, params.StartDate)
-
 	if !isValid {
 		return entity.Task{}, errs.NewBadRequestError(err)
 	}
@@ -94,6 +94,7 @@ func (ts *Service) UpdateTask(ctx context.Context, params taskservice.UpdateInpu
 		Status:      string(params.Status),
 		TaskId:      params.TaskId,
 		UserId:      params.UserId,
+		Priority:    string(params.Priority),
 	}
 
 	isValidDateRange := entity.IsValidateDateRange(params.StartDate, params.DueDate)
@@ -174,6 +175,21 @@ func (ts *Service) UpdateTaskStatus(ctx context.Context, params taskservice.Upda
 	return nil
 }
 
+func (ts *Service) UpdateTaskPriority(ctx context.Context, params taskservice.UpdatePriorityInput) error {
+	updatePriorityParams := taskRepo.UpdatePriorityInput{
+		TaskId:   params.TaskId,
+		UserId:   params.UserId,
+		Priority: string(params.Priority),
+	}
+
+	err := ts.taskRepo.UpdatePriority(ctx, updatePriorityParams)
+
+	if err != nil {
+		return errs.CheckSqlError(err, "Task")
+	}
+	return nil
+}
+
 func (ts *Service) TrashTask(ctx context.Context, params taskservice.TrashInput) error {
 	trashTaskParams := taskRepo.UpdateTrashInput{
 		TaskId: params.TaskId,
@@ -220,5 +236,6 @@ func ToEntity(task model.Task) entity.Task {
 		DueDate:     task.DueDate.Int64,
 		IsTrashed:   task.IsTrashed,
 		CreatedAt:   task.CreatedAt,
+		Priority:    entity.Priority(task.Priority),
 	}
 }

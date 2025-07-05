@@ -3,8 +3,9 @@ import { ReactNode, RefObject, useEffect } from "react"
 import { EventCallable, StoreWritable } from "effector"
 import clsx from "clsx"
 
-import { Status, Type } from "@/entities/task/type"
+import { Priority, Status, Type } from "@/entities/task/type"
 import { ModifyTaskForm } from "@/entities/task/ui/form.tsx"
+import { PriorityPicker } from "@/entities/task/ui/priority-picker"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
@@ -21,6 +22,7 @@ type TaskFactory = {
   $type: StoreWritable<Type>
   $startDate: StoreWritable<Nullable<SDate>>
   $dueDate: StoreWritable<Nullable<SDate>>
+  $priority: StoreWritable<Priority>
   statusChanged: EventCallable<Status>
   descriptionChanged: EventCallable<Nullable<string>>
   titleChanged: EventCallable<string>
@@ -29,6 +31,7 @@ type TaskFactory = {
     startDate: Nullable<SDate>
     dueDate: Nullable<SDate>
   }>
+  priorityChanged: EventCallable<Priority>
 }
 
 export const ExpandedTask = ({
@@ -51,7 +54,10 @@ export const ExpandedTask = ({
 }) => {
   const startDate = useUnit(modifyTaskModel.$startDate)
   const dueDate = useUnit(modifyTaskModel.$dueDate)
+  const priority = useUnit(modifyTaskModel.$priority)
+
   const onChangeDate = useUnit(modifyTaskModel.dateChanged)
+  const onChangePriority = useUnit(modifyTaskModel.priorityChanged)
 
   useEffect(() => {
     const onEscDown = (e: KeyboardEvent) => {
@@ -100,6 +106,7 @@ export const ExpandedTask = ({
           modifyTaskModel={modifyTaskModel}
         />
         <div className="mr-2 flex items-center justify-end">
+          <PriorityPicker priority={priority} onUpdate={onChangePriority} />
           <DatePicker
             CustomInput={({ onClick }) => (
               <Button intent="base" onClick={onClick}>

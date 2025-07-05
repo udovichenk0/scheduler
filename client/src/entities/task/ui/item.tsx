@@ -12,7 +12,9 @@ import { Modal } from "@/shared/ui/modal"
 import { SDate, sdate } from "@/shared/lib/date/lib"
 
 import { TaskStatuses } from "../config"
-import { Task, TaskId, Status, Type } from "../type"
+import { Task, TaskId, Status, Type, Priority } from "../type"
+
+import { PriorityPicker } from "./priority-picker"
 
 export const TaskItem = ({
   ref: elem,
@@ -20,6 +22,7 @@ export const TaskItem = ({
   task,
   onUpdateStatus,
   onDoubleClick,
+  onUpdatePriority,
   dateLabel = false,
   onSelect,
   onBlur,
@@ -38,7 +41,14 @@ export const TaskItem = ({
     dueDate: Nullable<SDate>
     id: TaskId
   }) => void
-  onUpdateStatus?: ({ id, status }: { status: Status; id: TaskId }) => void
+  onUpdatePriority?: ({
+    id,
+    priority,
+  }: {
+    id: TaskId
+    priority: Priority
+  }) => void
+  onUpdateStatus?: ({ id, status }: { id: TaskId; status: Status }) => void
   onDoubleClick?: () => void
   dateLabel?: boolean
   onSelect: () => void
@@ -99,7 +109,7 @@ export const TaskItem = ({
         id="task"
         intent={"primary"}
         ref={elem}
-        className={`task focus:bg-cFocus flex w-full items-center px-2 text-sm transition-none`}
+        className={`task focus:bg-cFocus [&:has([aria-modal])]:bg-hover flex w-full items-center px-2 text-sm transition-none`}
       >
         <div id="task" className="flex h-full w-full items-center gap-3">
           <Checkbox
@@ -141,9 +151,17 @@ export const TaskItem = ({
             <TypeLable isVisible={typeLabel} taskType={task.type} />
           </div>
         </div>
-        {task.description && (
-          <Icon name="common/note" className="text-accent" />
+        {onUpdatePriority && (
+          <PriorityPicker
+            priority={task.priority}
+            onUpdate={(priority) => onUpdatePriority({ id: task.id, priority })}
+          />
         )}
+        <div className="w-5">
+          {task.description && (
+            <Icon name="common/note" className="text-accent" />
+          )}
+        </div>
       </Button>
     </div>
   )
