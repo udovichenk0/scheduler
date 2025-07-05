@@ -8,7 +8,7 @@ export const useSelectItem = <T,>({
   onChange?: (value: Nullable<T>) => void
 }) => {
   const [selectedItem, setSelectedItem] = useState<Nullable<number>>(null)
-  const refItems = useRef<HTMLButtonElement[]>([])
+  const refItems = useRef<HTMLDivElement[]>([])
 
   useEffect(() => {
     if (items.length < refItems.current.length) {
@@ -42,7 +42,7 @@ export const useSelectItem = <T,>({
     }
   }
 
-  const addNode = (node: HTMLButtonElement, index: number) => {
+  const addNode = (node: HTMLDivElement, index: number) => {
     refItems.current[index] = node
   }
 

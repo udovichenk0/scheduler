@@ -21,7 +21,7 @@ type EditableTaskProps = {
   formDateModifier?: boolean
   formSideDatePicker?: boolean
   formRightPanelSlot?: ReactNode
-  ref: Ref<HTMLButtonElement>
+  ref: Ref<HTMLDivElement>
 }
 
 export const EditableTask = ({

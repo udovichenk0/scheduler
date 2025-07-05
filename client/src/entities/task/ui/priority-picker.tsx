@@ -71,7 +71,7 @@ export const PriorityPicker = ({
     prefix: ModalName.PriorityPicker,
   })
   return (
-    <div className="w-25 [&:has([aria-modal])]: relative mr-1 flex justify-start">
+    <div className="w-25 relative mr-1 flex justify-start">
       <Modal
         portal={false}
         overlay={false}
@@ -99,16 +99,24 @@ export const PriorityPicker = ({
         <Modal.Content className="w-50 absolute right-0 top-full z-10 mt-2">
           {priorities.map(({ value, label, icon }) => {
             return (
-              <div
+              <button
+                key={value}
                 onClick={() => {
                   onUpdate(value)
                   close()
                 }}
-                className="hover:bg-hover flex items-center gap-x-2 rounded-lg p-2 text-start"
+                className="hover:bg-hover w-full items-center rounded-lg p-2 text-start"
               >
-                {icon}
-                {label}
-              </div>
+                <span>
+                  <span className="mr-2">{icon}</span>
+                  {label}
+                </span>
+                {value === priority && (
+                  <span className="float-end">
+                    <Icon name="common/done" className="text-accent w-2.5" />
+                  </span>
+                )}
+              </button>
             )
           })}
         </Modal.Content>
