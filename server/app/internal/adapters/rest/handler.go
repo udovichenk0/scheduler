@@ -71,6 +71,7 @@ func (h Handler) Run() {
 	tasks.Post("/:taskId/trash", h.deps.Sm.Protected(taskHandler.Trash))
 	tasks.Put("/:taskId", h.deps.Sm.Protected(taskHandler.Update))
 	tasks.Patch("/:taskId/date", h.deps.Sm.Protected(taskHandler.UpdateDate))
+	tasks.Patch("/:taskId/priority", h.deps.Sm.Protected(taskHandler.UpdatePriority))
 	tasks.Patch("/:taskId/status", h.deps.Sm.Protected(taskHandler.UpdateStatus))
 	tasks.Delete("/:taskId", h.deps.Sm.Protected(taskHandler.DeleteTrashedTask))
 	tasks.Delete("/", h.deps.Sm.Protected(taskHandler.DeleteTrashedTasks))

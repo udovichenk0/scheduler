@@ -47,6 +47,7 @@ export const createTaskFactory = ({
           user_id: "",
           date_created: new Date(),
           is_trashed: false,
+          priority: fields.priority,
         }
         return optimisticTask
       },

@@ -1,4 +1,4 @@
-import * as z from "@zod/mini"
+import * as z from "zod"
 
 import { getHandledError } from "../lib/error"
 // type T z.ZodObject
@@ -9,19 +9,19 @@ type E = {
 }
 export function handleResponse<T extends E, S>(
   response: T,
-  schema: z.ZodMiniType<S>,
+  schema: z.Schema<S>,
 ): S {
-  const parsedUser = schema.safeParse(response.data)
-
-  if (parsedUser.success) {
-    return parsedUser.data
+  const parsed = schema.safeParse(response.data)
+  console.log(parsed)
+  if (parsed.success) {
+    return parsed.data
   }
 
   if (getHandledError(response.data)) {
     throw response.data
   }
 
-  throw parsedUser.error
+  throw parsed.error
 }
 export function throwIfError(data: any) {
   if (getHandledError(data)) {

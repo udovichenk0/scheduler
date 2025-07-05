@@ -1,6 +1,11 @@
 import { SDate } from "@/shared/lib/date/lib"
 
-import { TaskFields, TaskStatus, TaskType } from "../scheduler.schemas"
+import {
+  Priority,
+  TaskFields,
+  TaskStatus,
+  TaskType,
+} from "../scheduler.schemas"
 
 export type TaskId = string
 
@@ -11,6 +16,7 @@ type TaskFieldsInput = {
   status: TaskStatus
   title: string
   type: TaskType
+  priority: Priority
 }
 
 export const toApiTaskFields = (fields: TaskFieldsInput): TaskFields => {

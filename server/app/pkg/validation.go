@@ -17,6 +17,16 @@ func IsStatusValid(fl validator.FieldLevel) bool {
 	return isStatusValid
 }
 
+func IsPriorityValid(fl validator.FieldLevel) bool {
+	s := fl.Field().String()
+	none := string(entity.None)
+	low := string(entity.Low)
+	normal := string(entity.Normal)
+	high := string(entity.High)
+	urgent := string(entity.Urgent)
+	return (s == none) || (s == low) || (s == normal) || (s == high) || (s == urgent)
+}
+
 func IsTypeValid(fl validator.FieldLevel) bool {
 	s := fl.Field().String()
 	inbox := string(entity.Inbox)
@@ -37,5 +47,6 @@ func NewValidator() *validator.Validate {
 	v.RegisterValidation("status", IsStatusValid)
 	v.RegisterValidation("type", IsTypeValid)
 	v.RegisterValidation("startDate", IsStartDateValid)
+	v.RegisterValidation("priority", IsPriorityValid)
 	return v
 }

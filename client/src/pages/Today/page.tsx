@@ -98,7 +98,7 @@ const OverdueTasks = ({
 
   const isExpanded = useUnit($isOverdueExpanded)
   const tasks = useUnit($overdueTasks)
-
+  console.log(tasks)
   const onToggleVisibility = useUnit(toggleOverdueTasksOpened)
 
   const { onSelect, onUnselect, addNode } = useSelectItem({

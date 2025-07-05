@@ -55,6 +55,7 @@ paths:
                 - userId
       responses:
         "200":
+          description: OK
   /auth/session:
     get:
       summary: "Check user`s session"
@@ -80,6 +81,7 @@ paths:
                 - userId
       responses:
         "200":
+          description: OK
 
   #*task endpoints
   /tasks:
@@ -110,6 +112,7 @@ paths:
       summary: Delete all trashed tasks
       responses:
         "200":
+          description: OK
   /tasks/{id}:
     put:
       summary: Update task's fields
@@ -141,6 +144,7 @@ paths:
             $ref: "#/components/schemas/Id"
       responses:
         "200":
+          description: OK
   /tasks/{id}/date:
     patch:
       summary: Update task's date
@@ -190,6 +194,28 @@ paths:
                 - status
       responses:
         "200":
+          description: OK
+  /tasks/{id}/priority:
+    patch:
+      parameters:
+        - name: id
+          in: path
+          schema:
+            $ref: "#/components/schemas/Id"
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                priority:
+                  $ref: "#/components/schemas/Priority"
+              required:
+                - priority
+      responses:
+        "200":
+          description: OK
   /tasks/{id}/trash:
     post:
       parameters:
@@ -200,6 +226,7 @@ paths:
           required: true
       responses:
         "200":
+          description: OK
 
 components:
   responses:
@@ -265,6 +292,14 @@ components:
       enum:
         - inbox
         - unplaced
+    Priority:
+      type: string
+      enum:
+        - none
+        - low
+        - normal
+        - high
+        - urgent
     TaskFields:
       type: object
       properties:
@@ -275,6 +310,8 @@ components:
           nullable: true
         status:
           $ref: "#/components/schemas/TaskStatus"
+        priority:
+          $ref: "#/components/schemas/Priority"
         start_date:
           type: integer
           nullable: true
@@ -290,6 +327,7 @@ components:
         - start_date
         - due_date
         - type
+        - priority
     TaskDto:
       type: object
       properties:
@@ -316,6 +354,8 @@ components:
           type: string
         is_trashed:
           type: boolean
+        priority:
+          $ref: "#/components/schemas/Priority"
       required:
         - id
         - title
@@ -327,6 +367,7 @@ components:
         - type
         - date_created
         - is_trashed
+        - priority
 
   requestBodies:
     AuthEmailCreds:

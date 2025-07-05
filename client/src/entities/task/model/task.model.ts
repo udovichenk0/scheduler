@@ -18,6 +18,14 @@ export const TaskType = {
   UNPLACED: "unplaced",
 } as const
 
+export const TaskPriority = {
+  NONE: "none",
+  LOW: "low",
+  NORMAL: "normal",
+  HIGH: "high",
+  URGENT: "urgent",
+} as const
+
 export const TaskStatus = {
   //!FIX rename
   INPROGRESS: "inprogress",
@@ -31,6 +39,7 @@ export const $$taskModel = singleton(() => {
   const setTasksTriggered = createEvent<Task[]>()
   const taskDeleted = createEvent<TaskId>()
   const taskReplaced = createEvent<Task>()
+  const fieldsReplaced = createEvent<Partial<Task> & { id: TaskId }>()
   const updateFields = createEvent<{ id: TaskId; fields: EditableTaskFields }>()
   const reset = createEvent()
 
@@ -61,6 +70,17 @@ export const $$taskModel = singleton(() => {
     filter: Boolean,
     fn: (tasks, task) => {
       return tasks.map((t) => (t.id == task.id ? task : t))
+    },
+    target: $tasks,
+  })
+  sample({
+    clock: fieldsReplaced,
+    source: $tasks,
+    filter: Boolean,
+    fn: (tasks, { id, ...fields }) => {
+      return tasks.map((task) =>
+        task.id === id ? { ...task, ...fields } : task,
+      )
     },
     target: $tasks,
   })
@@ -119,6 +139,7 @@ export const $$taskModel = singleton(() => {
     taskDeleted,
     taskReplaced,
     updateFields,
+    fieldsReplaced,
     init,
     reset,
   }

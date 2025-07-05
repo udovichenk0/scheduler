@@ -15,6 +15,7 @@ type Task struct {
 	UserId      string        `db:"user_id"`
 	CreatedAt   string        `db:"date_created"`
 	IsTrashed   bool          `db:"is_trashed"`
+	Priority    string        `db:"priority"`
 }
 
 var Nil = Task{}

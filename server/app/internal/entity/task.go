@@ -6,6 +6,7 @@ import (
 
 type TaskType string
 type TaskStatus string
+type Priority string
 
 const (
 	Inbox    TaskType = "inbox"
@@ -16,6 +17,14 @@ const (
 	Finished   TaskStatus = "finished"
 	Canceled   TaskStatus = "canceled"
 	Inprogress TaskStatus = "inprogress"
+)
+
+const (
+	None   Priority = "none"
+	Low    Priority = "low"
+	Normal Priority = "normal"
+	High   Priority = "high"
+	Urgent Priority = "urgent"
 )
 
 type Task struct {
@@ -29,6 +38,7 @@ type Task struct {
 	UserId      string     `json:"user_id"`
 	CreatedAt   string     `json:"date_created"`
 	IsTrashed   bool       `json:"is_trashed"`
+	Priority    Priority   `json:"priority"`
 }
 
 func IsValidTaskTypeAndStartTime(taskType TaskType, date int64) (bool, error) {

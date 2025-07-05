@@ -8,9 +8,10 @@ import type {
   Status as Status,
   Type as Type,
   EditableTaskFields,
+  Priority,
 } from "../type.ts"
 
-import { TaskStatus, TaskType } from "./task.model.ts"
+import { TaskPriority, TaskStatus, TaskType } from "./task.model.ts"
 
 export const modifyTaskFactory = ({
   defaultType = "inbox",
@@ -22,6 +23,7 @@ export const modifyTaskFactory = ({
   const statusChanged = createEvent<Status>()
   const titleChanged = createEvent<string>()
   const typeChanged = createEvent<Type>()
+  const priorityChanged = createEvent<Priority>()
   const dateChanged = createEvent<{
     startDate: Nullable<SDate>
     dueDate: Nullable<SDate>
@@ -38,6 +40,7 @@ export const modifyTaskFactory = ({
   const $dueDate = createStore<Nullable<SDate>>(null)
   const $type = createStore<Type>(defaultType)
   const $isDirty = createStore(false)
+  const $priority = createStore<Priority>(TaskPriority.NONE)
   const $isAllowToSubmit = createStore(false)
   const setFieldsTriggered = createEvent<EditableTaskFields>()
   const $fields = combine(
@@ -47,13 +50,15 @@ export const modifyTaskFactory = ({
     $type,
     $startDate,
     $dueDate,
-    (title, description, status, type, start_date, due_date) => ({
+    $priority,
+    (title, description, status, type, start_date, due_date, priority) => ({
       title,
       description,
       status,
       type,
       start_date,
       due_date,
+      priority,
     }),
   )
 
@@ -84,6 +89,7 @@ export const modifyTaskFactory = ({
       start_date: $startDate,
       type: $type,
       due_date: $dueDate,
+      priority: $priority,
     }),
   })
 
@@ -101,6 +107,10 @@ export const modifyTaskFactory = ({
   sample({
     clock: descriptionChanged,
     target: $description,
+  })
+  sample({
+    clock: priorityChanged,
+    target: $priority,
   })
 
   bridge(() => {
@@ -162,6 +172,7 @@ export const modifyTaskFactory = ({
       statusChanged,
       typeChanged,
       dateChanged,
+      priorityChanged,
     ],
     fn: () => true,
     target: $isDirty,
@@ -176,6 +187,7 @@ export const modifyTaskFactory = ({
       $type.reinit,
       $startDate.reinit,
       $dueDate.reinit,
+      $priority.reinit,
     ],
   })
 
@@ -184,6 +196,7 @@ export const modifyTaskFactory = ({
     titleChanged,
     typeChanged,
     dateChanged,
+    priorityChanged,
     setDate,
     descriptionChanged,
     resetFieldsTriggered,
@@ -194,6 +207,7 @@ export const modifyTaskFactory = ({
     $type,
     $startDate,
     $dueDate,
+    $priority,
     $isAllowToSubmit,
     $fields,
     $isDirty,

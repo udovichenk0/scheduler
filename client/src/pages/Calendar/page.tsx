@@ -123,12 +123,12 @@ const CalendarPage = () => {
           closeModal={onCloseMoreTasksModal}
         >
           <Modal.Content className="flex w-[400px] flex-col gap-y-1 overflow-auto px-4 pb-4">
-          <Modal.Header>
-            <span className="text-cFont w-full pl-6 text-center text-[12px]">
-              All tasks
-            </span>
-            <CloseButton close={onCloseMoreTasksModal} />
-          </Modal.Header>
+            <Modal.Header>
+              <span className="text-cFont w-full pl-6 text-center text-[12px]">
+                All tasks
+              </span>
+              <CloseButton close={onCloseMoreTasksModal} />
+            </Modal.Header>
             <MoreTasks
               $tasks={$moreTasks}
               onTaskClick={(target, task) => {

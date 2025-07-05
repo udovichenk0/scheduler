@@ -3,16 +3,18 @@ import { Link } from "atomic-router-react"
 import { t } from "i18next"
 
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
-import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { routes } from "@/shared/routing/router.ts"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
 import { Modal } from "@/shared/ui/modal"
 import { SDate, sdate } from "@/shared/lib/date/lib"
+import { buttonCva } from "@/shared/ui/buttons/main-button/cva.styles"
 
 import { TaskStatuses } from "../config"
-import { Task, TaskId, Status, Type } from "../type"
+import { Task, TaskId, Status, Type, Priority } from "../type"
+
+import { PriorityPicker } from "./priority-picker"
 
 export const TaskItem = ({
   ref: elem,
@@ -20,13 +22,14 @@ export const TaskItem = ({
   task,
   onUpdateStatus,
   onDoubleClick,
+  onUpdatePriority,
   dateLabel = false,
   onSelect,
   onBlur,
   onUpdateDate,
   typeLabel = false,
 }: {
-  ref: Ref<HTMLButtonElement>
+  ref: Ref<HTMLDivElement>
   isShown: boolean
   task: Task
   onUpdateDate?: ({
@@ -38,7 +41,14 @@ export const TaskItem = ({
     dueDate: Nullable<SDate>
     id: TaskId
   }) => void
-  onUpdateStatus?: ({ id, status }: { status: Status; id: TaskId }) => void
+  onUpdatePriority?: ({
+    id,
+    priority,
+  }: {
+    id: TaskId
+    priority: Priority
+  }) => void
+  onUpdateStatus?: ({ id, status }: { id: TaskId; status: Status }) => void
   onDoubleClick?: () => void
   dateLabel?: boolean
   onSelect: () => void
@@ -81,7 +91,7 @@ export const TaskItem = ({
         }}
         startDate={start_date}
       />
-      <Button
+      <div
         aria-label={`Event ${title}`}
         onClick={(e) => {
           if (!e.detail && onDoubleClick) {
@@ -97,9 +107,11 @@ export const TaskItem = ({
         }}
         data-testid="task-item"
         id="task"
-        intent={"primary"}
+        tabIndex={0}
         ref={elem}
-        className={`task focus:bg-cFocus flex w-full items-center px-2 text-sm transition-none`}
+        className={`task focus:bg-cFocus [&:has([aria-modal])]:bg-hover flex w-full items-center px-2 text-sm transition-none ${buttonCva(
+          { intent: "primary" },
+        )}`}
       >
         <div id="task" className="flex h-full w-full items-center gap-3">
           <Checkbox
@@ -141,10 +153,18 @@ export const TaskItem = ({
             <TypeLable isVisible={typeLabel} taskType={task.type} />
           </div>
         </div>
-        {task.description && (
-          <Icon name="common/note" className="text-accent" />
+        {onUpdatePriority && (
+          <PriorityPicker
+            priority={task.priority}
+            onUpdate={(priority) => onUpdatePriority({ id: task.id, priority })}
+          />
         )}
-      </Button>
+        <div className="w-5">
+          {task.description && (
+            <Icon name="common/note" className="text-accent" />
+          )}
+        </div>
+      </div>
     </div>
   )
 }

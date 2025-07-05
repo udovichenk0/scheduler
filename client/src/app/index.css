@@ -243,6 +243,9 @@ button,
 input {
   outline: none;
 }
+button {
+  cursor: pointer;
+}
 /* width */
 ::-webkit-scrollbar {
   width: 10px;

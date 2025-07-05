@@ -21,7 +21,7 @@ type EditableTaskProps = {
   formDateModifier?: boolean
   formSideDatePicker?: boolean
   formRightPanelSlot?: ReactNode
-  ref: Ref<HTMLButtonElement>
+  ref: Ref<HTMLDivElement>
 }
 
 export const EditableTask = ({
@@ -39,6 +39,7 @@ export const EditableTask = ({
   const onUpdateTask = useUnit($$updateTask.updateTaskTriggered)
   const onUpdateStatus = useUnit($$updateTask.statusChangedAndUpdated)
   const onUpdateDate = useUnit($$updateTask.dateChangedAndUpdated)
+  const onUpdatePriority = useUnit($$updateTask.priorityChangedAndUpdated)
 
   const {
     isOpened: isUpdateFormOpened,
@@ -62,6 +63,7 @@ export const EditableTask = ({
         typeLabel={typeLabel}
         onUpdateDate={onUpdateDate}
         onUpdateStatus={onUpdateStatus}
+        onUpdatePriority={onUpdatePriority}
         onSelect={onSelect}
         onBlur={onBlur}
         onDoubleClick={() => {
