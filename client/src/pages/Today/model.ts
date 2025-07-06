@@ -59,7 +59,7 @@ export const $overdueTasks = combine(
   $$sort.$sortType,
   (tasks, sortType) => {
     const overdueTasks =
-      tasks?.filter((task) => task.start_date?.isBeforeToday) || []
+      tasks?.filter((task) => task.due_date?.isBeforeToday) || []
     return $$sort.sortBy(sortType, overdueTasks)
   },
 )

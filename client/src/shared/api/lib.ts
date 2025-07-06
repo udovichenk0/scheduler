@@ -12,7 +12,6 @@ export function handleResponse<T extends E, S>(
   schema: z.Schema<S>,
 ): S {
   const parsed = schema.safeParse(response.data)
-  console.log(parsed)
   if (parsed.success) {
     return parsed.data
   }
