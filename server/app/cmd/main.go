@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log/slog"
 	"path/filepath"
 
@@ -15,8 +14,8 @@ import (
 	"github.com/udovichenk0/scheduler/internal/adapters/db"
 	"github.com/udovichenk0/scheduler/internal/adapters/rest"
 	"github.com/udovichenk0/scheduler/internal/adapters/smtp"
-	userPort "github.com/udovichenk0/scheduler/internal/ports/repository/user"
 	"github.com/udovichenk0/scheduler/internal/services/auth"
+	"github.com/udovichenk0/scheduler/internal/services/project"
 	"github.com/udovichenk0/scheduler/internal/services/task"
 	"github.com/udovichenk0/scheduler/internal/services/user"
 	"github.com/udovichenk0/scheduler/internal/services/verification"
@@ -93,17 +92,20 @@ func (s Deps) GetDeps() *rest.Deps {
 	sm := session_manager.New(s.db.Pool)
 	taskRepo := db.NewTaskRepo(s.db.Pool)
 	userRepo := db.NewUserRepo(s.db.Pool)
-	userRepo.Update(context.Background(), userPort.UpdateInput{Email: "test"})
 	verificationRepo := db.NewVerificationRepo(s.db.Pool)
+	projectRepo := db.NewProjectRepo(s.db.Pool)
+
 	taskService := task.New(taskRepo, s.log)
 	userService := user.New(userRepo, s.log)
 	verificationService := verification.New(verificationRepo, userService, s.smtp)
 	authService := auth.New(userService, s.smtp, verificationService, s.db.Pool, sm, s.log)
+	projectService := project.New(projectRepo)
 
 	return &rest.Deps{
 		Task:         taskService,
 		Auth:         authService,
 		User:         userService,
+		Project:      projectService,
 		Verification: verificationService,
 		Sm:           sm,
 	}

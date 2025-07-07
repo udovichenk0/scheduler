@@ -24,6 +24,7 @@ export interface SpritesMap {
     | "timer"
     | "trash-can"
     | "upcoming"
+    | "x"
   sort: "alph_asc" | "alph_desc" | "date_created_asc" | "time_asc" | "time_desc"
 }
 export const SPRITES_META: {
@@ -161,6 +162,11 @@ export const SPRITES_META: {
         viewBox: "0 0 361.77 361.77",
         width: 361.77,
         height: 361.77,
+      },
+      x: {
+        viewBox: "0 0 24 24",
+        width: 32,
+        height: 32,
       },
     },
   },

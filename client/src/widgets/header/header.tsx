@@ -11,7 +11,7 @@ import { Icon, IconName } from "@/shared/ui/icon"
 import { Container } from "@/shared/ui/general/container"
 import { Pomodoro } from "@/shared/ui/pomodoro"
 import { Tooltip } from "@/shared/ui/general/tooltip"
-import { CloseButton, Modal } from "@/shared/ui/modal"
+import { Modal } from "@/shared/ui/modal"
 import { normalizeSeconds } from "@/shared/lib/date/normalize-time.ts"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
@@ -43,10 +43,12 @@ export const Header = ({ iconName, title, slot }: HeaderProps) => {
           <PomodoroButton onOpenPomodoro={onOpenPomodoro} />
           <Modal.Content>
             <Modal.Header>
-              <span className="w-full pl-6 text-center text-[12px]">
-                Pomodoro
-              </span>
-              <CloseButton close={onClosePomodoro} />
+              <Modal.Title>
+                <span className="w-full pl-6 text-center text-[12px]">
+                  Pomodoro
+                </span>
+              </Modal.Title>
+              <Modal.CloseButton close={onClosePomodoro} />
             </Modal.Header>
             <Pomodoro
               pomodoroModel={$$pomodoro}

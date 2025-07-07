@@ -17,6 +17,7 @@ import { ClickOutsideLayer } from "@/shared/lib/click-outside"
 import { Button, ButtonProps } from "../buttons/main-button"
 
 import { useFocusGuards } from "./use-focus-guard"
+import { Icon } from "../icon"
 
 type DefaultModalProps = {
   isOpened: boolean
@@ -60,22 +61,45 @@ export const Modal = ({
   )
 }
 
-export const CloseButton = ({ close }: { close: () => void }) => {
+const CloseButton = ({ close }: { close: () => void }) => {
   return (
     <button
       title="Close modal"
       onClick={close}
       className={
-        "hover:bg-hover relative h-[22px] w-[22px] rounded-[4px] focus-visible:ring"
+        "hover:bg-hover size-5 rounded-[4px] focus-visible:ring flex items-center justify-center absolute right-0"
       }
     >
-      <span
-        className={
-          'before:bg-cFont after:bg-cFont before:absolute before:left-[5px] before:top-[10px] before:h-[1px] before:w-[12px] before:rotate-[-45deg] before:content-[""] after:absolute after:left-[5px] after:top-[10px] after:h-[1px] after:w-[12px] after:rotate-[45deg] after:content-[""]'
-        }
-      ></span>
+      <Icon name="common/x" className="size-4"/>
       <span className="sr-only">Close the modal</span>
     </button>
+  )
+}
+
+export const Title = ({ 
+  children,
+  pos = "center",
+  fontSize = "xs",
+  className,
+}: { 
+  children: ReactNode 
+  pos?: "left" | "center"
+  fontSize?: "xs" | "md" | "lg",
+  className?: string
+}) => {
+  return (
+    <h2 
+      data-pos={pos} 
+      data-font={fontSize}
+      className={clsx(`
+            data-[pos=center]:text-center 
+            data-[pos=left]:text-left 
+            data-[font=xs]:text-xs 
+            data-[font=md]:text-sm
+            data-[font=lg]:text-base
+            text-cFont w-full`, className)}>
+      {children}
+    </h2>
   )
 }
 
@@ -102,7 +126,7 @@ const NewOverlay = () => {
 
 const Header = ({ children, className }: DefaultProps) => {
   return (
-    <div className={clsx("flex items-center px-2 pb-4", className)}>
+    <div className={clsx("flex items-center pb-4 py-1 relative", className)}>
       {children}
     </div>
   )
@@ -231,3 +255,5 @@ export const useEscape = ({
 Modal.Header = Header
 Modal.Content = Content
 Modal.Trigger = Trigger
+Modal.Title = Title
+Modal.CloseButton = CloseButton

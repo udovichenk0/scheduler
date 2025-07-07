@@ -7,7 +7,7 @@ import { GeneralSettings } from "@/entities/settings/general/general.tsx"
 
 import { Icon } from "@/shared/ui/icon"
 import { Root } from "@/shared/ui/tab"
-import { CloseButton, Modal } from "@/shared/ui/modal"
+import { Modal } from "@/shared/ui/modal"
 import { Button } from "@/shared/ui/buttons/main-button/index.tsx"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure.ts"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names.ts"
@@ -49,10 +49,10 @@ const Settings = ({
       </Button>
       <Modal.Content className="w-[600px]" initialFocus={ref}>
         <Modal.Header>
-          <span className="w-full pl-6 text-center text-[12px]">
+          <Modal.Title>
             {t("setting.title")}
-          </span>
-          <CloseButton close={onCloseSettings} />
+          </Modal.Title>
+          <Modal.CloseButton close={onCloseSettings} />
         </Modal.Header>
         <Root value={tab} onChange={setTab} className="text-sm">
           <Root.List className="border-cBorder flex gap-5 border-b-[1px] px-6 pb-4">

@@ -135,7 +135,7 @@ html[data-theme="default"] {
 html[data-theme="dark"] {
   --main-dark: #131111;
   --main: #121212;
-  --main-light: #2b2b2b;
+  --main-light: #1a1a1a;
   --accent: 70, 131, 203;
   --blue: 70, 131, 203;
   --yellow: 255, 213, 79;

@@ -11,6 +11,8 @@ import Settings from "../settings"
 
 import { Logo } from "./logo"
 import { $inboxCounter, $todayCounter } from "./sidebar.model"
+import { CreateProjectModal } from "@/features/manage-project/ui/create-project"
+import { ProjectList } from "@/entities/project"
 
 export const Sidebar = () => {
   const { t } = useTranslation()
@@ -97,12 +99,11 @@ export const Sidebar = () => {
           </div>
         </Container>
         <Container>
-          <Button size={"sm"} className="w-full text-start" intent={"primary"}>
-            <Icon name="common/plus" className="text-cOpacitySecondFont mr-4" />
-            <span className="text-primary text-[12px]">
-              {t("sidebar.project")}
-            </span>
-          </Button>
+          <div className="px-2">
+            <span className="text-xs text-cOpacitySecondFont">Projects</span>
+          </div>
+          <ProjectList/>
+          <CreateProjectModal/>
         </Container>
         <Container className="border-cBorder text-cIconDefault flex gap-2 border-t-[1px]">
           <Tooltip text={t("setting.title")} dir="tr">

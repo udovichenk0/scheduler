@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/udovichenk0/scheduler/config"
 	authservice "github.com/udovichenk0/scheduler/internal/ports/api/auth"
+	projectservice "github.com/udovichenk0/scheduler/internal/ports/api/project"
 	taskservice "github.com/udovichenk0/scheduler/internal/ports/api/task"
 	userservice "github.com/udovichenk0/scheduler/internal/ports/api/user"
 	verificationservice "github.com/udovichenk0/scheduler/internal/ports/api/verification"
@@ -20,6 +21,7 @@ type Repositories struct {
 type Deps struct {
 	Task         taskservice.Port
 	Auth         authservice.Port
+	Project      projectservice.Port
 	User         userservice.Port
 	Verification verificationservice.Port
 	Sm           session_manager.SessionManager
@@ -45,6 +47,7 @@ func (h Handler) Run() {
 
 	authHandler := NewAuthHandler(h.deps.Auth, h.deps.User, h.v, h.deps.Sm)
 	taskHandler := NewTaskHandler(h.deps.Task, h.deps.User, h.v, h.deps.Sm)
+	projectHandler := NewProjectHandler(h.deps.User, h.deps.Project, h.v, h.deps.Sm)
 	userHandler := NewUserHandler(h.deps.User, h.v)
 	sessionHandler := NewSessionHandler(h.deps.Sm)
 	verificationHandler := NewVerificationHandler(h.deps.Verification, h.v, h.deps.Sm)
@@ -75,4 +78,8 @@ func (h Handler) Run() {
 	tasks.Patch("/:taskId/status", h.deps.Sm.Protected(taskHandler.UpdateStatus))
 	tasks.Delete("/:taskId", h.deps.Sm.Protected(taskHandler.DeleteTrashedTask))
 	tasks.Delete("/", h.deps.Sm.Protected(taskHandler.DeleteTrashedTasks))
+
+	project := apiGroup.Group("project")
+	project.Get("/", h.deps.Sm.Protected(projectHandler.GetByUserId))
+	project.Post("/", h.deps.Sm.Protected(projectHandler.Create))
 }

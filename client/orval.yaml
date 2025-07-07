@@ -82,7 +82,35 @@ paths:
       responses:
         "200":
           description: OK
-
+  #*project endpoints
+  /project:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProjectDto"
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+                - name
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectDto"
   #*task endpoints
   /tasks:
     get:
@@ -292,6 +320,19 @@ components:
       enum:
         - inbox
         - unplaced
+    ProjectDto:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        name:
+          type: string
+        createdBy:
+          $ref: "#/components/schemas/Id"
+      required:
+        - id
+        - name
+        - createdBy
     Priority:
       type: string
       enum:

@@ -7,6 +7,7 @@ export const ModalName = {
   MoreTasksModal: "calendar/more-tasks-modal",
   SidebarSettingsModal: "sidebar/settings-modal",
   PomodoroSettingsModal: "pomodoro/settings-modal",
+  CreateProjectForm: "project/create",
   PomodoroModal: "pomodoro-modal",
   TypeModal: "type-modal",
   DateModal: "date-modal",
