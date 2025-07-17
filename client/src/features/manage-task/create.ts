@@ -48,6 +48,7 @@ export const createTaskFactory = ({
           date_created: new Date(),
           is_trashed: false,
           priority: fields.priority,
+          project_id: fields.project_id
         }
         return optimisticTask
       },

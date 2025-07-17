@@ -63,8 +63,8 @@ html {
 
 html[data-theme="space"] {
   --main-dark: #0c031b;
-  --main: #0b0417;
-  --main-light: #1b053f;
+  --main: #0f0620;
+  --main-light: #14052b;
   --accent: 46, 188, 255;
   --blue: 46, 188, 255;
   --yellow: 253, 216, 53;
@@ -204,6 +204,7 @@ html[data-theme="light"] {
 html[data-theme="grey"] {
   --main: #f4f4f4;
   --accent: 84, 117, 156;
+  --main-light: #ebebeb;
   --blue: 84, 117, 156;
   --yellow: 251, 192, 45;
   --red: 229, 115, 115;

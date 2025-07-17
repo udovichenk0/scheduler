@@ -20,6 +20,7 @@ export function handleResponse<T extends E, S>(
     throw response.data
   }
 
+  console.log(parsed)
   throw parsed.error
 }
 export function throwIfError(data: any) {

@@ -15,6 +15,7 @@ type CreateInput struct {
 	DueDate     int64
 	UserId      string
 	Priority    entity.Priority
+	ProjectId   string
 }
 
 type UpdateInput struct {
@@ -27,6 +28,7 @@ type UpdateInput struct {
 	StartDate   int64
 	DueDate     int64
 	Priority    entity.Priority
+	ProjectId   string
 }
 
 type DeleteInput struct {
@@ -58,8 +60,20 @@ type UpdateStatusInput struct {
 	UserId string
 }
 
+type UpdateProjectIdInput struct {
+	TaskId    string
+	UserId    string
+	ProjectId string
+}
+
+type GetByProjectIdInput struct {
+	UserId    string
+	ProjectId string
+}
+
 type Port interface {
 	GetTasks(ctx context.Context, userId string) ([]entity.Task, error)
+	GetTasksByProjectId(ctx context.Context, params GetByProjectIdInput) ([]entity.Task, error)
 	CreateTask(ctx context.Context, params CreateInput) (entity.Task, error)
 	UpdateTask(ctx context.Context, taskDto UpdateInput) (entity.Task, error)
 	UpdateTaskDate(ctx context.Context, params UpdateDateInput) (entity.Task, error)

@@ -4,6 +4,7 @@ import {
   deleteTasks,
   deleteTasksId,
   getTasks,
+  getTasksProjectId,
   patchTasksIdDate,
   patchTasksIdPriority,
   patchTasksIdStatus,
@@ -13,6 +14,7 @@ import {
 } from "../scheduler"
 import { handleResponse, throwIfError } from "../lib"
 import {
+  getTasksProjectIdResponse,
   getTasksResponse,
   patchTasksIdDateResponse,
   postTasksResponse,
@@ -26,13 +28,20 @@ import {
   PatchTasksIdPriorityBody,
 } from "../scheduler.schemas"
 
-import { TaskId } from "./task.dto"
+import { ProjectId, TaskId } from "./task.dto"
 
 export const tasksQuery = createQuery({
   handler: async () => {
     const response = await getTasks({ credentials: "include" })
     return handleResponse(response, getTasksResponse)
   },
+})
+
+export const projectTasksQuery = createQuery({
+  handler: async (id: ProjectId) => {
+    const data = await getTasksProjectId(id, { credentials: "include" })
+    return handleResponse(data, getTasksProjectIdResponse)
+  }
 })
 
 export const createTaskMutation = createQuery({
@@ -120,6 +129,7 @@ export const updateDateMutation = createQuery({
 
 export const taskApi = {
   tasksQuery,
+  projectTasksQuery,
   createTaskMutation,
   updateTaskMutation,
   updateStatusMutation,

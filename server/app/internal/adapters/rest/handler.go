@@ -70,6 +70,7 @@ func (h Handler) Run() {
 
 	tasks := apiGroup.Group("tasks")
 	tasks.Get("/", h.deps.Sm.Protected(taskHandler.Get))
+	tasks.Get("/:projectId", h.deps.Sm.Protected(taskHandler.GetByProjectId))
 	tasks.Post("/", h.deps.Sm.Protected(taskHandler.Create))
 	tasks.Post("/:taskId/trash", h.deps.Sm.Protected(taskHandler.Trash))
 	tasks.Put("/:taskId", h.deps.Sm.Protected(taskHandler.Update))

@@ -141,6 +141,23 @@ paths:
       responses:
         "200":
           description: OK
+  /tasks/{projectId}:
+    get:
+      summary: Get Project Tasks
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TaskDto"
   /tasks/{id}:
     put:
       summary: Update task's fields
@@ -296,6 +313,12 @@ components:
     Id:
       type: string
       format: uuid
+    UuidOrEmpty:
+      oneOf:
+        - type: string
+          format: uuid
+        - type: string
+          enum: [""]
     UserDto:
       type: object
       properties:
@@ -359,6 +382,9 @@ components:
         due_date:
           type: integer
           nullable: true
+        project_id:
+          type: string
+          nullable: true
         type:
           $ref: "#/components/schemas/TaskType"
       required:
@@ -369,6 +395,7 @@ components:
         - due_date
         - type
         - priority
+        - project_id
     TaskDto:
       type: object
       properties:
@@ -389,6 +416,8 @@ components:
           nullable: true
         user_id:
           $ref: "#/components/schemas/Id"
+        project_id:
+          $ref: "#/components/schemas/UuidOrEmpty"
         type:
           $ref: "#/components/schemas/TaskType"
         date_created:
@@ -405,6 +434,7 @@ components:
         - start_date
         - due_date
         - user_id
+        - project_id
         - type
         - date_created
         - is_trashed

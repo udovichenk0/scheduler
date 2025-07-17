@@ -23,9 +23,23 @@ func NewTaskHandler(task taskservice.Port, user userservice.Port, validator *val
 }
 
 func (th *TaskHandler) Get(fc *fiber.Ctx) error {
-
 	user := th.sm.Get(fc.UserContext(), "user").(entity.User)
 	tasks, err := th.task.GetTasks(fc.Context(), user.Id)
+	if err != nil {
+		return err
+	}
+	fc.JSON(tasks)
+	return nil
+}
+
+func (th *TaskHandler) GetByProjectId(fc *fiber.Ctx) error {
+	user := th.sm.Get(fc.UserContext(), "user").(entity.User)
+	params := new(dto.GetTasksByProjectIdParams)
+	if err := fc.ParamsParser(params); err != nil {
+		return errs.NewBadRequestError(err)
+	}
+
+	tasks, err := th.task.GetTasksByProjectId(fc.Context(), taskservice.GetByProjectIdInput{ProjectId: params.ProjectId, UserId: user.Id})
 	if err != nil {
 		return err
 	}
@@ -52,6 +66,7 @@ func (th *TaskHandler) Create(fc *fiber.Ctx) error {
 		Status:      taskFields.Status,
 		StartDate:   taskFields.StartDate,
 		Priority:    taskFields.Priority,
+		ProjectId:   taskFields.ProjectId,
 	}
 
 	task, err := th.task.CreateTask(fc.Context(), newTask)

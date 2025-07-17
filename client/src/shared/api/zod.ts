@@ -128,6 +128,7 @@ export const getTasksResponseItem = zod.object({
   "start_date": zod.number().nullable(),
   "due_date": zod.number().nullable(),
   "user_id": zod.string().uuid(),
+  "project_id": zod.string().uuid().or(zod.enum([''])),
   "type": zod.enum(['inbox', 'unplaced']),
   "date_created": zod.string(),
   "is_trashed": zod.boolean(),
@@ -146,6 +147,7 @@ export const postTasksBody = zod.object({
   "priority": zod.enum(['none', 'low', 'normal', 'high', 'urgent']),
   "start_date": zod.number().nullable(),
   "due_date": zod.number().nullable(),
+  "project_id": zod.string().nullable(),
   "type": zod.enum(['inbox', 'unplaced'])
 })
 
@@ -157,11 +159,36 @@ export const postTasksResponse = zod.object({
   "start_date": zod.number().nullable(),
   "due_date": zod.number().nullable(),
   "user_id": zod.string().uuid(),
+  "project_id": zod.string().uuid().or(zod.enum([''])),
   "type": zod.enum(['inbox', 'unplaced']),
   "date_created": zod.string(),
   "is_trashed": zod.boolean(),
   "priority": zod.enum(['none', 'low', 'normal', 'high', 'urgent'])
 })
+
+
+/**
+ * @summary Get Project Tasks
+ */
+export const getTasksProjectIdParams = zod.object({
+  "projectId": zod.string().uuid()
+})
+
+export const getTasksProjectIdResponseItem = zod.object({
+  "id": zod.string().uuid(),
+  "title": zod.string(),
+  "description": zod.string().nullable(),
+  "status": zod.enum(['inprogress', 'finished']),
+  "start_date": zod.number().nullable(),
+  "due_date": zod.number().nullable(),
+  "user_id": zod.string().uuid(),
+  "project_id": zod.string().uuid().or(zod.enum([''])),
+  "type": zod.enum(['inbox', 'unplaced']),
+  "date_created": zod.string(),
+  "is_trashed": zod.boolean(),
+  "priority": zod.enum(['none', 'low', 'normal', 'high', 'urgent'])
+})
+export const getTasksProjectIdResponse = zod.array(getTasksProjectIdResponseItem)
 
 
 /**
@@ -178,6 +205,7 @@ export const putTasksIdBody = zod.object({
   "priority": zod.enum(['none', 'low', 'normal', 'high', 'urgent']),
   "start_date": zod.number().nullable(),
   "due_date": zod.number().nullable(),
+  "project_id": zod.string().nullable(),
   "type": zod.enum(['inbox', 'unplaced'])
 })
 
@@ -189,6 +217,7 @@ export const putTasksIdResponse = zod.object({
   "start_date": zod.number().nullable(),
   "due_date": zod.number().nullable(),
   "user_id": zod.string().uuid(),
+  "project_id": zod.string().uuid().or(zod.enum([''])),
   "type": zod.enum(['inbox', 'unplaced']),
   "date_created": zod.string(),
   "is_trashed": zod.boolean(),
@@ -224,6 +253,7 @@ export const patchTasksIdDateResponse = zod.object({
   "start_date": zod.number().nullable(),
   "due_date": zod.number().nullable(),
   "user_id": zod.string().uuid(),
+  "project_id": zod.string().uuid().or(zod.enum([''])),
   "type": zod.enum(['inbox', 'unplaced']),
   "date_created": zod.string(),
   "is_trashed": zod.boolean(),

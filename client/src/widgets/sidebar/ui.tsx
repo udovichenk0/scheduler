@@ -20,7 +20,7 @@ export const Sidebar = () => {
   const todayTasksCount = useUnit($todayCounter)
 
   return (
-    <aside className={`border-cBorder bg-brand text-primary border-r-[1px]`}>
+    <aside className={`border-cBorder bg-main-light text-primary border-r-[1px]`}>
       <div className="grid h-full w-[250px] grid-rows-[auto_1fr_auto] flex-col">
         <Container className="border-cBorder border-b-[1px]">
           <div className="mb-2 flex items-center justify-between px-2">

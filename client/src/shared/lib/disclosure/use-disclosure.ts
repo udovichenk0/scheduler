@@ -14,10 +14,12 @@ export const useDisclosure = ({
   id,
   prefix,
   onClose,
+  onOpen
 }: {
   id?: string
   prefix?: string
   onClose?: () => void
+  onOpen?: () => void
 }) => {
   const randId = useId()
   const [modalId] = useState<string>(id || makeId(randId, prefix))
@@ -29,7 +31,10 @@ export const useDisclosure = ({
     fn: (ids, [id]) => ids.includes(id),
   })
 
-  const openModal = () => open(modalId)
+  const openModal = () => { 
+    open(modalId) 
+    onOpen?.()
+  }
 
   const closeModal = () => {
     close()

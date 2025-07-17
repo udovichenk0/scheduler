@@ -16,6 +16,7 @@ type CreateInput struct {
 	UserId      string
 	TaskId      string
 	Priority    string
+	ProjectId   string
 }
 
 type UpdateInput struct {
@@ -28,6 +29,7 @@ type UpdateInput struct {
 	TaskId      string
 	UserId      string
 	Priority    string
+	ProjectId   string
 }
 
 type UpdateDateInput struct {
@@ -60,9 +62,21 @@ type DeleteInput struct {
 	UserId string
 }
 
+type UpdateProjectIdInput struct {
+	TaskId    string
+	ProjectId string
+	UserId    string
+}
+
+type GetByProjectIdInput struct {
+	ProjectId string
+	UserId    string
+}
+
 type Port interface {
 	GetByTaskId(ctx context.Context, taskId string) (model.Task, error)
 	GetByUserId(ctx context.Context, user_id string) ([]model.Task, error)
+	GetByProjectId(ctx context.Context, params GetByProjectIdInput) ([]model.Task, error)
 	DeleteTrashedTask(ctx context.Context, params DeleteInput) error
 	DeleteTrashedTasks(ctx context.Context, userId string) error
 	Create(ctx context.Context, task CreateInput) error

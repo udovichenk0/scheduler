@@ -10,6 +10,7 @@ export const routes = {
   calendar: createRoute(),
   unplaced: createRoute(),
   trash: createRoute(),
+  project: createRoute<{projectId: string}>(),
   notFoundRoute: createRoute(),
 }
 const controls = createRouterControls()
@@ -40,6 +41,10 @@ export const router = createHistoryRouter({
     {
       route: [routes.trash],
       path: "/trash",
+    },
+    {
+      route: [routes.project],
+      path: "/project/:projectId",
     },
   ],
   notFoundRoute: routes.notFoundRoute,

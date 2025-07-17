@@ -26,7 +26,19 @@ func New(taskRepo taskRepo.Port, logger logger.Logger) *Service {
 func (ts *Service) GetTasks(ctx context.Context, userId string) ([]entity.Task, error) {
 	tasks, err := ts.taskRepo.GetByUserId(ctx, userId)
 
-	var domainTasks []entity.Task
+	domainTasks := []entity.Task{}
+
+	for _, task := range tasks {
+		domainTasks = append(domainTasks, ToEntity(task))
+	}
+
+	return domainTasks, err
+}
+
+func (ts *Service) GetTasksByProjectId(ctx context.Context, params taskservice.GetByProjectIdInput) ([]entity.Task, error) {
+	tasks, err := ts.taskRepo.GetByProjectId(ctx, taskRepo.GetByProjectIdInput{ProjectId: params.ProjectId, UserId: params.UserId})
+
+	domainTasks := []entity.Task{}
 
 	for _, task := range tasks {
 		domainTasks = append(domainTasks, ToEntity(task))
@@ -50,6 +62,7 @@ func (ts *Service) CreateTask(ctx context.Context, params taskservice.CreateInpu
 		UserId:      params.UserId,
 		TaskId:      uuid.String(),
 		Priority:    string(params.Priority),
+		ProjectId:   params.ProjectId,
 	}
 
 	isValidDateRange := entity.IsValidateDateRange(params.StartDate, params.DueDate)
@@ -228,6 +241,7 @@ func ToEntity(task model.Task) entity.Task {
 	return entity.Task{
 		Id:          task.Id,
 		UserId:      task.UserId,
+		ProjectId:   task.ProjectId.String,
 		Title:       task.Title,
 		Description: task.Description,
 		Type:        entity.TaskType(task.Type),

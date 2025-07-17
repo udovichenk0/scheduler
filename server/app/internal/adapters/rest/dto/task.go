@@ -14,6 +14,7 @@ type CreateTaskRequestBody struct {
 	StartDate   int64             `json:"start_date" validate:"startDate"`
 	DueDate     int64             `json:"due_date" validate:"startDate"`
 	Priority    entity.Priority   `json:"priority" validate:"required,priority"`
+	ProjectId   string            `json:"project_id"`
 }
 
 type UpdateTaskRequestBody struct {
@@ -24,6 +25,10 @@ type UpdateTaskRequestBody struct {
 	StartDate   int64             `json:"start_date" validate:"startDate"`
 	DueDate     int64             `json:"due_date" validate:"startDate"`
 	Priority    entity.Priority   `json:"priority" validate:"required,priority"`
+}
+
+type GetTasksByProjectIdParams struct {
+	ProjectId string `json:"projectId" validate:"required"`
 }
 
 type UpdateTaskRequestParams struct {

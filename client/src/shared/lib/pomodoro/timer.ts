@@ -24,7 +24,7 @@ export const createTimer = ({
   const $timer = createStore(defaultTimerDuration)
   const $isRunning = createStore(false)
   const $worker = createStore(
-    new Worker("src/shared/lib/pomodoro/worker-interval.ts", {
+    new Worker("/worker-interval.ts", {
       type: "module",
     }),
   )

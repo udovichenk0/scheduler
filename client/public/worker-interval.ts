@@ -1,4 +1,4 @@
-import { Timer } from "./config"
+import { Timer } from "../src/shared/lib/pomodoro/config"
 let timer: NodeJS.Timeout
 
 onmessage = function (e) {

@@ -9,7 +9,7 @@ import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
 
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
-import { Root } from "@/shared/ui/tab"
+import { Tabs } from "@/shared/ui/tab"
 
 import { UpcomingTasks } from "./sections/upcoming-tasks"
 import {
@@ -79,29 +79,29 @@ const Upcoming = () => {
             $$updateTask,
           }}
         >
-          <Root defaultValue="upcoming">
-            <Root.List>
+          <Tabs defaultValue="upcoming">
+            <Tabs.List>
               <UpcomingVariantChanger
                 setUpcomingVariant={onSelectViewVariant}
                 upcomingDate={upcomingDate}
                 $tasksByDateKv={$tasksByDateKv}
               />
-            </Root.List>
-            <Root.Content label="upcoming">
+            </Tabs.List>
+            <Tabs.Content label="upcoming">
               <UpcomingTasks
                 onSelectTaskId={setSelectedTaskId}
                 onChangeDate={setDate}
                 tasks={upcomingTasks}
               />
-            </Root.Content>
-            <Root.Content label="date">
+            </Tabs.Content>
+            <Tabs.Content label="date">
               <TasksByDate
                 onSelectTaskId={setSelectedTaskId}
                 date={upcomingDate!}
                 tasks={tasksByDate}
               />
-            </Root.Content>
-          </Root>
+            </Tabs.Content>
+          </Tabs>
         </TaskManagerContext.Provider>
       </Layout.Content>
       <Layout.Footer

@@ -33,6 +33,8 @@ export type Code = string;
 
 export type Id = string;
 
+export type UuidOrEmpty = string | '';
+
 export interface UserDto {
   id: Id;
   email: Email;
@@ -85,6 +87,8 @@ export interface TaskFields {
   start_date: number | null;
   /** @nullable */
   due_date: number | null;
+  /** @nullable */
+  project_id: string | null;
   type: TaskType;
 }
 
@@ -99,6 +103,7 @@ export interface TaskDto {
   /** @nullable */
   due_date: number | null;
   user_id: Id;
+  project_id: UuidOrEmpty;
   type: TaskType;
   date_created: string;
   is_trashed: boolean;

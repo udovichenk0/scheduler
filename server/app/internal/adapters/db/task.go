@@ -21,7 +21,7 @@ func NewTaskRepo(db *sqlx.DB) *TaskRepository {
 
 func (tr *TaskRepository) GetByUserId(ctx context.Context, userId string) ([]model.Task, error) {
 	tasks := []model.Task{}
-	err := tr.db.SelectContext(ctx, &tasks, "SELECT id, title, description, type, status, user_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(due_date) AS due_date, priority FROM task WHERE user_id = ?", userId)
+	err := tr.db.SelectContext(ctx, &tasks, "SELECT id, title, description, type, status, user_id, project_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(due_date) AS due_date, priority FROM task WHERE user_id = ? AND project_id IS NULL", userId)
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +31,7 @@ func (tr *TaskRepository) GetByUserId(ctx context.Context, userId string) ([]mod
 func (tr *TaskRepository) GetByTaskId(ctx context.Context, taskId string) (model.Task, error) {
 	task := model.Nil
 
-	err := tr.db.GetContext(ctx, &task, "SELECT id, title, description, type, status, user_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(due_date) AS due_date, priority FROM task WHERE id = ?", taskId)
+	err := tr.db.GetContext(ctx, &task, "SELECT id, title, description, type, status, user_id, project_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(due_date) AS due_date, priority FROM task WHERE id = ?", taskId)
 
 	if err != nil {
 		return model.Nil, err
@@ -40,9 +40,18 @@ func (tr *TaskRepository) GetByTaskId(ctx context.Context, taskId string) (model
 	return task, nil
 }
 
+func (tr *TaskRepository) GetByProjectId(ctx context.Context, params task.GetByProjectIdInput) ([]model.Task, error) {
+	tasks := []model.Task{}
+	err := tr.db.SelectContext(ctx, &tasks, "SELECT id, title, description, type, status, user_id, project_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(due_date) AS due_date, priority FROM task WHERE project_id = ? ", params.ProjectId)
+	if err != nil {
+		return nil, err
+	}
+	return tasks, nil
+}
+
 func (tr *TaskRepository) Create(ctx context.Context, task task.CreateInput) error {
 	ib := sq.NewInsertBuilder().InsertInto("task")
-	ib.Cols("id", "title", "description", "type", "status", "start_date", "due_date", "user_id", "priority")
+	ib.Cols("id", "title", "description", "type", "status", "start_date", "due_date", "user_id", "priority", "project_id")
 	ib.Values(
 		task.TaskId,
 		task.Title,
@@ -53,6 +62,7 @@ func (tr *TaskRepository) Create(ctx context.Context, task task.CreateInput) err
 		pkg.NewNullString(task.DueDate),
 		task.UserId,
 		task.Priority,
+		pkg.NewNullString(task.ProjectId),
 	)
 	sql, args := ib.Build()
 

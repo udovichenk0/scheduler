@@ -36,6 +36,7 @@ type Task struct {
 	StartDate   int64      `json:"start_date"`
 	DueDate     int64      `json:"due_date"`
 	UserId      string     `json:"user_id"`
+	ProjectId   string     `json:"project_id"`
 	CreatedAt   string     `json:"date_created"`
 	IsTrashed   bool       `json:"is_trashed"`
 	Priority    Priority   `json:"priority"`

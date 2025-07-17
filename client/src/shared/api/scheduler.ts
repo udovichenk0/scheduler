@@ -33,6 +33,7 @@ import postProjectMutator from './fetch';
 import getTasksMutator from './fetch';
 import postTasksMutator from './fetch';
 import deleteTasksMutator from './fetch';
+import getTasksProjectIdMutator from './fetch';
 import putTasksIdMutator from './fetch';
 import deleteTasksIdMutator from './fetch';
 import patchTasksIdDateMutator from './fetch';
@@ -451,6 +452,41 @@ export const deleteTasks = async ( options?: RequestInit): Promise<deleteTasksRe
   {      
     ...options,
     method: 'DELETE'
+    
+    
+  }
+);}
+
+
+
+/**
+ * @summary Get Project Tasks
+ */
+export type getTasksProjectIdResponse200 = {
+  data: TaskDto[]
+  status: 200
+}
+    
+export type getTasksProjectIdResponseComposite = getTasksProjectIdResponse200;
+    
+export type getTasksProjectIdResponse = getTasksProjectIdResponseComposite & {
+  headers: Headers;
+}
+
+export const getGetTasksProjectIdUrl = (projectId: Id,) => {
+
+
+  
+
+  return `/tasks/${projectId}`
+}
+
+export const getTasksProjectId = async (projectId: Id, options?: RequestInit): Promise<getTasksProjectIdResponse> => {
+  
+  return getTasksProjectIdMutator<getTasksProjectIdResponse>(getGetTasksProjectIdUrl(projectId),
+  {      
+    ...options,
+    method: 'GET'
     
     
   }

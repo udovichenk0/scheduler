@@ -8,6 +8,7 @@ import {
 } from "../scheduler.schemas"
 
 export type TaskId = string
+export type ProjectId = string
 
 type TaskFieldsInput = {
   description: Nullable<string>
@@ -17,6 +18,7 @@ type TaskFieldsInput = {
   title: string
   type: TaskType
   priority: Priority
+  project_id: Nullable<ProjectId>
 }
 
 export const toApiTaskFields = (fields: TaskFieldsInput): TaskFields => {

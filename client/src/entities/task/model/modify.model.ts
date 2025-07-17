@@ -9,6 +9,7 @@ import type {
   Type as Type,
   EditableTaskFields,
   Priority,
+  ProjectId,
 } from "../type.ts"
 
 import { TaskPriority, TaskStatus, TaskType } from "./task.model.ts"
@@ -41,8 +42,9 @@ export const modifyTaskFactory = ({
   const $type = createStore<Type>(defaultType)
   const $isDirty = createStore(false)
   const $priority = createStore<Priority>(TaskPriority.NONE)
+  const $projectId = createStore<Nullable<ProjectId>>(null)
   const $isAllowToSubmit = createStore(false)
-  const setFieldsTriggered = createEvent<EditableTaskFields>()
+  const setFieldsTriggered = createEvent<Partial<EditableTaskFields>>()
   const $fields = combine(
     $title,
     $description,
@@ -51,7 +53,8 @@ export const modifyTaskFactory = ({
     $startDate,
     $dueDate,
     $priority,
-    (title, description, status, type, start_date, due_date, priority) => ({
+    $projectId,
+    (title, description, status, type, start_date, due_date, priority, project_id) => ({
       title,
       description,
       status,
@@ -59,6 +62,7 @@ export const modifyTaskFactory = ({
       start_date,
       due_date,
       priority,
+      project_id
     }),
   )
 
@@ -82,6 +86,13 @@ export const modifyTaskFactory = ({
 
   sample({
     clock: setFieldsTriggered,
+    source: $fields,
+    fn: (fields, newFields) => {
+      return {
+        ...fields,
+        ...newFields
+      }
+    },
     target: spread({
       title: $title,
       description: $description,
@@ -90,6 +101,7 @@ export const modifyTaskFactory = ({
       type: $type,
       due_date: $dueDate,
       priority: $priority,
+      project_id: $projectId
     }),
   })
 

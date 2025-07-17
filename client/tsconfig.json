@@ -22,6 +22,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "global.d.ts"],
+  "include": ["src", "global.d.ts", "public/worker-interval.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
