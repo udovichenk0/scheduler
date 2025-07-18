@@ -41,14 +41,14 @@ export const removeTaskFactory = (taskModel: TaskModel) => {
   sample({
     clock: taskSuccessfullyDeleted,
     fn: ({ params }) => params.taskId,
-    target: taskModel.taskDeleted,
+    target: taskModel.removeTask,
   })
 
   sample({
     clock: tasksSuccessfullyDeleted,
     source: taskModel.$tasks,
     fn: (tasks) => tasks!.filter((task) => !task.is_trashed),
-    target: taskModel.setTasksTriggered,
+    target: taskModel.setTasks,
   })
 
   return {

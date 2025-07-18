@@ -1,7 +1,7 @@
 import { createEvent, sample } from "effector"
 import { createBrowserHistory } from "history"
 
-import { router, routes } from "./router"
+import { router } from "./router"
 export const createHistory = () => {
   const init = createEvent()
   const history = createBrowserHistory()

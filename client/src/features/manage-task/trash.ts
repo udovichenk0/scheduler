@@ -25,7 +25,7 @@ export const trashTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
         task.id == taskId ? { ...task, is_trashed: true } : task,
       )
     },
-    target: taskModel.setTasksTriggered,
+    target: taskModel.setTasks,
   })
 
   sample({

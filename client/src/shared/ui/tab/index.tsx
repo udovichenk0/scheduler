@@ -9,11 +9,11 @@ type TabsProps<T> = {
   children: ReactNode
   className?: string
   defaultValue?: string
-  value?: T 
+  value?: T
   onChange?: (value: T) => void
 }
 
-export const Tabs = <T extends string,>({
+export const Tabs = <T extends string>({
   children,
   className,
   defaultValue,

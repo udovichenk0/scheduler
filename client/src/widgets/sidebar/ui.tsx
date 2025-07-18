@@ -1,6 +1,10 @@
 import { useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
 
+import { CreateProjectModal } from "@/features/manage-project/ui/create-project"
+
+import { ProjectList } from "@/entities/project"
+
 import { Icon } from "@/shared/ui/icon"
 import { routes } from "@/shared/routing/router.ts"
 import { Button } from "@/shared/ui/buttons/main-button"
@@ -11,8 +15,6 @@ import Settings from "../settings"
 
 import { Logo } from "./logo"
 import { $inboxCounter, $todayCounter } from "./sidebar.model"
-import { CreateProjectModal } from "@/features/manage-project/ui/create-project"
-import { ProjectList } from "@/entities/project"
 
 export const Sidebar = () => {
   const { t } = useTranslation()
@@ -20,7 +22,9 @@ export const Sidebar = () => {
   const todayTasksCount = useUnit($todayCounter)
 
   return (
-    <aside className={`border-cBorder bg-main-light text-primary border-r-[1px]`}>
+    <aside
+      className={`border-cBorder bg-main-light text-primary border-r-[1px]`}
+    >
       <div className="grid h-full w-[250px] grid-rows-[auto_1fr_auto] flex-col">
         <Container className="border-cBorder border-b-[1px]">
           <div className="mb-2 flex items-center justify-between px-2">
@@ -100,10 +104,10 @@ export const Sidebar = () => {
         </Container>
         <Container>
           <div className="px-2">
-            <span className="text-xs text-cOpacitySecondFont">Projects</span>
+            <span className="text-cOpacitySecondFont text-xs">Projects</span>
           </div>
-          <ProjectList/>
-          <CreateProjectModal/>
+          <ProjectList />
+          <CreateProjectModal />
         </Container>
         <Container className="border-cBorder text-cIconDefault flex gap-2 border-t-[1px]">
           <Tooltip text={t("setting.title")} dir="tr">

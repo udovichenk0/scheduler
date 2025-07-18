@@ -41,7 +41,7 @@ export const projectTasksQuery = createQuery({
   handler: async (id: ProjectId) => {
     const data = await getTasksProjectId(id, { credentials: "include" })
     return handleResponse(data, getTasksProjectIdResponse)
-  }
+  },
 })
 
 export const createTaskMutation = createQuery({

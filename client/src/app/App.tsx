@@ -10,8 +10,6 @@ import { extend } from "dayjs"
 import { RoutesView } from "@/pages"
 
 import { Sidebar } from "@/widgets/sidebar/ui.tsx"
-import { sample } from "effector"
-import { routes } from "@/shared/routing/router"
 
 extend(isSameOrAfter)
 extend(isSameOrBefore)

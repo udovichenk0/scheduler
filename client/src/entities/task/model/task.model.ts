@@ -1,10 +1,8 @@
 import { createEvent, createStore, sample } from "effector"
-import { and } from "patronum"
 import * as z from "@zod/mini"
 
 import { $$session } from "@/entities/session/session.model.ts"
 
-import { singleton } from "@/shared/lib/effector/singleton.ts"
 import { taskApi } from "@/shared/api/task/task.api.ts"
 import { TaskId } from "@/shared/api/task/task.dto.ts"
 import { cookiePersist } from "@/shared/lib/storage/cookie-persist.ts"
@@ -32,14 +30,14 @@ export const TaskStatus = {
   FINISHED: "finished",
 } as const
 
-export const $$taskModel = singleton(() => {
+export const createTaskModel = () => {
   const $tasks = createStore<Nullable<Task[]>>(null)
 
-  const addTaskTriggered = createEvent<Task>()
-  const setTasksTriggered = createEvent<Task[]>()
-  const taskDeleted = createEvent<TaskId>()
-  const taskReplaced = createEvent<Task>()
-  const fieldsReplaced = createEvent<Partial<Task> & { id: TaskId }>()
+  const addTask = createEvent<Task>()
+  const setTasks = createEvent<Task[]>()
+  const removeTask = createEvent<TaskId>()
+  const replaceTask = createEvent<Task>()
+  const replaceFields = createEvent<Partial<Task> & { id: TaskId }>()
   const updateFields = createEvent<{ id: TaskId; fields: EditableTaskFields }>()
   const reset = createEvent()
 
@@ -49,7 +47,7 @@ export const $$taskModel = singleton(() => {
   )
 
   sample({
-    clock: addTaskTriggered,
+    clock: addTask,
     source: $tasks,
     filter: Boolean,
     fn: (oldTasks, newTask) => [...oldTasks, newTask],
@@ -57,7 +55,7 @@ export const $$taskModel = singleton(() => {
   })
 
   sample({
-    clock: taskDeleted,
+    clock: removeTask,
     source: $tasks,
     filter: Boolean,
     fn: deleteById,
@@ -65,7 +63,7 @@ export const $$taskModel = singleton(() => {
   })
 
   sample({
-    clock: taskReplaced,
+    clock: replaceTask,
     source: $tasks,
     filter: Boolean,
     fn: (tasks, task) => {
@@ -74,7 +72,7 @@ export const $$taskModel = singleton(() => {
     target: $tasks,
   })
   sample({
-    clock: fieldsReplaced,
+    clock: replaceFields,
     source: $tasks,
     filter: Boolean,
     fn: (tasks, { id, ...fields }) => {
@@ -95,30 +93,9 @@ export const $$taskModel = singleton(() => {
   })
 
   sample({
-    clock: [
-      taskApi.tasksQuery.finished.success,
-      // taskApi.getTasksFromLocalStorageFx.finished.success
-    ], //!localstorage tasks FIX localstorage versioning
-    fn: ({ result }) => tasksToDomain(result),
+    clock: setTasks,
     target: $tasks,
   })
-
-  sample({
-    clock: setTasksTriggered,
-    target: $tasks,
-  })
-
-  sample({
-    clock: $$session.$isAuthenticated,
-    filter: and($$session.$isAuthenticated, $$session.$user),
-    target: taskApi.tasksQuery.start,
-  })
-
-  // sample({
-  //   clock: $$session.inited,
-  //   filter: not($$session.$isAuthenticated),
-  //   target: taskApi.getTasksFromLocalStorageFx.start
-  // })
 
   sample({
     clock: reset,
@@ -134,15 +111,29 @@ export const $$taskModel = singleton(() => {
     $tasks,
     $isCompletedShown: $isCompletedShown.map(Boolean),
     toggleCompletedShown,
-    addTaskTriggered,
-    setTasksTriggered,
-    taskDeleted,
-    taskReplaced,
+    addTask,
+    setTasks,
+    removeTask,
+    replaceTask,
     updateFields,
-    fieldsReplaced,
+    replaceFields,
     init,
     reset,
   }
+}
+
+const $$taskModel = createTaskModel()
+
+sample({
+  clock: $$session.$isAuthenticated,
+  filter: Boolean,
+  target: taskApi.tasksQuery.start,
+})
+
+sample({
+  clock: taskApi.tasksQuery.finished.success,
+  fn: ({ result }) => tasksToDomain(result),
+  target: $$taskModel.$tasks,
 })
 
 export function getTaskModelInstance() {

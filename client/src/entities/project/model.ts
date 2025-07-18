@@ -1,9 +1,11 @@
-import { createEffect, createEvent, createStore, sample } from "effector";
-import { Project } from "./type";
-import { authApi } from "@/shared/api/auth/auth.api";
-import { projectApi } from "@/shared/api/project/api";
+import { createEffect, createEvent, createStore, sample } from "effector"
 
-export const $projects = createStore<Project[]>([]);
+import { authApi } from "@/shared/api/auth/auth.api"
+import { projectApi } from "@/shared/api/project/api"
+
+import { Project } from "./type"
+
+export const $projects = createStore<Project[]>([])
 export const addProject = createEvent<Project>()
 
 const getProjectsFx = createEffect(projectApi.getProjects)
@@ -14,11 +16,14 @@ sample({
   fn: (projects, project) => {
     return [...projects, project]
   },
-  target: $projects
+  target: $projects,
 })
 
 sample({
-  clock: [authApi.checkSession.finished.success, authApi.signIn.finished.success],
+  clock: [
+    authApi.checkSession.finished.success,
+    authApi.signIn.finished.success,
+  ],
   target: getProjectsFx,
 })
 

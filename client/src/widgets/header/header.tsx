@@ -61,7 +61,9 @@ export const Header = ({ iconName, title, slot }: HeaderProps) => {
       <div className="flex h-10 w-full items-center justify-between">
         <div className="flex items-center gap-4">
           <Icon name={iconName} className="fill-cIconDefault text-2xl" />
-          <Typography.Heading className="capitalize" size="lg">{title}</Typography.Heading>
+          <Typography.Heading className="capitalize" size="lg">
+            {title}
+          </Typography.Heading>
         </div>
         <div className="relative flex items-center gap-2">{slot}</div>
       </div>

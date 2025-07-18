@@ -1,4 +1,6 @@
-import { $$taskModel } from "@/entities/task/model/task.model.ts"
+import { getTaskModelInstance } from "@/entities/task/model/task.model.ts"
+
+const $$taskModel = getTaskModelInstance()
 
 export const $inboxCounter = $$taskModel.$tasks.map((tasks) => {
   return (

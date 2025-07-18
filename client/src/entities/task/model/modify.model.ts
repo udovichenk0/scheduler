@@ -54,7 +54,7 @@ export const modifyTaskFactory = ({
     $dueDate,
     $priority,
     $projectId,
-    (title, description, status, type, start_date, due_date, priority, project_id) => ({
+    (
       title,
       description,
       status,
@@ -62,7 +62,16 @@ export const modifyTaskFactory = ({
       start_date,
       due_date,
       priority,
-      project_id
+      project_id,
+    ) => ({
+      title,
+      description,
+      status,
+      type,
+      start_date,
+      due_date,
+      priority,
+      project_id,
     }),
   )
 
@@ -90,7 +99,7 @@ export const modifyTaskFactory = ({
     fn: (fields, newFields) => {
       return {
         ...fields,
-        ...newFields
+        ...newFields,
       }
     },
     target: spread({
@@ -101,7 +110,7 @@ export const modifyTaskFactory = ({
       type: $type,
       due_date: $dueDate,
       priority: $priority,
-      project_id: $projectId
+      project_id: $projectId,
     }),
   })
 

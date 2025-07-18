@@ -48,7 +48,7 @@ export const createTaskFactory = ({
           date_created: new Date(),
           is_trashed: false,
           priority: fields.priority,
-          project_id: fields.project_id
+          project_id: fields.project_id,
         }
         return optimisticTask
       },
@@ -69,7 +69,7 @@ export const createTaskFactory = ({
     sample({
       clock: optimisticTaskCreated,
       filter: and($isAllowToSubmit, $$session.$isAuthenticated),
-      target: taskModel.addTaskTriggered,
+      target: taskModel.addTask,
     })
     sample({
       clock: createTaskMutationAttach.finished.failure,
@@ -78,7 +78,7 @@ export const createTaskFactory = ({
         const tempId = params?.["tempId"]
         return tempId
       },
-      target: taskModel.taskDeleted,
+      target: taskModel.removeTask,
     })
 
     sample({

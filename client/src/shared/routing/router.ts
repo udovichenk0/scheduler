@@ -10,7 +10,7 @@ export const routes = {
   calendar: createRoute(),
   unplaced: createRoute(),
   trash: createRoute(),
-  project: createRoute<{projectId: string}>(),
+  project: createRoute<{ projectId: string }>(),
   notFoundRoute: createRoute(),
 }
 const controls = createRouterControls()

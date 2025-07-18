@@ -58,7 +58,10 @@ export const Input = ({
           disabled={disabled}
           aria-invalid={!!error}
           value={value}
-          className={clsx("border-cSecondBorder hover:border-hover focus:border-hover duration-100 aria-[invalid=true]:text-error flex w-full items-center border-b-[1px] bg-transparent py-1 pr-8 text-sm outline-none", className)}
+          className={clsx(
+            "border-cSecondBorder hover:border-hover focus:border-hover aria-[invalid=true]:text-error flex w-full items-center border-b-[1px] bg-transparent py-1 pr-8 text-sm outline-none duration-100",
+            className,
+          )}
         />
         {icon && <span className="absolute bottom-1 right-0">{icon}</span>}
       </div>

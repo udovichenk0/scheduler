@@ -1,6 +1,7 @@
 import { handleResponse } from "../lib"
 import { getProject, postProject } from "../scheduler"
 import { getProjectResponse, postProjectResponse } from "../zod"
+
 import { CreateProjectDto } from "./dto"
 
 const getProjects = async () => {
@@ -15,5 +16,5 @@ const createProject = async (params: CreateProjectDto) => {
 
 export const projectApi = {
   getProjects,
-  createProject
+  createProject,
 }

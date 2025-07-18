@@ -1,14 +1,18 @@
+import { useStoreMap, useUnit } from "effector-react"
+import { useState } from "react"
+import clsx from "clsx"
+
+import { Layout } from "@/widgets/layout/main/ui"
+
 import { $projects } from "@/entities/project/model"
+
 import { routes } from "@/shared/routing/router"
 import { buttonCva } from "@/shared/ui/buttons/main-button/cva.styles"
 import { Tabs } from "@/shared/ui/tab"
-import { Layout } from "@/widgets/layout/main/ui"
-import { useStoreMap, useUnit } from "effector-react"
-import { useState } from "react"
+
 import { views } from "./config"
-import clsx from "clsx"
 import { ViewType } from "./type"
-import { $projectTasks } from "./model"
+import { $$taskModel } from "./model"
 import { List } from "./view/list"
 
 const Project = () => {
@@ -19,10 +23,10 @@ const Project = () => {
     keys: [params.projectId],
     fn: (projects, [pId]) => {
       return projects.find((p) => p.id === pId) || null
-    }
+    },
   })
 
-  if(!project){
+  if (!project) {
     return <div>no project</div> //!FIX
   }
 
@@ -31,21 +35,28 @@ const Project = () => {
       <Layout.Header iconName="common/arrow" title={project.name} />
       <Layout.Content>
         <Tabs value={tab} onChange={setTab} className="text-cFont">
-          <Tabs.List className="flex border-b border-b-cBorder px-4 gap-x-2">
+          <Tabs.List className="border-b-cBorder flex gap-x-2 border-b px-4">
             {views.map((view) => {
               return (
-                <div data-active={tab === view} className="py-2 data-[active=true]:border-b-3 border-cPrimary">
-                  <Tabs.Trigger 
+                <div
+                  data-active={tab === view}
+                  className="data-[active=true]:border-b-3 border-cPrimary py-2"
+                >
+                  <Tabs.Trigger
                     value={view}
-                    className={clsx(buttonCva({intent: "primary", size: "sm"}), "capitalize")}>
-                      {view}
+                    className={clsx(
+                      buttonCva({ intent: "primary", size: "sm" }),
+                      "capitalize",
+                    )}
+                  >
+                    {view}
                   </Tabs.Trigger>
                 </div>
               )
             })}
           </Tabs.List>
           <Tabs.Content label="list">
-            <List $tasks={$projectTasks}/>
+            <List $tasks={$$taskModel.$tasks} />
           </Tabs.Content>
           <Tabs.Content label="calendar">
             <div>calendar</div>

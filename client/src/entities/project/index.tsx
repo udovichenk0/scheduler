@@ -1,18 +1,24 @@
 import { useUnit } from "effector-react"
-import { Project } from "./type"
-import { $projects } from "./model"
 import clsx from "clsx"
-import { buttonCva } from "@/shared/ui/buttons/main-button/cva.styles"
 import { Link } from "atomic-router-react"
+
+import { buttonCva } from "@/shared/ui/buttons/main-button/cva.styles"
 import { routes } from "@/shared/routing/router"
 
-export const ProjectItem = ({project}: {project: Project}) => {
+import { $projects } from "./model"
+import { Project } from "./type"
+
+export const ProjectItem = ({ project }: { project: Project }) => {
   return (
     <Link
-      tabIndex={0} 
+      tabIndex={0}
       params={{ projectId: project.id }}
       to={routes.project}
-      className={clsx("cursor-pointer text-sm block", buttonCva({ intent: "primary", size: "base" }))}>
+      className={clsx(
+        "block cursor-pointer text-sm",
+        buttonCva({ intent: "primary", size: "base" }),
+      )}
+    >
       {project.name}
     </Link>
   )

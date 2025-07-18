@@ -15,9 +15,9 @@ import { isEsc } from "@/shared/lib/key-utils"
 import { ClickOutsideLayer } from "@/shared/lib/click-outside"
 
 import { Button, ButtonProps } from "../buttons/main-button"
+import { Icon } from "../icon"
 
 import { useFocusGuards } from "./use-focus-guard"
-import { Icon } from "../icon"
 
 type DefaultModalProps = {
   isOpened: boolean
@@ -67,37 +67,41 @@ const CloseButton = ({ close }: { close: () => void }) => {
       title="Close modal"
       onClick={close}
       className={
-        "hover:bg-hover size-5 rounded-[4px] focus-visible:ring flex items-center justify-center absolute right-0"
+        "hover:bg-hover absolute right-0 flex size-5 items-center justify-center rounded-[4px] focus-visible:ring"
       }
     >
-      <Icon name="common/x" className="size-4"/>
+      <Icon name="common/x" className="size-4" />
       <span className="sr-only">Close the modal</span>
     </button>
   )
 }
 
-export const Title = ({ 
+export const Title = ({
   children,
   pos = "center",
   fontSize = "xs",
   className,
-}: { 
-  children: ReactNode 
+}: {
+  children: ReactNode
   pos?: "left" | "center"
-  fontSize?: "xs" | "md" | "lg",
+  fontSize?: "xs" | "md" | "lg"
   className?: string
 }) => {
   return (
-    <h2 
-      data-pos={pos} 
+    <h2
+      data-pos={pos}
       data-font={fontSize}
-      className={clsx(`
-            data-[pos=center]:text-center 
+      className={clsx(
+        `
+            text-cFont 
+            w-full 
             data-[pos=left]:text-left 
-            data-[font=xs]:text-xs 
-            data-[font=md]:text-sm
+            data-[pos=center]:text-center
             data-[font=lg]:text-base
-            text-cFont w-full`, className)}>
+            data-[font=md]:text-sm data-[font=xs]:text-xs`,
+        className,
+      )}
+    >
       {children}
     </h2>
   )
@@ -126,7 +130,7 @@ const NewOverlay = () => {
 
 const Header = ({ children, className }: DefaultProps) => {
   return (
-    <div className={clsx("flex items-center pb-4 py-1 relative", className)}>
+    <div className={clsx("relative flex items-center py-1 pb-4", className)}>
       {children}
     </div>
   )

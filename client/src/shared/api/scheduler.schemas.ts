@@ -7,151 +7,147 @@
 /**
  * @nullable
  */
-export type Description = string | null;
+export type Description = string | null
 
 /**
  * @nullable
  */
-export type StartDate = number | null;
+export type StartDate = number | null
 
 /**
  * @nullable
  */
-export type DueDate = number | null;
+export type DueDate = number | null
 
 /**
  * Email address
  * @minLength 4
  */
-export type Email = string;
+export type Email = string
 
 /**
  * @minLength 6
  * @maxLength 6
  */
-export type Code = string;
+export type Code = string
 
-export type Id = string;
+export type Id = string
 
-export type UuidOrEmpty = string | '';
+export type UuidOrEmpty = string | ""
 
 export interface UserDto {
-  id: Id;
-  email: Email;
-  verified: boolean;
+  id: Id
+  email: Email
+  verified: boolean
 }
 
-export type TaskStatus = typeof TaskStatus[keyof typeof TaskStatus];
+export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+ 
 export const TaskStatus = {
-  inprogress: 'inprogress',
-  finished: 'finished',
-} as const;
+  inprogress: "inprogress",
+  finished: "finished",
+} as const
 
-export type TaskType = typeof TaskType[keyof typeof TaskType];
+export type TaskType = (typeof TaskType)[keyof typeof TaskType]
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+ 
 export const TaskType = {
-  inbox: 'inbox',
-  unplaced: 'unplaced',
-} as const;
+  inbox: "inbox",
+  unplaced: "unplaced",
+} as const
 
 export interface ProjectDto {
-  id: Id;
-  name: string;
-  createdBy: Id;
+  id: Id
+  name: string
+  createdBy: Id
 }
 
-export type Priority = typeof Priority[keyof typeof Priority];
+export type Priority = (typeof Priority)[keyof typeof Priority]
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+ 
 export const Priority = {
-  none: 'none',
-  low: 'low',
-  normal: 'normal',
-  high: 'high',
-  urgent: 'urgent',
-} as const;
+  none: "none",
+  low: "low",
+  normal: "normal",
+  high: "high",
+  urgent: "urgent",
+} as const
 
 export interface TaskFields {
-  title: string;
+  title: string
   /** @nullable */
-  description: string | null;
-  status: TaskStatus;
-  priority: Priority;
+  description: string | null
+  status: TaskStatus
+  priority: Priority
   /** @nullable */
-  start_date: number | null;
+  start_date: number | null
   /** @nullable */
-  due_date: number | null;
+  due_date: number | null
   /** @nullable */
-  project_id: string | null;
-  type: TaskType;
+  project_id: string | null
+  type: TaskType
 }
 
 export interface TaskDto {
-  id: Id;
-  title: string;
+  id: Id
+  title: string
   /** @nullable */
-  description: string | null;
-  status: TaskStatus;
+  description: string | null
+  status: TaskStatus
   /** @nullable */
-  start_date: number | null;
+  start_date: number | null
   /** @nullable */
-  due_date: number | null;
-  user_id: Id;
-  project_id: UuidOrEmpty;
-  type: TaskType;
-  date_created: string;
-  is_trashed: boolean;
-  priority: Priority;
+  due_date: number | null
+  user_id: Id
+  project_id: UuidOrEmpty
+  type: TaskType
+  date_created: string
+  is_trashed: boolean
+  priority: Priority
 }
 
 export type GetEmailExists200Response = {
-  exists: boolean;
-};
+  exists: boolean
+}
 
 /**
  * User response
  */
-export type UserResponse = UserDto;
+export type UserResponse = UserDto
 
 export type AuthEmailCredsBody = {
-  email: Email;
-  password: string;
-};
+  email: Email
+  password: string
+}
 
 export type GetEmailExistsParams = {
-email: Email;
-};
+  email: Email
+}
 
 export type PostAuthVerifyBody = {
-  code: Code;
-  userId: Id;
-};
+  code: Code
+  userId: Id
+}
 
 export type PostAuthResendBody = {
-  email: Email;
-  userId: Id;
-};
+  email: Email
+  userId: Id
+}
 
 export type PostProjectBody = {
-  name: string;
-};
+  name: string
+}
 
 export type PatchTasksIdDateBody = {
-  start_date: StartDate;
-  due_date: DueDate;
-};
+  start_date: StartDate
+  due_date: DueDate
+}
 
 export type PatchTasksIdStatusBody = {
-  status: TaskStatus;
-};
+  status: TaskStatus
+}
 
 export type PatchTasksIdPriorityBody = {
-  priority: Priority;
-};
-
+  priority: Priority
+}

@@ -124,9 +124,7 @@ const CalendarPage = () => {
         >
           <Modal.Content className="flex w-[400px] flex-col gap-y-1 overflow-auto px-4 pb-4">
             <Modal.Header>
-              <Modal.Title>
-                All tasks
-              </Modal.Title>
+              <Modal.Title>All tasks</Modal.Title>
               <Modal.CloseButton close={onCloseMoreTasksModal} />
             </Modal.Header>
             <MoreTasks

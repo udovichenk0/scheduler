@@ -74,7 +74,7 @@ export const updateTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
     clock: attachUpdateTaskDate.finished.success,
     filter: Boolean,
     fn: ({ result }) => taskToDomain(result),
-    target: taskModel.taskReplaced,
+    target: taskModel.replaceTask,
   })
 
   //* Update task status
@@ -92,14 +92,14 @@ export const updateTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
     fn: ({ id, status }) => {
       return { id, status: changeTaskStatus(status) }
     },
-    target: taskModel.fieldsReplaced,
+    target: taskModel.replaceFields,
   })
   sample({
     clock: attachUpdateStatusQuery.finished.failure,
     fn: ({ params }) => {
       return { id: params.id, status: changeTaskStatus(params.data.status) }
     },
-    target: taskModel.fieldsReplaced,
+    target: taskModel.replaceFields,
   })
 
   //* Update task priority
@@ -114,14 +114,14 @@ export const updateTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
 
   sample({
     clock: priorityChangedAndUpdated,
-    target: taskModel.fieldsReplaced,
+    target: taskModel.replaceFields,
   })
   sample({
     clock: attachUpdatePriorityQuery.finished.failure,
     fn: ({ params }) => {
       return { id: params.id, priority: params.data.priority }
     },
-    target: taskModel.fieldsReplaced,
+    target: taskModel.replaceFields,
   })
 
   //* Update task

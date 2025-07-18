@@ -21,7 +21,7 @@ export const $$session = singleton(() => {
   sample({
     clock: sessionSet,
     fn: () => true,
-    target: $isAuthenticated,
+    target: [$isAuthenticated],
   })
   sample({
     clock: reset,

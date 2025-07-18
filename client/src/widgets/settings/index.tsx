@@ -49,9 +49,7 @@ const Settings = ({
       </Button>
       <Modal.Content className="w-[600px]" initialFocus={ref}>
         <Modal.Header>
-          <Modal.Title>
-            {t("setting.title")}
-          </Modal.Title>
+          <Modal.Title>{t("setting.title")}</Modal.Title>
           <Modal.CloseButton close={onCloseSettings} />
         </Modal.Header>
         <Tabs value={tab} onChange={setTab} className="text-sm">
