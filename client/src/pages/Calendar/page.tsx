@@ -16,9 +16,9 @@ import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 
 import { Calendar } from "./ui/calendar-table"
 import {
-  $$createTask,
-  $$trashTask,
-  $$updateTask,
+  $$taskCreator,
+  $$taskRemover,
+  $$taskUpdater,
   $mappedTasks,
   $moreTasks,
   setMoreTasks,
@@ -34,15 +34,15 @@ const CalendarPage = () => {
   const mappedTasks = useUnit($mappedTasks)
   const onSetMoreTasks = useUnit(setMoreTasks)
 
-  const onSetTaskDate = useUnit($$createTask.setDate)
-  const onResetCreateTaskForm = useUnit($$createTask.resetFieldsTriggered)
-  const onCreateTask = useUnit($$createTask.createTaskTriggered)
+  const onSetTaskDate = useUnit($$taskCreator.dateChanged)
+  const onResetCreateTaskForm = useUnit($$taskCreator.resetFieldsTriggered)
+  const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
 
-  const updateTaskId = useUnit($$updateTask.$id)
-  const onUpdateStatus = useUnit($$updateTask.statusChangedAndUpdated)
-  const onUpdateTask = useUnit($$updateTask.updateTaskTriggered)
-  const onInitFields = useUnit($$updateTask.init)
-  const onResetUpdateTaskForm = useUnit($$updateTask.resetFieldsTriggered)
+  const updateTaskId = useUnit($$taskUpdater.$id)
+  const onUpdateStatus = useUnit($$taskUpdater.statusChangedAndUpdated)
+  const onUpdateTask = useUnit($$taskUpdater.updateTaskTriggered)
+  const onInitFields = useUnit($$taskUpdater.init)
+  const onResetUpdateTaskForm = useUnit($$taskUpdater.resetFieldsTriggered)
 
   const {
     isOpened: isUpdateTaskOpened,
@@ -78,7 +78,7 @@ const CalendarPage = () => {
         >
           <Modal.Content className="p-0! w-[600px]">
             <ExpandedTask
-              modifyTaskModel={$$updateTask}
+              modifyTaskModel={$$taskUpdater}
               dateModifier={true}
               sideDatePicker={false}
               rightPanelSlot={
@@ -102,7 +102,7 @@ const CalendarPage = () => {
         >
           <Modal.Content className="p-0! w-[600px]">
             <ExpandedTask
-              modifyTaskModel={$$createTask}
+              modifyTaskModel={$$taskCreator}
               dateModifier={true}
               sideDatePicker={false}
               rightPanelSlot={
@@ -147,7 +147,7 @@ const CalendarPage = () => {
           onCellClick={(target, date) => {
             cellRef.current = target
             onOpenCreateTaskForm()
-            onSetTaskDate(date)
+            onSetTaskDate({ startDate: date, dueDate: null })
           }}
           onShowMoreTasks={(tasks) => {
             onSetMoreTasks(tasks)
@@ -188,7 +188,7 @@ const UpdateActionsButtons = ({
   onSave: () => void
   onCancel: () => void
 }) => {
-  const trashTaskById = useUnit($$trashTask.taskTrashedById)
+  const trashTaskById = useUnit($$taskRemover.taskTrashedById)
   return (
     <div className="flex items-center">
       <Button

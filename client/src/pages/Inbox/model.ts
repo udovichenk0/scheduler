@@ -1,13 +1,14 @@
 import { combine } from "effector"
 
-import { updateTaskFactory } from "@/features/manage-task/update"
-import { trashTaskFactory } from "@/features/manage-task/trash"
-import { createTaskFactory } from "@/features/manage-task/create"
+import { createTaskUpdater } from "@/features/manage-task/update"
+import { createTaskRemover } from "@/features/manage-task/trash"
+import { createTaskCreator } from "@/features/manage-task/create"
 
 import { isInbox, shouldShowCompleted } from "@/entities/task/lib"
 import { createSorting } from "@/entities/task/model/sorting.model"
 import { getTaskModelInstance } from "@/entities/task/model/task.model"
-import { modifyTaskFactory } from "@/entities/task/model/modify.model.ts"
+
+import { routes } from "@/shared/routing/router"
 
 export const $$sort = createSorting()
 
@@ -17,7 +18,9 @@ export const $inboxTasks = combine(
   $$taskModel.$tasks,
   $$sort.$sortType,
   $$taskModel.$isCompletedShown,
-  (tasks, sortType, isCompletedShown) => {
+  routes.inbox.$isOpened,
+  (tasks, sortType, isCompletedShown, isOpened) => {
+    if (!isOpened) return []
     const todayTasks =
       tasks?.filter(
         (task) =>
@@ -29,9 +32,6 @@ export const $inboxTasks = combine(
   },
 )
 
-export const $$trashTask = trashTaskFactory({ taskModel: $$taskModel })
-export const $$updateTask = updateTaskFactory({ taskModel: $$taskModel })
-export const $$createTask = createTaskFactory({
-  $$modifyTask: modifyTaskFactory({ defaultType: "inbox", defaultDate: null }),
-  taskModel: $$taskModel,
-})
+export const $$taskRemover = createTaskRemover({ taskModel: $$taskModel })
+export const $$updateTask = createTaskUpdater({ taskModel: $$taskModel })
+export const $$createTask = createTaskCreator({ taskModel: $$taskModel })

@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { useContext, useEffect } from "react"
+import { useContext } from "react"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { EditableTask } from "@/widgets/editable-task"
@@ -11,23 +11,20 @@ import { TaskId } from "@/shared/api/task/task.dto.ts"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { useSelectItem } from "@/shared/lib/use-select-item"
-import { SDate } from "@/shared/lib/date/lib"
 
 import { TaskManagerContext } from "../model"
 
 export const TasksByDate = ({
   onSelectTaskId,
   tasks,
-  date,
 }: {
   onSelectTaskId: (task: Nullable<TaskId>) => void
   tasks: Task[]
-  date: SDate
 }) => {
-  const { $$updateTask, $$createTask } = useContext(TaskManagerContext)
+  const { $$taskUpdater: $$updateTask, $$taskCreator: $$createTask } =
+    useContext(TaskManagerContext)
 
   const onCreateTask = useUnit($$createTask.createTaskTriggered)
-  const onChangeCreateDate = useUnit($$createTask.dateChanged)
 
   const { onSelect, onUnselect, addNode } = useSelectItem({
     items: tasks,
@@ -36,10 +33,6 @@ export const TasksByDate = ({
 
   const { isOpened: isCreateFormOpened, close: onCloseCreateForm } =
     useDisclosure({ id: ModalName.CreateTaskForm, onClose: onCreateTask })
-
-  useEffect(() => {
-    onChangeCreateDate({ startDate: date, dueDate: null })
-  }, [date])
 
   return (
     <section className="h-full pt-2">

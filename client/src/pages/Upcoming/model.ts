@@ -1,17 +1,17 @@
 import { combine, createEvent, createStore } from "effector"
 import { createContext } from "react"
 
-import { createTaskFactory } from "@/features/manage-task/create"
-import { updateTaskFactory } from "@/features/manage-task/update"
-import { trashTaskFactory } from "@/features/manage-task/trash"
+import { createTaskCreator } from "@/features/manage-task/create"
+import { createTaskUpdater } from "@/features/manage-task/update"
+import { createTaskRemover } from "@/features/manage-task/trash"
 
 import { isUnplaced, shouldShowCompleted } from "@/entities/task/lib"
 import { createSorting } from "@/entities/task/model/sorting.model"
 import { getTaskModelInstance } from "@/entities/task/model/task.model"
-import { modifyTaskFactory } from "@/entities/task/model/modify.model"
 import { Task } from "@/entities/task/type"
 
-import { SDate, getToday } from "@/shared/lib/date/lib"
+import { SDate } from "@/shared/lib/date/lib"
+import { routes } from "@/shared/routing/router"
 
 import {
   getTasksPerDate,
@@ -30,7 +30,9 @@ export const $$taskModel = getTaskModelInstance()
 const $upcomingTasks = combine(
   $$taskModel.$tasks,
   $$taskModel.$isCompletedShown,
-  (tasks, isCompletedShown) => {
+  routes.upcoming.$isOpened,
+  (tasks, isCompletedShown, isOpened) => {
+    if (!isOpened) return []
     return (
       tasks?.filter(
         (task) =>
@@ -42,20 +44,13 @@ const $upcomingTasks = combine(
   },
 )
 
-export const $$updateTask = updateTaskFactory({ taskModel: $$taskModel })
-export const $$createTask = createTaskFactory({
-  $$modifyTask: modifyTaskFactory({
-    defaultType: "unplaced",
-    defaultDate: getToday(),
-  }),
-  taskModel: $$taskModel,
-})
-
-export const $$trashTask = trashTaskFactory({ taskModel: $$taskModel })
+export const $$taskUpdater = createTaskUpdater({ taskModel: $$taskModel })
+export const $$taskCreator = createTaskCreator({ taskModel: $$taskModel })
+export const $$taskRemover = createTaskRemover({ taskModel: $$taskModel })
 
 export const TaskManagerContext = createContext({
-  $$updateTask,
-  $$createTask,
+  $$taskUpdater: $$taskUpdater,
+  $$taskCreator: $$taskCreator,
 })
 
 export const upcomingDateSelected = createEvent<Variant>()

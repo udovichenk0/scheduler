@@ -16,15 +16,16 @@ import { TaskId } from "@/shared/api/task/task.dto.ts"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { useSelectItem } from "@/shared/lib/use-select-item"
+import { getToday } from "@/shared/lib/date/lib"
 
 import { SORT_CONFIG } from "./config"
 import {
-  $$trashTask,
+  $$taskRemover,
   $overdueTasks,
   $todayTasks,
   toggleOverdueTasksOpened,
-  $$updateTask,
-  $$createTask,
+  $$taskUpdater,
+  $$taskCreator,
   $$sort,
   $$taskModel,
   gate,
@@ -42,9 +43,11 @@ const Today = () => {
   const overdueTasks = useUnit($overdueTasks)
   const todayTasks = useUnit($todayTasks)
 
-  const onDeleteTask = useUnit($$trashTask.taskTrashedById)
+  const onDeleteTask = useUnit($$taskRemover.taskTrashedById)
+  const onInitDate = useUnit($$taskCreator.setFieldsTriggered)
   const { isOpened, open: onOpen } = useDisclosure({
     id: ModalName.CreateTaskForm,
+    onOpen: () => onInitDate({ start_date: getToday(), type: "unplaced" }),
   })
 
   const [selectedTaskId, setSelectedTaskId] = useState<Nullable<string>>(null)
@@ -112,7 +115,7 @@ const OverdueTasks = ({
         ref={(node) => addNode(node!, index)}
         task={task}
         typeLabel
-        $$updateTask={$$updateTask}
+        $$updateTask={$$taskUpdater}
         onSelect={() => onSelect(index)}
         onBlur={onUnselect}
       />
@@ -161,7 +164,7 @@ const TodayTasks = ({
   const tasks = useUnit($todayTasks)
   const overdueTasks = useUnit($overdueTasks)
 
-  const onCreateTask = useUnit($$createTask.createTaskTriggered)
+  const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
   const { isOpened: isCreateTaskFormOpened, close: onCloseCreateTaskForm } =
     useDisclosure({ id: ModalName.CreateTaskForm, onClose: onCreateTask })
   const { onSelect, onUnselect, addNode } = useSelectItem({
@@ -175,7 +178,7 @@ const TodayTasks = ({
         ref={(node) => addNode(node!, index)}
         task={task}
         typeLabel
-        $$updateTask={$$updateTask}
+        $$updateTask={$$taskUpdater}
         onSelect={() => onSelect(index)}
         onBlur={onUnselect}
       />
@@ -206,7 +209,7 @@ const TodayTasks = ({
         className="mx-3"
         isExpanded={isCreateTaskFormOpened}
         closeTaskForm={onCloseCreateTaskForm}
-        modifyTaskModel={$$createTask}
+        modifyTaskModel={$$taskCreator}
         dateModifier={true}
       />
     </section>

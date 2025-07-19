@@ -1,33 +1,32 @@
 import { combine, createEvent, restore } from "effector"
 
-import { createTaskFactory } from "@/features/manage-task/create"
-import { updateTaskFactory } from "@/features/manage-task/update"
-import { trashTaskFactory } from "@/features/manage-task/trash"
+import { createTaskCreator } from "@/features/manage-task/create"
+import { createTaskUpdater } from "@/features/manage-task/update"
+import { createTaskRemover } from "@/features/manage-task/trash"
 
-import { modifyTaskFactory } from "@/entities/task/model/modify.model.ts"
 import { isUnplaced } from "@/entities/task/lib"
 import { Task } from "@/entities/task/type"
 import { getTaskModelInstance } from "@/entities/task/model/task.model"
 
-import { getToday } from "@/shared/lib/date/lib"
+import { routes } from "@/shared/routing/router"
 
 export const setMoreTasks = createEvent<Task[]>()
 export const $moreTasks = restore(setMoreTasks, [])
 
 export const $$taskModel = getTaskModelInstance()
 
-export const $$trashTask = trashTaskFactory({ taskModel: $$taskModel })
+const $unplacedTasks = combine(
+  $$taskModel.$tasks,
+  routes.calendar.$isOpened,
+  (tasks, isOpened) => {
+    if (!isOpened) return []
+    return tasks?.filter((task) => isUnplaced(task) && !task.is_trashed) || []
+  },
+)
 
-const $unplacedTasks = combine($$taskModel.$tasks, (tasks) => {
-  return tasks?.filter((task) => isUnplaced(task) && !task.is_trashed) || []
-})
-
-export const $$updateTask = updateTaskFactory({ taskModel: $$taskModel })
-export const $$createTask = createTaskFactory({
-  $$modifyTask: modifyTaskFactory({
-    defaultType: "unplaced",
-    defaultDate: getToday(),
-  }),
+export const $$taskUpdater = createTaskUpdater({ taskModel: $$taskModel })
+export const $$taskRemover = createTaskRemover({ taskModel: $$taskModel })
+export const $$taskCreator = createTaskCreator({
   taskModel: $$taskModel,
 })
 

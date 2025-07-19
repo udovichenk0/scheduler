@@ -1,7 +1,6 @@
 import { combine, createEvent, createStore, sample, split } from "effector"
 import { spread } from "patronum"
 
-import { bridge } from "@/shared/lib/effector/bridge"
 import { SDate, getToday } from "@/shared/lib/date/lib.ts"
 
 import type {
@@ -11,16 +10,11 @@ import type {
   Priority,
   ProjectId,
 } from "../type.ts"
+import { hasDate } from "../lib.ts"
 
 import { TaskPriority, TaskStatus, TaskType } from "./task.model.ts"
 
-export const modifyTaskFactory = ({
-  defaultType = "inbox",
-  defaultDate = null,
-}: {
-  defaultType?: Type
-  defaultDate?: Nullable<SDate>
-}) => {
+export const createTaskEditor = () => {
   const statusChanged = createEvent<Status>()
   const titleChanged = createEvent<string>()
   const typeChanged = createEvent<Type>()
@@ -29,7 +23,6 @@ export const modifyTaskFactory = ({
     startDate: Nullable<SDate>
     dueDate: Nullable<SDate>
   }>()
-  const setDate = createEvent<Nullable<SDate>>()
   const descriptionChanged = createEvent<Nullable<string>>()
   const setStatus = createEvent<Status>()
   const resetFieldsTriggered = createEvent()
@@ -37,9 +30,9 @@ export const modifyTaskFactory = ({
   const $title = createStore("")
   const $description = createStore<Nullable<string>>(null)
   const $status = createStore<Status>(TaskStatus.INPROGRESS)
-  const $startDate = createStore<Nullable<SDate>>(defaultDate)
+  const $startDate = createStore<Nullable<SDate>>(null)
   const $dueDate = createStore<Nullable<SDate>>(null)
-  const $type = createStore<Type>(defaultType)
+  const $type = createStore<Type>(TaskType.INBOX)
   const $isDirty = createStore(false)
   const $priority = createStore<Priority>(TaskPriority.NONE)
   const $projectId = createStore<Nullable<ProjectId>>(null)
@@ -134,56 +127,45 @@ export const modifyTaskFactory = ({
     target: $priority,
   })
 
-  bridge(() => {
-    spread({
-      source: dateChanged,
-      targets: {
-        startDate: $startDate,
-        dueDate: $dueDate,
-      },
-    })
-    sample({
-      clock: [setDate],
-      target: $startDate,
-    })
-
-    sample({
-      clock: dateChanged,
-      source: $type,
-      filter: (type, date) => type == TaskType.INBOX && !!date,
-      fn: () => TaskType.UNPLACED,
-      target: $type,
-    })
-
-    sample({
-      clock: dateChanged,
-      source: $type,
-      filter: (type, date) => type == TaskType.UNPLACED && !date,
-      fn: () => TaskType.INBOX,
-      target: $type,
-    })
+  spread({
+    source: dateChanged,
+    targets: {
+      startDate: $startDate,
+      dueDate: $dueDate,
+    },
+  })
+  sample({
+    clock: dateChanged,
+    source: $type,
+    fn: (type, date) => {
+      if (type == TaskType.INBOX) {
+        if (hasDate(date)) return TaskType.UNPLACED
+      } else {
+        if (!hasDate(date)) return TaskType.INBOX
+      }
+      return type
+    },
+    target: $type,
   })
 
-  bridge(() => {
-    sample({
-      clock: typeChanged,
-      source: $type,
-      filter: (currentType, type) => currentType != type,
-      fn: (_, type) => type,
-      target: $type,
-    })
-    sample({
-      clock: typeChanged,
-      filter: (type) => type == TaskType.INBOX,
-      fn: () => null,
-      target: $startDate,
-    })
-    sample({
-      clock: typeChanged,
-      filter: (type) => type == TaskType.UNPLACED,
-      fn: () => getToday(),
-      target: $startDate,
-    })
+  sample({
+    clock: typeChanged,
+    source: $type,
+    filter: (currentType, type) => currentType != type,
+    fn: (_, type) => type,
+    target: $type,
+  })
+  sample({
+    clock: typeChanged,
+    filter: (type) => type == TaskType.INBOX,
+    fn: () => null,
+    target: $startDate,
+  })
+  sample({
+    clock: typeChanged,
+    filter: (type) => type == TaskType.UNPLACED,
+    fn: () => getToday(),
+    target: $startDate,
   })
 
   sample({
@@ -218,7 +200,6 @@ export const modifyTaskFactory = ({
     typeChanged,
     dateChanged,
     priorityChanged,
-    setDate,
     descriptionChanged,
     resetFieldsTriggered,
     setFieldsTriggered,
@@ -235,4 +216,4 @@ export const modifyTaskFactory = ({
   }
 }
 
-export type ModifyTaskFactory = ReturnType<typeof modifyTaskFactory>
+export type CreateTaskEditor = ReturnType<typeof createTaskEditor>

@@ -13,7 +13,7 @@ import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { routes } from "@/shared/routing/router"
 
-import { $$createTask, $$updateTask } from "../model"
+import { $$taskCreator, $$taskUpdater } from "../model"
 
 export const List = ({
   $tasks,
@@ -33,7 +33,6 @@ export const List = ({
     store: $tasks,
     keys: [],
     fn: (tasks) => {
-      console.log("lol", tasks)
       if (!tasks) return []
       return tasks
       // return tasks.filter((tasks) => tasks.status === TaskStatus.finished)
@@ -48,8 +47,8 @@ export const List = ({
 }
 
 const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
-  const onCreateTask = useUnit($$createTask.createTaskTriggered)
-  const initFields = useUnit($$createTask.setFieldsTriggered)
+  const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
+  const initFields = useUnit($$taskCreator.setFieldsTriggered)
   const params = useUnit(routes.project.$params)
   const {
     isOpened: isCreateFormOpened,
@@ -73,7 +72,7 @@ const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
       <ExpandedTask
         className="mb-2"
         isExpanded={isCreateFormOpened}
-        modifyTaskModel={$$createTask}
+        modifyTaskModel={$$taskCreator}
         dateModifier={false}
         closeTaskForm={onCloseCreateForm}
       />
@@ -84,7 +83,7 @@ const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
               key={task.id}
               // ref={(node) => addNode(node!, index)}
               task={task}
-              $$updateTask={$$updateTask}
+              $$updateTask={$$taskUpdater}
               onSelect={() => {}}
               onBlur={() => {}}
               ref={null}

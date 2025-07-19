@@ -6,7 +6,7 @@ import { $$session } from "@/entities/session/session.model.ts"
 import { TaskModel } from "@/entities/task/model/task.model.ts"
 
 import { taskApi } from "@/shared/api/task/task.api.ts"
-export const removeTaskFactory = (taskModel: TaskModel) => {
+export const createTaskRemover = (taskModel: TaskModel) => {
   const taskDeletedById = createEvent<string>()
   const allTasksDeleted = createEvent()
 

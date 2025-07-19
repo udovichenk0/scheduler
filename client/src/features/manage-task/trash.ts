@@ -6,7 +6,7 @@ import { TaskModel } from "@/entities/task/model/task.model.ts"
 
 import { taskApi } from "@/shared/api/task/task.api.ts"
 
-export const trashTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
+export const createTaskRemover = ({ taskModel }: { taskModel: TaskModel }) => {
   const taskTrashedById = createEvent<string>()
 
   const trashTaskAttach = attachOperation(taskApi.trashTaskMutation)

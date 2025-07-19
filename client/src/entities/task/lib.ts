@@ -6,7 +6,7 @@ import { SDate, sdate } from "@/shared/lib/date/lib"
 import { unixToDate } from "@/shared/api/task/task.dto"
 
 import { TaskStatuses } from "./config"
-import { EditableTaskFields, Task, TaskId, Status } from "./type"
+import { EditableTaskFields, Task, TaskId, Status, TaskDate } from "./type"
 import { TaskPriority } from "./model/task.model"
 
 export const findTaskById = (tasks: Task[], id: TaskId) =>
@@ -28,7 +28,7 @@ export function deleteById(tasks: Task[], deletedTaskId: TaskId) {
 }
 
 export const isUnplaced = (task: Task) =>
-  task.type == "unplaced" && !!task.start_date
+  task.type == "unplaced" && (!!task.start_date || !!task.due_date)
 
 export const isInbox = (task: Task) => task.type == "inbox"
 
@@ -55,6 +55,7 @@ export const getTaskFields = ({
   type,
   due_date,
   priority,
+  project_id,
 }: Task): EditableTaskFields => {
   return {
     title,
@@ -64,6 +65,7 @@ export const getTaskFields = ({
     due_date,
     type,
     priority,
+    project_id,
   }
 }
 
@@ -85,6 +87,10 @@ export function formatTaskDate(date: SDate) {
   } else {
     return `${date.format("MM/DD/YY")} ${time}`
   }
+}
+
+export function hasDate(date: { startDate: TaskDate; dueDate: TaskDate }) {
+  return !!date.startDate || !!date.dueDate
 }
 
 export function getPriorityColor(priority: Priority) {

@@ -10,12 +10,12 @@ import { NoTasks } from "@/shared/ui/no-tasks"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { useSelectItem } from "@/shared/lib/use-select-item"
 
-import { $$deleteTask, $trashTasks } from "./model"
+import { $$taskRemover, $trashTasks } from "./model"
 
 const Trash = () => {
   const tasks = useUnit($trashTasks)
-  const onDeleteTask = useUnit($$deleteTask.taskDeletedById)
-  const onDeleteAllTasks = useUnit($$deleteTask.allTasksDeleted)
+  const onDeleteTask = useUnit($$taskRemover.taskDeletedById)
+  const onDeleteAllTasks = useUnit($$taskRemover.allTasksDeleted)
   const list = useList($trashTasks, (task, id) => {
     return (
       <div className="px-3 pb-2" key={task.id}>

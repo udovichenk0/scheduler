@@ -32,8 +32,8 @@ export const useDisclosure = ({
   })
 
   const openModal = () => {
-    open(modalId)
     onOpen?.()
+    open(modalId)
   }
 
   const closeModal = () => {

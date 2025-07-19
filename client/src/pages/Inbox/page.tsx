@@ -16,7 +16,7 @@ import { useSelectItem } from "@/shared/lib/use-select-item"
 
 import { SORT_CONFIG } from "./config"
 import {
-  $$trashTask,
+  $$taskRemover,
   $$updateTask,
   $$createTask,
   $$sort,
@@ -31,7 +31,7 @@ const Inbox = () => {
   const activeSort = useUnit($$sort.$sortType)
 
   const onCreateTask = useUnit($$createTask.createTaskTriggered)
-  const onTrashTask = useUnit($$trashTask.taskTrashedById)
+  const onTrashTask = useUnit($$taskRemover.taskTrashedById)
   const onSortChange = useUnit($$sort.sort)
   const onToggleCompleted = useUnit($$taskModel.toggleCompletedShown)
   const isCompletedShown = useUnit($$taskModel.$isCompletedShown)

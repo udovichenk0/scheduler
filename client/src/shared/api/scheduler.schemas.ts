@@ -43,7 +43,6 @@ export interface UserDto {
 
 export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
 
- 
 export const TaskStatus = {
   inprogress: "inprogress",
   finished: "finished",
@@ -51,7 +50,6 @@ export const TaskStatus = {
 
 export type TaskType = (typeof TaskType)[keyof typeof TaskType]
 
- 
 export const TaskType = {
   inbox: "inbox",
   unplaced: "unplaced",
@@ -65,7 +63,6 @@ export interface ProjectDto {
 
 export type Priority = (typeof Priority)[keyof typeof Priority]
 
- 
 export const Priority = {
   none: "none",
   low: "low",

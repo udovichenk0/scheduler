@@ -39,6 +39,7 @@ const Project = () => {
             {views.map((view) => {
               return (
                 <div
+                  key={view}
                   data-active={tab === view}
                   className="data-[active=true]:border-b-3 border-cPrimary py-2"
                 >

@@ -29,9 +29,5 @@ sample({
 
 sample({
   clock: getProjectsFx.doneData,
-  fn: (projects) => {
-    console.log(projects)
-    return projects
-  },
   target: $projects,
 })

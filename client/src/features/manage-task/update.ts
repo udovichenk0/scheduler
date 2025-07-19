@@ -10,7 +10,7 @@ import {
 } from "@/entities/task/lib"
 import { $$session } from "@/entities/session/session.model.ts"
 import { EditableTaskFields, Task, Status } from "@/entities/task/type"
-import { modifyTaskFactory } from "@/entities/task/model/modify.model"
+import { createTaskEditor } from "@/entities/task/model/modify.model"
 import { TaskModel } from "@/entities/task/model/task.model"
 
 import { taskApi } from "@/shared/api/task/task.api.ts"
@@ -22,14 +22,14 @@ import {
 import { SDate } from "@/shared/lib/date/lib"
 import { Priority } from "@/shared/api/scheduler.schemas"
 
-export const updateTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
-  const $$modifyTask = modifyTaskFactory({})
+export const createTaskUpdater = ({ taskModel }: { taskModel: TaskModel }) => {
+  const $$taskEditor = createTaskEditor()
   const {
     resetFieldsTriggered,
     $isAllowToSubmit,
     $fields,
     setFieldsTriggered,
-  } = $$modifyTask
+  } = $$taskEditor
 
   const updateTaskTriggeredById = createEvent<TaskId>()
   const updateTaskTriggered = createEvent()
@@ -234,7 +234,7 @@ export const updateTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
     init,
     $isUpdating: taskApi.updateTaskMutation.$pending,
     $id,
-    ...$$modifyTask,
+    ...$$taskEditor,
   }
 }
-export type UpdateTaskFactory = ReturnType<typeof updateTaskFactory>
+export type UpdateTaskFactory = ReturnType<typeof createTaskUpdater>

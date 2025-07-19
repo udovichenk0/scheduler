@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect, KeyboardEvent } from "react"
-import { useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
 
 import { Status, Task, TaskId } from "@/entities/task/type"
@@ -8,8 +7,6 @@ import { TaskStatuses } from "@/entities/task/config"
 import { Checkbox } from "@/shared/ui/data-entry/checkbox"
 import { isEnter } from "@/shared/lib/key-utils"
 import { SDate } from "@/shared/lib/date/lib"
-
-import { $$createTask } from "../model"
 
 import { CellHeader } from "./cell-header"
 
@@ -34,12 +31,9 @@ export const Cell = ({
 
   const [showMore, setShowMore] = useState(false)
 
-  const setDate = useUnit($$createTask.setDate)
-
   const clickOnCell = () => {
     const target = cellRef.current as unknown as HTMLButtonElement
     onClick(target, date)
-    setDate(date)
   }
 
   const onKeyDown = (e: KeyboardEvent) => {

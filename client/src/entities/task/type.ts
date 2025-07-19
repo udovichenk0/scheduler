@@ -8,6 +8,7 @@ export type ProjectId = string
 export type Status = (typeof TaskStatus)[keyof typeof TaskStatus]
 export type Type = (typeof TaskType)[keyof typeof TaskType]
 export type Priority = (typeof TaskPriority)[keyof typeof TaskPriority]
+export type TaskDate = Nullable<SDate>
 
 export type Task = {
   id: TaskId
@@ -15,8 +16,8 @@ export type Task = {
   description: Nullable<string>
   status: Status
   type: Type
-  start_date: Nullable<SDate>
-  due_date: Nullable<SDate>
+  start_date: TaskDate
+  due_date: TaskDate
   user_id: Nullable<string>
   project_id: Nullable<ProjectId>
   date_created: Date
@@ -28,8 +29,8 @@ export type EditableTaskFields = {
   title: string
   description: Nullable<string>
   status: Status
-  start_date: Nullable<SDate>
-  due_date: Nullable<SDate>
+  start_date: TaskDate
+  due_date: TaskDate
   type: Type
   priority: Priority
   project_id: Nullable<ProjectId>
