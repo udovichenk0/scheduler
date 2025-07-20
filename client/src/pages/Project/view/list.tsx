@@ -1,5 +1,5 @@
 import { useStoreMap, useUnit } from "effector-react"
-import { StoreWritable } from "effector"
+import { Store } from "effector"
 
 import { EditableTask } from "@/widgets/editable-task"
 import { ExpandedTask } from "@/widgets/expanded-task"
@@ -13,13 +13,9 @@ import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { routes } from "@/shared/routing/router"
 
-import { $$taskCreator, $$taskUpdater } from "../model"
+import { $$taskCreator, $$taskTrasher, $$taskUpdater } from "../model"
 
-export const List = ({
-  $tasks,
-}: {
-  $tasks: StoreWritable<Nullable<Task[]>>
-}) => {
+export const List = ({ $tasks }: { $tasks: Store<Nullable<Task[]>> }) => {
   // const inprogressTasks = useStoreMap({
   //   store: $tasks,
   //   keys: [],
@@ -72,7 +68,7 @@ const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
       <ExpandedTask
         className="mb-2"
         isExpanded={isCreateFormOpened}
-        modifyTaskModel={$$taskCreator}
+        $$taskManager={$$taskCreator}
         dateModifier={false}
         closeTaskForm={onCloseCreateForm}
       />
@@ -83,7 +79,8 @@ const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
               key={task.id}
               // ref={(node) => addNode(node!, index)}
               task={task}
-              $$updateTask={$$taskUpdater}
+              $$taskUpdater={$$taskUpdater}
+              $$taskRemover={$$taskTrasher}
               onSelect={() => {}}
               onBlur={() => {}}
               ref={null}

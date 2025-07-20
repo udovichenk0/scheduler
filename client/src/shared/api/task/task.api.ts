@@ -51,12 +51,16 @@ export const createTaskMutation = createQuery({
   },
 })
 
-export const updateTaskMutation = createQuery({
-  handler: async ({ id, data }: { id: TaskId; data: TaskFields }) => {
-    const response = await putTasksId(id, data, { credentials: "include" })
-    return handleResponse(response, putTasksIdResponse)
-  },
-})
+export const updateTaskMutation = async ({
+  id,
+  data,
+}: {
+  id: TaskId
+  data: TaskFields
+}) => {
+  const response = await putTasksId(id, data, { credentials: "include" })
+  return handleResponse(response, putTasksIdResponse)
+}
 
 export const updateStatusMutation = createQuery({
   handler: async ({

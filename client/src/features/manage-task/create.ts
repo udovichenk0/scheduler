@@ -1,5 +1,5 @@
 import { attachOperation } from "@farfetched/core"
-import { merge, sample, createEvent } from "effector"
+import { sample, createEvent } from "effector"
 import { and } from "patronum"
 import { v4 } from "uuid"
 
@@ -11,16 +11,14 @@ import { Task } from "@/entities/task/type"
 import { taskApi } from "@/shared/api/task/task.api.ts"
 import { toApiTaskFields } from "@/shared/api/task/task.dto"
 
+import { taskToDomain } from "./../../entities/task/lib"
+
 export const createTaskCreator = ({ taskModel }: { taskModel: TaskModel }) => {
   const $$taskEditor = createTaskEditor()
   const { $fields, $isAllowToSubmit, resetFieldsTriggered } = $$taskEditor
   const createTaskTriggered = createEvent()
   const optimisticTaskCreated = createEvent<Task>()
   const createTaskMutationAttach = attachOperation(taskApi.createTaskMutation)
-
-  const taskSuccessfullyCreated = merge([
-    createTaskMutationAttach.finished.success,
-  ])
 
   sample({
     clock: createTaskTriggered,
@@ -49,9 +47,7 @@ export const createTaskCreator = ({ taskModel }: { taskModel: TaskModel }) => {
     clock: optimisticTaskCreated,
     filter: and($isAllowToSubmit, $$session.$isAuthenticated),
     fn: (fields) => {
-      const tempId = fields.id
       return {
-        tempId,
         ...toApiTaskFields(fields),
       }
     },
@@ -64,12 +60,23 @@ export const createTaskCreator = ({ taskModel }: { taskModel: TaskModel }) => {
   })
   sample({
     clock: createTaskMutationAttach.finished.failure,
-    fn: ({ params }) => {
-      //@ts-ignore
-      const tempId = params?.["tempId"]
-      return tempId
-    },
+    //@ts-ignore
+    fn: ({ params }) => params?.["id"],
     target: taskModel.removeTask,
+  })
+
+  sample({
+    clock: createTaskMutationAttach.finished.success,
+    source: taskModel.$tasks,
+    filter: Boolean,
+    fn: (tasks, { params, result }) => {
+      //@ts-ignore
+      const tempId = params?.["id"]
+      return tasks!.map((task) =>
+        task.id == tempId ? taskToDomain(result) : task,
+      )
+    },
+    target: taskModel.setTasks,
   })
 
   sample({
@@ -79,8 +86,6 @@ export const createTaskCreator = ({ taskModel }: { taskModel: TaskModel }) => {
 
   return {
     ...$$taskEditor,
-    taskSuccessfullyCreated,
     createTaskTriggered,
-    $isCreating: taskApi.createTaskMutation.$pending,
   }
 }

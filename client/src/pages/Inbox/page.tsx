@@ -16,7 +16,7 @@ import { useSelectItem } from "@/shared/lib/use-select-item"
 
 import { SORT_CONFIG } from "./config"
 import {
-  $$taskRemover,
+  $$taskTrasher,
   $$updateTask,
   $$createTask,
   $$sort,
@@ -31,7 +31,7 @@ const Inbox = () => {
   const activeSort = useUnit($$sort.$sortType)
 
   const onCreateTask = useUnit($$createTask.createTaskTriggered)
-  const onTrashTask = useUnit($$taskRemover.taskTrashedById)
+  const onTrashTask = useUnit($$taskTrasher.removeTaskById)
   const onSortChange = useUnit($$sort.sort)
   const onToggleCompleted = useUnit($$taskModel.toggleCompletedShown)
   const isCompletedShown = useUnit($$taskModel.$isCompletedShown)
@@ -53,8 +53,9 @@ const Inbox = () => {
         formDateModifier={false}
         key={task.id}
         ref={(node) => addNode(node!, index)}
-        $$updateTask={$$updateTask}
+        $$taskUpdater={$$updateTask}
         task={task}
+        $$taskRemover={$$taskTrasher}
         onSelect={() => onSelect(index)}
         onBlur={onUnselect}
       />
@@ -86,7 +87,7 @@ const Inbox = () => {
         {list}
         <ExpandedTask
           isExpanded={isCreateFormOpened}
-          modifyTaskModel={$$createTask}
+          $$taskManager={$$createTask}
           dateModifier={false}
           closeTaskForm={onCloseCreateForm}
         />

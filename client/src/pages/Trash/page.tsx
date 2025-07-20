@@ -14,12 +14,13 @@ import { $$taskRemover, $trashTasks } from "./model"
 
 const Trash = () => {
   const tasks = useUnit($trashTasks)
-  const onDeleteTask = useUnit($$taskRemover.taskDeletedById)
-  const onDeleteAllTasks = useUnit($$taskRemover.allTasksDeleted)
+  const onDeleteTask = useUnit($$taskRemover.removeTaskById)
+  const onDeleteAllTasks = useUnit($$taskRemover.removeAllTasks)
   const list = useList($trashTasks, (task, id) => {
     return (
       <div className="px-3 pb-2" key={task.id}>
         <TaskItem
+          onRemoveTask={onDeleteTask}
           ref={(node) => addNode(node!, id)}
           isShown
           typeLabel

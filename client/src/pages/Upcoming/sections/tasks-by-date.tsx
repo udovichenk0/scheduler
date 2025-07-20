@@ -21,10 +21,10 @@ export const TasksByDate = ({
   onSelectTaskId: (task: Nullable<TaskId>) => void
   tasks: Task[]
 }) => {
-  const { $$taskUpdater: $$updateTask, $$taskCreator: $$createTask } =
+  const { $$taskUpdater, $$taskCreator, $$taskTrasher } =
     useContext(TaskManagerContext)
 
-  const onCreateTask = useUnit($$createTask.createTaskTriggered)
+  const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
 
   const { onSelect, onUnselect, addNode } = useSelectItem({
     items: tasks,
@@ -41,7 +41,8 @@ export const TasksByDate = ({
           <EditableTask
             ref={(node) => addNode(node!, id)}
             key={task.id}
-            $$updateTask={$$updateTask}
+            $$taskUpdater={$$taskUpdater}
+            $$taskRemover={$$taskTrasher}
             task={task}
             onSelect={() => onSelect(id)}
             onBlur={onUnselect}
@@ -52,7 +53,7 @@ export const TasksByDate = ({
       <ExpandedTask
         className="mx-3"
         isExpanded={isCreateFormOpened}
-        modifyTaskModel={$$createTask}
+        $$taskManager={$$taskCreator}
         dateModifier={true}
         closeTaskForm={onCloseCreateForm}
       />

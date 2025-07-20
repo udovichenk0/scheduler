@@ -216,4 +216,4 @@ export const createTaskEditor = () => {
   }
 }
 
-export type CreateTaskEditor = ReturnType<typeof createTaskEditor>
+export type TaskEditor = ReturnType<typeof createTaskEditor>

@@ -2,7 +2,7 @@ import { combine, createEvent, restore } from "effector"
 
 import { createTaskCreator } from "@/features/manage-task/create"
 import { createTaskUpdater } from "@/features/manage-task/update"
-import { createTaskRemover } from "@/features/manage-task/trash"
+import { createTaskTrasher } from "@/features/manage-task/trash"
 
 import { isUnplaced } from "@/entities/task/lib"
 import { Task } from "@/entities/task/type"
@@ -25,7 +25,7 @@ const $unplacedTasks = combine(
 )
 
 export const $$taskUpdater = createTaskUpdater({ taskModel: $$taskModel })
-export const $$taskRemover = createTaskRemover({ taskModel: $$taskModel })
+export const $$taskRemover = createTaskTrasher({ taskModel: $$taskModel })
 export const $$taskCreator = createTaskCreator({
   taskModel: $$taskModel,
 })

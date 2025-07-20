@@ -1,7 +1,7 @@
 import { combine } from "effector"
 
 import { createTaskUpdater } from "@/features/manage-task/update"
-import { createTaskRemover } from "@/features/manage-task/trash"
+import { createTaskTrasher } from "@/features/manage-task/trash"
 import { createTaskCreator } from "@/features/manage-task/create"
 
 import { isInbox, shouldShowCompleted } from "@/entities/task/lib"
@@ -32,6 +32,6 @@ export const $inboxTasks = combine(
   },
 )
 
-export const $$taskRemover = createTaskRemover({ taskModel: $$taskModel })
+export const $$taskTrasher = createTaskTrasher({ taskModel: $$taskModel })
 export const $$updateTask = createTaskUpdater({ taskModel: $$taskModel })
 export const $$createTask = createTaskCreator({ taskModel: $$taskModel })

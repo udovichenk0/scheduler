@@ -14,7 +14,7 @@ import { getToday } from "@/shared/lib/date/lib"
 
 import { UpcomingTasks } from "./sections/upcoming-tasks"
 import {
-  $$taskRemover,
+  $$taskTrasher,
   $upcomingDate,
   upcomingDateSelected,
   TaskManagerContext,
@@ -39,7 +39,7 @@ const Upcoming = () => {
   const upcomingDate = useUnit($upcomingDate)
   const activeSort = useUnit($$sort.$sortType)
 
-  const onDeleteTask = useUnit($$taskRemover.taskTrashedById)
+  const onDeleteTask = useUnit($$taskTrasher.removeTaskById)
   const onSelectViewVariant = useUnit(upcomingDateSelected)
   const onSortChange = useUnit($$sort.sort)
   const onChangeCreateDate = useUnit($$taskCreator.dateChanged)
@@ -76,6 +76,7 @@ const Upcoming = () => {
       <Layout.Content className="flex flex-col">
         <TaskManagerContext.Provider
           value={{
+            $$taskTrasher,
             $$taskCreator,
             $$taskUpdater,
           }}

@@ -96,7 +96,8 @@ const Section = ({
   onSelectTaskId: (taskId: Nullable<TaskId>) => void
   isSelected: boolean
 }) => {
-  const { $$taskCreator, $$taskUpdater } = useContext(TaskManagerContext)
+  const { $$taskCreator, $$taskUpdater, $$taskTrasher } =
+    useContext(TaskManagerContext)
   const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
   const { isOpened: isCreateTaskFormOpened, close: onCloseCreateTaskForm } =
     useDisclosure({ id: ModalName.CreateTaskForm, onClose: onCreateTask })
@@ -119,7 +120,8 @@ const Section = ({
                   <EditableTask
                     ref={(node) => addNode(node!, id)}
                     key={task.id}
-                    $$updateTask={$$taskUpdater}
+                    $$taskUpdater={$$taskUpdater}
+                    $$taskRemover={$$taskTrasher}
                     task={task}
                     typeLabel
                     dateLabel
@@ -136,7 +138,7 @@ const Section = ({
         isExpanded={isCreateTaskFormOpened && isSelected}
         className="border-cBorder border-b px-3 py-2"
         dateModifier={true}
-        modifyTaskModel={$$taskCreator}
+        $$taskManager={$$taskCreator}
         closeTaskForm={onCloseCreateTaskForm}
       />
     </>

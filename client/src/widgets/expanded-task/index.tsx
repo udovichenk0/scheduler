@@ -1,43 +1,22 @@
 import { useUnit } from "effector-react"
 import { ReactNode, RefObject, useEffect } from "react"
-import { EventCallable, StoreWritable } from "effector"
 import clsx from "clsx"
 
-import { Priority, Status, Type } from "@/entities/task/type"
 import { ModifyTaskForm } from "@/entities/task/ui/form.tsx"
 import { PriorityPicker } from "@/entities/task/ui/priority-picker"
+import { TaskEditor } from "@/entities/task/model/modify.model"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { Container } from "@/shared/ui/general/container"
-import { SDate } from "@/shared/lib/date/lib"
 import { isEsc } from "@/shared/lib/key-utils"
 import { ClickOutsideLayer } from "@/shared/lib/click-outside"
-
-type TaskFactory = {
-  $title: StoreWritable<string>
-  $description: StoreWritable<Nullable<string>>
-  $status: StoreWritable<Status>
-  $type: StoreWritable<Type>
-  $startDate: StoreWritable<Nullable<SDate>>
-  $dueDate: StoreWritable<Nullable<SDate>>
-  $priority: StoreWritable<Priority>
-  statusChanged: EventCallable<Status>
-  descriptionChanged: EventCallable<Nullable<string>>
-  titleChanged: EventCallable<string>
-  typeChanged: EventCallable<Type>
-  dateChanged: EventCallable<{
-    startDate: Nullable<SDate>
-    dueDate: Nullable<SDate>
-  }>
-  priorityChanged: EventCallable<Priority>
-}
 
 export const ExpandedTask = ({
   isExpanded = true,
   dateModifier = true,
-  modifyTaskModel,
+  $$taskManager,
   sideDatePicker = true,
   rightPanelSlot,
   className,
@@ -46,18 +25,18 @@ export const ExpandedTask = ({
   isExpanded?: boolean
   taskRef?: RefObject<HTMLDivElement>
   dateModifier?: boolean
-  modifyTaskModel: TaskFactory
+  $$taskManager: TaskEditor
   sideDatePicker?: boolean
   rightPanelSlot?: ReactNode
   className?: string
   closeTaskForm?: () => void
 }) => {
-  const startDate = useUnit(modifyTaskModel.$startDate)
-  const dueDate = useUnit(modifyTaskModel.$dueDate)
-  const priority = useUnit(modifyTaskModel.$priority)
+  const startDate = useUnit($$taskManager.$startDate)
+  const dueDate = useUnit($$taskManager.$dueDate)
+  const priority = useUnit($$taskManager.$priority)
 
-  const onChangeDate = useUnit(modifyTaskModel.dateChanged)
-  const onChangePriority = useUnit(modifyTaskModel.priorityChanged)
+  const onChangeDate = useUnit($$taskManager.dateChanged)
+  const onChangePriority = useUnit($$taskManager.priorityChanged)
 
   useEffect(() => {
     const onEscDown = (e: KeyboardEvent) => {
@@ -103,7 +82,7 @@ export const ExpandedTask = ({
       <Container className="bg-cTaskEdit w-full rounded-[5px]">
         <ModifyTaskForm
           dateModifier={dateModifier}
-          modifyTaskModel={modifyTaskModel}
+          modifyTaskModel={$$taskManager}
         />
         <div className="mr-2 flex items-center justify-end">
           <PriorityPicker priority={priority} onUpdate={onChangePriority} />

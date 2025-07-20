@@ -38,7 +38,7 @@ const CalendarPage = () => {
   const onResetCreateTaskForm = useUnit($$taskCreator.resetFieldsTriggered)
   const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
 
-  const updateTaskId = useUnit($$taskUpdater.$id)
+  const updateTask = useUnit($$taskUpdater.$task)
   const onUpdateStatus = useUnit($$taskUpdater.statusChangedAndUpdated)
   const onUpdateTask = useUnit($$taskUpdater.updateTaskTriggered)
   const onInitFields = useUnit($$taskUpdater.init)
@@ -78,7 +78,7 @@ const CalendarPage = () => {
         >
           <Modal.Content className="p-0! w-[600px]">
             <ExpandedTask
-              modifyTaskModel={$$taskUpdater}
+              $$taskManager={$$taskUpdater}
               dateModifier={true}
               sideDatePicker={false}
               rightPanelSlot={
@@ -88,7 +88,7 @@ const CalendarPage = () => {
                     onCancelUpdateTaskForm()
                     onResetUpdateTaskForm()
                   }}
-                  taskId={updateTaskId!}
+                  taskId={updateTask!.id}
                 />
               }
             />
@@ -102,7 +102,7 @@ const CalendarPage = () => {
         >
           <Modal.Content className="p-0! w-[600px]">
             <ExpandedTask
-              modifyTaskModel={$$taskCreator}
+              $$taskManager={$$taskCreator}
               dateModifier={true}
               sideDatePicker={false}
               rightPanelSlot={
@@ -188,7 +188,7 @@ const UpdateActionsButtons = ({
   onSave: () => void
   onCancel: () => void
 }) => {
-  const trashTaskById = useUnit($$taskRemover.taskTrashedById)
+  const trashTaskById = useUnit($$taskRemover.removeTaskById)
   return (
     <div className="flex items-center">
       <Button

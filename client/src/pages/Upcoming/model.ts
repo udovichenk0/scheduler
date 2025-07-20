@@ -3,7 +3,7 @@ import { createContext } from "react"
 
 import { createTaskCreator } from "@/features/manage-task/create"
 import { createTaskUpdater } from "@/features/manage-task/update"
-import { createTaskRemover } from "@/features/manage-task/trash"
+import { createTaskTrasher } from "@/features/manage-task/trash"
 
 import { isUnplaced, shouldShowCompleted } from "@/entities/task/lib"
 import { createSorting } from "@/entities/task/model/sorting.model"
@@ -46,11 +46,12 @@ const $upcomingTasks = combine(
 
 export const $$taskUpdater = createTaskUpdater({ taskModel: $$taskModel })
 export const $$taskCreator = createTaskCreator({ taskModel: $$taskModel })
-export const $$taskRemover = createTaskRemover({ taskModel: $$taskModel })
+export const $$taskTrasher = createTaskTrasher({ taskModel: $$taskModel })
 
 export const TaskManagerContext = createContext({
   $$taskUpdater: $$taskUpdater,
   $$taskCreator: $$taskCreator,
+  $$taskTrasher,
 })
 
 export const upcomingDateSelected = createEvent<Variant>()

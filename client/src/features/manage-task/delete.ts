@@ -7,8 +7,8 @@ import { TaskModel } from "@/entities/task/model/task.model.ts"
 
 import { taskApi } from "@/shared/api/task/task.api.ts"
 export const createTaskRemover = (taskModel: TaskModel) => {
-  const taskDeletedById = createEvent<string>()
-  const allTasksDeleted = createEvent()
+  const removeTaskById = createEvent<string>()
+  const removeAllTasks = createEvent()
 
   const deleteTrashedTaskAttach = attachOperation(
     taskApi.deleteTrashedTaskMutation,
@@ -27,13 +27,13 @@ export const createTaskRemover = (taskModel: TaskModel) => {
   ])
 
   sample({
-    clock: taskDeletedById,
+    clock: removeTaskById,
     filter: $$session.$isAuthenticated,
     fn: (taskId) => ({ taskId }),
     target: deleteTrashedTaskAttach.start,
   })
   sample({
-    clock: allTasksDeleted,
+    clock: removeAllTasks,
     filter: and($$session.$isAuthenticated, $$session.$user),
     target: deleteTrashedTasksAttach.start,
   })
@@ -52,8 +52,7 @@ export const createTaskRemover = (taskModel: TaskModel) => {
   })
 
   return {
-    taskDeletedById,
-    allTasksDeleted,
-    taskSuccessfullyDeleted,
+    removeTaskById,
+    removeAllTasks,
   }
 }

@@ -20,7 +20,7 @@ import { getToday } from "@/shared/lib/date/lib"
 
 import { SORT_CONFIG } from "./config"
 import {
-  $$taskRemover,
+  $$taskTrasher,
   $overdueTasks,
   $todayTasks,
   toggleOverdueTasksOpened,
@@ -43,7 +43,7 @@ const Today = () => {
   const overdueTasks = useUnit($overdueTasks)
   const todayTasks = useUnit($todayTasks)
 
-  const onDeleteTask = useUnit($$taskRemover.taskTrashedById)
+  const onDeleteTask = useUnit($$taskTrasher.removeTaskById)
   const onInitDate = useUnit($$taskCreator.setFieldsTriggered)
   const { isOpened, open: onOpen } = useDisclosure({
     id: ModalName.CreateTaskForm,
@@ -115,7 +115,8 @@ const OverdueTasks = ({
         ref={(node) => addNode(node!, index)}
         task={task}
         typeLabel
-        $$updateTask={$$taskUpdater}
+        $$taskUpdater={$$taskUpdater}
+        $$taskRemover={$$taskTrasher}
         onSelect={() => onSelect(index)}
         onBlur={onUnselect}
       />
@@ -174,11 +175,12 @@ const TodayTasks = ({
   const list = useList($todayTasks, (task, index) => {
     return (
       <EditableTask
+        $$taskRemover={$$taskTrasher}
         key={task.id}
         ref={(node) => addNode(node!, index)}
         task={task}
         typeLabel
-        $$updateTask={$$taskUpdater}
+        $$taskUpdater={$$taskUpdater}
         onSelect={() => onSelect(index)}
         onBlur={onUnselect}
       />
@@ -209,7 +211,7 @@ const TodayTasks = ({
         className="mx-3"
         isExpanded={isCreateTaskFormOpened}
         closeTaskForm={onCloseCreateTaskForm}
-        modifyTaskModel={$$taskCreator}
+        $$taskManager={$$taskCreator}
         dateModifier={true}
       />
     </section>

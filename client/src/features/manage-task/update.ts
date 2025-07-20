@@ -1,10 +1,8 @@
-import { createEvent, createStore, merge, sample } from "effector"
-import { and } from "patronum"
+import { createEffect, createEvent, createStore, sample } from "effector"
 import { attachOperation } from "@farfetched/core"
 
 import {
   changeTaskStatus,
-  findTaskById,
   getTaskFields,
   taskToDomain,
 } from "@/entities/task/lib"
@@ -24,12 +22,7 @@ import { Priority } from "@/shared/api/scheduler.schemas"
 
 export const createTaskUpdater = ({ taskModel }: { taskModel: TaskModel }) => {
   const $$taskEditor = createTaskEditor()
-  const {
-    resetFieldsTriggered,
-    $isAllowToSubmit,
-    $fields,
-    setFieldsTriggered,
-  } = $$taskEditor
+  const { resetFieldsTriggered, $fields, setFieldsTriggered } = $$taskEditor
 
   const updateTaskTriggeredById = createEvent<TaskId>()
   const updateTaskTriggered = createEvent()
@@ -54,14 +47,7 @@ export const createTaskUpdater = ({ taskModel }: { taskModel: TaskModel }) => {
     taskApi.updatePriorityMutation,
   )
   const attachUpdateTaskDate = attachOperation(taskApi.updateDateMutation)
-  const attachUpdateTaskQuery = attachOperation(taskApi.updateTaskMutation)
-  const $oldFields = createStore<Record<TaskId, EditableTaskFields>>({})
-  const $id = createStore<Nullable<TaskId>>(null)
-
-  const taskSuccessfullyUpdated = merge([
-    attachUpdateTaskQuery.finished.success,
-    // attachUpdateTaskFromLocalStorageFx.finished.success,
-  ])
+  const $task = createStore<Nullable<Task>>(null)
 
   //* Update task date
   sample({
@@ -125,83 +111,49 @@ export const createTaskUpdater = ({ taskModel }: { taskModel: TaskModel }) => {
   })
 
   //* Update task
+  const updateTaskFx = createEffect(
+    async ({
+      task,
+      fields,
+    }: {
+      task: Nullable<Task>
+      fields: EditableTaskFields
+    }) => {
+      return taskToDomain(
+        await taskApi.updateTaskMutation({
+          id: task!.id,
+          data: toApiTaskFields(fields),
+        }),
+      )
+    },
+  )
   sample({
     clock: updateTaskTriggered,
-    source: { tasks: taskModel.$tasks, oldFields: $oldFields, id: $id },
-    filter: and(
-      $$session.$isAuthenticated,
-      taskModel.$tasks,
-      $isAllowToSubmit,
-      $id,
-    ),
-    fn: ({ tasks, oldFields: pendUpdates, id: taskId }) => {
-      const task = findTaskById(tasks!, taskId!)
-      const fields = getTaskFields(task)
-      return { ...pendUpdates, [taskId!]: { ...fields } }
+    source: {
+      task: $task,
+      fields: $fields,
     },
-    target: $oldFields,
+    filter: ({ task }) => !!task,
+    target: updateTaskFx,
   })
   sample({
     clock: updateTaskTriggered,
-    source: { id: $id, fields: $fields },
-    filter: and(
-      $$session.$isAuthenticated,
-      taskModel.$tasks,
-      $isAllowToSubmit,
-      $id,
-    ),
-    fn: ({ id: taskId, fields }) => ({
-      id: taskId!,
-      fields,
-    }),
+    source: {
+      task: $task,
+      fields: $fields,
+    },
+    fn: ({ task, fields }) => ({ id: task!.id, fields }),
     target: taskModel.updateFields,
   })
   sample({
-    clock: updateTaskTriggered,
-    source: { id: $id, fields: $fields },
-    filter: and(
-      $$session.$isAuthenticated,
-      taskModel.$tasks,
-      $isAllowToSubmit,
-      $id,
-    ),
-    fn: ({ fields, id }) => ({ data: toApiTaskFields(fields), id: id! }),
-    target: attachUpdateTaskQuery.start,
+    clock: updateTaskFx.fail,
+    fn: (p) => p.params.task!,
+    target: taskModel.replaceTask,
   })
+
   sample({
     clock: updateTaskTriggered,
     target: resetFieldsTriggered,
-  })
-  sample({
-    clock: attachUpdateTaskQuery.finished.success,
-    source: $oldFields,
-    fn: (updates, { result }) =>
-      Object.fromEntries(
-        Object.entries(updates).filter(([key]) => result.id != key),
-      ),
-    target: $oldFields,
-  })
-  // sample({
-  //   clock: attachUpdateTaskQuery.finished.success,
-  //   source: taskModel.$tasks,
-  //   fn: (tasks, { params, result }) => {
-  //     const tempId = params.id
-  //     return tasks!.map((task) => task.id == tempId ? {...task, ...taskToDomain(result)} : task)
-  //   },
-  //   target: taskModel.setTasksTriggered
-  // })
-
-  sample({
-    clock: attachUpdateTaskQuery.finished.failure,
-    source: $oldFields,
-    fn: (fields, { params }) => {
-      const oldFields = fields[params.id]
-      return {
-        fields: oldFields,
-        id: params.id,
-      }
-    },
-    target: taskModel.updateFields,
   })
 
   sample({
@@ -211,13 +163,12 @@ export const createTaskUpdater = ({ taskModel }: { taskModel: TaskModel }) => {
   })
   sample({
     clock: init,
-    fn: (task) => task.id,
-    target: $id,
+    target: $task,
   })
 
   sample({
     clock: [
-      attachUpdateTaskQuery.finished.success,
+      //! attachUpdateTaskQuery.finished.success,
       attachUpdateStatusQuery.finished.success,
       attachUpdatePriorityQuery.finished.success,
       attachUpdateTaskDate.finished.success,
@@ -227,14 +178,13 @@ export const createTaskUpdater = ({ taskModel }: { taskModel: TaskModel }) => {
   return {
     updateTaskTriggeredById,
     updateTaskTriggered,
-    taskSuccessfullyUpdated,
     statusChangedAndUpdated,
     dateChangedAndUpdated,
     priorityChangedAndUpdated,
     init,
-    $isUpdating: taskApi.updateTaskMutation.$pending,
-    $id,
+    $task,
     ...$$taskEditor,
   }
 }
-export type UpdateTaskFactory = ReturnType<typeof createTaskUpdater>
+
+export type TaskUpdater = ReturnType<typeof createTaskUpdater>

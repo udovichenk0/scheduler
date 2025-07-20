@@ -12,8 +12,8 @@ import { Tabs } from "@/shared/ui/tab"
 
 import { views } from "./config"
 import { ViewType } from "./type"
-import { $$taskModel } from "./model"
 import { List } from "./view/list"
+import { $projectTasks } from "./model"
 
 const Project = () => {
   const params = useUnit(routes.project.$params)
@@ -57,7 +57,7 @@ const Project = () => {
             })}
           </Tabs.List>
           <Tabs.Content label="list">
-            <List $tasks={$$taskModel.$tasks} />
+            <List $tasks={$projectTasks} />
           </Tabs.Content>
           <Tabs.Content label="calendar">
             <div>calendar</div>

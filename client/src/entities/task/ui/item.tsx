@@ -23,6 +23,7 @@ export const TaskItem = ({
   onUpdateStatus,
   onDoubleClick,
   onUpdatePriority,
+  onRemoveTask,
   dateLabel = false,
   onSelect,
   onBlur,
@@ -48,6 +49,7 @@ export const TaskItem = ({
     id: TaskId
     priority: Priority
   }) => void
+  onRemoveTask: (id: TaskId) => void
   onUpdateStatus?: ({ id, status }: { id: TaskId; status: Status }) => void
   onDoubleClick?: () => void
   dateLabel?: boolean
@@ -140,14 +142,20 @@ export const TaskItem = ({
                     className="text-accent mr-[6px] text-[9px]"
                   />
                 )}
-                <h3
-                  className={`text-sm font-medium ${
-                    status == TaskStatuses.FINISHED &&
-                    "text-cOpacitySecondFont line-through"
-                  }`}
-                >
-                  {title}
-                </h3>
+                <div className="min-w-15 flex items-center justify-between gap-x-2">
+                  <h3
+                    className={`text-sm font-medium ${
+                      status == TaskStatuses.FINISHED &&
+                      "text-cOpacitySecondFont line-through"
+                    }`}
+                  >
+                    {title}
+                  </h3>
+
+                  {task.description && (
+                    <Icon name="common/note" className="text-accent" />
+                  )}
+                </div>
               </div>
             </div>
             <TypeLable isVisible={typeLabel} taskType={task.type} />
@@ -159,11 +167,13 @@ export const TaskItem = ({
             onUpdate={(priority) => onUpdatePriority({ id: task.id, priority })}
           />
         )}
-        <div className="w-5">
-          {task.description && (
-            <Icon name="common/note" className="text-accent" />
-          )}
-        </div>
+        {/* Rework Button component */}
+        <button
+          onClick={() => onRemoveTask(task.id)}
+          className="hover:text-red text-cFont flex items-center"
+        >
+          <Icon name="common/trash-can" />
+        </button>
       </div>
     </div>
   )

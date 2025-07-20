@@ -1,7 +1,8 @@
 import { useUnit } from "effector-react"
 import { ReactNode, Ref } from "react"
 
-import { UpdateTaskFactory } from "@/features/manage-task/update"
+import { TaskUpdater } from "@/features/manage-task/update"
+import { TaskRemover } from "@/features/manage-task/interface"
 
 import { Task } from "@/entities/task/type"
 import { TaskItem } from "@/entities/task/ui/item"
@@ -13,7 +14,8 @@ import { ExpandedTask } from "../expanded-task"
 
 type EditableTaskProps = {
   task: Task
-  $$updateTask: UpdateTaskFactory
+  $$taskUpdater: TaskUpdater
+  $$taskRemover: TaskRemover
   onSelect: () => void
   onBlur: (el: Element) => void
   dateLabel?: boolean
@@ -26,7 +28,8 @@ type EditableTaskProps = {
 
 export const EditableTask = ({
   task,
-  $$updateTask,
+  $$taskUpdater,
+  $$taskRemover,
   dateLabel = false,
   typeLabel = false,
   onSelect,
@@ -35,11 +38,12 @@ export const EditableTask = ({
   formSideDatePicker = true,
   ref,
 }: EditableTaskProps) => {
-  const onInitFields = useUnit($$updateTask.init)
-  const onUpdateTask = useUnit($$updateTask.updateTaskTriggered)
-  const onUpdateStatus = useUnit($$updateTask.statusChangedAndUpdated)
-  const onUpdateDate = useUnit($$updateTask.dateChangedAndUpdated)
-  const onUpdatePriority = useUnit($$updateTask.priorityChangedAndUpdated)
+  const onInitFields = useUnit($$taskUpdater.init)
+  const onUpdateTask = useUnit($$taskUpdater.updateTaskTriggered)
+  const onUpdateStatus = useUnit($$taskUpdater.statusChangedAndUpdated)
+  const onUpdateDate = useUnit($$taskUpdater.dateChangedAndUpdated)
+  const onUpdatePriority = useUnit($$taskUpdater.priorityChangedAndUpdated)
+  const onDeleteTask = useUnit($$taskRemover.removeTaskById)
 
   const {
     isOpened: isUpdateFormOpened,
@@ -53,7 +57,7 @@ export const EditableTask = ({
         sideDatePicker={formSideDatePicker}
         isExpanded={isUpdateFormOpened}
         dateModifier={formDateModifier}
-        modifyTaskModel={$$updateTask}
+        $$taskManager={$$taskUpdater}
         closeTaskForm={onCloseUpdateForm}
       />
       <TaskItem
@@ -64,6 +68,7 @@ export const EditableTask = ({
         onUpdateDate={onUpdateDate}
         onUpdateStatus={onUpdateStatus}
         onUpdatePriority={onUpdatePriority}
+        onRemoveTask={onDeleteTask}
         onSelect={onSelect}
         onBlur={onBlur}
         onDoubleClick={() => {

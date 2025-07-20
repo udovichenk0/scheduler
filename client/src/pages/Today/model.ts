@@ -4,7 +4,7 @@ import * as z from "@zod/mini"
 
 import { createTaskCreator } from "@/features/manage-task/create"
 import { createTaskUpdater } from "@/features/manage-task/update"
-import { createTaskRemover } from "@/features/manage-task/trash"
+import { createTaskTrasher } from "@/features/manage-task/trash"
 
 import { getTaskModelInstance } from "@/entities/task/model/task.model"
 import { createSorting } from "@/entities/task/model/sorting.model"
@@ -17,7 +17,7 @@ export const gate = createGate()
 
 export const $$taskModel = getTaskModelInstance()
 
-export const $$taskRemover = createTaskRemover({ taskModel: $$taskModel })
+export const $$taskTrasher = createTaskTrasher({ taskModel: $$taskModel })
 export const $$taskUpdater = createTaskUpdater({ taskModel: $$taskModel })
 export const $$taskCreator = createTaskCreator({
   taskModel: $$taskModel,

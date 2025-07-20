@@ -42,7 +42,7 @@ func (tr *TaskRepository) GetByTaskId(ctx context.Context, taskId string) (model
 
 func (tr *TaskRepository) GetByProjectId(ctx context.Context, params task.GetByProjectIdInput) ([]model.Task, error) {
 	tasks := []model.Task{}
-	err := tr.db.SelectContext(ctx, &tasks, "SELECT id, title, description, type, status, user_id, project_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(due_date) AS due_date, priority FROM task WHERE project_id = ? ", params.ProjectId)
+	err := tr.db.SelectContext(ctx, &tasks, "SELECT id, title, description, type, status, user_id, project_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(due_date) AS due_date, priority FROM task WHERE project_id = ? AND is_trashed = FALSE", params.ProjectId)
 	if err != nil {
 		return nil, err
 	}

@@ -18,7 +18,7 @@ import { getToday } from "@/shared/lib/date/lib"
 import { SORT_CONFIG } from "./config"
 import {
   $$taskCreator,
-  $$trashTask,
+  $$taskTrasher,
   $$sort,
   $$taskUpdater,
   $unplacedTasks,
@@ -31,7 +31,7 @@ const Unplaced = () => {
   const tasks = useUnit($unplacedTasks)
   const activeSort = useUnit($$sort.$sortType)
 
-  const onDeleteTask = useUnit($$trashTask.taskTrashedById)
+  const onDeleteTask = useUnit($$taskTrasher.removeTaskById)
   const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
   const onChangeDate = useUnit($$taskCreator.dateChanged)
   const onSortChange = useUnit($$sort.sort)
@@ -54,7 +54,8 @@ const Unplaced = () => {
       <div className="px-3 pb-2" key={task.id}>
         <EditableTask
           ref={(node) => addNode(node!, index)}
-          $$updateTask={$$taskUpdater}
+          $$taskUpdater={$$taskUpdater}
+          $$taskRemover={$$taskTrasher}
           dateLabel
           task={task}
           onSelect={() => onSelect(index)}
@@ -97,7 +98,7 @@ const Unplaced = () => {
         <ExpandedTask
           className="mx-3"
           isExpanded={isCreateFormOpened}
-          modifyTaskModel={$$taskCreator}
+          $$taskManager={$$taskCreator}
           dateModifier={true}
           closeTaskForm={onCloseCreateForm}
         />
