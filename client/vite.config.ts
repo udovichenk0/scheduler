@@ -32,15 +32,11 @@ export default defineConfig({
     // }),
     tsconfigPaths(),
     svg({
-      root: "assets",
+      inputRoot: "assets",
       group: true,
       output: "public",
       metadata: {
         path: "src/shared/ui/icon/sprite.h.ts",
-        runtime: {
-          size: true,
-          viewBox: true,
-        },
       },
       resetColors: {
         replaceUnknown: "#000",
