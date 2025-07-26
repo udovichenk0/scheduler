@@ -1,6 +1,8 @@
 package rest
 
 import (
+	"log/slog"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/udovichenk0/scheduler/internal/adapters/rest/dto"
@@ -8,6 +10,7 @@ import (
 	authservice "github.com/udovichenk0/scheduler/internal/ports/api/auth"
 	userservice "github.com/udovichenk0/scheduler/internal/ports/api/user"
 	"github.com/udovichenk0/scheduler/pkg/errs"
+	"github.com/udovichenk0/scheduler/pkg/logger"
 	session_manager "github.com/udovichenk0/scheduler/pkg/session-manager"
 )
 
@@ -16,10 +19,17 @@ type AuthHandler struct {
 	userService userservice.Port
 	v           *validator.Validate
 	sm          session_manager.SessionManager
+	logger      logger.Logger
 }
 
-func NewAuthHandler(authService authservice.Port, userService userservice.Port, v *validator.Validate, sm session_manager.SessionManager) *AuthHandler {
-	return &AuthHandler{authService, userService, v, sm}
+func NewAuthHandler(
+	authService authservice.Port,
+	userService userservice.Port,
+	v *validator.Validate,
+	sm session_manager.SessionManager,
+	logger logger.Logger,
+) *AuthHandler {
+	return &AuthHandler{authService, userService, v, sm, logger}
 }
 
 func (ah AuthHandler) Singup(fc *fiber.Ctx) error {
@@ -35,6 +45,7 @@ func (ah AuthHandler) Singup(fc *fiber.Ctx) error {
 
 	user, err := ah.authService.SignUp(fc.Context(), creds.Email, creds.Password)
 	if err != nil {
+		ah.logger.Error("failed to signup a user", slog.Any("err", err))
 		return err
 	}
 	fc.JSON(dto.UserDto{
@@ -58,6 +69,7 @@ func (ah AuthHandler) Singin(fc *fiber.Ctx) error {
 
 	result, err := ah.authService.SignIn(fc.Context(), creds.Email, creds.Password)
 	if err != nil {
+		ah.logger.Error("failed to signin a user", slog.Any("err", err))
 		return err
 	}
 
@@ -75,6 +87,7 @@ func (ah AuthHandler) SignOut(fc *fiber.Ctx) error {
 	sessionId := fc.Cookies("sessionId")
 	err := ah.authService.SignOut(fc.Context(), sessionId)
 	if err != nil {
+		ah.logger.Error("failed to signout a user", slog.Any("err", err))
 		return err
 	}
 	ah.sm.ClearSessionFromCookie(fc)
@@ -85,7 +98,6 @@ func (ah AuthHandler) CheckSession(fc *fiber.Ctx) error {
 	sessionId := fc.Cookies("sessionId")
 
 	ctx, err := ah.sm.Load(fc.Context(), sessionId)
-
 	if err != nil {
 		return err
 	}

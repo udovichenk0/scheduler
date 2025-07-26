@@ -48,11 +48,10 @@ func (a *Service) SignIn(ctx context.Context, email, pass string) (authservice.A
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Hash), []byte(pass))
 	if err != nil {
-		return authservice.AuthResult{}, errs.NewBadRequestError(errors.New("wrong password"))
+		return authservice.AuthResult{}, errs.NewError(err, "wrong password")
 	}
 
 	session, err := a.sm.Commit("user", user)
-
 	if err != nil {
 		return authservice.AuthResult{}, errs.NewInternalError(err)
 	}
@@ -64,7 +63,7 @@ func (a *Service) SignUp(ctx context.Context, email, pass string) (entity.User, 
 	user, err := a.userService.GetUserByEmail(ctx, email)
 	if err != nil {
 		if !errors.As(err, &errs.NoRowError{}) {
-			return entity.User{}, errs.CheckSqlError(err, "User")
+			return entity.User{}, errs.NewInternalError(err)
 		}
 	}
 
@@ -76,7 +75,7 @@ func (a *Service) SignUp(ctx context.Context, email, pass string) (entity.User, 
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
 	if err != nil {
-		return entity.User{}, err
+		return entity.User{}, errs.NewInternalError(err)
 	}
 
 	params := userservice.CreateInput{
@@ -87,7 +86,7 @@ func (a *Service) SignUp(ctx context.Context, email, pass string) (entity.User, 
 
 	uow := pkg.NewUnitOfWork(a.db, ctx)
 	var code string
-	uow.StartUOW(func(ctx context.Context) error {
+	err = uow.StartUOW(func(ctx context.Context) error {
 		user, err = a.userService.CreateUser(ctx, params)
 		if err != nil {
 			return err

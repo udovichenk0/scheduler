@@ -2,6 +2,7 @@ package entity
 
 import (
 	"errors"
+	"fmt"
 )
 
 type TaskType string
@@ -42,20 +43,20 @@ type Task struct {
 	Priority    Priority   `json:"priority"`
 }
 
-func IsValidTaskTypeAndStartTime(taskType TaskType, date int64) (bool, error) {
+func ValidateTypeAndDate(taskType TaskType, start, end int64) error {
 	switch taskType {
 	case Inbox:
-		if date == 0 {
-			return true, nil
+		if start == 0 && end == 0 {
+			return nil
 		}
-		return false, errors.New("can't create inbox task with a date specified")
+		return errors.New("can't create inbox task with a date specified")
 	case Unplaced:
-		if date > 0 {
-			return true, nil
+		if start > 0 || end > 0 {
+			return nil
 		}
-		return false, errors.New("can't create unplaced task with no date")
+		return errors.New("can't create unplaced task with no date")
 	default:
-		return true, nil
+		return nil
 	}
 }
 
@@ -78,9 +79,11 @@ func ChangeTypeBasedOnDate(date int64, taskType TaskType) TaskType {
 	return taskType
 }
 
-func IsValidateDateRange(startDate, dueDate int64) bool {
+func ValidateDateRange(startDate, dueDate int64) error {
 	if startDate != 0 && dueDate != 0 {
-		return startDate <= dueDate
+		if startDate > dueDate {
+			return fmt.Errorf("startDate: %d can't be greater than dueDate: %d", startDate, dueDate)
+		}
 	}
-	return true
+	return nil
 }

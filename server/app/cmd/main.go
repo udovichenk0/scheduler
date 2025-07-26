@@ -108,5 +108,6 @@ func (s Deps) GetDeps() *rest.Deps {
 		Project:      projectService,
 		Verification: verificationService,
 		Sm:           sm,
+		Logger:       s.log,
 	}
 }

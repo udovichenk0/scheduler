@@ -22,12 +22,13 @@ func New(projectRepo projectRepo.Port) *Service {
 func (s *Service) GetProjects(ctx context.Context, userId string) ([]entity.Project, error) {
 	projects, err := s.projectRepo.GetByUserId(ctx, userId)
 	if err != nil {
-		return nil, err
+		return nil, errs.NewInternalError(err)
 	}
 	var domainProjects []entity.Project
 	for _, project := range projects {
 		domainProjects = append(domainProjects, ToEntity(project))
 	}
+
 	return domainProjects, nil
 }
 
@@ -44,13 +45,12 @@ func (s *Service) CreateProject(ctx context.Context, params projectService.Creat
 	}
 	err = s.projectRepo.Create(ctx, createProjectParams)
 	if err != nil {
-		return entity.Project{}, err
+		return entity.Project{}, errs.NewError(err, "failed to create a project")
 	}
 
 	project, err := s.projectRepo.GetById(ctx, uuid.String())
-
 	if err != nil {
-		return entity.Project{}, errs.CheckSqlError(err, "Project")
+		return entity.Project{}, errs.NewInternalError(err)
 	}
 
 	return ToEntity(project), nil

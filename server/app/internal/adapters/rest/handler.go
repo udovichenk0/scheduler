@@ -11,6 +11,7 @@ import (
 	verificationservice "github.com/udovichenk0/scheduler/internal/ports/api/verification"
 	"github.com/udovichenk0/scheduler/internal/ports/repository/task"
 	"github.com/udovichenk0/scheduler/internal/ports/repository/user"
+	"github.com/udovichenk0/scheduler/pkg/logger"
 	session_manager "github.com/udovichenk0/scheduler/pkg/session-manager"
 )
 
@@ -25,6 +26,7 @@ type Deps struct {
 	User         userservice.Port
 	Verification verificationservice.Port
 	Sm           session_manager.SessionManager
+	Logger       logger.Logger
 }
 
 type Handler struct {
@@ -44,20 +46,14 @@ func NewHandler(
 }
 
 func (h Handler) Run() {
-
-	authHandler := NewAuthHandler(h.deps.Auth, h.deps.User, h.v, h.deps.Sm)
-	taskHandler := NewTaskHandler(h.deps.Task, h.deps.User, h.v, h.deps.Sm)
-	projectHandler := NewProjectHandler(h.deps.User, h.deps.Project, h.v, h.deps.Sm)
-	userHandler := NewUserHandler(h.deps.User, h.v)
+	authHandler := NewAuthHandler(h.deps.Auth, h.deps.User, h.v, h.deps.Sm, h.deps.Logger)
+	taskHandler := NewTaskHandler(h.deps.Task, h.deps.User, h.v, h.deps.Sm, h.deps.Logger)
+	projectHandler := NewProjectHandler(h.deps.User, h.deps.Project, h.v, h.deps.Sm, h.deps.Logger)
+	userHandler := NewUserHandler(h.deps.User, h.v, h.deps.Logger)
 	sessionHandler := NewSessionHandler(h.deps.Sm)
-	verificationHandler := NewVerificationHandler(h.deps.Verification, h.v, h.deps.Sm)
+	verificationHandler := NewVerificationHandler(h.deps.Verification, h.v, h.deps.Sm, h.deps.Logger)
 
 	apiGroup := h.app.Group("/api")
-
-	apiGroup.Get("/test", h.deps.Sm.Protected(func(ctx *fiber.Ctx) error {
-		ctx.SendString("Hello")
-		return nil
-	}))
 
 	apiGroup.Get("/email/exists", userHandler.VerifiedUserExists)
 	auth := apiGroup.Group("/auth")

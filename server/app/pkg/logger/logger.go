@@ -23,10 +23,9 @@ func NewLogger() Logger {
 	if env == "PROD" {
 		logWriter = os.Stderr
 	} else {
-		logWriter = zerolog.ConsoleWriter{Out: os.Stderr}
+		logWriter = zerolog.ConsoleWriter{Out: os.Stdout}
 	}
 
 	zerologLogger := zerolog.New(logWriter).With().Timestamp().Logger()
-	logger := slog.New(slogzerolog.Option{Logger: &zerologLogger}.NewZerologHandler())
-	return logger
+	return slog.New(slogzerolog.Option{Logger: &zerologLogger}.NewZerologHandler())
 }

@@ -2,7 +2,6 @@ package verification
 
 import (
 	"context"
-	"errors"
 
 	"github.com/udovichenk0/scheduler/internal/entity"
 	smtpservice "github.com/udovichenk0/scheduler/internal/ports/api/smtp"
@@ -25,28 +24,27 @@ func New(verificationRepo verificationRepo.Port, userService userApi.Port, smtpS
 func (v *Service) VerifyUser(ctx context.Context, code, userId string) (entity.User, error) {
 	verifications, err := v.verificationRepo.GetByUserId(ctx, userId)
 	if err != nil {
-		return entity.User{}, errs.CheckSqlError(err, "Verification")
+		return entity.User{}, errs.NewInternalError(err)
 	}
 
 	verification := entity.GetLatestVerification(verifications)
 
 	if entity.IsExpired(verification.ExpiresAt) {
 		v.verificationRepo.Delete(ctx, verification.Id)
-		return entity.User{}, errs.NewExpiredError("verification code is expired")
+		return entity.User{}, errs.NewError(err, "verification code is expired")
 	}
 	if !entity.IsCodeValid(verification.Code, code) {
-		return entity.User{}, errs.NewBadRequestError(errors.New("verification code is invalid"))
+		return entity.User{}, errs.NewError(err, "verification code is invalid")
 	}
 
 	if err := v.verificationRepo.Delete(ctx, verification.Id); err != nil {
-		return entity.User{}, errs.CheckSqlError(err, "Verification")
+		return entity.User{}, errs.NewInternalError(err)
 	}
 	if err := v.userService.Verify(ctx, userId); err != nil {
-		return entity.User{}, errs.CheckSqlError(err, "User")
+		return entity.User{}, err
 	}
 
 	user, err := v.userService.GetUserById(ctx, userId)
-
 	if err != nil {
 		return entity.User{}, err
 	}
@@ -64,7 +62,7 @@ func (v *Service) CreateCode(ctx context.Context, userId string) (string, error)
 	})
 
 	if err != nil {
-		return "", err
+		return "", errs.NewInternalError(err)
 	}
 
 	return code, nil
@@ -82,13 +80,14 @@ func (v *Service) ChangeCode(ctx context.Context, userId string, email string) e
 		Subject: "Your Verification Code is Ready!",
 		Body:    params.Code,
 	})
+
 	if err != nil {
-		return err
+		return errs.NewInternalError(err)
 	}
 
 	err = v.verificationRepo.Update(ctx, params)
 	if err != nil {
-		return errs.CheckSqlError(err, "Verification")
+		return errs.NewError(err, "failed to resend code")
 	}
 
 	return nil

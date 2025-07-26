@@ -1,22 +1,27 @@
 package rest
 
 import (
+	"log/slog"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/udovichenk0/scheduler/internal/adapters/rest/dto"
 	userservice "github.com/udovichenk0/scheduler/internal/ports/api/user"
 	"github.com/udovichenk0/scheduler/pkg/errs"
+	"github.com/udovichenk0/scheduler/pkg/logger"
 )
 
 type UserHandler struct {
 	userService userservice.Port
 	v           *validator.Validate
+	logger      logger.Logger
 }
 
-func NewUserHandler(userService userservice.Port, v *validator.Validate) *UserHandler {
+func NewUserHandler(userService userservice.Port, v *validator.Validate, logger logger.Logger) *UserHandler {
 	return &UserHandler{
 		userService: userService,
 		v:           v,
+		logger:      logger,
 	}
 }
 
@@ -34,7 +39,8 @@ func (u UserHandler) GetUser(fc *fiber.Ctx) error {
 	user, err := u.userService.GetUserByEmail(fc.Context(), params.Email)
 
 	if err != nil {
-		return errs.CheckSqlError(err, "User")
+		u.logger.Error("failed to get user by email", slog.Any("err", err))
+		return err
 	}
 
 	fc.JSON(dto.UserDto{
@@ -57,6 +63,7 @@ func (u UserHandler) VerifiedUserExists(fc *fiber.Ctx) error {
 
 	isExist, err := u.userService.IsVerifiedUserExist(fc.Context(), params.Email)
 	if err != nil {
+		u.logger.Error("failed to verify user", slog.Any("err", err))
 		return err
 	}
 

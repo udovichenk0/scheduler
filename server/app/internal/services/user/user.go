@@ -24,7 +24,10 @@ func New(userRepo userRepo.Port, logger logger.Logger) *Service {
 func (u *Service) GetUserByEmail(ctx context.Context, email string) (entity.User, error) {
 	user, err := u.userRepo.Get(ctx, email)
 	if err != nil {
-		return entity.User{}, errs.CheckSqlError(err, "User")
+		if errs.IsResourceNotFound(err) {
+			return entity.User{}, errs.NewResourceNotFoundError(err, "failed to get user")
+		}
+		return entity.User{}, errs.NewInternalError(err)
 	}
 	return ToEntity(user), nil
 }
@@ -32,7 +35,10 @@ func (u *Service) GetUserByEmail(ctx context.Context, email string) (entity.User
 func (us *Service) GetUserById(ctx context.Context, id string) (entity.User, error) {
 	user, err := us.userRepo.GetById(ctx, id)
 	if err != nil {
-		return entity.User{}, errs.CheckSqlError(err, "User")
+		if errs.IsResourceNotFound(err) {
+			return entity.User{}, errs.NewResourceNotFoundError(err, "failed to get user")
+		}
+		return entity.User{}, errs.NewInternalError(err)
 	}
 
 	return ToEntity(user), nil
@@ -45,12 +51,12 @@ func (u *Service) CreateUser(ctx context.Context, params userservice.CreateInput
 	}
 	err := u.userRepo.Create(ctx, params.UserId, createInput)
 	if err != nil {
-		return entity.User{}, errs.CheckSqlError(err, "User")
+		return entity.User{}, errs.NewError(err, "failed to create user")
 	}
 
 	user, err := u.userRepo.Get(ctx, params.Email)
 	if err != nil {
-		return entity.User{}, errs.CheckSqlError(err, "User")
+		return entity.User{}, errs.NewResourceNotFoundError(err, "failed to get user")
 	}
 
 	return ToEntity(user), nil
@@ -75,7 +81,7 @@ func (us *Service) DeleteUser(ctx context.Context, userId string) error {
 	err := us.userRepo.Delete(ctx, userId)
 
 	if err != nil {
-		return errs.CheckSqlError(err, "User")
+		return errs.NewError(err, "failed to delete user")
 	}
 	return nil
 }
@@ -83,7 +89,7 @@ func (us *Service) DeleteUser(ctx context.Context, userId string) error {
 func (s *Service) Verify(ctx context.Context, id string) error {
 	err := s.userRepo.Update(ctx, userRepo.UpdateInput{Verified: true, Id: id})
 	if err != nil {
-		return errs.NewInternalError(err)
+		return errs.NewError(err, "failed to verify user")
 	}
 
 	return nil
