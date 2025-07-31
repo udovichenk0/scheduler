@@ -70,6 +70,7 @@ const CalendarPage = () => {
         title={<Title date={headerDate} />}
       />
       <Layout.Content className="flex h-full flex-col">
+
         <Modal
           isOpened={isUpdateTaskOpened}
           label="Update task"
@@ -77,6 +78,7 @@ const CalendarPage = () => {
           focusAfterClose={taskRef}
         >
           <Modal.Content className="p-0! w-[600px]">
+          {updateTask && (
             <ExpandedTask
               $$taskManager={$$taskUpdater}
               dateModifier={true}
@@ -92,6 +94,7 @@ const CalendarPage = () => {
                 />
               }
             />
+          )}
           </Modal.Content>
         </Modal>
         <Modal

@@ -14,35 +14,90 @@ import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { routes } from "@/shared/routing/router"
 
 import { $$taskCreator, $$taskTrasher, $$taskUpdater } from "../model"
+import { TaskStatus } from "@/entities/task/model/task.model"
+import { useState } from "react"
 
 export const List = ({ $tasks }: { $tasks: Store<Nullable<Task[]>> }) => {
-  // const inprogressTasks = useStoreMap({
-  //   store: $tasks,
-  //   keys: [],
-  //   fn: (tasks) => {
-  //     if (!tasks) return []
-  //     return tasks.filter((tasks) => tasks.status === TaskStatus.inprogress)
-  //   },
-  // })
+  const inprogressTasks = useStoreMap({
+    store: $tasks,
+    keys: [],
+    fn: (tasks) => {
+      if (!tasks) return []
+      return tasks.filter((tasks) => tasks.status === TaskStatus.INPROGRESS)
+    },
+  })
 
   const completedTasks = useStoreMap({
     store: $tasks,
     keys: [],
     fn: (tasks) => {
       if (!tasks) return []
-      return tasks
-      // return tasks.filter((tasks) => tasks.status === TaskStatus.finished)
+      return tasks.filter((tasks) => tasks.status === TaskStatus.FINISHED)
     },
   })
 
   return (
     <>
       <CompletedTasks tasks={completedTasks} />
+      <InprogressTasks tasks={inprogressTasks}/>
+    </>
+  )
+}
+
+const InprogressTasks = ({ tasks }: {tasks: Task[]}) => {
+  const [isDisclosed, disclose] = useState(true)
+  const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
+  const initFields = useUnit($$taskCreator.setFieldsTriggered)
+  const params = useUnit(routes.project.$params)
+  const {
+    isOpened: isCreateFormOpened,
+    open: onOpenCreateForm,
+    close: onCloseCreateForm,
+  } = useDisclosure({
+    prefix: ModalName.CreateTaskForm,
+    onClose: onCreateTask,
+    onOpen: () => {
+      initFields({ project_id: params.projectId })
+    },
+  })
+
+  return (
+    <>
+      <Header
+        title="Inprogress Tasks"
+        onOpenCreateForm={onOpenCreateForm}
+        color="cTaskEdit"
+        isDisclosed={isDisclosed}
+        disclose={disclose}
+      />
+      <ExpandedTask
+        className="mb-2"
+        isExpanded={isCreateFormOpened}
+        $$taskManager={$$taskCreator}
+        dateModifier={false}
+        closeTaskForm={onCloseCreateForm}
+      />
+      {isDisclosed && tasks.length > 0 &&
+        tasks.map((task) => {
+          return (
+            <EditableTask
+              key={task.id}
+              // ref={(node) => addNode(node!, index)}
+              task={task}
+              $$taskUpdater={$$taskUpdater}
+              $$taskRemover={$$taskTrasher}
+              onSelect={() => {}}
+              onBlur={() => {}}
+              ref={null}
+            />
+          )
+        })}
     </>
   )
 }
 
 const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
+  const [isDisclosed, disclose] = useState(true)
   const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
   const initFields = useUnit($$taskCreator.setFieldsTriggered)
   const params = useUnit(routes.project.$params)
@@ -61,6 +116,8 @@ const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
   return (
     <>
       <Header
+        isDisclosed={isDisclosed}
+        disclose={disclose}
         title="Completed Tasks"
         onOpenCreateForm={onOpenCreateForm}
         color="purple"
@@ -72,7 +129,7 @@ const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
         dateModifier={false}
         closeTaskForm={onCloseCreateForm}
       />
-      {tasks.length > 0 &&
+      {isDisclosed && tasks.length > 0 &&
         tasks.map((task) => {
           return (
             <EditableTask
@@ -95,13 +152,25 @@ const Header = ({
   title,
   onOpenCreateForm,
   color,
+  isDisclosed,
+  disclose
 }: {
   title: string
   onOpenCreateForm: () => void
   color?: string
+  isDisclosed: boolean,
+  disclose: (d: boolean) => void
 }) => {
   return (
     <div className="mb-3 flex gap-x-2">
+      <Button intent="base" onClick={() => disclose(!isDisclosed)}>
+        <Icon
+          name="common/arrow"
+          className={`text-[12px] ${
+            isDisclosed ? "rotate-180" : "rotate-90"
+          }`}
+        />
+      </Button>
       <div
         style={{ background: `var(--color-${color})` }}
         className="rounded-md p-1 text-xs uppercase"
