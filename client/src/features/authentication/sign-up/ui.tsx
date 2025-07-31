@@ -49,7 +49,7 @@ export const Signup = ({ goBack }: { goBack: () => void }) => {
         }
       />
       <Button
-        className={`${!password && "pointer-events-none bg-[#1f4964]"}`}
+        className={`${!password && "pointer-events-none"}`}
         disabled={!password}
         size={"m"}
         intent={"filled"}

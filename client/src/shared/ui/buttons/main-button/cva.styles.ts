@@ -5,22 +5,20 @@ export const buttonCva = cva(
   {
     variants: {
       intent: {
-        outline: ["border", "border-cSecondBorder", "hover:bg-hover"],
         primary: ["hover:bg-hover", "text-primary"],
-        accent: ["hover:bg-hover", "text-accent"],
-        filled: ["bg-cButtonBg", "hover:bg-hover", "text-cButtonText"],
+        filled: ["bg-cButtonBg", "hover:brightness-125", "text-cButtonText"],
         base: [],
       },
       size: {
-        xs: ["p-1 text-[14px]"],
-        sm: ["py-1", "px-2"],
-        base: ["py-2", "px-4"],
-        m: ["py-2", "px-5"],
-        lg: ["py-3", "px-6"],
+        xs: ["text-xs", "px-2", "py-1"],
+        sm: ["text-sm", "px-3", "py-1.5"],
+        base: ["text-sm", "px-4", "py-2"],
+        m: ["text-base", "px-5", "py-2.5"],
+        lg: ["text-base", "px-6", "py-3"],
       },
     },
     defaultVariants: {
-      intent: "outline",
+      intent: "primary",
     },
   },
 )

@@ -44,9 +44,9 @@ const Trash = () => {
         slot={
           <Button
             onClick={onDeleteAllTasks}
-            intent={"accent"}
+            intent="primary"
             size={"xs"}
-            className="flex items-center gap-x-2"
+            className="flex items-center gap-x-2 text-accent!"
           >
             <Cross />
             {t("action.clearBucket")}

@@ -24,6 +24,7 @@ export const createSorting = () => {
           ...tasks!.sort((a, b) => (a.start_date! > b.start_date! ? -1 : 1)),
         ]
     }
+    return []
   }
 
   sample({

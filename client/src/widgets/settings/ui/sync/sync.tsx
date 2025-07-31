@@ -56,12 +56,10 @@ const AuthOptions = () => {
       <Typography.Paragraph size="sm" className="mb-6">
         {t("setting.synchronization.main.description")}
       </Typography.Paragraph>
-      <div className="text- inline-flex flex-col gap-5">
-        <Button ref={ref} onClick={() => selectForm(Flow.email)} size={"lg"}>
-          <Icon name="common/mail" className="text-primary mr-4 w-[15px]" />
-          {t("setting.synchronization.main.withEmailButtonTitle")}
-        </Button>
-      </div>
+      <Button intent="filled" ref={ref} onClick={() => selectForm(Flow.email)} size={"lg"}>
+        <Icon name="common/mail" className="text-primary mr-4 w-[15px]" />
+        {t("setting.synchronization.main.withEmailButtonTitle")}
+      </Button>
     </div>
   )
 }
