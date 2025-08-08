@@ -8,6 +8,7 @@ import { buttonCva } from "./cva.styles"
 type BaseProps = VariantProps<typeof buttonCva> & {
   children: ReactNode
   ref?: Ref<HTMLButtonElement>
+  icon?: ReactNode
 }
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   BaseProps & {

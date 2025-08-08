@@ -15,11 +15,13 @@ export const useDisclosure = ({
   prefix,
   onClose,
   onOpen,
+  onCancel,
 }: {
   id?: string
   prefix?: string
   onClose?: () => void
   onOpen?: () => void
+  onCancel?: () => void
 }) => {
   const randId = useId()
   const [modalId] = useState<string>(id || makeId(randId, prefix))
@@ -42,6 +44,7 @@ export const useDisclosure = ({
   }
   const cancel = () => {
     close()
+    onCancel?.()
   }
 
   return {
@@ -51,3 +54,5 @@ export const useDisclosure = ({
     isOpened,
   }
 }
+
+export type Disclosure = ReturnType<typeof useDisclosure>

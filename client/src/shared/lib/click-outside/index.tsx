@@ -1,4 +1,4 @@
-import { HTMLAttributes, ReactNode, RefObject } from "react"
+import { ForwardedRef, HTMLAttributes, ReactNode } from "react"
 
 import { useClick } from "./use-click"
 
@@ -6,7 +6,7 @@ type ClickOutsideLayerProps = {
   onClickOutside: () => void
   children: ReactNode
   listenerOptions?: EventListenerOptions | boolean
-  ref?: RefObject<HTMLDivElement>
+  ref?: ForwardedRef<HTMLDivElement>
 } & HTMLAttributes<HTMLDivElement>
 
 export const ClickOutsideLayer = ({
@@ -18,7 +18,14 @@ export const ClickOutsideLayer = ({
 }: ClickOutsideLayerProps) => {
   const onPointerDown = useClick({ onClickOutside, listenerOptions })
   return (
-    <div {...rest} ref={ref} onPointerDown={onPointerDown}>
+    <div
+      {...rest}
+      ref={ref}
+      onPointerDown={(e) => {
+        if (e.button != 0) return
+        onPointerDown()
+      }}
+    >
       {children}
     </div>
   )

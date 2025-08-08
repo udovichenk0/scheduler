@@ -140,13 +140,14 @@ export const Calendar = ({
         </div>
       </div>
       <div className="flex gap-x-2">
-        <Button onClick={onCancel} className="w-full p-[1px] text-[12px]">
+        <Button size="xs" onClick={onCancel} className="w-full">
           {t("calendar.cancel")}
         </Button>
         <Button
+          size="xs"
           onClick={onClose}
           intent={"filled"}
-          className="w-full p-[1px] text-[12px]"
+          className="w-full text-center"
         >
           {t("calendar.ok")}
         </Button>

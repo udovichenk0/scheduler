@@ -1,10 +1,12 @@
 import { useStoreMap, useUnit } from "effector-react"
 import { Store } from "effector"
+import { useState } from "react"
 
 import { EditableTask } from "@/widgets/editable-task"
 import { ExpandedTask } from "@/widgets/expanded-task"
 
 import { Task } from "@/entities/task/type"
+import { TaskStatus, TaskType } from "@/entities/task/model/task.model"
 
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
@@ -14,8 +16,6 @@ import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { routes } from "@/shared/routing/router"
 
 import { $$taskCreator, $$taskTrasher, $$taskUpdater } from "../model"
-import { TaskStatus } from "@/entities/task/model/task.model"
-import { useState } from "react"
 
 export const List = ({ $tasks }: { $tasks: Store<Nullable<Task[]>> }) => {
   const inprogressTasks = useStoreMap({
@@ -39,12 +39,12 @@ export const List = ({ $tasks }: { $tasks: Store<Nullable<Task[]>> }) => {
   return (
     <>
       <CompletedTasks tasks={completedTasks} />
-      <InprogressTasks tasks={inprogressTasks}/>
+      <InprogressTasks tasks={inprogressTasks} />
     </>
   )
 }
 
-const InprogressTasks = ({ tasks }: {tasks: Task[]}) => {
+const InprogressTasks = ({ tasks }: { tasks: Task[] }) => {
   const [isDisclosed, disclose] = useState(true)
   const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
   const initFields = useUnit($$taskCreator.setFieldsTriggered)
@@ -57,7 +57,10 @@ const InprogressTasks = ({ tasks }: {tasks: Task[]}) => {
     prefix: ModalName.CreateTaskForm,
     onClose: onCreateTask,
     onOpen: () => {
-      initFields({ project_id: params.projectId })
+      initFields({
+        project_id: params.projectId,
+        type: TaskType.UNPLACED,
+      })
     },
   })
 
@@ -69,21 +72,23 @@ const InprogressTasks = ({ tasks }: {tasks: Task[]}) => {
         color="cTaskEdit"
         isDisclosed={isDisclosed}
         disclose={disclose}
+        display={!!tasks.length}
       />
       <ExpandedTask
         className="mb-2"
         isExpanded={isCreateFormOpened}
         $$taskManager={$$taskCreator}
-        dateModifier={false}
+        dateModifier
         closeTaskForm={onCloseCreateForm}
       />
-      {isDisclosed && tasks.length > 0 &&
+      {isDisclosed &&
+        tasks.length > 0 &&
         tasks.map((task) => {
           return (
             <EditableTask
               key={task.id}
-              // ref={(node) => addNode(node!, index)}
               task={task}
+              formDateModifier
               $$taskUpdater={$$taskUpdater}
               $$taskRemover={$$taskTrasher}
               onSelect={() => {}}
@@ -109,7 +114,11 @@ const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
     id: ModalName.CreateTaskForm,
     onClose: onCreateTask,
     onOpen: () => {
-      initFields({ project_id: params.projectId })
+      initFields({
+        project_id: params.projectId,
+        type: TaskType.UNPLACED,
+        status: TaskStatus.FINISHED,
+      })
     },
   })
 
@@ -121,15 +130,17 @@ const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
         title="Completed Tasks"
         onOpenCreateForm={onOpenCreateForm}
         color="purple"
+        display={!!tasks.length}
       />
       <ExpandedTask
         className="mb-2"
         isExpanded={isCreateFormOpened}
         $$taskManager={$$taskCreator}
-        dateModifier={false}
+        dateModifier
         closeTaskForm={onCloseCreateForm}
       />
-      {isDisclosed && tasks.length > 0 &&
+      {isDisclosed &&
+        tasks.length > 0 &&
         tasks.map((task) => {
           return (
             <EditableTask
@@ -137,6 +148,7 @@ const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
               // ref={(node) => addNode(node!, index)}
               task={task}
               $$taskUpdater={$$taskUpdater}
+              formDateModifier
               $$taskRemover={$$taskTrasher}
               onSelect={() => {}}
               onBlur={() => {}}
@@ -153,23 +165,31 @@ const Header = ({
   onOpenCreateForm,
   color,
   isDisclosed,
-  disclose
+  disclose,
+  display = true,
 }: {
   title: string
   onOpenCreateForm: () => void
   color?: string
-  isDisclosed: boolean,
+  isDisclosed: boolean
   disclose: (d: boolean) => void
+  display: boolean
 }) => {
   return (
     <div className="mb-3 flex gap-x-2">
-      <Button intent="base" onClick={() => disclose(!isDisclosed)}>
-        <Icon
-          name="common/arrow"
-          className={`text-[12px] ${
-            isDisclosed ? "rotate-180" : "rotate-90"
-          }`}
-        />
+      <Button
+        intent="base"
+        className="w-3"
+        onClick={() => disclose(!isDisclosed)}
+      >
+        {display && (
+          <Icon
+            name="common/arrow"
+            className={`text-[12px] ${
+              isDisclosed ? "rotate-180" : "rotate-90"
+            }`}
+          />
+        )}
       </Button>
       <div
         style={{ background: `var(--color-${color})` }}

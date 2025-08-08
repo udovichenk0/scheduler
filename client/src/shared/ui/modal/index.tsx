@@ -122,7 +122,7 @@ const NewOverlay = () => {
   return (
     <div
       className={clsx(
-        "absolute left-0 top-0 flex h-screen w-full items-center justify-center bg-black/40",
+        "absolute left-0 top-0 z-20 flex h-screen w-full items-center justify-center bg-black/40",
       )}
     />
   )
@@ -138,9 +138,10 @@ const Header = ({ children, className }: DefaultProps) => {
 
 type ContentProps = DefaultProps & {
   initialFocus?: RefObject<any>
+  styles?: React.CSSProperties
 }
 
-const Content = ({ children, className }: ContentProps) => {
+const Content = ({ children, className, styles }: ContentProps) => {
   const ref = useRef<HTMLDivElement>(null)
   const { isOpened } = useContext(ModalContext)
 
@@ -152,7 +153,7 @@ const Content = ({ children, className }: ContentProps) => {
     <>
       <Portal>
         <NewOverlay />
-        <DialogModal ref={ref} className={className}>
+        <DialogModal ref={ref} className={className} styles={styles}>
           {children}
         </DialogModal>
       </Portal>
@@ -164,9 +165,15 @@ type DialogModalProps = {
   children: ReactNode
   ref: RefObject<any>
   className?: string
+  styles?: React.CSSProperties
 }
 
-const DialogModal = ({ children, ref, className }: DialogModalProps) => {
+const DialogModal = ({
+  children,
+  ref,
+  className,
+  styles,
+}: DialogModalProps) => {
   const { label, closeModal, focusAfterClose, portal } =
     useContext(ModalContext)
 
@@ -197,12 +204,13 @@ const DialogModal = ({ children, ref, className }: DialogModalProps) => {
       onClick={(e) => {
         e.stopPropagation()
       }}
+      style={styles}
       aria-label={label}
       data-part
       aria-modal
       role="dialog"
       className={clsx(
-        "text-cFont border-cBorder bg-main animate-dialog absolute m-auto rounded-[5px] border-[1px] p-2", //!drop-shadow-base behaves like position relative
+        "text-cFont border-cBorder bg-main animate-dialog absolute z-20 m-auto rounded-[5px] border-[1px] p-2", //!drop-shadow-base behaves like position relative
         portalStyles,
         className,
       )}

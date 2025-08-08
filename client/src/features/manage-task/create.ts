@@ -89,3 +89,5 @@ export const createTaskCreator = ({ taskModel }: { taskModel: TaskModel }) => {
     createTaskTriggered,
   }
 }
+
+export type TaskCreator = ReturnType<typeof createTaskCreator>

@@ -29,6 +29,7 @@ html {
   --color-main-dark: var(--main-dark);
   --color-main-light: var(--main-light);
   --color-accent: rgb(var(--accent));
+  --color-main-inverse: var(--main-inverse);
   --color-blue: rgb(var(--blue));
   --color-yellow: rgb(var(--yellow));
   --color-red: rgb(var(--red));
@@ -65,6 +66,7 @@ html[data-theme="space"] {
   --main-dark: #0c031b;
   --main: #0f0620;
   --main-light: #14052b;
+  --main-inverse: #907eb3;
   --accent: 46, 188, 255;
   --blue: 46, 188, 255;
   --yellow: 253, 216, 53;
@@ -99,6 +101,7 @@ html[data-theme="space"] {
 html[data-theme="default"] {
   --main-dark: #262730;
   --main: #2b2c37;
+  --main-inverse: #bebebe;
   --main-light: #363744;
   --accent: 46, 188, 255;
   --blue: 46, 188, 255;
@@ -133,9 +136,10 @@ html[data-theme="default"] {
   --menuBg: #1d1e24;
 }
 html[data-theme="dark"] {
-  --main-dark: #131111;
   --main: #121212;
   --main-light: #1a1a1a;
+  --main-dark: #131111;
+  --main-inverse: #bebebe;
   --accent: 70, 131, 203;
   --blue: 70, 131, 203;
   --yellow: 255, 213, 79;
@@ -167,9 +171,10 @@ html[data-theme="dark"] {
   --cCalendarTooltip: #d0d0d0;
 }
 html[data-theme="light"] {
-  --main-dark: #f9f9f9;
   --main: #f9f9f9;
+  --main-dark: #f9f9f9;
   --main-light: #e0e0e0;
+  --main-inverse: #707070;
   --accent: 70, 131, 203;
   --blue: 70, 131, 203;
   --yellow: 251, 192, 45;
@@ -205,6 +210,8 @@ html[data-theme="grey"] {
   --main: #f4f4f4;
   --accent: 84, 117, 156;
   --main-light: #ebebeb;
+  --main-dark: #f9f9f9;
+  --main-inverse: #707070;
   --blue: 84, 117, 156;
   --yellow: 251, 192, 45;
   --red: 229, 115, 115;

@@ -128,14 +128,14 @@ func (ts *Service) UpdateTask(ctx context.Context, params taskservice.UpdateInpu
 		Priority:    string(params.Priority),
 	}
 
-	ts.logger.Info("update task", slog.Any("updateTaskParams", updateTaskParams))
-
 	if params.StartDate != 0 {
 		updateTaskParams.StartDate = pkg.UnixToDateTime(params.StartDate)
 	}
 	if params.DueDate != 0 {
 		updateTaskParams.DueDate = pkg.UnixToDateTime(params.DueDate)
 	}
+
+	ts.logger.Info("update task", slog.Any("updateTaskParams", updateTaskParams))
 
 	if err := ts.taskRepo.Update(ctx, updateTaskParams); err != nil {
 		return entity.Task{}, errs.NewError(err, "failed to update task")

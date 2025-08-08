@@ -1,67 +1,22 @@
-import { useRef, useState } from "react"
-import { useUnit } from "effector-react"
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Layout } from "@/widgets/layout/main/ui.tsx"
-import { ExpandedTask } from "@/widgets/expanded-task"
+import { CalendarWidget } from "@/widgets/calendar/calendar"
 
-import { Modal } from "@/shared/ui/modal"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
-import { Button } from "@/shared/ui/buttons/main-button"
-import { TaskId } from "@/shared/api/task/task.dto.ts"
-import { Icon } from "@/shared/ui/icon"
 import { SDate, sdate } from "@/shared/lib/date/lib"
-import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
-import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 
-import { Calendar } from "./ui/calendar-table"
 import {
   $$taskCreator,
-  $$taskRemover,
+  $$taskTrasher,
   $$taskUpdater,
-  $mappedTasks,
-  $moreTasks,
-  setMoreTasks,
+  $unplacedTasks,
 } from "./model"
-import { MoreTasks } from "./ui/more-tasks"
 
 const CalendarPage = () => {
   const [headerDate, setHeaderDate] = useState(() => sdate())
   const { t } = useTranslation()
-  const taskRef = useRef<HTMLButtonElement>(null)
-  const cellRef = useRef<HTMLButtonElement>(null)
-
-  const mappedTasks = useUnit($mappedTasks)
-  const onSetMoreTasks = useUnit(setMoreTasks)
-
-  const onSetTaskDate = useUnit($$taskCreator.dateChanged)
-  const onResetCreateTaskForm = useUnit($$taskCreator.resetFieldsTriggered)
-  const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
-
-  const updateTask = useUnit($$taskUpdater.$task)
-  const onUpdateStatus = useUnit($$taskUpdater.statusChangedAndUpdated)
-  const onUpdateTask = useUnit($$taskUpdater.updateTaskTriggered)
-  const onInitFields = useUnit($$taskUpdater.init)
-  const onResetUpdateTaskForm = useUnit($$taskUpdater.resetFieldsTriggered)
-
-  const {
-    isOpened: isUpdateTaskOpened,
-    open: onOpenUpdateTaskForm,
-    close: onCloseUpdateTaskForm,
-    cancel: onCancelUpdateTaskForm,
-  } = useDisclosure({ id: ModalName.UpdateTaskForm, onClose: onUpdateTask })
-  const {
-    isOpened: isCreateTaskFormOpened,
-    open: onOpenCreateTaskForm,
-    close: onCloseCreateTaskForm,
-    cancel: onCancelCreateTaskForm,
-  } = useDisclosure({ id: ModalName.CreateTaskForm, onClose: onCreateTask })
-
-  const {
-    isOpened: isMoreTasksModalOpened,
-    open: onOpenMoreTasksModal,
-    close: onCloseMoreTasksModal,
-  } = useDisclosure({ id: ModalName.MoreTasksModal })
 
   return (
     <Layout title={t("task.calendar")}>
@@ -70,98 +25,13 @@ const CalendarPage = () => {
         title={<Title date={headerDate} />}
       />
       <Layout.Content className="flex h-full flex-col">
-
-        <Modal
-          isOpened={isUpdateTaskOpened}
-          label="Update task"
-          closeModal={onCloseUpdateTaskForm}
-          focusAfterClose={taskRef}
-        >
-          <Modal.Content className="p-0! w-[600px]">
-          {updateTask && (
-            <ExpandedTask
-              $$taskManager={$$taskUpdater}
-              dateModifier={true}
-              sideDatePicker={false}
-              rightPanelSlot={
-                <UpdateActionsButtons
-                  onSave={onCloseUpdateTaskForm}
-                  onCancel={() => {
-                    onCancelUpdateTaskForm()
-                    onResetUpdateTaskForm()
-                  }}
-                  taskId={updateTask!.id}
-                />
-              }
-            />
-          )}
-          </Modal.Content>
-        </Modal>
-        <Modal
-          focusAfterClose={cellRef}
-          label="Create task"
-          isOpened={isCreateTaskFormOpened}
-          closeModal={onCloseCreateTaskForm}
-        >
-          <Modal.Content className="p-0! w-[600px]">
-            <ExpandedTask
-              $$taskManager={$$taskCreator}
-              dateModifier={true}
-              sideDatePicker={false}
-              rightPanelSlot={
-                <ActionsButton
-                  onSave={onCloseCreateTaskForm}
-                  onCancel={() => {
-                    onCancelCreateTaskForm()
-                    onResetCreateTaskForm()
-                  }}
-                />
-              }
-            />
-          </Modal.Content>
-        </Modal>
-        <Modal
-          label="More tasks"
-          isOpened={isMoreTasksModalOpened}
-          closeModal={onCloseMoreTasksModal}
-        >
-          <Modal.Content className="flex w-[400px] flex-col gap-y-1 overflow-auto px-4 pb-4">
-            <Modal.Header>
-              <Modal.Title>All tasks</Modal.Title>
-              <Modal.CloseButton close={onCloseMoreTasksModal} />
-            </Modal.Header>
-            <MoreTasks
-              $tasks={$moreTasks}
-              onTaskClick={(target, task) => {
-                onOpenUpdateTaskForm()
-                onInitFields(task)
-                taskRef.current = target
-              }}
-              onUpdateStatus={onUpdateStatus}
-            />
-          </Modal.Content>
-        </Modal>
-        <Calendar
-          onTaskClick={(target, task) => {
-            onOpenUpdateTaskForm()
-            onInitFields(task)
-            taskRef.current = target
-          }}
-          onCellClick={(target, date) => {
-            cellRef.current = target
-            onOpenCreateTaskForm()
-            onSetTaskDate({ startDate: date, dueDate: null })
-          }}
-          onShowMoreTasks={(tasks) => {
-            onSetMoreTasks(tasks)
-            onOpenMoreTasksModal()
-          }}
-          date={headerDate}
-          setDate={setHeaderDate}
-          tasks={mappedTasks}
-          onUpdateStatus={onUpdateStatus}
+        <CalendarWidget
+          $$taskCreator={$$taskCreator}
+          $$taskRemover={$$taskTrasher}
+          $$taskUpdater={$$taskUpdater}
+          $tasks={$unplacedTasks}
+          onChange={setHeaderDate}
         />
-        <div tabIndex={0}></div>
       </Layout.Content>
     </Layout>
   )
@@ -181,53 +51,3 @@ const Title = ({ date }: { date: SDate }) => {
 }
 
 export default CalendarPage
-
-const UpdateActionsButtons = ({
-  taskId,
-  onSave,
-  onCancel,
-}: {
-  taskId: TaskId
-  onSave: () => void
-  onCancel: () => void
-}) => {
-  const trashTaskById = useUnit($$taskRemover.removeTaskById)
-  return (
-    <div className="flex items-center">
-      <Button
-        onClick={() => trashTaskById(taskId)}
-        size={"xs"}
-        className="mr-2"
-        intent={"primary"}
-      >
-        <Icon
-          name="common/trash-can"
-          className="text-cIconDefault text-[24px]"
-        />
-      </Button>
-      <ActionsButton onSave={onSave} onCancel={onCancel} />
-    </div>
-  )
-}
-const ActionsButton = ({
-  onSave,
-  onCancel,
-}: {
-  onSave: () => void
-  onCancel: () => void
-}) => {
-  return (
-    <div className="space-x-2 text-white">
-      <Button onClick={onCancel} className="w-24 text-[12px]">
-        Cancel
-      </Button>
-      <Button
-        onClick={onSave}
-        intent={"filled"}
-        className="w-24 p-[1px] text-[12px]"
-      >
-        Save
-      </Button>
-    </div>
-  )
-}

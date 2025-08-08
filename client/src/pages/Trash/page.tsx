@@ -46,7 +46,7 @@ const Trash = () => {
             onClick={onDeleteAllTasks}
             intent="primary"
             size={"xs"}
-            className="flex items-center gap-x-2 text-accent!"
+            className="text-accent! flex items-center gap-x-2"
           >
             <Cross />
             {t("action.clearBucket")}

@@ -14,6 +14,7 @@ import { views } from "./config"
 import { ViewType } from "./type"
 import { List } from "./view/list"
 import { $projectTasks } from "./model"
+import { Calendar } from "./view/calendar"
 
 const Project = () => {
   const params = useUnit(routes.project.$params)
@@ -44,10 +45,11 @@ const Project = () => {
                   className="data-[active=true]:border-b-3 border-cPrimary py-2"
                 >
                   <Tabs.Trigger
+                    data-active={tab === view}
                     value={view}
                     className={clsx(
                       buttonCva({ intent: "primary", size: "sm" }),
-                      "capitalize",
+                      "data-[active=true]:bg-hover capitalize",
                     )}
                   >
                     {view}
@@ -56,11 +58,11 @@ const Project = () => {
               )
             })}
           </Tabs.List>
-          <Tabs.Content label="list">
+          <Tabs.Content className="p-4" label="list">
             <List $tasks={$projectTasks} />
           </Tabs.Content>
           <Tabs.Content label="calendar">
-            <div>calendar</div>
+            <Calendar $tasks={$projectTasks} />
           </Tabs.Content>
         </Tabs>
       </Layout.Content>

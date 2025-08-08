@@ -77,6 +77,7 @@ func (th *TaskHandler) Create(fc *fiber.Ctx) error {
 		Type:        taskFields.Type,
 		Status:      taskFields.Status,
 		StartDate:   taskFields.StartDate,
+		DueDate:     taskFields.DueDate,
 		Priority:    taskFields.Priority,
 		ProjectId:   taskFields.ProjectId,
 	}
@@ -145,6 +146,7 @@ func (th *TaskHandler) Update(fc *fiber.Ctx) error {
 		Type:        taskFields.Type,
 		Status:      taskFields.Status,
 		StartDate:   taskFields.StartDate,
+		DueDate:     taskFields.DueDate,
 		Priority:    taskFields.Priority,
 	}
 

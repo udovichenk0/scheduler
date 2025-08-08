@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next"
 
+import { sdate, SDate } from "@/shared/lib/date/lib"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
-import { SDate, sdate } from "@/shared/lib/date/lib"
 
 export const MonthSwitcher = ({
   changeMonth,

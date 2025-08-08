@@ -84,11 +84,15 @@ export const ExpandedTask = ({
           dateModifier={dateModifier}
           modifyTaskModel={$$taskManager}
         />
-        <div className="mr-2 flex items-center justify-end">
+        <div className="flex items-center justify-end space-x-2">
           <PriorityPicker priority={priority} onUpdate={onChangePriority} />
           <DatePicker
             CustomInput={({ onClick }) => (
-              <Button intent="base" onClick={onClick}>
+              <Button
+                className="flex items-center justify-center"
+                intent="base"
+                onClick={onClick}
+              >
                 <Icon name="common/upcoming" className="text-accent text-lg" />
               </Button>
             )}

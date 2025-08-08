@@ -169,6 +169,10 @@ export class SDate {
   toUnix() {
     return this.d.unix()
   }
+  unixToDate(unix: number) {
+    if (unix.toString().length != 10) throw new Error(`Invalid unix: ${unix}`)
+    return sdate(new Date(unix * 1000))
+  }
   format(format: string) {
     return this.d.format(format)
   }
@@ -182,6 +186,10 @@ export class SDate {
   }
   dayDiff(date: SDate | Date) {
     return this.d.diff(this.parseDate(date), "day")
+  }
+  rangeInDays(date: SDate) {
+    const seconds = Math.abs(date.toUnix() - this.toUnix())
+    return seconds / (24 * 3600)
   }
 }
 

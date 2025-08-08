@@ -15,7 +15,7 @@ export const $moreTasks = restore(setMoreTasks, [])
 
 export const $$taskModel = getTaskModelInstance()
 
-const $unplacedTasks = combine(
+export const $unplacedTasks = combine(
   $$taskModel.$tasks,
   routes.calendar.$isOpened,
   (tasks, isOpened) => {
@@ -25,7 +25,7 @@ const $unplacedTasks = combine(
 )
 
 export const $$taskUpdater = createTaskUpdater({ taskModel: $$taskModel })
-export const $$taskRemover = createTaskTrasher({ taskModel: $$taskModel })
+export const $$taskTrasher = createTaskTrasher({ taskModel: $$taskModel })
 export const $$taskCreator = createTaskCreator({
   taskModel: $$taskModel,
 })

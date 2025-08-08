@@ -52,7 +52,12 @@ const Settings = ({
           <Modal.Title>{t("setting.title")}</Modal.Title>
           <Modal.CloseButton close={onCloseSettings} />
         </Modal.Header>
-        <Tabs value={tab} onChange={setTab} className="text-sm">
+        <Tabs
+          contentStyles="px-6 py-4"
+          value={tab}
+          onChange={setTab}
+          className="text-sm"
+        >
           <Tabs.List className="border-cBorder flex gap-5 border-b-[1px] px-6 pb-4">
             <Tabs.Trigger
               value={Tab.general}

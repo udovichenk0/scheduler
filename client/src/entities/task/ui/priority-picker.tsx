@@ -71,7 +71,7 @@ export const PriorityPicker = ({
     prefix: ModalName.PriorityPicker,
   })
   return (
-    <div className="w-25 relative mr-1 flex justify-start">
+    <div className="w-25 relative flex justify-start">
       <Modal
         portal={false}
         overlay={false}

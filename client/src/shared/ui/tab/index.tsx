@@ -10,6 +10,7 @@ type TabsProps<T> = {
   className?: string
   defaultValue?: string
   value?: T
+  contentStyles?: string
   onChange?: (value: T) => void
 }
 
@@ -18,13 +19,18 @@ export const Tabs = <T extends string>({
   className,
   defaultValue,
   value: customValue,
+  contentStyles,
   onChange,
 }: TabsProps<T>) => {
   const [value, setValue] = useState(defaultValue || "")
   return (
     <div className={className}>
       <TabContext.Provider
-        value={{ value: customValue || value, setValue: onChange || setValue }}
+        value={{
+          value: customValue || value,
+          setValue: onChange || setValue,
+          contentStyles,
+        }}
       >
         {children}
       </TabContext.Provider>

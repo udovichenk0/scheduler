@@ -24,7 +24,7 @@ export const Footer = ({
         disabled={!onCreateTask}
         intent={"primary"}
         size={"base"}
-        className={`text-sm text-accent! ${!onCreateTask && "opacity-40"}`}
+        className={`text-accent! text-sm ${!onCreateTask && "opacity-40"}`}
       >
         <Icon name="common/plus" className="mr-4 text-lg" />
         {t("footer.newTask")}

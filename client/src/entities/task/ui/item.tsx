@@ -161,19 +161,23 @@ export const TaskItem = ({
             <TypeLable isVisible={typeLabel} taskType={task.type} />
           </div>
         </div>
-        {onUpdatePriority && (
-          <PriorityPicker
-            priority={task.priority}
-            onUpdate={(priority) => onUpdatePriority({ id: task.id, priority })}
-          />
-        )}
-        {/* Rework Button component */}
-        <button
-          onClick={() => onRemoveTask(task.id)}
-          className="hover:text-red text-cFont flex items-center"
-        >
-          <Icon name="common/trash-can" />
-        </button>
+        <div className="flex gap-x-2">
+          {onUpdatePriority && (
+            <PriorityPicker
+              priority={task.priority}
+              onUpdate={(priority) =>
+                onUpdatePriority({ id: task.id, priority })
+              }
+            />
+          )}
+          {/* Rework Button component */}
+          <button
+            onClick={() => onRemoveTask(task.id)}
+            className="hover:text-red text-cFont flex items-center"
+          >
+            <Icon name="common/trash-can" />
+          </button>
+        </div>
       </div>
     </div>
   )
