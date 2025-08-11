@@ -6,6 +6,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/udovichenk0/scheduler/app"
 	"github.com/udovichenk0/scheduler/config"
 	"github.com/udovichenk0/scheduler/internal/adapters/db"
 	"github.com/udovichenk0/scheduler/internal/adapters/rest"
@@ -35,8 +36,9 @@ func main() {
 		task.Provide(),
 		user.Provide(),
 		verification.Provide(),
-		//rest
-		Provide(),
+		//app
+		app.Provide(),
+		//handlers
 		rest.Provide(),
 	).
 		InitTimeout(time.Second).        // Set the timeout for the initialization phase.
