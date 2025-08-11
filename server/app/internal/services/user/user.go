@@ -5,24 +5,22 @@ import (
 	"errors"
 
 	"github.com/udovichenk0/scheduler/internal/entity"
+	"github.com/udovichenk0/scheduler/internal/ports/api/user"
 	userservice "github.com/udovichenk0/scheduler/internal/ports/api/user"
 	userRepo "github.com/udovichenk0/scheduler/internal/ports/repository/user"
 	"github.com/udovichenk0/scheduler/internal/ports/repository/user/model"
 	"github.com/udovichenk0/scheduler/pkg/errs"
 	"github.com/udovichenk0/scheduler/pkg/logger"
+	"github.com/zhulik/pal"
 )
 
 type Service struct {
-	userRepo userRepo.Port
-	logger   logger.Logger
-}
-
-func New(userRepo userRepo.Port, logger logger.Logger) *Service {
-	return &Service{userRepo: userRepo, logger: logger}
+	UserRepo userRepo.Repository
+	Logger   logger.ILogger
 }
 
 func (u *Service) GetUserByEmail(ctx context.Context, email string) (entity.User, error) {
-	user, err := u.userRepo.Get(ctx, email)
+	user, err := u.UserRepo.Get(ctx, email)
 	if err != nil {
 		if errs.IsResourceNotFound(err) {
 			return entity.User{}, errs.NewResourceNotFoundError(err, "failed to get user")
@@ -32,8 +30,8 @@ func (u *Service) GetUserByEmail(ctx context.Context, email string) (entity.User
 	return ToEntity(user), nil
 }
 
-func (us *Service) GetUserById(ctx context.Context, id string) (entity.User, error) {
-	user, err := us.userRepo.GetById(ctx, id)
+func (u *Service) GetUserById(ctx context.Context, id string) (entity.User, error) {
+	user, err := u.UserRepo.GetById(ctx, id)
 	if err != nil {
 		if errs.IsResourceNotFound(err) {
 			return entity.User{}, errs.NewResourceNotFoundError(err, "failed to get user")
@@ -49,12 +47,12 @@ func (u *Service) CreateUser(ctx context.Context, params userservice.CreateInput
 		Email:    params.Email,
 		PassHash: params.Hash,
 	}
-	err := u.userRepo.Create(ctx, params.UserId, createInput)
+	err := u.UserRepo.Create(ctx, params.UserId, createInput)
 	if err != nil {
 		return entity.User{}, errs.NewError(err, "failed to create user")
 	}
 
-	user, err := u.userRepo.Get(ctx, params.Email)
+	user, err := u.UserRepo.Get(ctx, params.Email)
 	if err != nil {
 		return entity.User{}, errs.NewResourceNotFoundError(err, "failed to get user")
 	}
@@ -62,8 +60,8 @@ func (u *Service) CreateUser(ctx context.Context, params userservice.CreateInput
 	return ToEntity(user), nil
 }
 
-func (us *Service) IsVerifiedUserExist(ctx context.Context, email string) (bool, error) {
-	user, err := us.GetUserByEmail(ctx, email)
+func (u *Service) IsVerifiedUserExist(ctx context.Context, email string) (bool, error) {
+	user, err := u.GetUserByEmail(ctx, email)
 	if err != nil {
 		if errors.As(err, &errs.NoRowError{}) {
 			return false, nil
@@ -77,8 +75,8 @@ func (us *Service) IsVerifiedUserExist(ctx context.Context, email string) (bool,
 	return true, nil
 }
 
-func (us *Service) DeleteUser(ctx context.Context, userId string) error {
-	err := us.userRepo.Delete(ctx, userId)
+func (u *Service) DeleteUser(ctx context.Context, userId string) error {
+	err := u.UserRepo.Delete(ctx, userId)
 
 	if err != nil {
 		return errs.NewError(err, "failed to delete user")
@@ -86,8 +84,8 @@ func (us *Service) DeleteUser(ctx context.Context, userId string) error {
 	return nil
 }
 
-func (s *Service) Verify(ctx context.Context, id string) error {
-	err := s.userRepo.Update(ctx, userRepo.UpdateInput{Verified: true, Id: id})
+func (u *Service) Verify(ctx context.Context, id string) error {
+	err := u.UserRepo.Update(ctx, userRepo.UpdateInput{Verified: true, Id: id})
 	if err != nil {
 		return errs.NewError(err, "failed to verify user")
 	}
@@ -95,7 +93,7 @@ func (s *Service) Verify(ctx context.Context, id string) error {
 	return nil
 }
 
-func ToEntity(user model.User) entity.User {
+func ToEntity(user model.Repository) entity.User {
 	return entity.User{
 		Id:        user.Id,
 		Email:     user.Email,
@@ -103,4 +101,8 @@ func ToEntity(user model.User) entity.User {
 		Verified:  user.Verified,
 		CreatedAt: user.CreatedAt,
 	}
+}
+
+func Provide() pal.ServiceDef {
+	return pal.Provide[user.Api](&Service{})
 }

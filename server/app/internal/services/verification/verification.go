@@ -6,23 +6,25 @@ import (
 	"github.com/udovichenk0/scheduler/internal/entity"
 	smtpservice "github.com/udovichenk0/scheduler/internal/ports/api/smtp"
 	userApi "github.com/udovichenk0/scheduler/internal/ports/api/user"
+	"github.com/udovichenk0/scheduler/internal/ports/api/verification"
 	verificationRepo "github.com/udovichenk0/scheduler/internal/ports/repository/verification"
 	"github.com/udovichenk0/scheduler/pkg"
 	"github.com/udovichenk0/scheduler/pkg/errs"
+	"github.com/zhulik/pal"
 )
 
 type Service struct {
-	verificationRepo verificationRepo.Port
-	userService      userApi.Port
-	smtpService      smtpservice.Port
+	VerificationRepo verificationRepo.Repository
+	UserService      userApi.Api
+	SmtpService      smtpservice.Api
 }
 
-func New(verificationRepo verificationRepo.Port, userService userApi.Port, smtpService smtpservice.Port) *Service {
+func New(verificationRepo verificationRepo.Repository, userService userApi.Api, smtpService smtpservice.Api) *Service {
 	return &Service{verificationRepo, userService, smtpService}
 }
 
 func (v *Service) VerifyUser(ctx context.Context, code, userId string) (entity.User, error) {
-	verifications, err := v.verificationRepo.GetByUserId(ctx, userId)
+	verifications, err := v.VerificationRepo.GetByUserId(ctx, userId)
 	if err != nil {
 		return entity.User{}, errs.NewInternalError(err)
 	}
@@ -30,21 +32,21 @@ func (v *Service) VerifyUser(ctx context.Context, code, userId string) (entity.U
 	verification := entity.GetLatestVerification(verifications)
 
 	if entity.IsExpired(verification.ExpiresAt) {
-		v.verificationRepo.Delete(ctx, verification.Id)
+		v.VerificationRepo.Delete(ctx, verification.Id)
 		return entity.User{}, errs.NewError(err, "verification code is expired")
 	}
 	if !entity.IsCodeValid(verification.Code, code) {
 		return entity.User{}, errs.NewError(err, "verification code is invalid")
 	}
 
-	if err := v.verificationRepo.Delete(ctx, verification.Id); err != nil {
+	if err := v.VerificationRepo.Delete(ctx, verification.Id); err != nil {
 		return entity.User{}, errs.NewInternalError(err)
 	}
-	if err := v.userService.Verify(ctx, userId); err != nil {
+	if err := v.UserService.Verify(ctx, userId); err != nil {
 		return entity.User{}, err
 	}
 
-	user, err := v.userService.GetUserById(ctx, userId)
+	user, err := v.UserService.GetUserById(ctx, userId)
 	if err != nil {
 		return entity.User{}, err
 	}
@@ -54,7 +56,7 @@ func (v *Service) VerifyUser(ctx context.Context, code, userId string) (entity.U
 
 func (v *Service) CreateCode(ctx context.Context, userId string) (string, error) {
 	code := entity.GenerateVerificationCode()
-	err := v.verificationRepo.Create(ctx, verificationRepo.CreateInput{
+	err := v.VerificationRepo.Create(ctx, verificationRepo.CreateInput{
 		Id:        pkg.NewUUID(),
 		UserId:    userId,
 		Code:      code,
@@ -75,7 +77,7 @@ func (v *Service) ChangeCode(ctx context.Context, userId string, email string) e
 		ExpiresAt: pkg.UnixToDateTime(entity.GetVerificationExpiration()),
 	}
 
-	err := v.smtpService.SendEmail(smtpservice.SendInput{
+	err := v.SmtpService.SendEmail(smtpservice.SendInput{
 		To:      email,
 		Subject: "Your Verification Code is Ready!",
 		Body:    params.Code,
@@ -85,10 +87,14 @@ func (v *Service) ChangeCode(ctx context.Context, userId string, email string) e
 		return errs.NewInternalError(err)
 	}
 
-	err = v.verificationRepo.Update(ctx, params)
+	err = v.VerificationRepo.Update(ctx, params)
 	if err != nil {
 		return errs.NewError(err, "failed to resend code")
 	}
 
 	return nil
+}
+
+func Provide() pal.ServiceDef {
+	return pal.Provide[verification.Api](&Service{})
 }

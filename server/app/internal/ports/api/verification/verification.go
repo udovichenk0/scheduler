@@ -13,7 +13,7 @@ type Verification struct {
 	CreatedAt string
 }
 
-type Port interface {
+type Api interface {
 	VerifyUser(ctx context.Context, code, userId string) (entity.User, error)
 	CreateCode(ctx context.Context, userId string) (string, error)
 	ChangeCode(ctx context.Context, userId string, email string) error

@@ -1,11 +1,17 @@
-package pkg
+package validator
 
 import (
+	"context"
 	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/udovichenk0/scheduler/internal/entity"
+	"github.com/zhulik/pal"
 )
+
+type Validator struct {
+	Vali *validator.Validate
+}
 
 func IsStatusValid(fl validator.FieldLevel) bool {
 	s := fl.Field().String()
@@ -49,4 +55,19 @@ func NewValidator() *validator.Validate {
 	v.RegisterValidation("startDate", IsStartDateValid)
 	v.RegisterValidation("priority", IsPriorityValid)
 	return v
+}
+
+func (vali *Validator) Init(_ context.Context) error {
+	v := validator.New()
+	v.RegisterValidation("status", IsStatusValid)
+	v.RegisterValidation("type", IsTypeValid)
+	v.RegisterValidation("startDate", IsStartDateValid)
+	v.RegisterValidation("priority", IsPriorityValid)
+
+	vali.Vali = v
+	return nil
+}
+
+func Provide() pal.ServiceDef {
+	return pal.Provide(&Validator{})
 }

@@ -6,8 +6,9 @@ import (
 	"encoding/gob"
 	"errors"
 
-	"github.com/jmoiron/sqlx"
+	"github.com/udovichenk0/scheduler/internal/adapters/db"
 	"github.com/udovichenk0/scheduler/internal/entity"
+	"github.com/udovichenk0/scheduler/internal/ports/api/auth"
 	authservice "github.com/udovichenk0/scheduler/internal/ports/api/auth"
 	smtpservice "github.com/udovichenk0/scheduler/internal/ports/api/smtp"
 	userservice "github.com/udovichenk0/scheduler/internal/ports/api/user"
@@ -15,33 +16,27 @@ import (
 	"github.com/udovichenk0/scheduler/pkg"
 	"github.com/udovichenk0/scheduler/pkg/errs"
 	"github.com/udovichenk0/scheduler/pkg/logger"
-	session_manager "github.com/udovichenk0/scheduler/pkg/session-manager"
+	sessionManager "github.com/udovichenk0/scheduler/pkg/sessionmanager"
+	"github.com/zhulik/pal"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func New(userService userservice.Port, smtpService smtpservice.Port, verificationService verificationservice.Port, db *sqlx.DB, sm session_manager.SessionManager, logger logger.Logger) *Service {
-	gob.Register(entity.User{})
-	return &Service{
-		userService:         userService,
-		smtpService:         smtpService,
-		verificationService: verificationService,
-		db:                  db,
-		sm:                  sm,
-		logger:              logger,
-	}
-}
-
 type Service struct {
-	userService         userservice.Port
-	smtpService         smtpservice.Port
-	verificationService verificationservice.Port
-	db                  *sqlx.DB
-	sm                  session_manager.SessionManager
-	logger              logger.Logger
+	UserService         userservice.Api
+	SmtpService         smtpservice.Api
+	VerificationService verificationservice.Api
+	*db.Sqlx
+	Sm     sessionManager.ISessionManager
+	Logger logger.ILogger
 }
 
-func (a *Service) SignIn(ctx context.Context, email, pass string) (authservice.AuthResult, error) {
-	user, err := a.userService.GetUserByEmail(ctx, email)
+func (s *Service) Init(_ context.Context) error {
+	gob.Register(entity.User{})
+	return nil
+}
+
+func (s *Service) SignIn(ctx context.Context, email, pass string) (authservice.AuthResult, error) {
+	user, err := s.UserService.GetUserByEmail(ctx, email)
 	if err != nil {
 		return authservice.AuthResult{}, err
 	}
@@ -51,7 +46,7 @@ func (a *Service) SignIn(ctx context.Context, email, pass string) (authservice.A
 		return authservice.AuthResult{}, errs.NewError(err, "wrong password")
 	}
 
-	session, err := a.sm.Commit("user", user)
+	session, err := s.Sm.Commit("user", user)
 	if err != nil {
 		return authservice.AuthResult{}, errs.NewInternalError(err)
 	}
@@ -59,8 +54,8 @@ func (a *Service) SignIn(ctx context.Context, email, pass string) (authservice.A
 	return authservice.AuthResult{User: user, Session: session}, nil
 }
 
-func (a *Service) SignUp(ctx context.Context, email, pass string) (entity.User, error) {
-	user, err := a.userService.GetUserByEmail(ctx, email)
+func (s *Service) SignUp(ctx context.Context, email, pass string) (entity.User, error) {
+	user, err := s.UserService.GetUserByEmail(ctx, email)
 	if err != nil {
 		if !errors.As(err, &errs.NoRowError{}) {
 			return entity.User{}, errs.NewInternalError(err)
@@ -68,7 +63,7 @@ func (a *Service) SignUp(ctx context.Context, email, pass string) (entity.User, 
 	}
 
 	if user.Id != "" {
-		if err := a.userService.DeleteUser(ctx, user.Id); err != nil {
+		if err := s.UserService.DeleteUser(ctx, user.Id); err != nil {
 			return entity.User{}, err
 		}
 	}
@@ -84,14 +79,14 @@ func (a *Service) SignUp(ctx context.Context, email, pass string) (entity.User, 
 		Hash:   string(hash),
 	}
 
-	uow := pkg.NewUnitOfWork(a.db, ctx)
+	uow := pkg.NewUnitOfWork(s.Pool, ctx)
 	var code string
 	err = uow.StartUOW(func(ctx context.Context) error {
-		user, err = a.userService.CreateUser(ctx, params)
+		user, err = s.UserService.CreateUser(ctx, params)
 		if err != nil {
 			return err
 		}
-		code, err = a.verificationService.CreateCode(ctx, user.Id)
+		code, err = s.VerificationService.CreateCode(ctx, user.Id)
 		if err != nil {
 			return err
 		}
@@ -102,7 +97,7 @@ func (a *Service) SignUp(ctx context.Context, email, pass string) (entity.User, 
 		return entity.User{}, err
 	}
 
-	err = a.smtpService.SendEmail(smtpservice.SendInput{
+	err = s.SmtpService.SendEmail(smtpservice.SendInput{
 		To:      user.Email,
 		Subject: "Your Verification Code is Ready!",
 		Body:    code,
@@ -114,8 +109,8 @@ func (a *Service) SignUp(ctx context.Context, email, pass string) (entity.User, 
 	return user, nil
 }
 
-func (a *Service) SignOut(ctx context.Context, sessionId string) error {
-	err := a.sm.Delete(sessionId)
+func (s *Service) SignOut(ctx context.Context, sessionId string) error {
+	err := s.Sm.Delete(sessionId)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -124,4 +119,8 @@ func (a *Service) SignOut(ctx context.Context, sessionId string) error {
 		return err
 	}
 	return nil
+}
+
+func Provide() pal.ServiceDef {
+	return pal.Provide[auth.Api](&Service{})
 }

@@ -32,8 +32,8 @@ type (
 	UnauthorizedError struct{}
 
 	InternalError struct {
-		err error
-		msg string
+		Err error
+		Msg string
 	}
 	ForbiddenError struct {
 		err error
@@ -94,7 +94,7 @@ func NewInternalError(err error) InternalError {
 	return InternalError{err, "Internal Error"}
 }
 func (err InternalError) Error() string {
-	return err.msg
+	return err.Msg
 }
 
 func NewInternalErrorWithMsg(err error, msg string) InternalError {
@@ -173,7 +173,7 @@ func HandleError(err error) Error {
 	case errors.As(err, &forbidden):
 		return Error{fiber.StatusForbidden, err.Error(), Forbidden, forbidden.err}
 	case errors.As(err, &internal):
-		return Error{fiber.StatusInternalServerError, err.Error(), Internal, internal.err}
+		return Error{fiber.StatusInternalServerError, err.Error(), Internal, internal.Err}
 	default:
 		return Error{fiber.StatusInternalServerError, err.Error(), Internal, errors.New("unhandled error")}
 	}

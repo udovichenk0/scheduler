@@ -6,7 +6,7 @@ import (
 	"github.com/udovichenk0/scheduler/internal/ports/repository/verification/model"
 )
 
-type Port interface {
+type Repository interface {
 	GetByUserId(ctx context.Context, userId string) ([]model.Verification, error)
 	Create(ctx context.Context, params CreateInput) error
 	Delete(ctx context.Context, codeId string) error

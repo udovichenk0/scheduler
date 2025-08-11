@@ -1,6 +1,6 @@
 package model
 
-type User struct {
+type Repository struct {
 	Id        string `db:"id"`
 	Email     string `db:"email"`
 	Hash      string `db:"hash"`
@@ -8,4 +8,4 @@ type User struct {
 	CreatedAt string `db:"created_at"`
 }
 
-var Nil = User{}
+var Nil = Repository{}

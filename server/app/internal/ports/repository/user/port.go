@@ -6,9 +6,9 @@ import (
 	"github.com/udovichenk0/scheduler/internal/ports/repository/user/model"
 )
 
-type Port interface {
-	Get(ctx context.Context, email string) (model.User, error)
-	GetById(ctx context.Context, id string) (model.User, error)
+type Repository interface {
+	Get(ctx context.Context, email string) (model.Repository, error)
+	GetById(ctx context.Context, id string) (model.Repository, error)
 	Create(ctx context.Context, id string, input CreateInput) error
 	Delete(ctx context.Context, id string) error
 	Update(ctx context.Context, input UpdateInput) error

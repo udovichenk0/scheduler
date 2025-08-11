@@ -71,7 +71,7 @@ type GetByProjectIdInput struct {
 	ProjectId string
 }
 
-type Port interface {
+type Api interface {
 	GetTasks(ctx context.Context, userId string) ([]entity.Task, error)
 	GetTasksByProjectId(ctx context.Context, params GetByProjectIdInput) ([]entity.Task, error)
 	CreateTask(ctx context.Context, params CreateInput) (entity.Task, error)

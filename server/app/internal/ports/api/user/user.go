@@ -12,7 +12,7 @@ type CreateInput struct {
 	Hash   string
 }
 
-type Port interface {
+type Api interface {
 	GetUserByEmail(ctx context.Context, email string) (entity.User, error)
 	CreateUser(ctx context.Context, params CreateInput) (entity.User, error)
 	DeleteUser(ctx context.Context, id string) error

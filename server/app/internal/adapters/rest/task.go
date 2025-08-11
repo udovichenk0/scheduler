@@ -3,7 +3,6 @@ package rest
 import (
 	"log/slog"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/udovichenk0/scheduler/internal/adapters/rest/dto"
 	"github.com/udovichenk0/scheduler/internal/entity"
@@ -11,62 +10,54 @@ import (
 	userservice "github.com/udovichenk0/scheduler/internal/ports/api/user"
 	"github.com/udovichenk0/scheduler/pkg/errs"
 	"github.com/udovichenk0/scheduler/pkg/logger"
-	session_manager "github.com/udovichenk0/scheduler/pkg/session-manager"
+	sessionManager "github.com/udovichenk0/scheduler/pkg/sessionmanager"
+	validator "github.com/udovichenk0/scheduler/pkg/validation"
+	"github.com/zhulik/pal"
 )
 
 type TaskHandler struct {
-	task   taskservice.Port
-	user   userservice.Port
-	v      *validator.Validate
-	sm     session_manager.SessionManager
-	logger logger.Logger
+	Task taskservice.Api
+	User userservice.Api
+	*validator.Validator
+	Sm     sessionManager.ISessionManager
+	Logger logger.ILogger
 }
 
-func NewTaskHandler(
-	task taskservice.Port,
-	user userservice.Port,
-	validator *validator.Validate,
-	sm session_manager.SessionManager,
-	logger logger.Logger,
-) *TaskHandler {
-	return &TaskHandler{task, user, validator, sm, logger}
-}
-
-func (th *TaskHandler) Get(fc *fiber.Ctx) error {
-	user := th.sm.Get(fc.UserContext(), "user").(entity.User)
-	tasks, err := th.task.GetTasks(fc.Context(), user.Id)
+func (h *TaskHandler) Get(fc *fiber.Ctx) error {
+	user := h.Sm.Get(fc.UserContext(), "user").(entity.User)
+	tasks, err := h.Task.GetTasks(fc.Context(), user.Id)
 	if err != nil {
-		th.logger.Error("failed to get tasks", slog.Any("err", err))
+		h.Logger.Error("failed to get tasks", slog.Any("err", err))
 		return err
 	}
 	fc.JSON(tasks)
 	return nil
 }
 
-func (th *TaskHandler) GetByProjectId(fc *fiber.Ctx) error {
-	user := th.sm.Get(fc.UserContext(), "user").(entity.User)
+func (h *TaskHandler) GetByProjectId(fc *fiber.Ctx) error {
+	user := h.Sm.Get(fc.UserContext(), "user").(entity.User)
 	params := new(dto.GetTasksByProjectIdParams)
 	if err := fc.ParamsParser(params); err != nil {
 		return errs.NewBadRequestError(err)
 	}
 
-	tasks, err := th.task.GetTasksByProjectId(fc.Context(), taskservice.GetByProjectIdInput{ProjectId: params.ProjectId, UserId: user.Id})
+	tasks, err := h.Task.GetTasksByProjectId(fc.Context(), taskservice.GetByProjectIdInput{ProjectId: params.ProjectId, UserId: user.Id})
 	if err != nil {
-		th.logger.Error("failed to get tasks by project id", slog.Any("err", err))
+		h.Logger.Error("failed to get tasks by project id", slog.Any("err", err))
 		return err
 	}
 	fc.JSON(tasks)
 	return nil
 }
 
-func (th *TaskHandler) Create(fc *fiber.Ctx) error {
-	user := th.sm.Get(fc.UserContext(), "user").(entity.User)
+func (h *TaskHandler) Create(fc *fiber.Ctx) error {
+	user := h.Sm.Get(fc.UserContext(), "user").(entity.User)
 
 	taskFields := new(dto.CreateTaskRequestBody)
 	if err := fc.BodyParser(taskFields); err != nil {
 		return errs.NewBadRequestError(err)
 	}
-	if fieldErrs := th.v.Struct(taskFields); fieldErrs != nil {
+	if fieldErrs := h.Vali.Struct(taskFields); fieldErrs != nil {
 		return errs.CheckValidationError(fieldErrs)
 	}
 
@@ -82,18 +73,18 @@ func (th *TaskHandler) Create(fc *fiber.Ctx) error {
 		ProjectId:   taskFields.ProjectId,
 	}
 
-	task, err := th.task.CreateTask(fc.Context(), newTask)
+	task, err := h.Task.CreateTask(fc.Context(), newTask)
 
 	if err != nil {
-		th.logger.Error("failed to create task", slog.Any("err", err))
+		h.Logger.Error("failed to create task", slog.Any("err", err))
 		return err
 	}
 	fc.JSON(task)
 	return nil
 }
 
-func (th *TaskHandler) Trash(fc *fiber.Ctx) error {
-	user := th.sm.Get(fc.UserContext(), "user").(entity.User)
+func (h *TaskHandler) Trash(fc *fiber.Ctx) error {
+	user := h.Sm.Get(fc.UserContext(), "user").(entity.User)
 
 	params := new(dto.TrashTaskRequestParams)
 
@@ -106,18 +97,18 @@ func (th *TaskHandler) Trash(fc *fiber.Ctx) error {
 		UserId: user.Id,
 	}
 
-	err := th.task.TrashTask(fc.Context(), trashTaskParams)
+	err := h.Task.TrashTask(fc.Context(), trashTaskParams)
 
 	if err != nil {
-		th.logger.Error("failed to trash task", err)
+		h.Logger.Error("failed to trash task", err)
 		return err
 	}
 
 	return nil
 }
 
-func (th *TaskHandler) Update(fc *fiber.Ctx) error {
-	user := th.sm.Get(fc.UserContext(), "user").(entity.User)
+func (h *TaskHandler) Update(fc *fiber.Ctx) error {
+	user := h.Sm.Get(fc.UserContext(), "user").(entity.User)
 
 	taskFields := new(dto.UpdateTaskRequestBody)
 	params := new(dto.UpdateTaskRequestParams)
@@ -126,7 +117,7 @@ func (th *TaskHandler) Update(fc *fiber.Ctx) error {
 		return errs.NewBadRequestError(err)
 	}
 
-	if err := th.v.Struct(params); err != nil {
+	if err := h.Vali.Struct(params); err != nil {
 		return errs.NewBadRequestError(err)
 	}
 
@@ -134,7 +125,7 @@ func (th *TaskHandler) Update(fc *fiber.Ctx) error {
 		return errs.NewBadRequestError(err)
 	}
 
-	if err := th.v.Struct(taskFields); err != nil {
+	if err := h.Vali.Struct(taskFields); err != nil {
 		return errs.NewBadRequestError(err)
 	}
 
@@ -150,10 +141,10 @@ func (th *TaskHandler) Update(fc *fiber.Ctx) error {
 		Priority:    taskFields.Priority,
 	}
 
-	task, err := th.task.UpdateTask(fc.Context(), updateTaskParams)
+	task, err := h.Task.UpdateTask(fc.Context(), updateTaskParams)
 
 	if err != nil {
-		th.logger.Error("failed to update task", err)
+		h.Logger.Error("failed to update task", err)
 		return err
 	}
 
@@ -161,14 +152,14 @@ func (th *TaskHandler) Update(fc *fiber.Ctx) error {
 	return nil
 }
 
-func (th *TaskHandler) UpdateDate(fc *fiber.Ctx) error {
-	user := th.sm.Get(fc.UserContext(), "user").(entity.User)
+func (h *TaskHandler) UpdateDate(fc *fiber.Ctx) error {
+	user := h.Sm.Get(fc.UserContext(), "user").(entity.User)
 
 	params := new(dto.UpdateDateRequestParams)
 	if err := fc.ParamsParser(params); err != nil {
 		return errs.NewBadRequestError(err)
 	}
-	if err := th.v.Struct(params); err != nil {
+	if err := h.Vali.Struct(params); err != nil {
 		return errs.NewBadRequestError(err)
 	}
 
@@ -176,7 +167,7 @@ func (th *TaskHandler) UpdateDate(fc *fiber.Ctx) error {
 	if err := fc.BodyParser(data); err != nil {
 		return errs.NewBadRequestError(err)
 	}
-	if err := th.v.Struct(data); err != nil {
+	if err := h.Vali.Struct(data); err != nil {
 		return errs.NewBadRequestError(err)
 	}
 
@@ -187,9 +178,9 @@ func (th *TaskHandler) UpdateDate(fc *fiber.Ctx) error {
 		DueDate:   data.DueDate,
 	}
 
-	task, err := th.task.UpdateTaskDate(fc.Context(), updateTaskDateParams)
+	task, err := h.Task.UpdateTaskDate(fc.Context(), updateTaskDateParams)
 	if err != nil {
-		th.logger.Error("failed to update task date", slog.Any("err", err))
+		h.Logger.Error("failed to update task date", slog.Any("err", err))
 		return err
 	}
 
@@ -197,8 +188,8 @@ func (th *TaskHandler) UpdateDate(fc *fiber.Ctx) error {
 	return nil
 }
 
-func (th *TaskHandler) UpdateStatus(fc *fiber.Ctx) error {
-	user := th.sm.Get(fc.UserContext(), "user").(entity.User)
+func (h *TaskHandler) UpdateStatus(fc *fiber.Ctx) error {
+	user := h.Sm.Get(fc.UserContext(), "user").(entity.User)
 
 	params := new(dto.UpdateStatusRequestParams)
 	if err := fc.ParamsParser(params); err != nil {
@@ -216,16 +207,16 @@ func (th *TaskHandler) UpdateStatus(fc *fiber.Ctx) error {
 		UserId: user.Id,
 	}
 
-	if err := th.task.UpdateTaskStatus(fc.Context(), updateStatusParams); err != nil {
-		th.logger.Error("failed to update task status", slog.Any("err", err))
+	if err := h.Task.UpdateTaskStatus(fc.Context(), updateStatusParams); err != nil {
+		h.Logger.Error("failed to update task status", slog.Any("err", err))
 		return err
 	}
 
 	return nil
 }
 
-func (th *TaskHandler) UpdatePriority(fc *fiber.Ctx) error {
-	user := th.sm.Get(fc.UserContext(), "user").(entity.User)
+func (h *TaskHandler) UpdatePriority(fc *fiber.Ctx) error {
+	user := h.Sm.Get(fc.UserContext(), "user").(entity.User)
 
 	params := new(dto.UpdatePriorityRequestParams)
 	if err := fc.ParamsParser(params); err != nil {
@@ -243,16 +234,16 @@ func (th *TaskHandler) UpdatePriority(fc *fiber.Ctx) error {
 		UserId:   user.Id,
 	}
 
-	if err := th.task.UpdateTaskPriority(fc.Context(), updatePriorityParams); err != nil {
-		th.logger.Error("failed to update task priority", slog.Any("err", err))
+	if err := h.Task.UpdateTaskPriority(fc.Context(), updatePriorityParams); err != nil {
+		h.Logger.Error("failed to update task priority", slog.Any("err", err))
 		return err
 	}
 
 	return nil
 }
 
-func (th *TaskHandler) DeleteTrashedTask(fc *fiber.Ctx) error {
-	user := th.sm.Get(fc.UserContext(), "user").(entity.User)
+func (h *TaskHandler) DeleteTrashedTask(fc *fiber.Ctx) error {
+	user := h.Sm.Get(fc.UserContext(), "user").(entity.User)
 
 	params := new(dto.DeleteTrashedTaskRequestParams)
 	if err := fc.ParamsParser(params); err != nil {
@@ -264,21 +255,25 @@ func (th *TaskHandler) DeleteTrashedTask(fc *fiber.Ctx) error {
 		UserId: user.Id,
 	}
 
-	if err := th.task.DeleteTrashedTask(fc.Context(), deleteTrashedTaskParams); err != nil {
-		th.logger.Error("failed to delete trashed task", slog.Any("err", err))
+	if err := h.Task.DeleteTrashedTask(fc.Context(), deleteTrashedTaskParams); err != nil {
+		h.Logger.Error("failed to delete trashed task", slog.Any("err", err))
 		return err
 	}
 
 	return nil
 }
 
-func (th *TaskHandler) DeleteTrashedTasks(fc *fiber.Ctx) error {
-	user := th.sm.Get(fc.UserContext(), "user").(entity.User)
+func (h *TaskHandler) DeleteTrashedTasks(fc *fiber.Ctx) error {
+	user := h.Sm.Get(fc.UserContext(), "user").(entity.User)
 
-	if err := th.task.DeleteTrashedTasks(fc.Context(), user.Id); err != nil {
-		th.logger.Error("failed to delete trashed tasks", slog.Any("err", err))
+	if err := h.Task.DeleteTrashedTasks(fc.Context(), user.Id); err != nil {
+		h.Logger.Error("failed to delete trashed tasks", slog.Any("err", err))
 		return err
 	}
 
 	return nil
+}
+
+func ProvideTask() pal.ServiceDef {
+	return pal.Provide(&TaskHandler{})
 }

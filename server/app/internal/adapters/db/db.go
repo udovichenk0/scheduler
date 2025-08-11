@@ -1,27 +1,47 @@
 package db
 
 import (
+	"context"
 	"log"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/udovichenk0/scheduler/config"
+	"github.com/udovichenk0/scheduler/internal/ports/repository/project"
+	"github.com/udovichenk0/scheduler/internal/ports/repository/task"
+	"github.com/udovichenk0/scheduler/internal/ports/repository/user"
+	"github.com/udovichenk0/scheduler/internal/ports/repository/verification"
+	"github.com/zhulik/pal"
 )
 
-type Adapter struct {
-	Pool *sqlx.DB
-}
-type Opts struct {
-	URL string
+type Sqlx struct {
+	Config *config.Config
+	Pool   *sqlx.DB
 }
 
-func New(opts Opts) Adapter {
-	db, err := sqlx.Open("mysql", opts.URL)
+func (s *Sqlx) Init(_ context.Context) error {
+	db, err := sqlx.Open("mysql", s.Config.Db.URL)
 	if err != nil {
 		log.Fatalf("Error: %s", err.Error())
 	}
 
 	err = db.Ping()
 	if err != nil {
-		log.Fatalf("failed to ping db: %s", err.Error())
+		log.Printf("failed to ping db: %s", err.Error())
+		return err
 	}
-	return Adapter{Pool: db}
+	s.Pool = db
+
+	return nil
+}
+
+func Provide() pal.ServiceDef {
+	return pal.ProvideList(
+		pal.Provide(&Sqlx{}).ToShutdown(func(ctx context.Context, s *Sqlx, pal *pal.Pal) error {
+			return s.Pool.Close()
+		}),
+		pal.Provide[project.Repository](&ProjectRepo{}),
+		pal.Provide[task.Repository](&TaskRepo{}),
+		pal.Provide[user.Repository](&UserRepo{}),
+		pal.Provide[verification.Repository](&VerificationRepo{}),
+	)
 }

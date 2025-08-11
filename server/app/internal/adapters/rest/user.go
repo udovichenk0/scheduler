@@ -3,43 +3,36 @@ package rest
 import (
 	"log/slog"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/udovichenk0/scheduler/internal/adapters/rest/dto"
 	userservice "github.com/udovichenk0/scheduler/internal/ports/api/user"
 	"github.com/udovichenk0/scheduler/pkg/errs"
 	"github.com/udovichenk0/scheduler/pkg/logger"
+	validator "github.com/udovichenk0/scheduler/pkg/validation"
+	"github.com/zhulik/pal"
 )
 
 type UserHandler struct {
-	userService userservice.Port
-	v           *validator.Validate
-	logger      logger.Logger
+	UserService userservice.Api
+	*validator.Validator
+	Logger logger.ILogger
 }
 
-func NewUserHandler(userService userservice.Port, v *validator.Validate, logger logger.Logger) *UserHandler {
-	return &UserHandler{
-		userService: userService,
-		v:           v,
-		logger:      logger,
-	}
-}
-
-func (u UserHandler) GetUser(fc *fiber.Ctx) error {
+func (h *UserHandler) GetUser(fc *fiber.Ctx) error {
 	params := new(dto.GetUserRequestDto)
 
 	if err := fc.QueryParser(params); err != nil {
 		return errs.NewBadRequestError(err)
 	}
 
-	if err := u.v.Struct(params); err != nil {
+	if err := h.Vali.Struct(params); err != nil {
 		return errs.NewBadRequestError(err)
 	}
 
-	user, err := u.userService.GetUserByEmail(fc.Context(), params.Email)
+	user, err := h.UserService.GetUserByEmail(fc.Context(), params.Email)
 
 	if err != nil {
-		u.logger.Error("failed to get user by email", slog.Any("err", err))
+		h.Logger.Error("failed to get user by email", slog.Any("err", err))
 		return err
 	}
 
@@ -51,19 +44,17 @@ func (u UserHandler) GetUser(fc *fiber.Ctx) error {
 	return nil
 }
 
-func (u UserHandler) VerifiedUserExists(fc *fiber.Ctx) error {
+func (h *UserHandler) VerifiedUserExists(fc *fiber.Ctx) error {
 	params := new(dto.GetUserRequestDto)
 	if err := fc.QueryParser(params); err != nil {
 		return errs.NewBadRequestError(err)
 	}
-
-	if err := u.v.Struct(params); err != nil {
+	if err := h.Vali.Struct(params); err != nil {
 		return errs.NewBadRequestError(err)
 	}
-
-	isExist, err := u.userService.IsVerifiedUserExist(fc.Context(), params.Email)
+	isExist, err := h.UserService.IsVerifiedUserExist(fc.Context(), params.Email)
 	if err != nil {
-		u.logger.Error("failed to verify user", slog.Any("err", err))
+		h.Logger.Error("failed to verify user", slog.Any("err", err))
 		return err
 	}
 
@@ -71,4 +62,8 @@ func (u UserHandler) VerifiedUserExists(fc *fiber.Ctx) error {
 	fc.JSON(res)
 
 	return nil
+}
+
+func ProvideUser() pal.ServiceDef {
+	return pal.Provide(&UserHandler{})
 }

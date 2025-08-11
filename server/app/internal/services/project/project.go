@@ -5,22 +5,20 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/udovichenk0/scheduler/internal/entity"
+	"github.com/udovichenk0/scheduler/internal/ports/api/project"
 	projectService "github.com/udovichenk0/scheduler/internal/ports/api/project"
 	projectRepo "github.com/udovichenk0/scheduler/internal/ports/repository/project"
 	"github.com/udovichenk0/scheduler/internal/ports/repository/project/model"
 	"github.com/udovichenk0/scheduler/pkg/errs"
+	"github.com/zhulik/pal"
 )
 
 type Service struct {
-	projectRepo projectRepo.Port
-}
-
-func New(projectRepo projectRepo.Port) *Service {
-	return &Service{projectRepo: projectRepo}
+	ProjectRepo projectRepo.Repository
 }
 
 func (s *Service) GetProjects(ctx context.Context, userId string) ([]entity.Project, error) {
-	projects, err := s.projectRepo.GetByUserId(ctx, userId)
+	projects, err := s.ProjectRepo.GetByUserId(ctx, userId)
 	if err != nil {
 		return nil, errs.NewInternalError(err)
 	}
@@ -43,12 +41,12 @@ func (s *Service) CreateProject(ctx context.Context, params projectService.Creat
 		Name:      params.Name,
 		ProjectId: uuid.String(),
 	}
-	err = s.projectRepo.Create(ctx, createProjectParams)
+	err = s.ProjectRepo.Create(ctx, createProjectParams)
 	if err != nil {
 		return entity.Project{}, errs.NewError(err, "failed to create a project")
 	}
 
-	project, err := s.projectRepo.GetById(ctx, uuid.String())
+	project, err := s.ProjectRepo.GetById(ctx, uuid.String())
 	if err != nil {
 		return entity.Project{}, errs.NewInternalError(err)
 	}
@@ -62,4 +60,8 @@ func ToEntity(project model.Project) entity.Project {
 		Name:      project.Name,
 		CreatedBy: project.CreatedBy,
 	}
+}
+
+func Provide() pal.ServiceDef {
+	return pal.Provide[project.Api](&Service{})
 }

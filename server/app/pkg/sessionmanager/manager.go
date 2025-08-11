@@ -1,4 +1,4 @@
-package session_manager
+package sessionmanager
 
 import (
 	"bytes"
@@ -8,26 +8,37 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/jmoiron/sqlx"
+	"github.com/udovichenk0/scheduler/internal/adapters/db"
 	"github.com/udovichenk0/scheduler/pkg/errs"
+	"github.com/zhulik/pal"
 )
 
 type contextKey string
 
 var ctxKey contextKey = "context_key"
 
+type ISessionManager interface {
+	Protected(fiber.Handler) fiber.Handler
+	ClearSessionFromCookie(ctx *fiber.Ctx)
+	PersistToCookie(ctx *fiber.Ctx, session Session)
+	Load(ctx context.Context, sessionId string) (context.Context, error)
+	Find(sessionId string) (Session, error)
+	Commit(key string, val any) (Session, error)
+	Get(ctx context.Context, key string) any
+	Decode(data []byte) (map[string]any, error)
+	Delete(sessionId string) error
+}
+
 type SessionManager struct {
-	db     *sqlx.DB
-	ctxKey contextKey
+	*db.Sqlx
 }
 
-func New(db *sqlx.DB) SessionManager {
-	m := SessionManager{db, ctxKey}
+func (m SessionManager) Init(_ context.Context) error {
 	go m.startCleanup()
-	return m
+	return nil
 }
 
-func (m *SessionManager) startCleanup() {
+func (m SessionManager) startCleanup() {
 	ticker := time.NewTicker(time.Minute * 10)
 	defer ticker.Stop()
 	done := make(chan bool)
@@ -45,7 +56,7 @@ func (m *SessionManager) startCleanup() {
 	}
 }
 
-func (s *SessionManager) Protected(fn fiber.Handler) fiber.Handler {
+func (s SessionManager) Protected(fn fiber.Handler) fiber.Handler {
 	return func(fc *fiber.Ctx) error {
 		sessionId := fc.Cookies("sessionId")
 
@@ -67,7 +78,7 @@ func (s *SessionManager) Protected(fn fiber.Handler) fiber.Handler {
 	}
 }
 
-func (s *SessionManager) Load(ctx context.Context, sessionId string) (context.Context, error) {
+func (s SessionManager) Load(ctx context.Context, sessionId string) (context.Context, error) {
 	if sessionId == "" {
 		return ctx, errs.NewUnauthorizedError()
 	}
@@ -84,31 +95,31 @@ func (s *SessionManager) Load(ctx context.Context, sessionId string) (context.Co
 		return ctx, errs.NewUnauthorizedError()
 	}
 
-	return context.WithValue(ctx, s.ctxKey, m), nil
+	return context.WithValue(ctx, ctxKey, m), nil
 }
 
-func (s *SessionManager) deleteExpiry() error {
-	_, err := s.db.Exec("DELETE FROM session WHERE expires_at < NOW()")
+func (s SessionManager) deleteExpiry() error {
+	_, err := s.Pool.Exec("DELETE FROM session WHERE expires_at < NOW()")
 	return err
 }
 
-func (s *SessionManager) Delete(sessionId string) error {
-	_, err := s.db.Exec("DELETE FROM session WHERE id = ?", sessionId)
+func (s SessionManager) Delete(sessionId string) error {
+	_, err := s.Pool.Exec("DELETE FROM session WHERE id = ?", sessionId)
 	return err
 }
 
-func (s *SessionManager) Find(sessionId string) (Session, error) {
+func (s SessionManager) Find(sessionId string) (Session, error) {
 	session := Session{}
-	err := s.db.Get(&session, "SELECT id, data, UNIX_TIMESTAMP(expires_at) as expires_at FROM session WHERE id = ? AND expires_at > NOW()", sessionId)
+	err := s.Pool.Get(&session, "SELECT id, data, UNIX_TIMESTAMP(expires_at) as expires_at FROM session WHERE id = ? AND expires_at > NOW()", sessionId)
 	if err != nil {
 		return session, err
 	}
 	return session, nil
 }
 
-func (s *SessionManager) Commit(key string, val interface{}) (Session, error) {
+func (s SessionManager) Commit(key string, val any) (Session, error) {
 	var b bytes.Buffer
-	m := map[string]interface{}{
+	m := map[string]any{
 		key: val,
 	}
 	err := gob.NewEncoder(&b).Encode(m)
@@ -119,7 +130,7 @@ func (s *SessionManager) Commit(key string, val interface{}) (Session, error) {
 
 	session := NewSession(b.Bytes())
 
-	_, err = s.db.Exec("INSERT INTO session (id, data, expires_at) VALUES(?,?,FROM_UNIXTIME(?))", session.Id, session.Data, session.ExpiresAt)
+	_, err = s.Pool.Exec("INSERT INTO session (id, data, expires_at) VALUES(?,?,FROM_UNIXTIME(?))", session.Id, session.Data, session.ExpiresAt)
 
 	if err != nil {
 		return Session{}, err
@@ -128,8 +139,8 @@ func (s *SessionManager) Commit(key string, val interface{}) (Session, error) {
 	return session, nil
 }
 
-func (s *SessionManager) Get(ctx context.Context, key string) any {
-	data, ok := ctx.Value(s.ctxKey).(map[string]interface{})
+func (s SessionManager) Get(ctx context.Context, key string) any {
+	data, ok := ctx.Value(ctxKey).(map[string]any)
 
 	if !ok {
 		panic("no session data in context")
@@ -147,7 +158,7 @@ func (s *SessionManager) PersistToCookie(ctx *fiber.Ctx, session Session) {
 	})
 }
 
-func (s *SessionManager) ClearSessionFromCookie(ctx *fiber.Ctx) {
+func (s SessionManager) ClearSessionFromCookie(ctx *fiber.Ctx) {
 	ctx.Cookie(&fiber.Cookie{
 		Name:     "sessionId",
 		Value:    "",
@@ -156,8 +167,8 @@ func (s *SessionManager) ClearSessionFromCookie(ctx *fiber.Ctx) {
 	})
 }
 
-func (s *SessionManager) Decode(data []byte) (map[string]interface{}, error) {
-	output := map[string]interface{}{}
+func (s SessionManager) Decode(data []byte) (map[string]any, error) {
+	output := map[string]any{}
 	readBuf := bytes.NewBuffer(data)
 
 	err := gob.NewDecoder(readBuf).Decode(&output)
@@ -166,4 +177,8 @@ func (s *SessionManager) Decode(data []byte) (map[string]interface{}, error) {
 	}
 
 	return output, nil
+}
+
+func Provide() pal.ServiceDef {
+	return pal.Provide[ISessionManager](&SessionManager{})
 }

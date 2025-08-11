@@ -6,29 +6,26 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/udovichenk0/scheduler/internal/entity"
 	"github.com/udovichenk0/scheduler/pkg/errs"
-	session_manager "github.com/udovichenk0/scheduler/pkg/session-manager"
+	sessionManager "github.com/udovichenk0/scheduler/pkg/sessionmanager"
+	"github.com/zhulik/pal"
 )
 
 type SessionHandler struct {
-	sm session_manager.SessionManager
+	Sm sessionManager.ISessionManager
 }
 
-func NewSessionHandler(sm session_manager.SessionManager) *SessionHandler {
-	return &SessionHandler{sm: sm}
-}
-
-func (s SessionHandler) CheckSession(fc *fiber.Ctx) error {
+func (h *SessionHandler) CheckSession(fc *fiber.Ctx) error {
 	sessionId := fc.Cookies("sessionId")
 	if sessionId == "" {
 		return nil
 	}
-	session, err := s.sm.Find(sessionId)
 
+	session, err := h.Sm.Find(sessionId)
 	if err != nil {
 		return errs.NewInternalError(err)
 	}
 
-	m, err := s.sm.Decode(session.Data)
+	m, err := h.Sm.Decode(session.Data)
 
 	if err != nil {
 		return errs.NewInternalError(err)
@@ -42,4 +39,8 @@ func (s SessionHandler) CheckSession(fc *fiber.Ctx) error {
 
 	fc.JSON(user)
 	return nil
+}
+
+func ProvideSession() pal.ServiceDef {
+	return pal.Provide(&SessionHandler{})
 }

@@ -5,33 +5,28 @@ import (
 	"fmt"
 
 	sq "github.com/huandu/go-sqlbuilder"
-	"github.com/jmoiron/sqlx"
 	"github.com/udovichenk0/scheduler/internal/ports/repository/task"
 	"github.com/udovichenk0/scheduler/internal/ports/repository/task/model"
 	"github.com/udovichenk0/scheduler/pkg"
 )
 
-type TaskRepository struct {
-	db *sqlx.DB
+type TaskRepo struct {
+	*Sqlx
 }
 
-func NewTaskRepo(db *sqlx.DB) *TaskRepository {
-	return &TaskRepository{db}
-}
-
-func (tr *TaskRepository) GetByUserId(ctx context.Context, userId string) ([]model.Task, error) {
+func (r *TaskRepo) GetByUserId(ctx context.Context, userId string) ([]model.Task, error) {
 	tasks := []model.Task{}
-	err := tr.db.SelectContext(ctx, &tasks, "SELECT id, title, description, type, status, user_id, project_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(due_date) AS due_date, priority FROM task WHERE user_id = ? AND project_id IS NULL", userId)
+	err := r.Pool.SelectContext(ctx, &tasks, "SELECT id, title, description, type, status, user_id, project_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(due_date) AS due_date, priority FROM task WHERE user_id = ? AND project_id IS NULL", userId)
 	if err != nil {
 		return nil, err
 	}
 	return tasks, nil
 }
 
-func (tr *TaskRepository) GetByTaskId(ctx context.Context, taskId string) (model.Task, error) {
+func (r *TaskRepo) GetByTaskId(ctx context.Context, taskId string) (model.Task, error) {
 	task := model.Nil
 
-	err := tr.db.GetContext(ctx, &task, "SELECT id, title, description, type, status, user_id, project_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(due_date) AS due_date, priority FROM task WHERE id = ?", taskId)
+	err := r.Pool.GetContext(ctx, &task, "SELECT id, title, description, type, status, user_id, project_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(due_date) AS due_date, priority FROM task WHERE id = ?", taskId)
 
 	if err != nil {
 		return model.Nil, err
@@ -40,16 +35,16 @@ func (tr *TaskRepository) GetByTaskId(ctx context.Context, taskId string) (model
 	return task, nil
 }
 
-func (tr *TaskRepository) GetByProjectId(ctx context.Context, params task.GetByProjectIdInput) ([]model.Task, error) {
+func (r *TaskRepo) GetByProjectId(ctx context.Context, params task.GetByProjectIdInput) ([]model.Task, error) {
 	tasks := []model.Task{}
-	err := tr.db.SelectContext(ctx, &tasks, "SELECT id, title, description, type, status, user_id, project_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(due_date) AS due_date, priority FROM task WHERE project_id = ? AND is_trashed = FALSE", params.ProjectId)
+	err := r.Pool.SelectContext(ctx, &tasks, "SELECT id, title, description, type, status, user_id, project_id, is_trashed, date_created, UNIX_TIMESTAMP(start_date) AS start_date, UNIX_TIMESTAMP(due_date) AS due_date, priority FROM task WHERE project_id = ? AND is_trashed = FALSE", params.ProjectId)
 	if err != nil {
 		return nil, err
 	}
 	return tasks, nil
 }
 
-func (tr *TaskRepository) Create(ctx context.Context, task task.CreateInput) error {
+func (r *TaskRepo) Create(ctx context.Context, task task.CreateInput) error {
 	ib := sq.NewInsertBuilder().InsertInto("task")
 	ib.Cols("id", "title", "description", "type", "status", "start_date", "due_date", "user_id", "priority", "project_id")
 	ib.Values(
@@ -66,21 +61,21 @@ func (tr *TaskRepository) Create(ctx context.Context, task task.CreateInput) err
 	)
 	sql, args := ib.Build()
 
-	_, err := tr.db.ExecContext(ctx, sql, args...)
+	_, err := r.Pool.ExecContext(ctx, sql, args...)
 	return err
 }
 
-func (tr *TaskRepository) DeleteTrashedTask(ctx context.Context, params task.DeleteInput) error {
-	_, err := tr.db.ExecContext(ctx, "DELETE FROM task WHERE id = ? AND user_id = ?", params.TaskId, params.UserId)
+func (r *TaskRepo) DeleteTrashedTask(ctx context.Context, params task.DeleteInput) error {
+	_, err := r.Pool.ExecContext(ctx, "DELETE FROM task WHERE id = ? AND user_id = ?", params.TaskId, params.UserId)
 	return err
 }
 
-func (tr *TaskRepository) DeleteTrashedTasks(ctx context.Context, userId string) error {
-	_, err := tr.db.ExecContext(ctx, "DELETE FROM task WHERE user_id = ? AND is_trashed = true", userId)
+func (r *TaskRepo) DeleteTrashedTasks(ctx context.Context, userId string) error {
+	_, err := r.Pool.ExecContext(ctx, "DELETE FROM task WHERE user_id = ? AND is_trashed = true", userId)
 	return err
 }
 
-func (tr *TaskRepository) CreateMany(ctx context.Context, tasks []task.CreateInput, userId string) error {
+func (r *TaskRepo) CreateMany(ctx context.Context, tasks []task.CreateInput, userId string) error {
 	query := "INSERT INTO task (id, title, description, type, status, start_date, user_id) VALUES "
 	data := []interface{}{}
 
@@ -90,12 +85,12 @@ func (tr *TaskRepository) CreateMany(ctx context.Context, tasks []task.CreateInp
 		data = append(data, task.TaskId, task.Title, task.Description, task.Type, task.Status, pkg.NewNullString(task.StartDate), userId)
 	}
 
-	tr.db.ExecContext(ctx, query[:len(query)-1], data...)
+	r.Pool.ExecContext(ctx, query[:len(query)-1], data...)
 
 	return nil
 }
 
-func (tr *TaskRepository) Update(ctx context.Context, input task.UpdateInput) error {
+func (r *TaskRepo) Update(ctx context.Context, input task.UpdateInput) error {
 	sql := sq.NewUpdateBuilder().Update("task")
 
 	sql.Set(
@@ -113,12 +108,12 @@ func (tr *TaskRepository) Update(ctx context.Context, input task.UpdateInput) er
 
 	query, args := sql.Build()
 	fmt.Println(query, args)
-	_, err := tr.db.ExecContext(ctx, query, args...)
+	_, err := r.Pool.ExecContext(ctx, query, args...)
 
 	return err
 }
 
-func (tr *TaskRepository) UpdateDate(ctx context.Context, input task.UpdateDateInput) error {
+func (r *TaskRepo) UpdateDate(ctx context.Context, input task.UpdateDateInput) error {
 	sql := sq.NewUpdateBuilder().Update("task")
 
 	sql.Set(
@@ -131,11 +126,11 @@ func (tr *TaskRepository) UpdateDate(ctx context.Context, input task.UpdateDateI
 	sql.Where(sql.EQ("user_id", input.UserId))
 
 	query, args := sql.Build()
-	_, err := tr.db.ExecContext(ctx, query, args...)
+	_, err := r.Pool.ExecContext(ctx, query, args...)
 	return err
 }
 
-func (tr *TaskRepository) UpdateStatus(ctx context.Context, input task.UpdateStatusInput) error {
+func (r *TaskRepo) UpdateStatus(ctx context.Context, input task.UpdateStatusInput) error {
 	sql := sq.NewUpdateBuilder().Update("task")
 
 	sql.Set(
@@ -145,11 +140,11 @@ func (tr *TaskRepository) UpdateStatus(ctx context.Context, input task.UpdateSta
 	sql.Where(sql.EQ("user_id", input.UserId))
 
 	query, args := sql.Build()
-	_, err := tr.db.ExecContext(ctx, query, args...)
+	_, err := r.Pool.ExecContext(ctx, query, args...)
 	return err
 }
 
-func (tr *TaskRepository) UpdatePriority(ctx context.Context, input task.UpdatePriorityInput) error {
+func (r *TaskRepo) UpdatePriority(ctx context.Context, input task.UpdatePriorityInput) error {
 	sql := sq.NewUpdateBuilder().Update("task")
 
 	sql.Set(
@@ -159,11 +154,11 @@ func (tr *TaskRepository) UpdatePriority(ctx context.Context, input task.UpdateP
 	sql.Where(sql.EQ("user_id", input.UserId))
 
 	query, args := sql.Build()
-	_, err := tr.db.ExecContext(ctx, query, args...)
+	_, err := r.Pool.ExecContext(ctx, query, args...)
 	return err
 }
 
-func (tr *TaskRepository) TrashTask(ctx context.Context, input task.UpdateTrashInput) error {
+func (r *TaskRepo) TrashTask(ctx context.Context, input task.UpdateTrashInput) error {
 	sql := sq.NewUpdateBuilder().Update("task")
 
 	sql.Set(
@@ -173,6 +168,6 @@ func (tr *TaskRepository) TrashTask(ctx context.Context, input task.UpdateTrashI
 	sql.Where(sql.EQ("user_id", input.UserId))
 
 	query, args := sql.Build()
-	_, err := tr.db.ExecContext(ctx, query, args...)
+	_, err := r.Pool.ExecContext(ctx, query, args...)
 	return err
 }

@@ -12,7 +12,7 @@ type CreateInput struct {
 	ProjectId string
 }
 
-type Port interface {
+type Repository interface {
 	GetByUserId(ctx context.Context, userId string) ([]model.Project, error)
 	GetById(ctx context.Context, projectId string) (model.Project, error)
 	Create(ctx context.Context, data CreateInput) error

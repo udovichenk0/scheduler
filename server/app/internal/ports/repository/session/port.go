@@ -6,7 +6,7 @@ import (
 	"github.com/udovichenk0/scheduler/internal/ports/repository/session/model"
 )
 
-type Port interface {
+type Repository interface {
 	Create(ctx context.Context, id string, params CreateInput) error
 	GetByUserId(ctx context.Context, userId string) (model.Session, error)
 	Get(ctx context.Context, sessionId string) (model.Session, error)
@@ -16,5 +16,5 @@ type Port interface {
 
 type CreateInput struct {
 	UserId    string `json:"user_id"`
-	ExpiresAt int64     `json:"expires_at"`
+	ExpiresAt int64  `json:"expires_at"`
 }

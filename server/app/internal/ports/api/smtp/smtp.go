@@ -13,6 +13,6 @@ type SendInput struct {
 	Body    string
 }
 
-type Port interface {
+type Api interface {
 	SendEmail(opts SendInput) error
 }

@@ -1,11 +1,13 @@
 package config
 
 import (
+	"context"
 	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/joho/godotenv"
+	"github.com/zhulik/pal"
 )
 
 type SmtpConfig struct {
@@ -16,16 +18,31 @@ type SmtpConfig struct {
 }
 
 type DBConfig struct {
-	URL string
+	URL    string
+	Driver string
 }
 type Config struct {
 	Db   DBConfig
 	Smtp SmtpConfig
+	Env  string
+}
+
+func (c *Config) Init(_ context.Context) error {
+	envPath := filepath.Join("..", "..", ".env")
+	config := NewWithPath(envPath)
+	c.Db = config.Db
+	c.Smtp = config.Smtp
+	return nil
+}
+
+func Provide() pal.ServiceDef {
+	return pal.Provide(&Config{})
 }
 
 func createDbOptions() DBConfig {
 	return DBConfig{
-		URL: GetEnv("DATABASE_URL"),
+		URL:    GetEnv("DATABASE_URL"),
+		Driver: "mysql",
 	}
 }
 
@@ -47,11 +64,12 @@ func New() *Config {
 	}
 }
 
-func NewWithPath(path string) *Config {
+func NewWithPath(path string) Config {
 	godotenv.Load(path)
-	return &Config{
+	return Config{
 		Db:   createDbOptions(),
 		Smtp: createSmtpConfig(),
+		Env:  GetEnv("ENV"),
 	}
 }
 

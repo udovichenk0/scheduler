@@ -11,7 +11,7 @@ type CreateProject struct {
 	Name   string
 }
 
-type Port interface {
+type Api interface {
 	GetProjects(ctx context.Context, userId string) ([]entity.Project, error)
 	CreateProject(ctx context.Context, params CreateProject) (entity.Project, error)
 }

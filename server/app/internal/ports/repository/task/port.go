@@ -73,7 +73,7 @@ type GetByProjectIdInput struct {
 	UserId    string
 }
 
-type Port interface {
+type Repository interface {
 	GetByTaskId(ctx context.Context, taskId string) (model.Task, error)
 	GetByUserId(ctx context.Context, user_id string) ([]model.Task, error)
 	GetByProjectId(ctx context.Context, params GetByProjectIdInput) ([]model.Task, error)
