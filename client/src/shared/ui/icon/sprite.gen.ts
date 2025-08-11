@@ -1,5 +1,5 @@
 export interface SpritesMap {
-  "assets/common":
+  common:
     | "arrow-right"
     | "arrow"
     | "calendar-due-date"
@@ -25,20 +25,10 @@ export interface SpritesMap {
     | "trash-can"
     | "upcoming"
     | "x"
-  "assets/sort":
-    | "alph_asc"
-    | "alph_desc"
-    | "date_created_asc"
-    | "time_asc"
-    | "time_desc"
-  "node_modules/@gerrit0/mini-shiki/static":
-    | "mini-shiki-dependency-tree"
-    | "shiki-dependency-tree"
-  "node_modules/playwright-core/lib/vite/recorder": "playwright-logo"
-  "node_modules/playwright-core/lib/vite/traceViewer": "playwright-logo"
+  sort: "alph_asc" | "alph_desc" | "date_created_asc" | "time_asc" | "time_desc"
 }
 export const SPRITES_META: {
-  "assets/common": Array<
+  common: Array<
     | "arrow-right"
     | "arrow"
     | "calendar-due-date"
@@ -65,16 +55,11 @@ export const SPRITES_META: {
     | "upcoming"
     | "x"
   >
-  "assets/sort": Array<
+  sort: Array<
     "alph_asc" | "alph_desc" | "date_created_asc" | "time_asc" | "time_desc"
   >
-  "node_modules/@gerrit0/mini-shiki/static": Array<
-    "mini-shiki-dependency-tree" | "shiki-dependency-tree"
-  >
-  "node_modules/playwright-core/lib/vite/recorder": Array<"playwright-logo">
-  "node_modules/playwright-core/lib/vite/traceViewer": Array<"playwright-logo">
 } = {
-  "assets/common": [
+  common: [
     "arrow-right",
     "arrow",
     "calendar-due-date",
@@ -101,17 +86,5 @@ export const SPRITES_META: {
     "upcoming",
     "x",
   ],
-  "assets/sort": [
-    "alph_asc",
-    "alph_desc",
-    "date_created_asc",
-    "time_asc",
-    "time_desc",
-  ],
-  "node_modules/@gerrit0/mini-shiki/static": [
-    "mini-shiki-dependency-tree",
-    "shiki-dependency-tree",
-  ],
-  "node_modules/playwright-core/lib/vite/recorder": ["playwright-logo"],
-  "node_modules/playwright-core/lib/vite/traceViewer": ["playwright-logo"],
+  sort: ["alph_asc", "alph_desc", "date_created_asc", "time_asc", "time_desc"],
 }

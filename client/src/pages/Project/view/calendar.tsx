@@ -12,7 +12,6 @@ import {
   projectRoute,
 } from "../model"
 
-
 export const Calendar = ({ $tasks }: { $tasks: Store<Task[]> }) => {
   const params = useUnit(projectRoute.$params)
   return (

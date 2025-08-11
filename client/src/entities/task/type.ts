@@ -1,4 +1,4 @@
-import { SpritesMeta } from "@/shared/ui/icon/sprite.h"
+import { SpritesMap } from "@/shared/ui/icon/sprite.gen"
 import { SDate } from "@/shared/lib/date/lib"
 
 import { TaskPriority, TaskStatus, TaskType } from "./model/task.model"
@@ -36,7 +36,7 @@ export type EditableTaskFields = {
   project_id: Nullable<ProjectId>
 }
 
-export type SortType = SpritesMeta["sort"]
+export type SortType = SpritesMap["sort"]
 export type SortConfig = {
   label: string
   value: SortType

@@ -12,9 +12,6 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Cell as CellType } from "./type"
 import { ITEM_HEIGHT, MAX_TASKS_PER_CELL, MIN_HEIGHT } from "./config"
 
-
-
-
 type CellProps = {
   cell?: CellType
   date: SDate

@@ -4,7 +4,6 @@ import * as path from "path"
 import svg from "@neodx/svg/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
-import unusedCode from "vite-plugin-unused-code"
 import tailwindcss from "@tailwindcss/vite"
 // import checker from "vite-plugin-checker"
 import tsconfigPaths from "vite-tsconfig-paths"
@@ -32,12 +31,10 @@ export default defineConfig({
     // }),
     tsconfigPaths(),
     svg({
-      inputRoot: "assets",
+      root: "assets",
       group: true,
-      output: "public",
-      metadata: {
-        path: "src/shared/ui/icon/sprite.h.ts",
-      },
+      output: "public/sprites",
+      metadata: "src/shared/ui/icon/sprite.gen.ts",
       resetColors: {
         replaceUnknown: "#000",
       },
