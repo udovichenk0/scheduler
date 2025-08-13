@@ -11,18 +11,18 @@ export interface IconProps
   extends Omit<SVGProps<SVGSVGElement>, "name" | "type"> {
   name: IconName
 }
-export function Icon({ name, className, ...props }: IconProps) {
+
+export function Icon({ name, className, viewBox, ...props }: IconProps) {
+  const [spriteName, iconName] = name.split("/")
   return (
     <svg
-      className={clsx(
-        "box-content inline-block select-none fill-current text-inherit",
-        className,
-      )}
+      className={clsx("icon", className)}
+      viewBox={viewBox}
       focusable="false"
       aria-hidden
       {...props}
     >
-      <use href={`/sprites/sprite.svg#${name}`} />
+      <use xlinkHref={`/${spriteName}.svg#${iconName}`} />
     </svg>
   )
 }

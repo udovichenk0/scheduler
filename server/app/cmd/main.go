@@ -41,9 +41,9 @@ func main() {
 		//handlers
 		rest.Provide(),
 	).
-		InitTimeout(time.Second).        // Set the timeout for the initialization phase.
-		HealthCheckTimeout(time.Second). // Set the timeout for the health check phase.
-		ShutdownTimeout(5 * time.Second) // Set the timeout for the shutdown phase.
+		InitTimeout(time.Second).         // Set the timeout for the initialization phase.
+		HealthCheckTimeout(time.Second).  // Set the timeout for the health check phase.
+		ShutdownTimeout(20 * time.Second) // Set the timeout for the shutdown phase.
 
 	err := p.Run(context.Background())
 	if err != nil {
