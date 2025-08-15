@@ -30,7 +30,6 @@ const Settings = ({
     close: onCloseSettings,
   } = useDisclosure({ prefix: ModalName.SidebarSettingsModal })
   const { t } = useTranslation()
-  const ref = useRef<HTMLButtonElement>(null)
   const [tab, setTab] = useState<string>(defaultTab)
 
   return (
@@ -47,7 +46,7 @@ const Settings = ({
       >
         <Icon name="common/settings" className="text-[24px]" />
       </Button>
-      <Modal.Content className="w-[600px]" initialFocus={ref}>
+      <Modal.Content className="w-[600px]">
         <Modal.Header>
           <Modal.Title>{t("setting.title")}</Modal.Title>
           <Modal.CloseButton close={onCloseSettings} />

@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"log"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/udovichenk0/scheduler/config"
@@ -10,27 +9,27 @@ import (
 	"github.com/udovichenk0/scheduler/internal/ports/repository/task"
 	"github.com/udovichenk0/scheduler/internal/ports/repository/user"
 	"github.com/udovichenk0/scheduler/internal/ports/repository/verification"
+	"github.com/udovichenk0/scheduler/pkg/logger"
 	"github.com/zhulik/pal"
 )
 
 type Sqlx struct {
 	Config *config.Config
 	Pool   *sqlx.DB
+	Log    logger.ILogger
 }
 
 func (s *Sqlx) Init(_ context.Context) error {
 	db, err := sqlx.Open("mysql", s.Config.Db.URL)
 	if err != nil {
-		log.Fatalf("Error: %s", err.Error())
-	}
-
-	err = db.Ping()
-	if err != nil {
-		log.Printf("failed to ping db: %s", err.Error())
 		return err
 	}
-	s.Pool = db
 
+	if err = db.Ping(); err != nil {
+		return err
+	}
+
+	s.Pool = db
 	return nil
 }
 

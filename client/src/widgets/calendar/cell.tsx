@@ -33,6 +33,7 @@ export const Cell = ({
     <div
       key={date.toUnix()}
       style={{ minHeight: MIN_HEIGHT }}
+      data-current={date.isToday}
       className="border-b-cBorder border-r-cBorder group flex w-full flex-col border-b border-r"
     >
       <div className="-mr-[1px] flex-1">
@@ -91,7 +92,21 @@ export const Cell = ({
           >
             +
           </Button>
-          <div className="text-cFont">{date.date}</div>
+          <div
+            data-current-date={date.isToday}
+            className="
+              text-cFont
+              data-[current-date=true]:bg-accent
+              flex
+              aspect-square
+              w-5
+              items-center
+              justify-center
+              rounded-full
+              text-xs"
+          >
+            {date.date}
+          </div>
         </div>
       </div>
     </div>

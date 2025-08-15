@@ -24,9 +24,9 @@ export const useClick = ({
       }
     }
     stack.push(id)
-    document.addEventListener("click", close, listenerOptions)
+    document.addEventListener("mouseup", close, listenerOptions)
     return () => {
-      document.removeEventListener("click", close, listenerOptions)
+      document.removeEventListener("mouseup", close, listenerOptions)
       stack.pop()
     }
   }, [])

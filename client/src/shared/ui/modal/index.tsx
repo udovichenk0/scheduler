@@ -93,9 +93,9 @@ export const Title = ({
       data-font={fontSize}
       className={clsx(
         `
-            text-cFont 
-            w-full 
-            data-[pos=left]:text-left 
+            text-cFont
+            w-full
+            data-[pos=left]:text-left
             data-[pos=center]:text-center
             data-[font=lg]:text-base
             data-[font=md]:text-sm data-[font=xs]:text-xs`,

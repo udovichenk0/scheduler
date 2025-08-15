@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import clsx from "clsx"
+import { clsx } from "clsx"
 import { Link } from "atomic-router-react"
 
 import { buttonCva } from "@/shared/ui/buttons/main-button/cva.styles"
