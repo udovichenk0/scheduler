@@ -7,7 +7,7 @@ import {
   createStore,
 } from "effector"
 import { combineEvents, not } from "patronum"
-import * as z from "@zod/mini"
+import * as z from "zod/mini"
 
 import { prepend } from "../effector/prepend.ts"
 
@@ -57,10 +57,10 @@ export const cookiePersist = <T>({
     clock: getFx.doneData,
     target: source,
   })
-  sample({
-    clock: getFx.fail,
-    fn: ({ error }) => console.log(error),
-  })
+  // sample({
+  //   clock: getFx.fail,
+  //   fn: ({ error }) => console.log(error),
+  // })
 
   sample({
     clock: combineEvents({ events: [init, getFx.done] }),

@@ -1,4 +1,4 @@
-package smtp
+package smtpserviceport
 
 type SmtpConfig struct {
 	Host     string
@@ -13,6 +13,6 @@ type SendInput struct {
 	Body    string
 }
 
-type Port interface {
+type Api interface {
 	SendEmail(opts SendInput) error
 }

@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next"
-import { useRef, useState } from "react"
+import { useState } from "react"
 
 import { PomodoroSettings } from "@/entities/settings/pomodoro/ui.tsx"
 import { ThemeChanger } from "@/entities/settings/theme/ui.tsx"
 import { GeneralSettings } from "@/entities/settings/general/general.tsx"
 
 import { Icon } from "@/shared/ui/icon"
-import { Root } from "@/shared/ui/tab"
-import { CloseButton, Modal } from "@/shared/ui/modal"
+import { Tabs } from "@/shared/ui/tab"
+import { Dialog } from "@/shared/ui/disclosure/dialog.tsx"
 import { Button } from "@/shared/ui/buttons/main-button/index.tsx"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure.ts"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names.ts"
@@ -30,13 +30,12 @@ const Settings = ({
     close: onCloseSettings,
   } = useDisclosure({ prefix: ModalName.SidebarSettingsModal })
   const { t } = useTranslation()
-  const ref = useRef<HTMLButtonElement>(null)
   const [tab, setTab] = useState<string>(defaultTab)
 
   return (
-    <Modal
+    <Dialog
       label={t("setting.title")}
-      closeModal={onCloseSettings}
+      closeDialog={onCloseSettings}
       isOpened={isSettingsOpened}
     >
       <Button
@@ -47,24 +46,27 @@ const Settings = ({
       >
         <Icon name="common/settings" className="text-[24px]" />
       </Button>
-      <Modal.Content className="w-[600px]" initialFocus={ref}>
-        <Modal.Header>
-          <span className="w-full pl-6 text-center text-[12px]">
-            {t("setting.title")}
-          </span>
-          <CloseButton close={onCloseSettings} />
-        </Modal.Header>
-        <Root value={tab} onChange={setTab} className="text-sm">
-          <Root.List className="border-cBorder flex gap-5 border-b-[1px] px-6 pb-4">
-            <Root.Trigger
+      <Dialog.Content className="w-[600px]">
+        <Dialog.Header>
+          <Dialog.Title>{t("setting.title")}</Dialog.Title>
+          <Dialog.CloseButton />
+        </Dialog.Header>
+        <Tabs
+          contentStyles="px-6 py-4"
+          value={tab}
+          onChange={setTab}
+          className="text-sm"
+        >
+          <Tabs.List className="border-cBorder flex gap-5 border-b-[1px] px-6 pb-4">
+            <Tabs.Trigger
               value={Tab.general}
               activeClass={"text-cFont"}
               className={`hover:text-primary flex flex-col items-center gap-3 text-[#76899b]`}
             >
               <Icon name="common/settings" className="h-8 w-8" />
               <span className="text-inherit">{t("setting.tab.general")}</span>
-            </Root.Trigger>
-            <Root.Trigger
+            </Tabs.Trigger>
+            <Tabs.Trigger
               value={Tab.synchronization}
               activeClass={"text-cFont"}
               className={`hover:text-primary flex flex-col items-center gap-3 text-[#76899b]`}
@@ -73,39 +75,39 @@ const Settings = ({
               <span className="text-inherit">
                 {t("setting.tab.synchronization")}
               </span>
-            </Root.Trigger>
-            <Root.Trigger
+            </Tabs.Trigger>
+            <Tabs.Trigger
               value={Tab.theme}
               activeClass={"text-cFont"}
               className={`hover:text-primary flex flex-col items-center gap-3 text-[#76899b]`}
             >
               <Icon name="common/palette" className="h-8 w-8" />
               <span className="text-inherit">{t("setting.tab.theme")}</span>
-            </Root.Trigger>
-            <Root.Trigger
+            </Tabs.Trigger>
+            <Tabs.Trigger
               value={Tab.pomodoro}
               activeClass={"text-cFont"}
               className={`hover:text-primary flex flex-col items-center gap-3 text-[#76899b]`}
             >
               <Icon name="common/timer" className="h-8 w-8" />
               <span className="text-inherit">{t("setting.tab.pomodoro")}</span>
-            </Root.Trigger>
-          </Root.List>
-          <Root.Content label={Tab.general}>
+            </Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Content label={Tab.general}>
             <GeneralSettings />
-          </Root.Content>
-          <Root.Content label={Tab.synchronization}>
+          </Tabs.Content>
+          <Tabs.Content label={Tab.synchronization}>
             <Authentication />
-          </Root.Content>
-          <Root.Content label={Tab.theme}>
+          </Tabs.Content>
+          <Tabs.Content label={Tab.theme}>
             <ThemeChanger />
-          </Root.Content>
-          <Root.Content label={Tab.pomodoro}>
+          </Tabs.Content>
+          <Tabs.Content label={Tab.pomodoro}>
             <PomodoroSettings />
-          </Root.Content>
-        </Root>
-      </Modal.Content>
-    </Modal>
+          </Tabs.Content>
+        </Tabs>
+      </Dialog.Content>
+    </Dialog>
   )
 }
 

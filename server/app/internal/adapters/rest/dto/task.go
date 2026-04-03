@@ -1,29 +1,37 @@
 package dto
 
-import "github.com/udovichenk0/scheduler/internal/entity"
+import (
+	"time"
+)
 
-type GetTaskRequestParams struct {
-	Id string `params:"userId"`
+type GetTasksByListIdParams struct {
+	ListId string `json:"listId" validate:"required"`
 }
 
 type CreateTaskRequestBody struct {
-	Title       string            `json:"title" validate:"required,min=1"`
-	Description string            `json:"description"`
-	Type        entity.TaskType   `json:"type" validate:"required,type"`
-	Status      entity.TaskStatus `json:"status" validate:"required,status"`
-	StartDate   int64             `json:"start_date" validate:"startDate"`
-	DueDate     int64             `json:"due_date" validate:"startDate"`
-	Priority    entity.Priority   `json:"priority" validate:"required,priority"`
+	Title       string     `json:"title" validate:"required,min=1"`
+	Description string     `json:"description"`
+	Type        string     `json:"type"`
+	Status      string     `json:"status"`
+	StartDate   *time.Time `json:"start_date"`
+	DueDate     *time.Time `json:"due_date"`
+	Priority    string     `json:"priority"`
+	ListId      string     `json:"list_id" validate:"required"`
 }
 
 type UpdateTaskRequestBody struct {
-	Title       string            `json:"title" validate:"required,min=1"`
-	Description string            `json:"description"`
-	Type        entity.TaskType   `json:"type" validate:"required,type"`
-	Status      entity.TaskStatus `json:"status" validate:"required,status"`
-	StartDate   int64             `json:"start_date" validate:"startDate"`
-	DueDate     int64             `json:"due_date" validate:"startDate"`
-	Priority    entity.Priority   `json:"priority" validate:"required,priority"`
+	Title       *string     `json:"title" validate:"required,min=1"`
+	Description *string     `json:"description"`
+	Type        *string     `json:"type"`
+	Status      *string     `json:"status"`
+	StartDate   **time.Time `json:"start_date"`
+	DueDate     **time.Time `json:"due_date"`
+	Priority    *string     `json:"priority"`
+	ListId      *string     `json:"list_id"`
+}
+
+type CreateTaskParams struct {
+	ListId string `json:"listId" validate:"required"`
 }
 
 type UpdateTaskRequestParams struct {
@@ -35,22 +43,22 @@ type TrashTaskRequestParams struct {
 }
 
 type UpdateTaskDateRequestBody struct {
-	StartDate int64 `json:"start_date" validate:"startDate"`
-	DueDate   int64 `json:"due_date" validate:"startDate"`
+	StartDate time.Time `json:"start_date"`
+	DueDate   time.Time `json:"due_date"`
 }
 type UpdateDateRequestParams struct {
 	TaskId string `json:"taskId" validate:"required"`
 }
 
 type UpdateStatusRequestBody struct {
-	Status entity.TaskStatus `json:"status" validate:"required,status"`
+	Status string `json:"status"`
 }
 type UpdateStatusRequestParams struct {
 	TaskId string `json:"taskId" validate:"required"`
 }
 
 type UpdatePriorityRequestBody struct {
-	Priority entity.Priority `json:"priority" validate:"required,priority"`
+	Priority string `json:"priority"`
 }
 type UpdatePriorityRequestParams struct {
 	TaskId string `json:"taskId" validate:"required"`

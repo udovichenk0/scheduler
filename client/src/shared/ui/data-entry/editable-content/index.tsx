@@ -9,7 +9,7 @@ type EditableContentProps = {
 } & HTMLAttributes<HTMLDivElement>
 
 export const EditableContent = ({
-  onSave: onSave,
+  onSave,
   content,
   placeholder,
   ...rest
@@ -29,7 +29,7 @@ export const EditableContent = ({
       ref={contentEditableRef}
       data-placeholder={placeholder}
       suppressContentEditableWarning
-      className="before:text-cOpacitySecondFont max-h-24 overflow-y-auto whitespace-pre-wrap break-words px-2 text-sm outline-none before:text-sm before:font-light empty:before:content-[attr(data-placeholder)]"
+      className="before:text-cOpacitySecondFont wrap-break-words max-h-24 overflow-y-auto whitespace-pre-wrap px-2 text-sm outline-none before:text-sm before:font-light empty:before:content-[attr(data-placeholder)]"
       contentEditable
       onBlur={() => {
         onSave(value)

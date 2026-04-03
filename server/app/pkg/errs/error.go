@@ -25,13 +25,15 @@ type (
 	QueryError struct{}
 
 	NoRowError struct {
-		entity string
+		Err error
+		Msg string
 	}
 
 	UnauthorizedError struct{}
 
 	InternalError struct {
-		err error
+		Err error
+		Msg string
 	}
 	ForbiddenError struct {
 		err error
@@ -43,28 +45,42 @@ type (
 
 	ValidationError struct {
 		Field string
-		Value interface{}
+		Value any
 		Msg   string
 	}
 	ValidationErrors struct {
 		errs []ValidationError
 	}
-	ExpiredError struct {
-		msg string
+	BusinessRuleViolationError struct {
+		Err error
+		Msg string
+	}
+	GeneralError struct {
+		Err error
+		Msg string
 	}
 )
 
 type Error struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
-	Err     string `json:"error"`
+	Type    string `json:"error"`
+	err     error
 }
 
-func NewNoRowError(entity string) NoRowError {
-	return NoRowError{entity}
+func NewError(err error, msg string) GeneralError {
+	return GeneralError{err, msg}
+}
+
+func (err GeneralError) Error() string {
+	return err.Msg
+}
+
+func NewResourceNotFoundError(err error, entity string) NoRowError {
+	return NoRowError{err, entity}
 }
 func (err NoRowError) Error() string {
-	return fmt.Sprintf("%s does not exist", err.entity)
+	return err.Msg
 }
 
 func NewForbiddenError(err error) ForbiddenError {
@@ -75,26 +91,29 @@ func (err ForbiddenError) Error() string {
 }
 
 func NewInternalError(err error) InternalError {
-	return InternalError{err}
+	return InternalError{err, "Internal Error"}
 }
 func (err InternalError) Error() string {
-	return fmt.Sprintf("Internal Error: %s", err.err.Error())
+	return err.Msg
+}
+
+func NewInternalErrorWithMsg(err error, msg string) InternalError {
+	return InternalError{err, msg}
 }
 
 func NewUnauthorizedError() UnauthorizedError {
 	return UnauthorizedError{}
 }
 
-func (err UnauthorizedError) Error() string {
+func (UnauthorizedError) Error() string {
 	return "Unauthorized"
 }
 
-func NewExpiredError(msg string) ExpiredError {
-	return ExpiredError{msg}
+func NewBusinessRuleViolationError(err error, msg string) BusinessRuleViolationError {
+	return BusinessRuleViolationError{err, msg}
 }
-
-func (err ExpiredError) Error() string {
-	return err.msg
+func (err BusinessRuleViolationError) Error() string {
+	return err.Msg
 }
 
 func NewBadRequestError(err error) BadRequestError {
@@ -112,7 +131,7 @@ func (err BadRequestError) Error() string {
 	return err.err.Error()
 }
 
-func NewValidationError(field string, value interface{}, msg string) ValidationError {
+func NewValidationError(field string, value any, msg string) ValidationError {
 	return ValidationError{field, value, msg}
 }
 
@@ -132,33 +151,36 @@ func IsDuplicateError(err error) bool {
 func HandleError(err error) Error {
 	var noRow NoRowError
 	var badRequest BadRequestError
+	var general GeneralError
 	var validation ValidationErrors
 	var unauthorized UnauthorizedError
-	var expired ExpiredError
 	var forbidden ForbiddenError
+	var businessRuleViolationError BusinessRuleViolationError
+	var internal InternalError
 	switch {
 	case errors.As(err, &noRow):
-		return Error{fiber.StatusOK, err.Error(), NotFound}
+		return Error{fiber.StatusOK, err.Error(), NotFound, noRow.Err}
 	case errors.As(err, &unauthorized):
-		return Error{fiber.StatusUnauthorized, err.Error(), Unauthorized}
+		return Error{fiber.StatusUnauthorized, err.Error(), Unauthorized, unauthorized}
 	case errors.As(err, &badRequest):
-		return Error{fiber.StatusBadRequest, err.Error(), BadRequest}
+		return Error{fiber.StatusBadRequest, err.Error(), BadRequest, badRequest.err}
+	case errors.As(err, &general):
+		return Error{fiber.StatusBadRequest, err.Error(), BadRequest, general.Err}
+	case errors.As(err, &businessRuleViolationError):
+		return Error{fiber.StatusBadRequest, err.Error(), BadRequest, businessRuleViolationError.Err}
 	case errors.As(err, &validation):
-		return Error{fiber.StatusBadRequest, err.Error(), Validation}
-	case errors.As(err, &expired):
-		return Error{fiber.StatusBadRequest, err.Error(), Expired}
+		return Error{fiber.StatusBadRequest, err.Error(), Validation, validation}
 	case errors.As(err, &forbidden):
-		return Error{fiber.StatusForbidden, err.Error(), Forbidden}
+		return Error{fiber.StatusForbidden, err.Error(), Forbidden, forbidden.err}
+	case errors.As(err, &internal):
+		return Error{fiber.StatusInternalServerError, err.Error(), Internal, internal.Err}
 	default:
-		return Error{fiber.StatusInternalServerError, "Internal Error", Internal}
+		return Error{fiber.StatusInternalServerError, err.Error(), Internal, errors.New("unhandled error")}
 	}
 }
 
-func CheckSqlError(err error, entity string) error {
-	if errors.Is(err, sql.ErrNoRows) {
-		return NewNoRowError(entity)
-	}
-	return NewInternalError(err)
+func IsResourceNotFound(err error) bool {
+	return errors.Is(err, sql.ErrNoRows)
 }
 
 func CheckValidationError(errs error) ValidationErrors {

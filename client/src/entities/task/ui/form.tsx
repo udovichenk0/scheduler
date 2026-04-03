@@ -8,7 +8,7 @@ import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { onMount } from "@/shared/lib/react/on-mount.ts"
-import { Modal } from "@/shared/ui/modal"
+import { Dialog } from "@/shared/ui/disclosure/dialog"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { EditableContent } from "@/shared/ui/data-entry/editable-content"
@@ -101,14 +101,14 @@ export const ModifyTaskForm = ({
               <Icon name={"common/inbox"} className="text-accent size-[18px]" />
               {t(`task.${taskType}`)}
             </Button>
-            <Modal
+            <Dialog
               label="Select event type"
               isOpened={isTypeModalOpened}
-              closeModal={onCloseTypeModal}
+              closeDialog={onCloseTypeModal}
               overlay={false}
               portal={false}
             >
-              <Modal.Content className="top-full w-[280px] translate-y-2">
+              <Dialog.Content className="top-full w-[280px] translate-y-2">
                 <TypePicker
                   currentType={taskType}
                   changeType={(type) => {
@@ -116,8 +116,8 @@ export const ModifyTaskForm = ({
                     onCloseTypeModal()
                   }}
                 />
-              </Modal.Content>
-            </Modal>
+              </Dialog.Content>
+            </Dialog>
           </div>
 
           {dateModifier && (

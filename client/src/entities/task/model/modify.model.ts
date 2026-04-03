@@ -1,7 +1,6 @@
-import { combine, createEvent, createStore, sample, split } from "effector"
+import { combine, createEvent, createStore, sample } from "effector"
 import { spread } from "patronum"
 
-import { bridge } from "@/shared/lib/effector/bridge"
 import { SDate, getToday } from "@/shared/lib/date/lib.ts"
 
 import type {
@@ -10,16 +9,11 @@ import type {
   EditableTaskFields,
   Priority,
 } from "../type.ts"
+import { hasDate } from "../lib.ts"
 
 import { TaskPriority, TaskStatus, TaskType } from "./task.model.ts"
 
-export const modifyTaskFactory = ({
-  defaultType = "inbox",
-  defaultDate = null,
-}: {
-  defaultType?: Type
-  defaultDate?: Nullable<SDate>
-}) => {
+export const createTaskEditor = () => {
   const statusChanged = createEvent<Status>()
   const titleChanged = createEvent<string>()
   const typeChanged = createEvent<Type>()
@@ -28,21 +22,22 @@ export const modifyTaskFactory = ({
     startDate: Nullable<SDate>
     dueDate: Nullable<SDate>
   }>()
-  const setDate = createEvent<Nullable<SDate>>()
   const descriptionChanged = createEvent<Nullable<string>>()
   const setStatus = createEvent<Status>()
   const resetFieldsTriggered = createEvent()
 
   const $title = createStore("")
   const $description = createStore<Nullable<string>>(null)
-  const $status = createStore<Status>(TaskStatus.INPROGRESS)
-  const $startDate = createStore<Nullable<SDate>>(defaultDate)
+  const $status = createStore<Status>(TaskStatus.TODO)
+  const $startDate = createStore<Nullable<SDate>>(null)
   const $dueDate = createStore<Nullable<SDate>>(null)
-  const $type = createStore<Type>(defaultType)
-  const $isDirty = createStore(false)
+  const $type = createStore<Type>(TaskType.INBOX)
   const $priority = createStore<Priority>(TaskPriority.NONE)
+  const $isDirty = createStore(false)
   const $isAllowToSubmit = createStore(false)
-  const setFieldsTriggered = createEvent<EditableTaskFields>()
+  const setFieldsTriggered = createEvent<Partial<EditableTaskFields>>()
+  const initTaskFields = createEvent<EditableTaskFields>()
+
   const $fields = combine(
     $title,
     $description,
@@ -51,7 +46,15 @@ export const modifyTaskFactory = ({
     $startDate,
     $dueDate,
     $priority,
-    (title, description, status, type, start_date, due_date, priority) => ({
+    (
+      title,
+      description,
+      status,
+      type,
+      start_date,
+      due_date,
+      priority,
+    ): EditableTaskFields => ({
       title,
       description,
       status,
@@ -60,6 +63,26 @@ export const modifyTaskFactory = ({
       due_date,
       priority,
     }),
+  )
+
+  const $initialTaskFields = createStore<EditableTaskFields>(
+    {} as EditableTaskFields,
+  )
+  sample({
+    clock: initTaskFields,
+    target: $initialTaskFields,
+  })
+
+  const $changedFields = combine(
+    $fields,
+    $initialTaskFields,
+    (currentFields, initialFields): Partial<EditableTaskFields> => {
+      return Object.fromEntries(
+        Object.entries(initialFields).filter(([key, value]) => {
+          return value !== currentFields[key as keyof EditableTaskFields]
+        }),
+      )
+    },
   )
 
   sample({
@@ -75,6 +98,7 @@ export const modifyTaskFactory = ({
     clock: titleChanged,
     target: $title,
   })
+
   sample({
     clock: setStatus,
     target: $status,
@@ -82,6 +106,13 @@ export const modifyTaskFactory = ({
 
   sample({
     clock: setFieldsTriggered,
+    source: $fields,
+    fn: (fields, newFields) => {
+      return {
+        ...fields,
+        ...newFields,
+      }
+    },
     target: spread({
       title: $title,
       description: $description,
@@ -93,16 +124,14 @@ export const modifyTaskFactory = ({
     }),
   })
 
-  split({
-    source: statusChanged,
-    match: {
-      FINISHED: (value) => value == TaskStatus.FINISHED,
-      INPROGRESS: (value) => value == TaskStatus.INPROGRESS,
-    },
-    cases: {
-      INPROGRESS: setStatus.prepend<void>(() => TaskStatus.FINISHED),
-      FINISHED: setStatus.prepend<void>(() => TaskStatus.INPROGRESS),
-    },
+  sample({
+    clock: setFieldsTriggered,
+    source: $fields,
+  })
+
+  sample({
+    clock: statusChanged,
+    target: setStatus,
   })
   sample({
     clock: descriptionChanged,
@@ -113,56 +142,45 @@ export const modifyTaskFactory = ({
     target: $priority,
   })
 
-  bridge(() => {
-    spread({
-      source: dateChanged,
-      targets: {
-        startDate: $startDate,
-        dueDate: $dueDate,
-      },
-    })
-    sample({
-      clock: [setDate],
-      target: $startDate,
-    })
-
-    sample({
-      clock: dateChanged,
-      source: $type,
-      filter: (type, date) => type == TaskType.INBOX && !!date,
-      fn: () => TaskType.UNPLACED,
-      target: $type,
-    })
-
-    sample({
-      clock: dateChanged,
-      source: $type,
-      filter: (type, date) => type == TaskType.UNPLACED && !date,
-      fn: () => TaskType.INBOX,
-      target: $type,
-    })
+  spread({
+    source: dateChanged,
+    targets: {
+      startDate: $startDate,
+      dueDate: $dueDate,
+    },
+  })
+  sample({
+    clock: dateChanged,
+    source: $type,
+    fn: (type, date) => {
+      if (type == TaskType.INBOX) {
+        if (hasDate(date)) return TaskType.UNPLACED
+      } else {
+        if (!hasDate(date)) return TaskType.INBOX
+      }
+      return type
+    },
+    target: $type,
   })
 
-  bridge(() => {
-    sample({
-      clock: typeChanged,
-      source: $type,
-      filter: (currentType, type) => currentType != type,
-      fn: (_, type) => type,
-      target: $type,
-    })
-    sample({
-      clock: typeChanged,
-      filter: (type) => type == TaskType.INBOX,
-      fn: () => null,
-      target: $startDate,
-    })
-    sample({
-      clock: typeChanged,
-      filter: (type) => type == TaskType.UNPLACED,
-      fn: () => getToday(),
-      target: $startDate,
-    })
+  sample({
+    clock: typeChanged,
+    source: $type,
+    filter: (currentType, type) => currentType != type,
+    fn: (_, type) => type,
+    target: $type,
+  })
+  sample({
+    clock: typeChanged,
+    filter: (type) => type == TaskType.INBOX,
+    fn: () => null,
+    target: $startDate,
+  })
+  sample({
+    clock: typeChanged,
+    filter: (type) => type == TaskType.UNPLACED,
+    fn: () => getToday(),
+    target: $startDate,
   })
 
   sample({
@@ -188,6 +206,7 @@ export const modifyTaskFactory = ({
       $startDate.reinit,
       $dueDate.reinit,
       $priority.reinit,
+      $initialTaskFields.reinit,
     ],
   })
 
@@ -197,10 +216,10 @@ export const modifyTaskFactory = ({
     typeChanged,
     dateChanged,
     priorityChanged,
-    setDate,
     descriptionChanged,
     resetFieldsTriggered,
     setFieldsTriggered,
+    initTaskFields,
     $title,
     $description,
     $status,
@@ -211,7 +230,8 @@ export const modifyTaskFactory = ({
     $isAllowToSubmit,
     $fields,
     $isDirty,
+    $changedFields,
   }
 }
 
-export type ModifyTaskFactory = ReturnType<typeof modifyTaskFactory>
+export type TaskEditor = ReturnType<typeof createTaskEditor>

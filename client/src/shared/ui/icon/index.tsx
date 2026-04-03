@@ -1,29 +1,36 @@
-import { clsx } from "clsx"
-import { SVGProps } from "react"
+import clsx from "clsx"
+import { sprites, type SpritesMeta } from "./sprite.gen"
+import { CSSProperties } from "react"
 
-import { SpritesMap } from "./sprite.h"
-
-// Merging all icons as `SPRITE_NAME/SPRITE_ICON_NAME`
+// Type-safe icon name: "sprite:symbol"
 export type IconName = {
-  [Key in keyof SpritesMap]: `${Key}/${SpritesMap[Key]}`
-}[keyof SpritesMap]
+  [Key in keyof SpritesMeta]: `${Key}/${SpritesMeta[Key]}`
+}[keyof SpritesMeta]
 
-export interface IconProps
-  extends Omit<SVGProps<SVGSVGElement>, "name" | "type"> {
+export function Icon({
+  name,
+  className,
+  style,
+}: {
   name: IconName
-}
-
-export function Icon({ name, className, viewBox, ...props }: IconProps) {
+  className?: string
+  style?: CSSProperties
+}) {
   const [spriteName, iconName] = name.split("/")
+  const item = sprites.experimental_get(spriteName, iconName, {
+    baseUrl: "/sprites/",
+  })
+  if (!item) return null
+  const { symbol, href } = item
   return (
     <svg
       className={clsx("icon", className)}
-      viewBox={viewBox}
+      style={style}
+      viewBox={symbol.viewBox}
       focusable="false"
       aria-hidden
-      {...props}
     >
-      <use xlinkHref={`/${spriteName}.svg#${iconName}`} />
+      <use href={href} />
     </svg>
   )
 }

@@ -23,19 +23,21 @@ html {
       transform: scale(1);
     }
   }
+  --scroll-bar-width: 10px;
   --drop-shadow-base: 0 35px 35px rgba(0, 0, 0, 0.56);
 
   --color-main: var(--main);
   --color-main-dark: var(--main-dark);
   --color-main-light: var(--main-light);
-  --color-accent: rgb(var(--accent));
-  --color-blue: rgb(var(--blue));
-  --color-yellow: rgb(var(--yellow));
-  --color-red: rgb(var(--red));
-  --color-orange: rgb(var(--orange));
-  --color-green: rgb(var(--green));
-  --color-purple: rgb(var(--purple));
-  --color-pink: rgb(var(--pink));
+  --color-accent: hsl(var(--accent));
+  --color-main-inverse: var(--main-inverse);
+  --color-blue: hsl(var(--blue));
+  --color-yellow: hsl(var(--yellow));
+  --color-red: hsl(var(--red));
+  --color-orange: hsl(var(--orange));
+  --color-green: hsl(var(--green));
+  --color-purple: hsl(var(--purple));
+  --color-pink: hsl(var(--pink));
   --color-primary: var(--primary);
   --color-cFont: var(--cFont);
   --color-cOpacitySecondFont: var(--cOpacitySecondFont);
@@ -44,10 +46,10 @@ html {
   --color-cSecondBorder: var(--cSecondBorder);
   --color-cLeftBottomPanel: var(--accent);
   --color-cButtonBg: var(--cButtonBg);
-  --color-hover: rgba(var(--accent), 0.2);
+  --color-hover: hsl(var(--accent)/0.1);
   --color-cTaskEdit: var(--cTaskEdit);
   --color-cFocusSecond: var(--cFocusSecond);
-  --color-cFocus: rgba(var(--accent), 0.3);
+  --color-cFocus: hsl(var(--accent)/0.2);
   --color-cTaskEditDefault: var(--cTaskEditDefault);
   --color-cTimeIntervalLow: var(--cTimeIntervalLow);
   --color-cIconDefault: var(--cIconDefault);
@@ -63,16 +65,17 @@ html {
 
 html[data-theme="space"] {
   --main-dark: #0c031b;
-  --main: #0b0417;
-  --main-light: #1b053f;
-  --accent: 46, 188, 255;
-  --blue: 46, 188, 255;
-  --yellow: 253, 216, 53;
-  --red: 244, 67, 54;
-  --orange: 245, 124, 0;
-  --green: 0, 200, 83;
-  --purple: 170, 0, 255;
-  --pink: 224, 64, 251;
+  --main: #0f0620;
+  --main-light: #14052b;
+  --main-inverse: #907eb3;
+  --accent: 194 100% 77%;
+  --blue: 194 100% 77%;
+  --yellow: 42 96% 54%;
+  --red: 4 89% 58%;
+  --orange: 30 100% 48%;
+  --green: 145 100% 39%;
+  --purple: 278 100% 50%;
+  --pink: 295 90% 62%;
   --primary: #ffffff;
   --cFont: #fff;
   --cOpacitySecondFont: #76899b;
@@ -99,18 +102,19 @@ html[data-theme="space"] {
 html[data-theme="default"] {
   --main-dark: #262730;
   --main: #2b2c37;
+  --main-inverse: #bebebe;
   --main-light: #363744;
-  --accent: 46, 188, 255;
-  --blue: 46, 188, 255;
-  --yellow: 255, 202, 40;
-  --red: 255, 82, 82;
-  --orange: 245, 124, 0;
-  --green: 0, 200, 83;
-  --purple: 124, 77, 255;
-  --pink: 234, 128, 252;
+  --accent: 194 100% 77%;
+  --blue: 194 100% 77%;
+  --yellow: 45 100% 58%;
+  --red: 0 100% 66%;
+  --orange: 30 100% 48%;
+  --green: 145 100% 39%;
+  --purple: 256 100% 65%;
+  --pink: 291 95% 74%;
   --primary: #fff;
   --cFont: #fff;
-  --cOpacitySecondFont: #76899b;
+  --cOpacitySecondFont: #8d9caa;
   --newFocus: #394a61;
   --brand: #23242b;
   --cBorder: #393b46;
@@ -133,20 +137,21 @@ html[data-theme="default"] {
   --menuBg: #1d1e24;
 }
 html[data-theme="dark"] {
-  --main-dark: #131111;
   --main: #121212;
-  --main-light: #2b2b2b;
-  --accent: 70, 131, 203;
-  --blue: 70, 131, 203;
-  --yellow: 255, 213, 79;
-  --red: 229, 115, 115;
-  --orange: 255, 183, 77;
-  --green: 129, 199, 132;
-  --purple: 124, 77, 255;
-  --pink: 234, 128, 252;
+  --main-light: #1a1a1a;
+  --main-dark: #131111;
+  --main-inverse: #bebebe;
+  --accent: 199 100 59%;
+  --blue: 199 100 59%;
+  --yellow: 46 100% 65%;
+  --red: 0 69% 67%;
+  --orange: 36 100% 65%;
+  --green: 123 38% 64%;
+  --purple: 256 100% 65%;
+  --pink: 291 95% 75%;
   --primary: #fffc;
   --cFont: #fffc;
-  --cOpacitySecondFont: #ffffff4d;
+  --cOpacitySecondFont: #888;
   --brand: var(--main);
   --cBorder: #393b4681;
   --cSecondBorder: #ffffffcc;
@@ -167,17 +172,18 @@ html[data-theme="dark"] {
   --cCalendarTooltip: #d0d0d0;
 }
 html[data-theme="light"] {
-  --main-dark: #f9f9f9;
   --main: #f9f9f9;
+  --main-dark: #f9f9f9;
   --main-light: #e0e0e0;
-  --accent: 70, 131, 203;
-  --blue: 70, 131, 203;
-  --yellow: 251, 192, 45;
-  --red: 255, 82, 82;
-  --orange: 245, 124, 0;
-  --green: 76, 175, 80;
-  --purple: 126, 87, 194;
-  --pink: 240, 98, 146;
+  --main-inverse: #707070;
+  --accent: 212 56% 54%;
+  --blue: 212 56% 54%;
+  --yellow: 43 96% 58%;
+  --red: 0 100% 66%;
+  --orange: 30 100% 48%;
+  --green: 122 39% 49%;
+  --purple: 262 47% 55%;
+  --pink: 340 83% 66%;
   --primary: #596175;
   --cFont: #2b2c37;
   --cOpacitySecondFont: #76899b;
@@ -203,14 +209,17 @@ html[data-theme="light"] {
 }
 html[data-theme="grey"] {
   --main: #f4f4f4;
-  --accent: 84, 117, 156;
-  --blue: 84, 117, 156;
-  --yellow: 251, 192, 45;
-  --red: 229, 115, 115;
-  --orange: 255, 152, 0;
-  --green: 102, 187, 106;
-  --purple: 126, 87, 194;
-  --pink: 255, 128, 171;
+  --main-light: #ebebeb;
+  --main-dark: #f9f9f9;
+  --main-inverse: #707070;
+  --accent: 216 30% 47%;
+  --blue: 216 30% 47%;
+  --yellow: 43 96% 58%;
+  --red: 0 69% 67%;
+  --orange: 36 100% 50%;
+  --green: 123 38% 57%;
+  --purple: 262 47% 55%;
+  --pink: 340 100% 75%;
   --primary: #333333cc;
   --cFont: #2b2c37;
   --cOpacitySecondFont: #333333cc;
@@ -248,7 +257,7 @@ button {
 }
 /* width */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: var(--scroll-bar-width);
 }
 
 /* Track */

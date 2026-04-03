@@ -1,5 +1,5 @@
 import { createEvent, createStore, sample } from "effector"
-import * as z from "@zod/mini"
+import * as z from "zod/mini"
 import { t } from "i18next"
 
 import { authApi } from "@/shared/api/auth/auth.api.ts"

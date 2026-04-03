@@ -4,6 +4,7 @@ import { singleton } from "@/shared/lib/effector/singleton"
 import { authApi } from "@/shared/api/auth/auth.api.ts"
 
 import { User } from "./type"
+import { invitationSseClient } from "@/shared/lib/sse"
 
 export const $$session = singleton(() => {
   const sessionSet = createEvent<User>()
@@ -21,7 +22,7 @@ export const $$session = singleton(() => {
   sample({
     clock: sessionSet,
     fn: () => true,
-    target: $isAuthenticated,
+    target: [$isAuthenticated],
   })
   sample({
     clock: reset,
@@ -37,6 +38,12 @@ export const $$session = singleton(() => {
     clock: authApi.checkSession.finished.success,
     fn: (r) => r.result,
     target: sessionSet,
+  })
+
+  sample({
+    clock: authApi.checkSession.finished.success,
+    fn: (r) => r.result.id,
+    target: invitationSseClient.connectFx,
   })
 
   return {

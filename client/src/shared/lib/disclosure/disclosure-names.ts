@@ -1,14 +1,18 @@
 import { TaskId } from "@/shared/api/task/task.dto.ts"
 
 export const ModalName = {
+  InviteUserToProject: "invite-user-to-project",
   CreateTaskForm: "create-task-form",
   PriorityPicker: "priority-picker",
+  TaskContextMenu: "task-context-menu",
   UpdateTaskForm: "update-task-form",
   MoreTasksModal: "calendar/more-tasks-modal",
   SidebarSettingsModal: "sidebar/settings-modal",
   PomodoroSettingsModal: "pomodoro/settings-modal",
+  CreateProjectForm: "project/create",
   PomodoroModal: "pomodoro-modal",
   TypeModal: "type-modal",
+  StatusPopover: "type-modal",
   DateModal: "date-modal",
   TaskFormDateModal: "task-form/date-modal",
   SortModal: "sort-modal",

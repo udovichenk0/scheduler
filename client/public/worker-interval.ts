@@ -1,0 +1,16 @@
+import { Timer } from "../src/shared/lib/pomodoro/config"
+let timer: NodeJS.Timeout
+
+onmessage = function (e) {
+  switch (e.data.command) {
+    case Timer.START:
+      timer = setInterval(() => {
+        self.postMessage({ isRunning: true })
+      }, 1000)
+      break
+    case Timer.STOP:
+      clearInterval(timer)
+      self.postMessage({ isRunning: false })
+      break
+  }
+}

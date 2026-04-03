@@ -1,4 +1,9 @@
-./node_modules
-./playwright-report
-./test-results
-./dist
+node_modules
+playwright-report
+test-results
+dist
+.git
+.gitignore
+*.md
+start.sh
+stop.sh

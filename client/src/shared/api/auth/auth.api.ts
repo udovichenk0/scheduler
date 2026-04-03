@@ -25,14 +25,14 @@ import {
   PostAuthVerifyBody,
 } from "../scheduler.schemas"
 
-export const checkSession = createQuery({
+const checkSession = createQuery({
   handler: async () => {
     const response = await getAuthSession({ credentials: "include" })
     return handleResponse(response, getAuthSessionResponse)
   },
 })
 
-export const signIn = createQuery({
+const signIn = createQuery({
   handler: async ({ email, password }: AuthEmailCredsBody) => {
     const response = await postAuthSignin(
       { email, password },
@@ -42,7 +42,7 @@ export const signIn = createQuery({
   },
 })
 
-export const signUp = createQuery({
+const signUp = createQuery({
   handler: async ({ email, password }: AuthEmailCredsBody) => {
     const response = await postAuthSignup(
       { email, password },
@@ -52,7 +52,7 @@ export const signUp = createQuery({
   },
 })
 
-export const checkVerifiedEmailExists = createQuery({
+const checkVerifiedEmailExists = createQuery({
   handler: async (email: Email) => {
     const response = await getEmailExists({ email })
 
@@ -60,7 +60,7 @@ export const checkVerifiedEmailExists = createQuery({
   },
 })
 
-export const signOut = createQuery({
+const signOut = createQuery({
   handler: async () => {
     const response = await postAuthSignout({ credentials: "include" })
     if (getHandledError(response.data)) {
@@ -69,7 +69,7 @@ export const signOut = createQuery({
   },
 })
 
-export const verifyEmailQuery = createQuery({
+const verifyEmailQuery = createQuery({
   handler: async ({ code, userId }: PostAuthVerifyBody) => {
     const response = await postAuthVerify(
       { code, userId },
@@ -79,7 +79,7 @@ export const verifyEmailQuery = createQuery({
   },
 })
 
-export const resendCodeQuery = createQuery({
+const resendCodeQuery = createQuery({
   handler: async ({ userId, email }: PostAuthResendBody) => {
     const response = await postAuthResend({ userId, email })
     throwIfError(response.data)

@@ -49,6 +49,9 @@ export class SDate {
   get isTomorrow() {
     return this.d.isTomorrow()
   }
+  get isYesterday() {
+    return this.d.isYesterday()
+  }
 
   get isBeforeToday() {
     return this.d.isBefore(getToday().toDate(), "date")
@@ -65,6 +68,9 @@ export class SDate {
   }
   toDate() {
     return this.d.toDate()
+  }
+  toISOString() {
+    return this.d.toISOString() //iso 8601
   }
   toString() {
     return this.d.toString()
@@ -169,6 +175,10 @@ export class SDate {
   toUnix() {
     return this.d.unix()
   }
+  unixToDate(unix: number) {
+    if (unix.toString().length != 10) throw new Error(`Invalid unix: ${unix}`)
+    return sdate(new Date(unix * 1000))
+  }
   format(format: string) {
     return this.d.format(format)
   }
@@ -183,9 +193,13 @@ export class SDate {
   dayDiff(date: SDate | Date) {
     return this.d.diff(this.parseDate(date), "day")
   }
+  rangeInDays(date: SDate) {
+    const seconds = Math.abs(date.toUnix() - this.toUnix())
+    return seconds / (24 * 3600)
+  }
 }
 
-export const sdate = (date?: Nullable<Date | string>) => {
+export const sdate = (date?: Nullable<SDate | Date | string>) => {
   return new SDate(date)
 }
 
@@ -257,4 +271,25 @@ export const getSaturday = () => {
     return dayjs().weekday(13).toDate()
   }
   return dayjs().weekday(6).toDate()
+}
+
+export const defaultDateFormat = (inputdate: Date | SDate) => {
+  const date = sdate(inputdate)
+  let formattedDate = ""
+  const today = sdate()
+  const daysDiff = date.rangeInDays(today)
+  if (date.isBeforeToday) {
+    if (date.isYesterday) formattedDate = "Yesterday"
+    else if (daysDiff < 7) formattedDate = `${daysDiff} days ago`
+    else formattedDate = date.format("L")
+  }
+
+  if (date.isToday) formattedDate = "Today"
+  else if (date.isTomorrow) formattedDate = "Tomorrow"
+  else if (daysDiff > 0 && daysDiff < 7) formattedDate = date.format("ddd")
+  else formattedDate = date.format("L")
+  if (date.hasTime) {
+    formattedDate += ", " + date.format("LT")
+  }
+  return formattedDate
 }

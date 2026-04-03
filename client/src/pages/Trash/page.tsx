@@ -10,16 +10,17 @@ import { NoTasks } from "@/shared/ui/no-tasks"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { useSelectItem } from "@/shared/lib/use-select-item"
 
-import { $$deleteTask, $trashTasks } from "./model"
+import { $$taskRemover, $trashTasks } from "./model"
 
 const Trash = () => {
   const tasks = useUnit($trashTasks)
-  const onDeleteTask = useUnit($$deleteTask.taskDeletedById)
-  const onDeleteAllTasks = useUnit($$deleteTask.allTasksDeleted)
+  const onDeleteTask = useUnit($$taskRemover.deleteTaskById)
+  // const onDeleteAllTasks = useUnit($$taskRemover.deleteAllTasks)
   const list = useList($trashTasks, (task, id) => {
     return (
       <div className="px-3 pb-2" key={task.id}>
         <TaskItem
+          onRemoveTask={onDeleteTask}
           ref={(node) => addNode(node!, id)}
           isShown
           typeLabel
@@ -43,9 +44,9 @@ const Trash = () => {
         slot={
           <Button
             onClick={onDeleteAllTasks}
-            intent={"accent"}
+            intent="primary"
             size={"xs"}
-            className="flex items-center gap-x-2"
+            className="text-accent! flex items-center gap-x-2"
           >
             <Cross />
             {t("action.clearBucket")}
@@ -68,12 +69,7 @@ const Trash = () => {
 }
 const Cross = () => {
   return (
-    <div
-      className="before:bg-accent after:bg-accent relative mt-[2px]
-      h-[10px] w-[10px] before:absolute before:bottom-0 before:left-1/2 before:h-3 before:w-[2px] before:-rotate-45
-      before:content-[''] after:absolute after:bottom-0 after:left-1/2 after:h-3 after:w-[2px] after:rotate-45 after:content-['']
-    "
-    ></div>
+    <div className="before:bg-accent after:bg-accent relative mt-[2px] h-[10px] w-[10px] before:absolute before:bottom-0 before:left-1/2 before:h-3 before:w-[2px] before:-rotate-45 before:content-[''] after:absolute after:bottom-0 after:left-1/2 after:h-3 after:w-[2px] after:rotate-45 after:content-['']"></div>
   )
 }
 export default Trash

@@ -1,6 +1,6 @@
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
-import { Modal } from "@/shared/ui/modal"
+import { Dialog } from "@/shared/ui/disclosure/dialog"
 import { Icon } from "@/shared/ui/icon"
 
 import { getPriorityColor } from "../lib"
@@ -15,7 +15,7 @@ const priorities = [
       <Icon
         name="common/flag"
         style={{
-          color: `var(--color-${getPriorityColor(TaskPriority.URGENT)})`,
+          color: `red`,
         }}
       />
     ),
@@ -71,13 +71,13 @@ export const PriorityPicker = ({
     prefix: ModalName.PriorityPicker,
   })
   return (
-    <div className="w-25 relative mr-1 flex justify-start">
-      <Modal
+    <div className="w-25 relative flex justify-start">
+      <Dialog
         portal={false}
         overlay={false}
         isOpened={isOpened}
         label="Pick a priority"
-        closeModal={close}
+        closeDialog={close}
       >
         <button
           data-active={isOpened}
@@ -96,7 +96,7 @@ export const PriorityPicker = ({
             <span className="text-cFont/40 text-xs capitalize">{priority}</span>
           )}
         </button>
-        <Modal.Content className="w-50 absolute right-0 top-full z-10 mt-2">
+        <Dialog.Content className="w-50 absolute right-0 top-full z-10 mt-2">
           {priorities.map(({ value, label, icon }) => {
             return (
               <button
@@ -119,8 +119,8 @@ export const PriorityPicker = ({
               </button>
             )
           })}
-        </Modal.Content>
-      </Modal>
+        </Dialog.Content>
+      </Dialog>
     </div>
   )
 }

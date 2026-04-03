@@ -5,7 +5,7 @@ import { useRef } from "react"
 import { Tooltip } from "@/shared/ui/general/tooltip"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
-import { Modal } from "@/shared/ui/modal"
+import { Dialog } from "@/shared/ui/disclosure/dialog"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 
@@ -30,12 +30,12 @@ export const Sort = ({ sorting }: { sorting?: SortProps }) => {
   }
   return (
     <div className="relative">
-      <Modal
+      <Dialog
         label="Sort tasks"
         portal={false}
         overlay={false}
         isOpened={isSortModalOpened}
-        closeModal={onCloseSortModal}
+        closeDialog={onCloseSortModal}
       >
         <Tooltip text={t("sort.title")} dir="bl">
           <Button
@@ -52,7 +52,7 @@ export const Sort = ({ sorting }: { sorting?: SortProps }) => {
             />
           </Button>
         </Tooltip>
-        <Modal.Content className="z-100 top-full w-[215px] -translate-x-2/3 p-2">
+        <Dialog.Content className="z-100 top-full w-[215px] -translate-x-2/3 p-2">
           <TaskSortingPopup
             onChange={(value) => {
               sorting.onChange(value)
@@ -62,8 +62,8 @@ export const Sort = ({ sorting }: { sorting?: SortProps }) => {
             config={sorting.config}
             active={sorting.active}
           />
-        </Modal.Content>
-      </Modal>
+        </Dialog.Content>
+      </Dialog>
     </div>
   )
 }

@@ -9,7 +9,7 @@ import { Task } from "@/entities/task/type.ts"
 import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
-import { Root } from "@/shared/ui/tab"
+import { Tabs } from "@/shared/ui/tab"
 import { SDate, getToday, sdate } from "@/shared/lib/date/lib"
 
 import { generateDaysOfWeek } from "../config"
@@ -38,7 +38,7 @@ export function UpcomingVariantChanger({
     <div className="bg-main sticky top-0 z-10 flex w-full">
       <div className="border-accent/50 text-cIconDefault flex w-full border-b px-9">
         <div className="flex">
-          <Root.Trigger
+          <Tabs.Trigger
             value="upcoming"
             title={t("task.upcoming")}
             className={clsx(style.active, "px-2 pb-2")}
@@ -46,8 +46,8 @@ export function UpcomingVariantChanger({
             data-active={!upcomingDate}
           >
             <Icon name="common/upcoming" className="text-[21px]" />
-          </Root.Trigger>
-          <Root.Trigger
+          </Tabs.Trigger>
+          <Tabs.Trigger
             value="date"
             title={t("task.today")}
             className={clsx(style.active, "px-2 pb-2")}
@@ -55,13 +55,13 @@ export function UpcomingVariantChanger({
             data-active={upcomingDate?.isToday}
           >
             <Icon name="common/outlined-star" className="text-[21px]" />
-          </Root.Trigger>
+          </Tabs.Trigger>
         </div>
         <div className="flex w-full justify-around text-sm">
           {dayList.map((date, id) => {
             const isAnyTask = !!tasksByDate?.[date.format("YYYY-MM-DD")]
             return (
-              <Root.Trigger
+              <Tabs.Trigger
                 value="date"
                 key={id}
                 onClick={() => setUpcomingVariant(date)}
@@ -76,7 +76,7 @@ export function UpcomingVariantChanger({
                 {isAnyTask && (
                   <span className="after:bg-cIconDefault after:absolute after:top-1/2 after:h-[5px] after:w-[5px] after:-translate-y-1/2 after:rounded-full after:content-['']"></span>
                 )}
-              </Root.Trigger>
+              </Tabs.Trigger>
             )
           })}
         </div>

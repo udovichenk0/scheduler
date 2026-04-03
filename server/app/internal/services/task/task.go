@@ -1,241 +1,211 @@
-package task
+package taskservice
 
 import (
 	"context"
-	"errors"
+	"fmt"
+	"log/slog"
 
-	"github.com/google/uuid"
-	"github.com/udovichenk0/scheduler/internal/entity"
-	taskservice "github.com/udovichenk0/scheduler/internal/ports/api/task"
-	taskRepo "github.com/udovichenk0/scheduler/internal/ports/repository/task"
-	"github.com/udovichenk0/scheduler/internal/ports/repository/task/model"
-	"github.com/udovichenk0/scheduler/pkg"
+	"github.com/udovichenk0/scheduler/internal/domain"
+	taskserviceport "github.com/udovichenk0/scheduler/internal/ports/api/task"
+	taskrepoport "github.com/udovichenk0/scheduler/internal/ports/repository/task"
 	"github.com/udovichenk0/scheduler/pkg/errs"
 	"github.com/udovichenk0/scheduler/pkg/logger"
+	"github.com/zhulik/pal"
 )
 
 type Service struct {
-	taskRepo taskRepo.Port
-	logger   logger.Logger
+	TaskRepo taskrepoport.Repository
+	// ListApi  list.Api
+	Logger logger.ILogger
 }
 
-func New(taskRepo taskRepo.Port, logger logger.Logger) *Service {
-	return &Service{taskRepo, logger}
-}
+// func (ts *Service) GetTasks(ctx context.Context, params taskservice.GetTasksInput) ([]domain.Task, error) {
+// 	tasks, err := ts.TaskRepo.GetByUserId(ctx, params.UserId)
 
-func (ts *Service) GetTasks(ctx context.Context, userId string) ([]entity.Task, error) {
-	tasks, err := ts.taskRepo.GetByUserId(ctx, userId)
+// 	domainTasks := []domain.Task{}
 
-	var domainTasks []entity.Task
+// 	if err != nil {
+// 		ts.Logger.Error("failed to get tasks", err)
+// 		return domainTasks, errs.NewInternalErrorWithMsg(err, "GetByUserId: get tasks by userid")
+// 	}
 
-	for _, task := range tasks {
-		domainTasks = append(domainTasks, ToEntity(task))
-	}
+// 	for _, task := range tasks {
+// 		domainTasks = append(domainTasks, ToEntity(task))
+// 	}
 
-	return domainTasks, err
-}
+//		return domainTasks, err
+//	}
 
-func (ts *Service) CreateTask(ctx context.Context, params taskservice.CreateInput) (entity.Task, error) {
-	uuid, err := uuid.NewRandom()
+type Task struct{}
+
+func (ts *Service) GetTasksByListId(ctx context.Context, params taskserviceport.GetByListIdInput) ([]taskserviceport.Task, error) {
+	tasks, err := ts.TaskRepo.FindOneByListId(ctx, taskrepoport.GetByListIdInput{
+		ListId: params.ListId,
+	})
 
 	if err != nil {
-		return entity.Task{}, errs.NewInternalError(err)
+		return nil, errs.NewInternalErrorWithMsg(err, fmt.Sprintf("failed to get tasks for list %s", params.ListId))
 	}
 
-	createTaskParams := taskRepo.CreateInput{
+	return tasksToDto(tasks), nil
+}
+
+func (ts *Service) CreateTask(ctx context.Context, params taskserviceport.CreateInput) (taskserviceport.Task, error) {
+	task, err := domain.NewTask(domain.CreateTaskInput{
 		Title:       params.Title,
 		Description: params.Description,
-		Type:        string(params.Type),
-		Status:      string(params.Status),
+		Type:        params.Type,
+		Status:      params.Status,
+		StartDate:   params.StartDate,
+		DueDate:     params.DueDate,
 		UserId:      params.UserId,
-		TaskId:      uuid.String(),
-		Priority:    string(params.Priority),
-	}
-
-	isValidDateRange := entity.IsValidateDateRange(params.StartDate, params.DueDate)
-
-	if !isValidDateRange {
-		return entity.Task{}, errs.NewBadRequestError(errors.New("start date should be before due date"))
-	}
-
-	if params.StartDate != 0 {
-		createTaskParams.StartDate = pkg.UnixToDateTime(params.StartDate)
-	}
-
-	isValid, err := entity.IsValidTaskTypeAndStartTime(params.Type, params.StartDate)
-	if !isValid {
-		return entity.Task{}, errs.NewBadRequestError(err)
-	}
-
-	if err := ts.taskRepo.Create(ctx, createTaskParams); err != nil {
-		return entity.Task{}, errs.NewInternalError(err)
-	}
-
+		ListId:      params.ListId,
+		Priority:    params.Priority,
+	})
 	if err != nil {
-		return entity.Task{}, err
+		ts.Logger.Info("Create task", slog.Any("params", params))
+		return taskserviceport.Task{}, errs.NewBadRequestError(err)
 	}
 
-	taskDto, err := ts.taskRepo.GetByTaskId(ctx, uuid.String())
+	if err := ts.TaskRepo.CreateOne(ctx, task); err != nil {
+		return taskserviceport.Task{}, errs.NewError(err, "failed to create task")
+	}
 
+	taskEntity, err := ts.TaskRepo.FindOneById(ctx, task.Id)
 	if err != nil {
-		return entity.Task{}, errs.CheckSqlError(err, "Task")
+		ts.Logger.Error("Failed to get task", slog.Any("err", err))
+		return taskserviceport.Task{}, errs.NewInternalErrorWithMsg(err, "failed to get task")
 	}
 
-	return ToEntity(taskDto), nil
+	return taskToDto(taskEntity), nil
 }
 
-func (ts *Service) UpdateTask(ctx context.Context, params taskservice.UpdateInput) (entity.Task, error) {
-	taskType := entity.ChangeTypeBasedOnDate(params.StartDate, params.Type)
+func (ts *Service) UpdateTask(ctx context.Context, params taskserviceport.UpdateInput) (taskserviceport.Task, error) {
+	task, err := ts.TaskRepo.FindOneById(ctx, params.TaskId)
+	if err != nil {
+		ts.Logger.Error("Find task by id", slog.Any("err", err))
+		return taskserviceport.Task{}, errs.NewError(err, "failed to get task")
+	}
 
-	updateTaskParams := taskRepo.UpdateInput{
+	task.ApplyChanges(domain.UpdateTaskInput{
 		Title:       params.Title,
 		Description: params.Description,
-		Type:        string(taskType),
-		Status:      string(params.Status),
-		TaskId:      params.TaskId,
-		UserId:      params.UserId,
-		Priority:    string(params.Priority),
+		Type:        params.Type,
+		Status:      params.Status,
+		StartDate:   params.StartDate,
+		DueDate:     params.DueDate,
+		ListId:      params.ListId,
+		Priority:    params.Priority,
+	})
+
+	if err := ts.TaskRepo.UpdateOne(ctx, task); err != nil {
+		return taskserviceport.Task{}, errs.NewError(err, "failed to update task")
 	}
 
-	isValidDateRange := entity.IsValidateDateRange(params.StartDate, params.DueDate)
-
-	if !isValidDateRange {
-		return entity.Task{}, errs.NewBadRequestError(errors.New("start date should be before due date"))
-	}
-
-	if params.StartDate != 0 {
-		updateTaskParams.StartDate = pkg.UnixToDateTime(params.StartDate)
-	}
-	if params.DueDate != 0 {
-		updateTaskParams.DueDate = pkg.UnixToDateTime(params.DueDate)
-	}
-
-	if err := ts.taskRepo.Update(ctx, updateTaskParams); err != nil {
-		return entity.Task{}, errs.CheckSqlError(err, "Task")
-	}
-
-	repoTask, err := ts.taskRepo.GetByTaskId(ctx, updateTaskParams.TaskId)
-
-	if err != nil {
-		return entity.Task{}, errs.CheckSqlError(err, "Task")
-	}
-
-	return ToEntity(repoTask), nil
+	return taskToDto(task), nil
 }
 
-func (ts *Service) UpdateTaskDate(ctx context.Context, params taskservice.UpdateDateInput) (entity.Task, error) {
-	repoTask, err := ts.taskRepo.GetByTaskId(ctx, params.TaskId)
-	if err != nil {
-		return entity.Task{}, errs.CheckSqlError(err, "Task")
-	}
+// func (ts *Service) UpdateTaskDate(ctx context.Context, params taskserviceport.UpdateDateInput) (taskserviceport.Task, error) {
+// 	err := domain.ValidateDateRange(params.StartDate, params.DueDate)
+// 	if err != nil {
+// 		return taskserviceport.Task{}, errs.NewBusinessRuleViolationError(err, "startDate should be greater than dueDate")
+// 	}
 
-	task := ToEntity(repoTask)
-	isValidDateRange := entity.IsValidateDateRange(task.StartDate, task.DueDate)
+// 	repoTask, err := ts.TaskRepo.GetByTaskId(ctx, params.TaskId)
+// 	if err != nil {
+// 		if errs.IsResourceNotFound(err) {
+// 			return taskserviceport.Task{}, errs.NewResourceNotFoundError(err, fmt.Sprintf("task with id %s does not exist", params.TaskId))
+// 		}
+// 		return taskserviceport.Task{}, errs.NewInternalErrorWithMsg(err, "failed to get task")
+// 	}
 
-	if !isValidDateRange {
-		return entity.Task{}, errs.NewBadRequestError(errors.New("start date should be before due date"))
-	}
+// 	task := taskToDto(repoTask)
 
-	taskType := entity.ChangeTypeBasedOnDate(params.StartDate, task.Type)
-	task.Type = taskType
-	task.StartDate = params.StartDate
-	task.DueDate = params.DueDate
+// 	// task.Type = domain.ChangeTypeBasedOnDate(params.StartDate, task.Type)
+// 	// if !params.StartDate.IsZero() {
+// 	// 	task.StartDate = &params.StartDate
+// 	// }
+// 	// if !params.DueDate.IsZero() {
+// 	// 	task.DueDate = &params.DueDate
+// 	// }
 
-	updateDateAndTypeInput := taskRepo.UpdateDateInput{
-		Type:   string(taskType),
+// 	updateDateAndTypeInput := taskrepoport.UpdateDateInput{
+// 		Type:      string(task.Type),
+// 		TaskId:    params.TaskId,
+// 		UserId:    params.UserId,
+// 		StartDate: dbutils.TimeToNullTime(params.StartDate),
+// 		DueDate:   dbutils.TimeToNullTime(params.DueDate),
+// 	}
+
+// 	if err := ts.TaskRepo.UpdateDate(ctx, updateDateAndTypeInput); err != nil {
+// 		return taskserviceport.Task{}, errs.NewError(err, "failed to update task date")
+// 	}
+
+// 	return task, nil
+// }
+
+// func (ts *Service) UpdateTaskStatus(ctx context.Context, params taskserviceport.UpdateStatusInput) error {
+// 	updateStatusParams := taskrepoport.UpdateStatusInput{
+// 		TaskId: params.TaskId,
+// 		UserId: params.UserId,
+// 		Status: string(params.Status),
+// 	}
+
+// 	err := ts.TaskRepo.UpdateStatus(ctx, updateStatusParams)
+
+// 	if err != nil {
+// 		return errs.NewError(err, "failed to update task status")
+// 	}
+// 	return nil
+// }
+
+// func (ts *Service) UpdateTaskPriority(ctx context.Context, params taskserviceport.UpdatePriorityInput) error {
+// 	updatePriorityParams := taskrepoport.UpdatePriorityInput{
+// 		TaskId:   params.TaskId,
+// 		UserId:   params.UserId,
+// 		Priority: string(params.Priority),
+// 	}
+
+// 	err := ts.TaskRepo.UpdatePriority(ctx, updatePriorityParams)
+// 	if err != nil {
+// 		return errs.NewError(err, "failed to update task priority")
+// 	}
+// 	return nil
+// }
+
+func (ts *Service) TrashTask(ctx context.Context, params taskserviceport.TrashInput) error {
+	trashTaskParams := taskrepoport.UpdateTrashInput{
 		TaskId: params.TaskId,
 		UserId: params.UserId,
 	}
-	if params.StartDate != 0 {
-		updateDateAndTypeInput.StartDate = pkg.UnixToDateTime(params.StartDate)
-	}
-	if params.DueDate != 0 {
-		updateDateAndTypeInput.DueDate = pkg.UnixToDateTime(params.DueDate)
-	}
-
-	if err := ts.taskRepo.UpdateDate(ctx, updateDateAndTypeInput); err != nil {
-		return entity.Task{}, errs.CheckSqlError(err, "Task")
-	}
-
-	return task, nil
-}
-
-func (ts *Service) UpdateTaskStatus(ctx context.Context, params taskservice.UpdateStatusInput) error {
-	updateStatusParams := taskRepo.UpdateStatusInput{
-		TaskId: params.TaskId,
-		UserId: params.UserId,
-		Status: string(params.Status),
-	}
-
-	err := ts.taskRepo.UpdateStatus(ctx, updateStatusParams)
-
+	err := ts.TaskRepo.TrashOne(ctx, trashTaskParams)
 	if err != nil {
-		return errs.CheckSqlError(err, "Task")
-	}
-	return nil
-}
-
-func (ts *Service) UpdateTaskPriority(ctx context.Context, params taskservice.UpdatePriorityInput) error {
-	updatePriorityParams := taskRepo.UpdatePriorityInput{
-		TaskId:   params.TaskId,
-		UserId:   params.UserId,
-		Priority: string(params.Priority),
-	}
-
-	err := ts.taskRepo.UpdatePriority(ctx, updatePriorityParams)
-
-	if err != nil {
-		return errs.CheckSqlError(err, "Task")
-	}
-	return nil
-}
-
-func (ts *Service) TrashTask(ctx context.Context, params taskservice.TrashInput) error {
-	trashTaskParams := taskRepo.UpdateTrashInput{
-		TaskId: params.TaskId,
-		UserId: params.UserId,
-	}
-	err := ts.taskRepo.TrashTask(ctx, trashTaskParams)
-
-	if err != nil {
-		return errs.CheckSqlError(err, "Task")
+		return errs.NewError(err, "failed to trash task")
 	}
 
 	return nil
 }
 
-func (ts *Service) DeleteTrashedTask(ctx context.Context, params taskservice.DeleteInput) error {
-	deleteTrashedTaskParams := taskRepo.DeleteInput{
+func (ts *Service) DeleteTrashedTask(ctx context.Context, params taskserviceport.DeleteInput) error {
+	deleteTrashedTaskParams := taskrepoport.DeleteInput{
 		TaskId: params.TaskId,
 		UserId: params.UserId,
 	}
-	err := ts.taskRepo.DeleteTrashedTask(ctx, deleteTrashedTaskParams)
+	err := ts.TaskRepo.DeleteOne(ctx, deleteTrashedTaskParams)
 	if err != nil {
-		return errs.CheckSqlError(err, "Task")
+		return errs.NewError(err, "failed to delete trashed task")
 	}
 	return nil
 }
 
 func (ts *Service) DeleteTrashedTasks(ctx context.Context, userId string) error {
-	err := ts.taskRepo.DeleteTrashedTasks(ctx, userId)
+	err := ts.TaskRepo.DeleteMany(ctx, userId)
 	if err != nil {
-		return errs.CheckSqlError(err, "Task")
+		return errs.NewError(err, "failed to delete trashed tasks")
 	}
 	return nil
 }
 
-func ToEntity(task model.Task) entity.Task {
-	return entity.Task{
-		Id:          task.Id,
-		UserId:      task.UserId,
-		Title:       task.Title,
-		Description: task.Description,
-		Type:        entity.TaskType(task.Type),
-		Status:      entity.TaskStatus(task.Status),
-		StartDate:   task.StartDate.Int64,
-		DueDate:     task.DueDate.Int64,
-		IsTrashed:   task.IsTrashed,
-		CreatedAt:   task.CreatedAt,
-		Priority:    entity.Priority(task.Priority),
-	}
+func Provide() pal.ServiceDef {
+	return pal.Provide[taskserviceport.Api](&Service{})
 }

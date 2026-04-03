@@ -2,5 +2,6 @@ import { createContext } from "react"
 
 export const TabContext = createContext<{
   value: string
-  setValue: (value: string) => void
+  setValue: (value: any) => void
+  contentStyles?: string
 }>({ value: "", setValue: () => ({}) })

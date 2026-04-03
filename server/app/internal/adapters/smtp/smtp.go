@@ -1,13 +1,18 @@
 package smtp
 
 import (
+	"context"
 	"fmt"
 	"net/smtp"
 
+	"github.com/udovichenk0/scheduler/config"
 	smtpport "github.com/udovichenk0/scheduler/internal/ports/api/smtp"
+	"github.com/zhulik/pal"
 )
 
 type Service struct {
+	Config *config.Config
+
 	auth     smtp.Auth
 	From     string
 	Password string
@@ -15,27 +20,23 @@ type Service struct {
 	Port     string
 }
 
-type Opts struct {
-	From     string
-	Password string
-	Host     string
-	Port     string
+func (s *Service) Init(_ context.Context) error {
+	auth := smtp.PlainAuth("", s.Config.Smtp.From, s.Config.Smtp.Password, s.Config.Smtp.Host)
+	s.auth = auth
+	s.From = s.Config.Smtp.From
+	s.Password = s.Config.Smtp.Password
+	s.Host = s.Config.Smtp.Host
+	s.Port = s.Config.Smtp.Port
+	return nil
 }
 
-func New(conf Opts) Service {
-	auth := smtp.PlainAuth("", conf.From, conf.Password, conf.Host)
-	return Service{
-		auth:     auth,
-		Host:     conf.Host,
-		From:     conf.From,
-		Password: conf.Password,
-		Port:     conf.Port,
-	}
+func Provide() pal.ServiceDef {
+	return pal.Provide[smtpport.Api](&Service{})
 }
 
 func (s Service) SendEmail(opts smtpport.SendInput) error {
 	addr := fmt.Sprintf("%s:%s", s.Host, s.Port)
-	msg := []byte(fmt.Sprintf("To: %s\r\nSubject: %s\r\n\r\n%s", opts.To, opts.Subject, opts.Body))
+	msg := fmt.Appendf(nil, "To: %s\r\nSubject: %s\r\n\r\n%s", opts.To, opts.Subject, opts.Body)
 	err := smtp.SendMail(addr, s.auth, s.From, []string{opts.To}, []byte(msg))
 	if err != nil {
 		return err

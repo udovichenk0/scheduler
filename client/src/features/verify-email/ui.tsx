@@ -60,7 +60,6 @@ export const VerifyEmail = ({ goBack }: { goBack: () => void }) => {
             type="button"
             disabled={isRunning}
             className={`${isRunning && "opacity-50"}`}
-            intent={"outline"}
             size={"m"}
             onClick={onResend}
           >

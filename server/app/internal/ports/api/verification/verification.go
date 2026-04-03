@@ -1,9 +1,7 @@
-package verification
+package verificationserviceport
 
 import (
 	"context"
-
-	"github.com/udovichenk0/scheduler/internal/entity"
 )
 
 type Verification struct {
@@ -13,8 +11,15 @@ type Verification struct {
 	CreatedAt string
 }
 
-type Port interface {
-	VerifyUser(ctx context.Context, code, userId string) (entity.User, error)
+type VerifyUserOutput struct {
+	Id        string
+	Email     string
+	Verified  bool
+	CreatedAt string
+}
+
+type Api interface {
+	VerifyUser(ctx context.Context, code, userId string) (VerifyUserOutput, error)
 	CreateCode(ctx context.Context, userId string) (string, error)
 	ChangeCode(ctx context.Context, userId string, email string) error
 }

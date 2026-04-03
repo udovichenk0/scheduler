@@ -1,9 +1,6 @@
 import { Fragment, ReactNode, useContext, useEffect, useState } from "react"
 import { useUnit } from "effector-react"
 
-import { ExpandedTask } from "@/widgets/expanded-task"
-import { EditableTask } from "@/widgets/editable-task"
-
 import { Task } from "@/entities/task/type.ts"
 
 import { TaskId } from "@/shared/api/task/task.dto.ts"
@@ -79,7 +76,7 @@ const Header = ({
         onFocus={onClick}
         className={`${
           isSelected && "bg-cFocus cursor-pointer"
-        } enabled:hover:bg-hover flex w-full items-center gap-2 rounded-[5px] px-3 text-lg focus-visible:border-4 `}
+        } enabled:hover:bg-hover flex w-full items-center gap-2 rounded-[5px] px-3 text-lg focus-visible:border-4`}
       >
         {children}
       </button>
@@ -96,8 +93,9 @@ const Section = ({
   onSelectTaskId: (taskId: Nullable<TaskId>) => void
   isSelected: boolean
 }) => {
-  const { $$createTask, $$updateTask } = useContext(TaskManagerContext)
-  const onCreateTask = useUnit($$createTask.createTaskTriggered)
+  const { $$taskCreator, $$taskUpdater, $$taskTrasher } =
+    useContext(TaskManagerContext)
+  const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
   const { isOpened: isCreateTaskFormOpened, close: onCloseCreateTaskForm } =
     useDisclosure({ id: ModalName.CreateTaskForm, onClose: onCreateTask })
   const { onSelect, onUnselect, addNode } = useSelectItem({
@@ -116,29 +114,30 @@ const Section = ({
                   className="border-cBorder px-3 pb-2 last:border-b"
                   key={task.id}
                 >
-                  <EditableTask
+                  {/*<EditableTask
                     ref={(node) => addNode(node!, id)}
                     key={task.id}
-                    $$updateTask={$$updateTask}
+                    $$taskUpdater={$$taskUpdater}
+                    $$taskRemover={$$taskTrasher}
                     task={task}
                     typeLabel
                     dateLabel
                     onSelect={() => onSelect(id)}
                     onBlur={onUnselect}
-                  />
+                  />*/}
                 </div>
               )
             })}
           </div>
         </div>
       )}
-      <ExpandedTask
+      {/*<ExpandedTask
         isExpanded={isCreateTaskFormOpened && isSelected}
         className="border-cBorder border-b px-3 py-2"
         dateModifier={true}
-        modifyTaskModel={$$createTask}
+        $$taskManager={$$taskCreator}
         closeTaskForm={onCloseCreateTaskForm}
-      />
+      />*/}
     </>
   )
 }

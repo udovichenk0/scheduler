@@ -112,7 +112,7 @@ export const timeList = [
   "11:45 pm",
 ]
 
-export const DateShortCut = {
+const DateShortCut = {
   Today: "today",
   Tomorrow: "tomorrow",
   Later: "later",

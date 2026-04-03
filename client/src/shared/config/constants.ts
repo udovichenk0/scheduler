@@ -61,3 +61,5 @@ export const SHORT_WEEKS_NAMES = [
   "date.shortNameWeek.friday",
   "date.shortNameWeek.saturday",
 ]
+
+export const default_scroll_width = 10

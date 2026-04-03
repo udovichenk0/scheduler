@@ -1,240 +1,320 @@
-import { createEvent, createStore, merge, sample } from "effector"
-import { and } from "patronum"
-import { attachOperation } from "@farfetched/core"
+import { createEffect, createEvent, createStore, sample } from "effector"
 
-import {
-  changeTaskStatus,
-  findTaskById,
-  getTaskFields,
-  taskToDomain,
-} from "@/entities/task/lib"
-import { $$session } from "@/entities/session/session.model.ts"
-import { EditableTaskFields, Task, Status } from "@/entities/task/type"
-import { modifyTaskFactory } from "@/entities/task/model/modify.model"
+import { getTaskFields, taskToDomain } from "@/entities/task/lib"
+import { EditableTaskFields, Task, Status, TaskId } from "@/entities/task/type"
+import { createTaskEditor } from "@/entities/task/model/modify.model"
 import { TaskModel } from "@/entities/task/model/task.model"
 
 import { taskApi } from "@/shared/api/task/task.api.ts"
-import {
-  TaskId,
-  createUpdateDateDto,
-  toApiTaskFields,
-} from "@/shared/api/task/task.dto.ts"
-import { SDate } from "@/shared/lib/date/lib"
 import { Priority } from "@/shared/api/scheduler.schemas"
+import { SDate } from "@/shared/lib/date/lib"
+import { ListId } from "@/entities/project/list/type"
 
-export const updateTaskFactory = ({ taskModel }: { taskModel: TaskModel }) => {
-  const $$modifyTask = modifyTaskFactory({})
-  const {
-    resetFieldsTriggered,
-    $isAllowToSubmit,
-    $fields,
-    setFieldsTriggered,
-  } = $$modifyTask
+export const createTaskUpdater = ({ taskModel }: { taskModel: TaskModel }) => {
+  const taskEditor = createTaskEditor()
+  const { resetFieldsTriggered, initTaskFields, $fields } = taskEditor
 
-  const updateTaskTriggeredById = createEvent<TaskId>()
-  const updateTaskTriggered = createEvent()
-  const statusChangedAndUpdated = createEvent<{
-    id: TaskId
+  const updateTaskTriggered = createEvent<Task>()
+  const init = createEvent<Task>()
+
+  const updateTaskMutation = taskApi.createUpdateTaskMutation()
+  const updateTaskMutationFx = createEffect(updateTaskMutation)
+
+  const optimisticUpdateStored = createEvent<{
+    key: string
+    previous: Partial<EditableTaskFields>
+  }>()
+  const optimisticUpdateCleared = createEvent<string>()
+
+  const updateStatus = createEvent<{
+    taskId: TaskId
+    listId: ListId
     status: Status
   }>()
-  const dateChangedAndUpdated = createEvent<{
-    id: TaskId
+
+  const updateDate = createEvent<{
+    taskId: TaskId
+    listId: ListId
     startDate: Nullable<SDate>
     dueDate: Nullable<SDate>
   }>()
 
-  const priorityChangedAndUpdated = createEvent<{
-    id: TaskId
+  const updatePriority = createEvent<{
+    taskId: TaskId
+    listId: ListId
     priority: Priority
   }>()
-  const init = createEvent<Task>()
 
-  const attachUpdateStatusQuery = attachOperation(taskApi.updateStatusMutation)
-  const attachUpdatePriorityQuery = attachOperation(
-    taskApi.updatePriorityMutation,
-  )
-  const attachUpdateTaskDate = attachOperation(taskApi.updateDateMutation)
-  const attachUpdateTaskQuery = attachOperation(taskApi.updateTaskMutation)
-  const $oldFields = createStore<Record<TaskId, EditableTaskFields>>({})
-  const $id = createStore<Nullable<TaskId>>(null)
+  const $optimisticUpdates = createStore<
+    Record<string, Partial<EditableTaskFields>>
+  >({})
 
-  const taskSuccessfullyUpdated = merge([
-    attachUpdateTaskQuery.finished.success,
-    // attachUpdateTaskFromLocalStorageFx.finished.success,
-  ])
+  const makeKey = (taskId: TaskId, listId: ListId) => `${listId}:${taskId}`
 
-  //* Update task date
+  const findTask = (
+    tasksByListId: Record<ListId, Task[]>,
+    taskId: TaskId,
+    listId: ListId,
+  ) => {
+    const list = tasksByListId[listId]
+    if (list) {
+      return list.find((task) => task.id === taskId) ?? null
+    }
+    for (const tasks of Object.values(tasksByListId)) {
+      const task = tasks.find((item) => item.id === taskId)
+      if (task) return task
+    }
+    return null
+  }
+
   sample({
-    clock: dateChangedAndUpdated,
-    filter: $$session.$isAuthenticated,
-    fn: createUpdateDateDto,
-    target: attachUpdateTaskDate.start,
+    clock: optimisticUpdateStored,
+    source: $optimisticUpdates,
+    fn: (updates, { key, previous }) => ({ ...updates, [key]: previous }),
+    target: $optimisticUpdates,
   })
-  sample({
-    clock: attachUpdateTaskDate.finished.success,
-    filter: Boolean,
-    fn: ({ result }) => taskToDomain(result),
-    target: taskModel.taskReplaced,
-  })
 
-  //* Update task status
   sample({
-    clock: statusChangedAndUpdated,
-    filter: $$session.$isAuthenticated,
-    fn: ({ id, status }) => {
-      return { id, data: { status: changeTaskStatus(status) } }
+    clock: optimisticUpdateCleared,
+    source: $optimisticUpdates,
+    fn: (updates, key) => {
+      if (!updates[key]) return updates
+      const next = { ...updates }
+      delete next[key]
+      return next
     },
-    target: attachUpdateStatusQuery.start,
+    target: $optimisticUpdates,
   })
 
-  sample({
-    clock: statusChangedAndUpdated,
-    fn: ({ id, status }) => {
-      return { id, status: changeTaskStatus(status) }
-    },
-    target: taskModel.fieldsReplaced,
-  })
-  sample({
-    clock: attachUpdateStatusQuery.finished.failure,
-    fn: ({ params }) => {
-      return { id: params.id, status: changeTaskStatus(params.data.status) }
-    },
-    target: taskModel.fieldsReplaced,
-  })
-
-  //* Update task priority
-  sample({
-    clock: priorityChangedAndUpdated,
-    filter: $$session.$isAuthenticated,
-    fn: ({ id, priority }) => {
-      return { id, data: { priority } }
-    },
-    target: attachUpdatePriorityQuery.start,
-  })
-
-  sample({
-    clock: priorityChangedAndUpdated,
-    target: taskModel.fieldsReplaced,
-  })
-  sample({
-    clock: attachUpdatePriorityQuery.finished.failure,
-    fn: ({ params }) => {
-      return { id: params.id, priority: params.data.priority }
-    },
-    target: taskModel.fieldsReplaced,
-  })
-
-  //* Update task
   sample({
     clock: updateTaskTriggered,
-    source: { tasks: taskModel.$tasks, oldFields: $oldFields, id: $id },
-    filter: and(
-      $$session.$isAuthenticated,
-      taskModel.$tasks,
-      $isAllowToSubmit,
-      $id,
-    ),
-    fn: ({ tasks, oldFields: pendUpdates, id: taskId }) => {
-      const task = findTaskById(tasks!, taskId!)
-      const fields = getTaskFields(task)
-      return { ...pendUpdates, [taskId!]: { ...fields } }
+    source: {
+      fields: $fields,
+      isDirty: taskEditor.$isDirty,
     },
-    target: $oldFields,
-  })
-  sample({
-    clock: updateTaskTriggered,
-    source: { id: $id, fields: $fields },
-    filter: and(
-      $$session.$isAuthenticated,
-      taskModel.$tasks,
-      $isAllowToSubmit,
-      $id,
-    ),
-    fn: ({ id: taskId, fields }) => ({
-      id: taskId!,
-      fields,
-    }),
-    target: taskModel.updateFields,
-  })
-  sample({
-    clock: updateTaskTriggered,
-    source: { id: $id, fields: $fields },
-    filter: and(
-      $$session.$isAuthenticated,
-      taskModel.$tasks,
-      $isAllowToSubmit,
-      $id,
-    ),
-    fn: ({ fields, id }) => ({ data: toApiTaskFields(fields), id: id! }),
-    target: attachUpdateTaskQuery.start,
-  })
-  sample({
-    clock: updateTaskTriggered,
-    target: resetFieldsTriggered,
-  })
-  sample({
-    clock: attachUpdateTaskQuery.finished.success,
-    source: $oldFields,
-    fn: (updates, { result }) =>
-      Object.fromEntries(
-        Object.entries(updates).filter(([key]) => result.id != key),
-      ),
-    target: $oldFields,
-  })
-  // sample({
-  //   clock: attachUpdateTaskQuery.finished.success,
-  //   source: taskModel.$tasks,
-  //   fn: (tasks, { params, result }) => {
-  //     const tempId = params.id
-  //     return tasks!.map((task) => task.id == tempId ? {...task, ...taskToDomain(result)} : task)
-  //   },
-  //   target: taskModel.setTasksTriggered
-  // })
-
-  sample({
-    clock: attachUpdateTaskQuery.finished.failure,
-    source: $oldFields,
-    fn: (fields, { params }) => {
-      const oldFields = fields[params.id]
+    filter: ({ isDirty }) => isDirty,
+    fn: ({ fields }, task) => {
       return {
-        fields: oldFields,
-        id: params.id,
+        taskId: task.id,
+        listId: task.list_id,
+        data: {
+          ...fields,
+          start_date: fields.start_date?.toISOString() || null,
+          due_date: fields.due_date?.toISOString() || null,
+        },
       }
     },
-    target: taskModel.updateFields,
+    target: updateTaskMutationFx,
+  })
+
+  sample({
+    clock: updateTaskTriggered,
+    source: {
+      fields: $fields,
+      tasksByListId: taskModel.$tasksByListId,
+      isDirty: taskEditor.$isDirty,
+    },
+    filter: ({ isDirty }) => isDirty,
+    fn: ({ fields, tasksByListId }, task) => {
+      const current = findTask(tasksByListId, task.id, task.list_id)
+      return {
+        taskId: task.id,
+        listId: task.list_id,
+        fields,
+        previous: current
+          ? {
+              title: current.title,
+              description: current.description,
+              status: current.status,
+              type: current.type,
+              start_date: current.start_date,
+              due_date: current.due_date,
+              priority: current.priority,
+            }
+          : null,
+      }
+    },
+    target: [
+      taskModel.updateTaskFields.prepend(({ taskId, listId, fields }) => ({
+        id: taskId,
+        listId,
+        fields,
+      })),
+      optimisticUpdateStored.prepend(({ taskId, listId, previous }) => ({
+        key: makeKey(taskId, listId),
+        previous: previous as Partial<EditableTaskFields>,
+      })),
+    ],
+  })
+
+  sample({
+    clock: updateTaskMutationFx.doneData,
+    fn: (task) => ({ task: taskToDomain(task) }),
+    target: taskModel.replaceTask,
+  })
+
+  sample({
+    clock: updateTaskMutationFx.done,
+    fn: ({ params }) => makeKey(params.taskId, params.listId),
+    target: optimisticUpdateCleared,
+  })
+
+  sample({
+    clock: updateTaskMutationFx.fail,
+    source: $optimisticUpdates,
+    fn: (updates, { params }) => {
+      const key = makeKey(params.taskId, params.listId)
+      return {
+        key,
+        taskId: params.taskId,
+        listId: params.listId,
+        previous: updates[key] ?? null,
+      }
+    },
+    filter: ({ previous }) => Boolean(previous),
+    target: [
+      taskModel.updateTaskFields.prepend(({ taskId, listId, previous }) => ({
+        id: taskId,
+        listId,
+        fields: previous as Partial<EditableTaskFields>,
+      })),
+      optimisticUpdateCleared.prepend(({ key }) => key),
+    ],
+  })
+
+  sample({
+    clock: updateTaskTriggered,
+    filter: taskEditor.$isDirty,
+    target: [resetFieldsTriggered /*$task.reinit*/],
   })
 
   sample({
     clock: init,
     fn: getTaskFields,
-    target: setFieldsTriggered,
-  })
-  sample({
-    clock: init,
-    fn: (task) => task.id,
-    target: $id,
+    target: initTaskFields,
   })
 
   sample({
-    clock: [
-      attachUpdateTaskQuery.finished.success,
-      attachUpdateStatusQuery.finished.success,
-      attachUpdatePriorityQuery.finished.success,
-      attachUpdateTaskDate.finished.success,
+    clock: updateStatus,
+    source: taskModel.$tasksByListId,
+    fn: (tasksByListId, { taskId, listId, status }) => {
+      const current = findTask(tasksByListId, taskId, listId)
+      return {
+        taskId,
+        listId,
+        fields: { status },
+        previous: current ? { status: current.status } : null,
+      }
+    },
+    filter: ({ previous }) => Boolean(previous),
+    target: [
+      taskModel.updateTaskFields.prepend(({ taskId, listId, fields }) => ({
+        id: taskId,
+        listId,
+        fields,
+      })),
+      optimisticUpdateStored.prepend(({ taskId, listId, previous }) => ({
+        key: makeKey(taskId, listId),
+        previous: previous as Partial<EditableTaskFields>,
+      })),
     ],
-    target: resetFieldsTriggered,
   })
+
+  sample({
+    clock: updatePriority,
+    source: taskModel.$tasksByListId,
+    fn: (tasksByListId, { taskId, listId, priority }) => {
+      const current = findTask(tasksByListId, taskId, listId)
+      return {
+        taskId,
+        listId,
+        fields: { priority },
+        previous: current ? { priority: current.priority } : null,
+      }
+    },
+    filter: ({ previous }) => Boolean(previous),
+    target: [
+      taskModel.updateTaskFields.prepend(({ taskId, listId, fields }) => ({
+        id: taskId,
+        listId,
+        fields,
+      })),
+      optimisticUpdateStored.prepend(({ taskId, listId, previous }) => ({
+        key: makeKey(taskId, listId),
+        previous: previous as Partial<EditableTaskFields>,
+      })),
+    ],
+  })
+
+  sample({
+    clock: updateDate,
+    source: taskModel.$tasksByListId,
+    fn: (tasksByListId, { taskId, listId, startDate, dueDate }) => {
+      const current = findTask(tasksByListId, taskId, listId)
+      return {
+        taskId,
+        listId,
+        fields: { start_date: startDate, due_date: dueDate },
+        previous: current
+          ? { start_date: current.start_date, due_date: current.due_date }
+          : null,
+      }
+    },
+    filter: ({ previous }) => Boolean(previous),
+    target: [
+      taskModel.updateTaskFields.prepend(({ taskId, listId, fields }) => ({
+        id: taskId,
+        listId,
+        fields,
+      })),
+      optimisticUpdateStored.prepend(({ taskId, listId, previous }) => ({
+        key: makeKey(taskId, listId),
+        previous: previous as Partial<EditableTaskFields>,
+      })),
+    ],
+  })
+
+  sample({
+    clock: updateStatus,
+    fn: ({ taskId, listId, status }) => ({
+      taskId,
+      listId,
+      data: { status },
+    }),
+    target: updateTaskMutationFx,
+  })
+
+  sample({
+    clock: updatePriority,
+    fn: ({ taskId, listId, priority }) => ({
+      taskId,
+      listId,
+      data: { priority },
+    }),
+    target: updateTaskMutationFx,
+  })
+
+  sample({
+    clock: updateDate,
+    fn: ({ taskId, listId, startDate, dueDate }) => ({
+      taskId,
+      listId,
+      data: {
+        start_date: startDate?.toISOString() || null,
+        due_date: dueDate?.toISOString() || null,
+      },
+    }),
+    target: updateTaskMutationFx,
+  })
+
   return {
-    updateTaskTriggeredById,
     updateTaskTriggered,
-    taskSuccessfullyUpdated,
-    statusChangedAndUpdated,
-    dateChangedAndUpdated,
-    priorityChangedAndUpdated,
     init,
-    $isUpdating: taskApi.updateTaskMutation.$pending,
-    $id,
-    ...$$modifyTask,
+    updateStatus,
+    updatePriority,
+    updateDate,
+    ...taskEditor,
   }
 }
-export type UpdateTaskFactory = ReturnType<typeof updateTaskFactory>
+
+export type TaskUpdater = ReturnType<typeof createTaskUpdater>

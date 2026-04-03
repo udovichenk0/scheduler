@@ -1,11 +1,20 @@
 import { combine } from "effector"
 
-import { removeTaskFactory } from "@/features/manage-task/delete"
+import { createTaskDeletion } from "@/features/manage-task/delete"
 
-import { $$taskModel } from "@/entities/task/model/task.model.ts"
+import { getTaskModelInstance } from "@/entities/task/model/task.model.ts"
 
-export const $trashTasks = combine($$taskModel.$tasks, (tasks) => {
-  return tasks?.filter((task) => task.is_trashed) || []
-})
+import { routes } from "@/shared/routing/router"
 
-export const $$deleteTask = removeTaskFactory($$taskModel)
+const $$taskModel = getTaskModelInstance()
+
+export const $trashTasks = combine(
+  $$taskModel.$tasksByListId,
+  routes.trash.$isOpened,
+  (tasks, isOpened) => {
+    if (!isOpened) return []
+    return tasks?.filter((task) => task.is_trashed) || []
+  },
+)
+
+export const $$taskRemover = createTaskDeletion({ taskModel: $$taskModel })

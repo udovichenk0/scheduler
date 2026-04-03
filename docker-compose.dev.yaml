@@ -1,0 +1,28 @@
+services:
+  db:
+    image: mariadb
+    restart: always
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - "33006:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: scheduler
+      MARIADB_USER: scheduler
+      MARIADB_PASSWORD: scheduler
+      MARIADB_DATABASE: scheduler
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  db-data:

@@ -15,7 +15,8 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string
   error?: Nullable<string>
   autoFocus?: boolean
-  ref: RefObject<any>
+  ref?: RefObject<any>
+  outerStyles?: string
 }
 
 export const Input = ({
@@ -23,6 +24,7 @@ export const Input = ({
   autoFocus = false,
   type,
   label,
+  outerStyles,
   className,
   disabled,
   error,
@@ -44,8 +46,8 @@ export const Input = ({
     }
   })
   return (
-    <div className={clsx("flex w-full flex-col", className)}>
-      <label className="text-cOpacitySecondFont text-left text-[12px]">
+    <div className={clsx("flex w-full flex-col", outerStyles)}>
+      <label className="text-cOpacitySecondFont text-left text-xs">
         {label}
       </label>
       <div className="relative mb-3">
@@ -56,8 +58,10 @@ export const Input = ({
           disabled={disabled}
           aria-invalid={!!error}
           value={value}
-          className="border-cSecondBorder hover:border-hover focus:border-hover aria-[invalid=true]:text-error flex w-full items-center border-b-[1px]
-          bg-transparent py-1 pr-8 text-sm outline-none"
+          className={clsx(
+            "border-cSecondBorder hover:border-hover focus:border-hover aria-[invalid=true]:text-error flex w-full items-center border-b-[1px] bg-transparent py-1 pl-2 pr-8 text-sm outline-none duration-100",
+            className,
+          )}
         />
         {icon && <span className="absolute bottom-1 right-0">{icon}</span>}
       </div>

@@ -11,6 +11,7 @@ export const useClick = ({
   const id = useId()
   useEffect(() => {
     const close = (e: MouseEvent) => {
+      if (e.button != 0) return
       const target = e.target as HTMLElement
       if (
         target &&
@@ -24,12 +25,12 @@ export const useClick = ({
       }
     }
     stack.push(id)
-    document.addEventListener("click", close, listenerOptions)
+    document.addEventListener("mouseup", close, listenerOptions)
     return () => {
-      document.removeEventListener("click", close, listenerOptions)
+      document.removeEventListener("mouseup", close, listenerOptions)
       stack.pop()
     }
-  }, [])
+  }, [onClickOutside])
 
   return () => (isPointerInsideReactTreeRef.current = true)
 }

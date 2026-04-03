@@ -1,4 +1,4 @@
-import { defineConfig } from "orval"
+import { defineConfig, NamingConvention } from "orval"
 
 export default defineConfig({
   scheduler: {

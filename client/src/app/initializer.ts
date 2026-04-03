@@ -1,6 +1,6 @@
 import { createEvent, sample } from "effector"
 
-import { $$taskModel } from "@/entities/task/model/task.model.ts"
+import { getTaskModelInstance } from "@/entities/task/model/task.model.ts"
 import { $$session } from "@/entities/session/session.model.ts"
 import { $$pomodoroSettings } from "@/entities/settings/pomodoro/model.ts"
 import { $$themeSettings } from "@/entities/settings/theme/main-theme/main-theme.model.ts"
@@ -10,6 +10,7 @@ import { createHistory } from "@/shared/routing/history.ts"
 import { $$i18n } from "@/shared/i18n/i18n.ts"
 
 export const appInitializer = () => {
+  const $$taskModel = getTaskModelInstance()
   const init = createEvent()
   const $$routerHistory = createHistory()
   const theme = $$themeSettings

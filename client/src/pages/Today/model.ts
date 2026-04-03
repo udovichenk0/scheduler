@@ -1,30 +1,25 @@
 import { createEvent, createStore, sample, combine } from "effector"
 import { createGate } from "effector-react"
-import * as z from "@zod/mini"
+import * as z from "zod/mini"
 
-import { createTaskFactory } from "@/features/manage-task/create"
-import { updateTaskFactory } from "@/features/manage-task/update"
-import { trashTaskFactory } from "@/features/manage-task/trash"
+import { createTaskCreator } from "@/features/manage-task/create"
+import { createTaskUpdater } from "@/features/manage-task/update"
+import { createTaskTrasher } from "@/features/manage-task/trash"
 
-import { modifyTaskFactory } from "@/entities/task/model/modify.model.ts"
 import { getTaskModelInstance } from "@/entities/task/model/task.model"
 import { createSorting } from "@/entities/task/model/sorting.model"
 import { isUnplaced, shouldShowCompleted } from "@/entities/task/lib"
 
 import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
-import { getToday } from "@/shared/lib/date/lib"
+import { routes } from "@/shared/routing/router"
 
 export const gate = createGate()
 
 export const $$taskModel = getTaskModelInstance()
 
-export const $$trashTask = trashTaskFactory({ taskModel: $$taskModel })
-export const $$updateTask = updateTaskFactory({ taskModel: $$taskModel })
-export const $$createTask = createTaskFactory({
-  $$modifyTask: modifyTaskFactory({
-    defaultType: "unplaced",
-    defaultDate: getToday(),
-  }),
+export const $$taskTrasher = createTaskTrasher({ taskModel: $$taskModel })
+export const $$taskUpdater = createTaskUpdater({ taskModel: $$taskModel })
+export const $$taskCreator = createTaskCreator({
   taskModel: $$taskModel,
 })
 
@@ -33,7 +28,9 @@ export const $$sort = createSorting()
 const $commonTasks = combine(
   $$taskModel.$tasks,
   $$taskModel.$isCompletedShown,
-  (tasks, isCompletedShown) => {
+  routes.home.$isOpened,
+  (tasks, isCompletedShown, isOpened) => {
+    if (!isOpened) return []
     return (
       tasks?.filter(
         (task) =>

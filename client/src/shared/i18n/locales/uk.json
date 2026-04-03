@@ -5,7 +5,8 @@
     "upcoming": "Плани",
     "calendar": "Календар",
     "trash": "Корзина",
-    "unplaced": "Без проекту"
+    "unplaced": "Без проекту",
+    "notifications": "Сповіщення"
   },
   "taskForm": {
     "newTask": "Нова Задача",
@@ -171,6 +172,30 @@
   "noTasks": {
     "title": "Нічого немає",
     "description": "Натисніть значок +, щоб створити нове завдання"
+  },
+  "noNotifications": {
+    "title": "Немає сповіщень",
+    "description": "Ви все перевірили! Нових сповіщень немає."
+  },
+  "notifications": {
+    "title": "Сповіщення",
+    "markAllRead": "Позначити всі як прочитані",
+    "badge": {
+      "new": "Нове"
+    },
+    "time": {
+      "justNow": "Щойно",
+      "minutesAgo": "{{count}} хв тому",
+      "hoursAgo": "{{count}} год тому",
+      "daysAgo": "{{count}} день тому"
+    },
+    "filters": {
+      "all": "Всі",
+      "unread": "Непрочитані",
+      "task_assignment": "Завдання",
+      "invitation": "Запрошення",
+      "message": "Повідомлення"
+    }
   },
   "sort": {
     "title": "Сортування",

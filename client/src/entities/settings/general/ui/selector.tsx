@@ -49,8 +49,7 @@ export const Selector = ({
               <button
                 onClick={() => onSelect(value)}
                 key={label}
-                className={`text-cOpacitySecondFont w-full px-4 hover:bg-blue-500 hover:text-white 
-                  ${label === selectedValue && "bg-hover"}`}
+                className={`text-cOpacitySecondFont w-full px-4 hover:bg-blue-500 hover:text-white ${label === selectedValue && "bg-hover"}`}
               >
                 {label}
               </button>

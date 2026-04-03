@@ -13,13 +13,14 @@ import { NoTasks } from "@/shared/ui/no-tasks"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { useSelectItem } from "@/shared/lib/use-select-item"
+import { getToday } from "@/shared/lib/date/lib"
 
 import { SORT_CONFIG } from "./config"
 import {
-  $$createTask,
-  $$trashTask,
+  $$taskCreator,
+  $$taskTrasher,
   $$sort,
-  $$updateTask,
+  $$taskUpdater,
   $unplacedTasks,
   $$taskModel,
 } from "./model"
@@ -30,15 +31,20 @@ const Unplaced = () => {
   const tasks = useUnit($unplacedTasks)
   const activeSort = useUnit($$sort.$sortType)
 
-  const onDeleteTask = useUnit($$trashTask.taskTrashedById)
-  const onCreateTask = useUnit($$createTask.createTaskTriggered)
+  const onDeleteTask = useUnit($$taskTrasher.trashTaskById)
+  const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
+  const onChangeDate = useUnit($$taskCreator.dateChanged)
   const onSortChange = useUnit($$sort.sort)
 
   const {
     isOpened: isCreateFormOpened,
     open: onOpenCreateForm,
     close: onCloseCreateForm,
-  } = useDisclosure({ id: ModalName.CreateTaskForm, onClose: onCreateTask })
+  } = useDisclosure({
+    id: ModalName.CreateTaskForm,
+    onClose: onCreateTask,
+    onOpen: () => onChangeDate({ startDate: getToday(), dueDate: null }),
+  })
 
   const onToggleCompleted = useUnit($$taskModel.toggleCompletedShown)
   const isCompletedShown = useUnit($$taskModel.$isCompletedShown)
@@ -48,7 +54,8 @@ const Unplaced = () => {
       <div className="px-3 pb-2" key={task.id}>
         <EditableTask
           ref={(node) => addNode(node!, index)}
-          $$updateTask={$$updateTask}
+          $$taskUpdater={$$taskUpdater}
+          $$taskRemover={$$taskTrasher}
           dateLabel
           task={task}
           onSelect={() => onSelect(index)}
@@ -91,8 +98,8 @@ const Unplaced = () => {
         <ExpandedTask
           className="mx-3"
           isExpanded={isCreateFormOpened}
-          modifyTaskModel={$$createTask}
-          dateModifier={false}
+          $$taskManager={$$taskCreator}
+          dateModifier={true}
           closeTaskForm={onCloseCreateForm}
         />
       </Layout.Content>

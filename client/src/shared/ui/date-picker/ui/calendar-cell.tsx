@@ -62,13 +62,7 @@ export const Cell = ({
         }}
         data-active={isStartDate || isDueDate}
         data-istoday={isTodayDate && !isStartDate && !isDueDate}
-        className={`
-          ${styles.cell} 
-          focus-visible:border-cSecondBorder text-cCalendarFont relative z-20 flex size-[35px] items-center justify-center rounded-[5px] text-[13px] focus-visible:border
-          ${!isStartDate && !isDueDate && !isPast && "hover:bg-hover"} 
-          ${isPast && "text-cSecondBorder"}
-          ${!isPast && "cursor-pointer"}
-        `}
+        className={` ${styles.cell} focus-visible:border-cSecondBorder text-cCalendarFont relative z-20 flex size-[35px] items-center justify-center rounded-[5px] text-[13px] focus-visible:border ${!isStartDate && !isDueDate && !isPast && "hover:bg-hover"} ${isPast && "text-cSecondBorder"} ${!isPast && "cursor-pointer"} `}
       >
         <div>
           {date === 1 || isStartDate ? (

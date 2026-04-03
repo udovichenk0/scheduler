@@ -37,7 +37,7 @@ export const Signup = ({ goBack }: { goBack: () => void }) => {
         error={error ? t(error) : null}
         value={password}
         label={t("setting.synchronization.signup.label")}
-        className="mb-5"
+        outerStyles="mb-5"
         autoFocus
         ref={ref}
         type={isPasswordShown ? "text" : "password"}
@@ -49,7 +49,7 @@ export const Signup = ({ goBack }: { goBack: () => void }) => {
         }
       />
       <Button
-        className={`${!password && "pointer-events-none bg-[#1f4964]"}`}
+        className={`${!password && "pointer-events-none"}`}
         disabled={!password}
         size={"m"}
         intent={"filled"}

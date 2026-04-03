@@ -1,119 +1,88 @@
-import { attachOperation } from "@farfetched/core"
-import { merge, sample, createEvent } from "effector"
+import { sample, createEvent } from "effector"
 import { and } from "patronum"
-import { v4 } from "uuid"
 
 import { $$session } from "@/entities/session/session.model.ts"
-import { ModifyTaskFactory } from "@/entities/task/model/modify.model"
+import { createTaskEditor } from "@/entities/task/model/modify.model"
 import { TaskModel } from "@/entities/task/model/task.model"
-import { Task } from "@/entities/task/type"
 
 import { taskApi } from "@/shared/api/task/task.api.ts"
-import { bridge } from "@/shared/lib/effector/bridge"
-import { toApiTaskFields } from "@/shared/api/task/task.dto"
 
-export const createTaskFactory = ({
-  $$modifyTask,
-  taskModel,
-}: {
-  $$modifyTask: ModifyTaskFactory
-  taskModel: TaskModel
-}) => {
-  const { $fields, $isAllowToSubmit, resetFieldsTriggered } = $$modifyTask
-  const createTaskTriggered = createEvent()
-  const optimisticTaskCreated = createEvent<Task>()
-  // const createTaskLsAttach = attachOperation(taskApi.createTaskLs)
-  const createTaskMutationAttach = attachOperation(taskApi.createTaskMutation)
+import { taskToDomain } from "./../../entities/task/lib"
+import { Task } from "@/entities/task/type"
+import { sdate } from "@/shared/lib/date/lib"
+import { createOptimistic } from "@/shared/lib/create-optimistic"
 
-  const taskSuccessfullyCreated = merge([
-    // createTaskLsAttach.finished.success,
-    createTaskMutationAttach.finished.success,
-  ])
-
-  bridge(() => {
-    sample({
-      clock: createTaskTriggered,
-      source: $fields,
-      filter: and($isAllowToSubmit, $$session.$isAuthenticated),
-      fn: (fields) => {
-        const optimisticTask: Task = {
-          id: v4(),
-          title: fields.title,
-          description: fields.description,
-          status: fields.status,
-          type: fields.type,
-          start_date: fields.start_date,
-          due_date: fields.due_date,
-          user_id: "",
-          date_created: new Date(),
-          is_trashed: false,
-          priority: fields.priority,
-        }
-        return optimisticTask
-      },
-      target: optimisticTaskCreated,
-    })
-    sample({
-      clock: optimisticTaskCreated,
-      filter: and($isAllowToSubmit, $$session.$isAuthenticated),
-      fn: (fields) => {
-        const tempId = fields.id
-        return {
-          tempId,
-          ...toApiTaskFields(fields),
-        }
-      },
-      target: createTaskMutationAttach.start,
-    })
-    sample({
-      clock: optimisticTaskCreated,
-      filter: and($isAllowToSubmit, $$session.$isAuthenticated),
-      target: taskModel.addTaskTriggered,
-    })
-    sample({
-      clock: createTaskMutationAttach.finished.failure,
-      fn: ({ params }) => {
-        //@ts-ignore
-        const tempId = params?.["tempId"]
-        return tempId
-      },
-      target: taskModel.taskDeleted,
-    })
-
-    sample({
-      clock: createTaskTriggered,
-      target: resetFieldsTriggered,
-    })
-
-    // sample({
-    //   clock: createTaskTriggered,
-    //   source: $fields,
-    //   filter: and($isAllowToSubmit, not($$session.$isAuthenticated)),
-    //   target: createTaskLsAttach.start,
-    // })
+export const createTaskCreator = ({ taskModel }: { taskModel: TaskModel }) => {
+  const taskEditor = createTaskEditor()
+  const { $fields, $isAllowToSubmit, resetFieldsTriggered } = taskEditor
+  const createTaskTriggered = createEvent<{ listId: string }>()
+  const { start, onSuccess, onFail } = createOptimistic({
+    handler: taskApi.taskMutationHandler,
+    onOptimistic: taskModel.addTask,
+    mapParams: (p: Omit<Task, "id">) => ({
+      title: p.title,
+      description: p.description,
+      status: p.status,
+      priority: p.priority,
+      start_date: p.start_date?.toISOString() || null,
+      due_date: p.due_date?.toISOString() || null,
+      list_id: p.list_id,
+      type: p.type,
+    }),
+    mapOptimistic: (id, p: Omit<Task, "id">) => ({
+      id,
+      ...p,
+    }),
   })
 
-  // sample({
-  //   clock: createTaskMutationAttach.finished.failure,
-  //   source: taskModel.$tasks,
-  //   fn: (tasks, { params }) => {
-  //     console.log(params?.["tempId"])
-  //     console.log(tasks?.find((task) => task.title === "gg"))
-  //     console.log(tasks?.find((task) => task.id === params?.["tempId"]))
-  //     //@ts-ignore
-  //   },
-  //   // target: taskModel.taskDeleted
-  // })
-  // sample({
-  //   clock: taskSuccessfullyCreated,
-  //   fn: ({ result }) => taskToDomain(result),
-  //   target: [resetFieldsTriggered, taskModel.addTaskTriggered],
-  // })
+  sample({
+    clock: onSuccess,
+    // source: taskModel.$tasks,
+    fn: ({ id, data }) => ({
+      previousId: id,
+      task: taskToDomain(data),
+    }),
+    target: taskModel.replaceTask,
+  })
+
+  sample({
+    clock: onFail,
+    fn: ({ id, params }) => ({
+      taskId: id,
+      listId: params.list_id,
+    }),
+    target: taskModel.removeTask,
+  })
+
+  sample({
+    clock: createTaskTriggered,
+    source: { fields: $fields, user: $$session.$user },
+    filter: and($isAllowToSubmit, $$session.$isAuthenticated),
+    fn: ({ fields, user }, { listId }) => ({
+      start_date: fields.start_date,
+      due_date: fields.due_date,
+      title: fields.title,
+      description: fields.description,
+      status: fields.status,
+      priority: fields.priority,
+      type: fields.type,
+      list_id: listId,
+      user_id: user!.id,
+      date_created: sdate(),
+      is_trashed: false,
+    }),
+    target: start,
+  })
+
+  sample({
+    clock: createTaskTriggered,
+    target: resetFieldsTriggered,
+  })
 
   return {
-    ...$$modifyTask,
-    taskSuccessfullyCreated,
     createTaskTriggered,
-    $isCreating: taskApi.createTaskMutation.$pending,
+    ...taskEditor,
   }
 }
+
+export type TaskCreator = ReturnType<typeof createTaskCreator>

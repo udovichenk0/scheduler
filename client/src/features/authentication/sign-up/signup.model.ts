@@ -1,5 +1,5 @@
 import { createEvent, createStore, sample } from "effector"
-import * as z from "@zod/mini"
+import * as z from "zod/mini"
 
 import { $$session } from "@/entities/session/session.model.ts"
 
@@ -42,6 +42,11 @@ bridge(() => {
     fn: ({ result }) => result,
     target: [$$session.$user],
   })
+  // sample({
+  //   clock: authApi.signUp.finished.success,
+  //   fn: ({ result }) => result.id,
+  //   target: wsConnect,
+  // })
 
   sample({
     clock: authApi.signUp.finished.failure,

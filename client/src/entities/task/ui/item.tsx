@@ -7,7 +7,7 @@ import { Icon } from "@/shared/ui/icon"
 import { routes } from "@/shared/routing/router.ts"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
-import { Modal } from "@/shared/ui/modal"
+import { Dialog } from "@/shared/ui/disclosure/dialog"
 import { SDate, sdate } from "@/shared/lib/date/lib"
 import { buttonCva } from "@/shared/ui/buttons/main-button/cva.styles"
 
@@ -23,6 +23,7 @@ export const TaskItem = ({
   onUpdateStatus,
   onDoubleClick,
   onUpdatePriority,
+  onRemoveTask,
   dateLabel = false,
   onSelect,
   onBlur,
@@ -48,6 +49,7 @@ export const TaskItem = ({
     id: TaskId
     priority: Priority
   }) => void
+  onRemoveTask: (id: TaskId) => void
   onUpdateStatus?: ({ id, status }: { id: TaskId; status: Status }) => void
   onDoubleClick?: () => void
   dateLabel?: boolean
@@ -71,7 +73,7 @@ export const TaskItem = ({
           return (
             <div className="mr-2 w-5">
               {onUpdateDate && (
-                <Modal.Trigger
+                <Dialog.Trigger
                   className="size-5"
                   intent="base"
                   onClick={onClick}
@@ -81,7 +83,7 @@ export const TaskItem = ({
                     name="common/upcoming"
                     className="text-accent invisible translate-y-1 text-lg group-hover:visible"
                   />
-                </Modal.Trigger>
+                </Dialog.Trigger>
               )}
             </div>
           )
@@ -140,29 +142,41 @@ export const TaskItem = ({
                     className="text-accent mr-[6px] text-[9px]"
                   />
                 )}
-                <h3
-                  className={`text-sm font-medium ${
-                    status == TaskStatuses.FINISHED &&
-                    "text-cOpacitySecondFont line-through"
-                  }`}
-                >
-                  {title}
-                </h3>
+                <div className="min-w-15 flex items-center justify-between gap-x-2">
+                  <h3
+                    className={`text-sm font-medium ${
+                      status == TaskStatuses.FINISHED &&
+                      "text-cOpacitySecondFont line-through"
+                    }`}
+                  >
+                    {title}
+                  </h3>
+
+                  {task.description && (
+                    <Icon name="common/note" className="text-accent" />
+                  )}
+                </div>
               </div>
             </div>
             <TypeLable isVisible={typeLabel} taskType={task.type} />
           </div>
         </div>
-        {onUpdatePriority && (
-          <PriorityPicker
-            priority={task.priority}
-            onUpdate={(priority) => onUpdatePriority({ id: task.id, priority })}
-          />
-        )}
-        <div className="w-5">
-          {task.description && (
-            <Icon name="common/note" className="text-accent" />
+        <div className="flex gap-x-2">
+          {onUpdatePriority && (
+            <PriorityPicker
+              priority={task.priority}
+              onUpdate={(priority) =>
+                onUpdatePriority({ id: task.id, priority })
+              }
+            />
           )}
+          {/* Rework Button component */}
+          <button
+            onClick={() => onRemoveTask(task.id)}
+            className="hover:text-red text-cFont flex items-center"
+          >
+            <Icon name="common/trash-can" />
+          </button>
         </div>
       </div>
     </div>

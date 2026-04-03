@@ -1,131 +1,95 @@
-import { createQuery } from "@farfetched/core"
+import { createMutation, createQuery } from "@farfetched/core"
 
 import {
   deleteTasks,
   deleteTasksId,
-  getTasks,
-  patchTasksIdDate,
-  patchTasksIdPriority,
-  patchTasksIdStatus,
+  getListsIdTasks,
   postTasks,
   postTasksIdTrash,
+  putListsListIdTasksTaskId,
   putTasksId,
 } from "../scheduler"
 import { handleResponse, throwIfError } from "../lib"
 import {
-  getTasksResponse,
-  patchTasksIdDateResponse,
+  getListsIdTasksResponse,
   postTasksResponse,
+  putListsListIdTasksTaskIdResponse,
   putTasksIdResponse,
 } from "../zod"
-import {
-  DueDate,
-  PatchTasksIdStatusBody,
-  StartDate,
-  TaskFields,
-  PatchTasksIdPriorityBody,
-} from "../scheduler.schemas"
+import { PutListsListIdTasksTaskIdBody, TaskFields } from "../scheduler.schemas"
 
 import { TaskId } from "./task.dto"
+import { ListId } from "@/entities/project/list/type"
 
-export const tasksQuery = createQuery({
-  handler: async () => {
-    const response = await getTasks({ credentials: "include" })
-    return handleResponse(response, getTasksResponse)
+const tasksByListIdQuery = createQuery({
+  handler: async (listId: string) => {
+    const response = await getListsIdTasks(listId, { credentials: "include" })
+    return handleResponse(response, getListsIdTasksResponse)
   },
 })
 
-export const createTaskMutation = createQuery({
-  handler: async (data: TaskFields) => {
-    const response = await postTasks(data, { credentials: "include" })
-    return handleResponse(response, postTasksResponse)
-  },
-})
+const createTaskMutation = () =>
+  createMutation({
+    handler: async (data: TaskFields) => {
+      const response = await postTasks(data, { credentials: "include" })
+      return handleResponse(response, postTasksResponse)
+    },
+  })
 
-export const updateTaskMutation = createQuery({
-  handler: async ({ id, data }: { id: TaskId; data: TaskFields }) => {
-    const response = await putTasksId(id, data, { credentials: "include" })
-    return handleResponse(response, putTasksIdResponse)
-  },
-})
+const taskMutationHandler = async (data: TaskFields) => {
+  const response = await postTasks(data, { credentials: "include" })
+  return handleResponse(response, postTasksResponse)
+}
 
-export const updateStatusMutation = createQuery({
-  handler: async ({
-    id,
+const createUpdateTaskMutation =
+  () =>
+  async ({
+    listId,
+    taskId,
     data,
   }: {
-    id: TaskId
-    data: PatchTasksIdStatusBody
+    listId: ListId
+    taskId: TaskId
+    data: PutListsListIdTasksTaskIdBody
   }) => {
-    const response = await patchTasksIdStatus(id, data, {
+    const response = await putListsListIdTasksTaskId(listId, taskId, data, {
       credentials: "include",
     })
-    throwIfError(response.data)
-  },
-})
+    return handleResponse(response, putListsListIdTasksTaskIdResponse)
+  }
 
-const updatePriorityMutation = createQuery({
-  handler: async ({
-    id,
-    data,
-  }: {
-    id: TaskId
-    data: PatchTasksIdPriorityBody
-  }) => {
-    const response = await patchTasksIdPriority(id, data, {
-      credentials: "include",
-    })
-    throwIfError(response.data)
-  },
-})
+const trashTaskMutation = () =>
+  createQuery({
+    handler: async (taskId: TaskId) => {
+      const response = await postTasksIdTrash(taskId, {
+        credentials: "include",
+      })
+      throwIfError(response.data)
+    },
+  })
 
-export const trashTaskMutation = createQuery({
-  handler: async (taskId: TaskId) => {
-    const response = await postTasksIdTrash(taskId, { credentials: "include" })
-    throwIfError(response.data)
-  },
-})
+const deleteTrashedTaskMutation = () =>
+  createQuery({
+    handler: async ({ taskId }: { taskId: TaskId }) => {
+      const response = await deleteTasksId(taskId, { credentials: "include" })
+      throwIfError(response.data)
+    },
+  })
 
-export const deleteTrashedTaskMutation = createQuery({
-  handler: async ({ taskId }: { taskId: TaskId }) => {
-    const response = await deleteTasksId(taskId, { credentials: "include" })
-    throwIfError(response.data)
-  },
-})
-
-export const deleteTrashedTasksMutation = createQuery({
-  handler: async () => {
-    const response = await deleteTasks({ credentials: "include" })
-    throwIfError(response.data)
-  },
-})
-export const updateDateMutation = createQuery({
-  handler: async ({
-    id,
-    start_date,
-    due_date,
-  }: {
-    id: TaskId
-    start_date: StartDate
-    due_date: DueDate
-  }) => {
-    const response = await patchTasksIdDate(
-      id,
-      { start_date, due_date },
-      { credentials: "include" },
-    )
-    return handleResponse(response, patchTasksIdDateResponse)
-  },
-})
+const deleteTrashedTasksMutation = () =>
+  createQuery({
+    handler: async () => {
+      const response = await deleteTasks({ credentials: "include" })
+      throwIfError(response.data)
+    },
+  })
 
 export const taskApi = {
-  tasksQuery,
+  tasksByListIdQuery,
   createTaskMutation,
-  updateTaskMutation,
-  updateStatusMutation,
-  updatePriorityMutation,
+  taskMutationHandler,
+  createUpdateTaskMutation,
   trashTaskMutation,
   deleteTrashedTaskMutation,
   deleteTrashedTasksMutation,
-  updateDateMutation,
 }

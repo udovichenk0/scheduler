@@ -1,5 +1,5 @@
 import { useUnit } from "effector-react"
-import { useContext, useEffect } from "react"
+import { useContext } from "react"
 
 import { ExpandedTask } from "@/widgets/expanded-task"
 import { EditableTask } from "@/widgets/editable-task"
@@ -11,23 +11,20 @@ import { TaskId } from "@/shared/api/task/task.dto.ts"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { useSelectItem } from "@/shared/lib/use-select-item"
-import { SDate } from "@/shared/lib/date/lib"
 
 import { TaskManagerContext } from "../model"
 
 export const TasksByDate = ({
   onSelectTaskId,
   tasks,
-  date,
 }: {
   onSelectTaskId: (task: Nullable<TaskId>) => void
   tasks: Task[]
-  date: SDate
 }) => {
-  const { $$updateTask, $$createTask } = useContext(TaskManagerContext)
+  const { $$taskUpdater, $$taskCreator, $$taskTrasher } =
+    useContext(TaskManagerContext)
 
-  const onCreateTask = useUnit($$createTask.createTaskTriggered)
-  const onChangeCreateDate = useUnit($$createTask.dateChanged)
+  const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
 
   const { onSelect, onUnselect, addNode } = useSelectItem({
     items: tasks,
@@ -37,10 +34,6 @@ export const TasksByDate = ({
   const { isOpened: isCreateFormOpened, close: onCloseCreateForm } =
     useDisclosure({ id: ModalName.CreateTaskForm, onClose: onCreateTask })
 
-  useEffect(() => {
-    onChangeCreateDate({ startDate: date, dueDate: null })
-  }, [date])
-
   return (
     <section className="h-full pt-2">
       {tasks?.map((task, id) => {
@@ -48,7 +41,8 @@ export const TasksByDate = ({
           <EditableTask
             ref={(node) => addNode(node!, id)}
             key={task.id}
-            $$updateTask={$$updateTask}
+            $$taskUpdater={$$taskUpdater}
+            $$taskRemover={$$taskTrasher}
             task={task}
             onSelect={() => onSelect(id)}
             onBlur={onUnselect}
@@ -59,7 +53,7 @@ export const TasksByDate = ({
       <ExpandedTask
         className="mx-3"
         isExpanded={isCreateFormOpened}
-        modifyTaskModel={$$createTask}
+        $$taskManager={$$taskCreator}
         dateModifier={true}
         closeTaskForm={onCloseCreateForm}
       />

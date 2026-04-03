@@ -1,5 +1,5 @@
 import { createEvent, createStore, sample, Event } from "effector"
-import * as z from "@zod/mini"
+import * as z from "zod/mini"
 
 import { cookiePersist } from "@/shared/lib/storage/cookie-persist"
 import { singleton } from "@/shared/lib/effector/singleton"

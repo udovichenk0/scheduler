@@ -1,6 +1,6 @@
 import { createEvent, createStore, sample } from "effector"
 import { createEffect } from "effector/effector.umd"
-import { z } from "@zod/mini"
+import { z } from "zod/mini"
 
 import { singleton } from "@/shared/lib/effector/singleton"
 import { setCookie } from "@/shared/lib/storage/set-cookie.ts"

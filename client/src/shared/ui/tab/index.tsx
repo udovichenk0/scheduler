@@ -5,26 +5,32 @@ import { List } from "./tab-list"
 import { Trigger } from "./tab-trigger"
 import { TabContext } from "./tab.model"
 
-type TabsProps = {
+type TabsProps<T> = {
   children: ReactNode
   className?: string
   defaultValue?: string
-  value?: string
-  onChange?: (value: string) => void
+  value?: T
+  contentStyles?: string
+  onChange?: (value: T) => void
 }
 
-export const Root = ({
+export const Tabs = <T extends string>({
   children,
   className,
   defaultValue,
   value: customValue,
+  contentStyles,
   onChange,
-}: TabsProps) => {
+}: TabsProps<T>) => {
   const [value, setValue] = useState(defaultValue || "")
   return (
     <div className={className}>
       <TabContext.Provider
-        value={{ value: customValue || value, setValue: onChange || setValue }}
+        value={{
+          value: customValue || value,
+          setValue: onChange || setValue,
+          contentStyles,
+        }}
       >
         {children}
       </TabContext.Provider>
@@ -32,6 +38,6 @@ export const Root = ({
   )
 }
 
-Root.Content = Content
-Root.List = List
-Root.Trigger = Trigger
+Tabs.Content = Content
+Tabs.List = List
+Tabs.Trigger = Trigger

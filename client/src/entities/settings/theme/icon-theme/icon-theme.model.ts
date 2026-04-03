@@ -1,5 +1,5 @@
 import { createEvent, createStore, sample, createEffect } from "effector"
-import { z } from "@zod/mini"
+import { z } from "zod/mini"
 
 import { singleton } from "@/shared/lib/effector/singleton"
 import { parseCookieValue } from "@/shared/lib/storage/parse-cookie-value.ts"

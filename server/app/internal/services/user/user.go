@@ -1,63 +1,98 @@
-package user
+package userservice
 
 import (
 	"context"
 	"errors"
 
-	"github.com/udovichenk0/scheduler/internal/entity"
-	userservice "github.com/udovichenk0/scheduler/internal/ports/api/user"
-	userRepo "github.com/udovichenk0/scheduler/internal/ports/repository/user"
+	"github.com/udovichenk0/scheduler/internal/adapters/db"
+	"github.com/udovichenk0/scheduler/internal/domain"
+	listserviceport "github.com/udovichenk0/scheduler/internal/ports/api/list"
+	projectserviceport "github.com/udovichenk0/scheduler/internal/ports/api/project"
+	userserviceport "github.com/udovichenk0/scheduler/internal/ports/api/user"
+	userrepoport "github.com/udovichenk0/scheduler/internal/ports/repository/user"
 	"github.com/udovichenk0/scheduler/internal/ports/repository/user/model"
+	dbutils "github.com/udovichenk0/scheduler/pkg/db"
 	"github.com/udovichenk0/scheduler/pkg/errs"
 	"github.com/udovichenk0/scheduler/pkg/logger"
+	"github.com/zhulik/pal"
 )
 
 type Service struct {
-	userRepo userRepo.Port
-	logger   logger.Logger
+	UserRepo       userrepoport.Repository
+	ListService    listserviceport.Api
+	ProjectService projectserviceport.Api
+	Logger         logger.ILogger
+	*db.Sqlx
 }
 
-func New(userRepo userRepo.Port, logger logger.Logger) *Service {
-	return &Service{userRepo: userRepo, logger: logger}
-}
-
-func (u *Service) GetUserByEmail(ctx context.Context, email string) (entity.User, error) {
-	user, err := u.userRepo.Get(ctx, email)
+func (u *Service) GetByEmail(ctx context.Context, email string) (userserviceport.UserOutput, error) {
+	user, err := u.UserRepo.FindOneByEmail(ctx, email)
 	if err != nil {
-		return entity.User{}, errs.CheckSqlError(err, "User")
+		if errs.IsResourceNotFound(err) {
+			return userserviceport.UserOutput{}, errs.NewResourceNotFoundError(err, "failed to get user")
+		}
+		return userserviceport.UserOutput{}, errs.NewInternalError(err)
 	}
-	return ToEntity(user), nil
+	return userserviceport.UserOutput{
+		Id:        user.Id,
+		Email:     user.Email,
+		Verified:  user.Verified,
+		CreatedAt: user.CreatedAt,
+	}, nil
 }
 
-func (us *Service) GetUserById(ctx context.Context, id string) (entity.User, error) {
-	user, err := us.userRepo.GetById(ctx, id)
+func (u *Service) GetById(ctx context.Context, id string) (userserviceport.UserOutput, error) {
+	user, err := u.UserRepo.FindOneById(ctx, id)
 	if err != nil {
-		return entity.User{}, errs.CheckSqlError(err, "User")
+		if errs.IsResourceNotFound(err) {
+			return userserviceport.UserOutput{}, errs.NewResourceNotFoundError(err, "failed to get user")
+		}
+		return userserviceport.UserOutput{}, errs.NewInternalError(err)
 	}
 
-	return ToEntity(user), nil
+	return userserviceport.UserOutput{
+		Id:        user.Id,
+		Email:     user.Email,
+		Verified:  user.Verified,
+		CreatedAt: user.CreatedAt,
+	}, nil
 }
 
-func (u *Service) CreateUser(ctx context.Context, params userservice.CreateInput) (entity.User, error) {
-	createInput := userRepo.CreateInput{
-		Email:    params.Email,
-		PassHash: params.Hash,
-	}
-	err := u.userRepo.Create(ctx, params.UserId, createInput)
+func (u *Service) Create(ctx context.Context, params userserviceport.CreateInput) (userserviceport.UserOutput, error) {
+	user, err := domain.NewUser(params.Email, params.HashPassword)
 	if err != nil {
-		return entity.User{}, errs.CheckSqlError(err, "User")
+		return userserviceport.UserOutput{}, err
 	}
 
-	user, err := u.userRepo.Get(ctx, params.Email)
+	err = dbutils.WithTransaction(ctx, u.Pool, func(ctx context.Context) error {
+		err := u.UserRepo.CreateOne(ctx, user)
+		if err != nil {
+			return errs.NewError(err, "failed to create user")
+		}
+		return u.ProjectService.CreatePrivateProject(ctx, projectserviceport.CreatePrivateProjectInput{
+			UserId: user.Id,
+		})
+	})
+
 	if err != nil {
-		return entity.User{}, errs.CheckSqlError(err, "User")
+		return userserviceport.UserOutput{}, err
 	}
 
-	return ToEntity(user), nil
+	// user, err := u.UserRepo.FindOneByEmail(ctx, user.Email)
+	// if err != nil {
+	// 	return userserviceport.UserOutput{}, errs.NewResourceNotFoundError(err, "failed to get user")
+	// }
+
+	return userserviceport.UserOutput{
+		Id:        user.Id,
+		Email:     user.Email,
+		Verified:  user.Verified,
+		CreatedAt: user.CreatedAt,
+	}, nil
 }
 
-func (us *Service) IsVerifiedUserExist(ctx context.Context, email string) (bool, error) {
-	user, err := us.GetUserByEmail(ctx, email)
+func (u *Service) ExistsVerified(ctx context.Context, email string) (bool, error) {
+	user, err := u.GetByEmail(ctx, email)
 	if err != nil {
 		if errors.As(err, &errs.NoRowError{}) {
 			return false, nil
@@ -71,30 +106,34 @@ func (us *Service) IsVerifiedUserExist(ctx context.Context, email string) (bool,
 	return true, nil
 }
 
-func (us *Service) DeleteUser(ctx context.Context, userId string) error {
-	err := us.userRepo.Delete(ctx, userId)
+func (u *Service) Delete(ctx context.Context, userId string) error {
+	err := u.UserRepo.DeleteOne(ctx, userId)
 
 	if err != nil {
-		return errs.CheckSqlError(err, "User")
+		return errs.NewError(err, "failed to delete user")
 	}
 	return nil
 }
 
-func (s *Service) Verify(ctx context.Context, id string) error {
-	err := s.userRepo.Update(ctx, userRepo.UpdateInput{Verified: true, Id: id})
+func (u *Service) MarkAsVerified(ctx context.Context, userId string) error {
+	err := u.UserRepo.VerifyOne(ctx, userId)
 	if err != nil {
-		return errs.NewInternalError(err)
+		return errs.NewError(err, "failed to verify user")
 	}
 
 	return nil
 }
 
-func ToEntity(user model.User) entity.User {
-	return entity.User{
+func ToEntity(user model.Repository) domain.User {
+	return domain.User{
 		Id:        user.Id,
 		Email:     user.Email,
 		Hash:      user.Hash,
 		Verified:  user.Verified,
 		CreatedAt: user.CreatedAt,
 	}
+}
+
+func Provide() pal.ServiceDef {
+	return pal.Provide[userserviceport.Api](&Service{})
 }
