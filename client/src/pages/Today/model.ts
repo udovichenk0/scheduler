@@ -1,6 +1,6 @@
 import { createEvent, createStore, sample, combine } from "effector"
 import { createGate } from "effector-react"
-import * as z from "@zod/mini"
+import * as z from "zod/mini"
 
 import { createTaskCreator } from "@/features/manage-task/create"
 import { createTaskUpdater } from "@/features/manage-task/update"

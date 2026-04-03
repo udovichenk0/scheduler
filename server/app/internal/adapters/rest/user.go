@@ -29,7 +29,7 @@ func (h *UserHandler) GetUser(fc *fiber.Ctx) error {
 		return errs.NewBadRequestError(err)
 	}
 
-	user, err := h.UserService.GetUserByEmail(fc.Context(), params.Email)
+	user, err := h.UserService.GetByEmail(fc.Context(), params.Email)
 
 	if err != nil {
 		h.Logger.Error("failed to get user by email", slog.Any("err", err))
@@ -52,7 +52,7 @@ func (h *UserHandler) VerifiedUserExists(fc *fiber.Ctx) error {
 	if err := h.Vali.Struct(params); err != nil {
 		return errs.NewBadRequestError(err)
 	}
-	isExist, err := h.UserService.IsVerifiedUserExist(fc.Context(), params.Email)
+	isExist, err := h.UserService.ExistsVerified(fc.Context(), params.Email)
 	if err != nil {
 		h.Logger.Error("failed to verify user", slog.Any("err", err))
 		return err

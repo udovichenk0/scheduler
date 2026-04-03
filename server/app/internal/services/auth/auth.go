@@ -1,19 +1,20 @@
-package auth
+package authservice
 
 import (
 	"context"
 	"database/sql"
 	"encoding/gob"
 	"errors"
+	"log/slog"
+	"time"
 
 	"github.com/udovichenk0/scheduler/internal/adapters/db"
-	"github.com/udovichenk0/scheduler/internal/entity"
-	"github.com/udovichenk0/scheduler/internal/ports/api/auth"
-	authservice "github.com/udovichenk0/scheduler/internal/ports/api/auth"
-	smtpservice "github.com/udovichenk0/scheduler/internal/ports/api/smtp"
-	userservice "github.com/udovichenk0/scheduler/internal/ports/api/user"
-	verificationservice "github.com/udovichenk0/scheduler/internal/ports/api/verification"
-	"github.com/udovichenk0/scheduler/pkg"
+	authserviceport "github.com/udovichenk0/scheduler/internal/ports/api/auth"
+	smtpserviceport "github.com/udovichenk0/scheduler/internal/ports/api/smtp"
+	userserviceport "github.com/udovichenk0/scheduler/internal/ports/api/user"
+	verificationserviceport "github.com/udovichenk0/scheduler/internal/ports/api/verification"
+	userrepoport "github.com/udovichenk0/scheduler/internal/ports/repository/user"
+	dbutils "github.com/udovichenk0/scheduler/pkg/db"
 	"github.com/udovichenk0/scheduler/pkg/errs"
 	"github.com/udovichenk0/scheduler/pkg/logger"
 	sessionManager "github.com/udovichenk0/scheduler/pkg/sessionmanager"
@@ -22,70 +23,72 @@ import (
 )
 
 type Service struct {
-	UserService         userservice.Api
-	SmtpService         smtpservice.Api
-	VerificationService verificationservice.Api
+	UserService         userserviceport.Api
+	UserRepo            userrepoport.Repository
+	SmtpService         smtpserviceport.Api
+	VerificationService verificationserviceport.Api
+	Sm                  sessionManager.ISessionManager
+	Logger              logger.ILogger
 	*db.Sqlx
-	Sm     sessionManager.ISessionManager
-	Logger logger.ILogger
 }
 
-func (s *Service) Init(_ context.Context) error {
-	gob.Register(entity.User{})
+func (*Service) Init(_ context.Context) error {
+	gob.Register(authserviceport.AuthUser{})
 	return nil
 }
 
-func (s *Service) SignIn(ctx context.Context, email, pass string) (authservice.AuthResult, error) {
-	user, err := s.UserService.GetUserByEmail(ctx, email)
-	if err != nil {
-		return authservice.AuthResult{}, err
+func (s *Service) SignIn(ctx context.Context, email, pass string) (authserviceport.AuthResult, error) {
+	user, err := s.UserRepo.FindOneByEmail(ctx, email)
+	if err := user.CanLogin(); err != nil {
+		return authserviceport.AuthResult{}, err
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.Hash), []byte(pass))
+	if err := user.VerifyPassword(pass); err != nil {
+		return authserviceport.AuthResult{}, err
+	}
+	authuser := authserviceport.AuthUser{
+		Id:        user.Id,
+		Email:     user.Email,
+		Verified:  user.Verified,
+		CreatedAt: user.CreatedAt,
+	}
+	session, err := s.Sm.Commit(ctx, "user", authuser)
 	if err != nil {
-		return authservice.AuthResult{}, errs.NewError(err, "wrong password")
+		s.Logger.Error("session creation failed", "user_id", user.Id, "err", err)
+		return authserviceport.AuthResult{}, errs.NewInternalError(err)
 	}
 
-	session, err := s.Sm.Commit("user", user)
-	if err != nil {
-		return authservice.AuthResult{}, errs.NewInternalError(err)
-	}
-
-	return authservice.AuthResult{User: user, Session: session}, nil
+	return authserviceport.AuthResult{User: authuser, Session: session}, nil
 }
 
-func (s *Service) SignUp(ctx context.Context, email, pass string) (entity.User, error) {
-	user, err := s.UserService.GetUserByEmail(ctx, email)
-	if err != nil {
-		if !errors.As(err, &errs.NoRowError{}) {
-			return entity.User{}, errs.NewInternalError(err)
-		}
+func (s *Service) SignUp(ctx context.Context, email, password string) (authserviceport.AuthUser, error) {
+	if email == "" || password == "" {
+		return authserviceport.AuthUser{}, ErrInvalidInput
 	}
 
-	if user.Id != "" {
-		if err := s.UserService.DeleteUser(ctx, user.Id); err != nil {
-			return entity.User{}, err
-		}
+	user, err := s.UserService.GetByEmail(ctx, email)
+	if err == nil && user.Id == "" {
+		return authserviceport.AuthUser{}, ErrEmailAlreadyTaken
+	}
+	if err != nil && !errors.Is(err, errs.NoRowError{}) {
+		return authserviceport.AuthUser{}, errs.NewInternalError(err)
 	}
 
-	hash, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
-	if err != nil {
-		return entity.User{}, errs.NewInternalError(err)
-	}
-
-	params := userservice.CreateInput{
-		UserId: pkg.NewUUID(),
-		Email:  email,
-		Hash:   string(hash),
-	}
-
-	uow := pkg.NewUnitOfWork(s.Pool, ctx)
 	var code string
-	err = uow.StartUOW(func(ctx context.Context) error {
-		user, err = s.UserService.CreateUser(ctx, params)
+	var output authserviceport.AuthUser
+	dbutils.WithTransaction(ctx, s.Pool, func(ctx context.Context) error {
+		hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		if err != nil {
+			return errs.NewInternalError(err)
+		}
+		user, err := s.UserService.Create(ctx, userserviceport.CreateInput{
+			Email:        email,
+			HashPassword: string(hash),
+		})
 		if err != nil {
 			return err
 		}
+		output = authserviceport.AuthUser(user)
 		code, err = s.VerificationService.CreateCode(ctx, user.Id)
 		if err != nil {
 			return err
@@ -94,23 +97,28 @@ func (s *Service) SignUp(ctx context.Context, email, pass string) (entity.User, 
 	})
 
 	if err != nil {
-		return entity.User{}, err
+		return authserviceport.AuthUser{}, err
 	}
 
-	err = s.SmtpService.SendEmail(smtpservice.SendInput{
-		To:      user.Email,
-		Subject: "Your Verification Code is Ready!",
-		Body:    code,
-	})
-	if err != nil {
-		return entity.User{}, err
-	}
+	go func() {
+		_, cancel := context.WithTimeout(context.Background(), time.Second*15)
+		defer cancel()
+		err = s.SmtpService.SendEmail(smtpserviceport.SendInput{
+			To:      email,
+			Subject: "Your Verification Code is Ready!",
+			Body:    code,
+		})
 
-	return user, nil
+		if err != nil {
+			s.Logger.Error("failed to send verification email", slog.Any("err", err), slog.String("email", email))
+		}
+	}()
+
+	return output, nil
 }
 
 func (s *Service) SignOut(ctx context.Context, sessionId string) error {
-	err := s.Sm.Delete(sessionId)
+	err := s.Sm.Delete(ctx, sessionId)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -122,5 +130,5 @@ func (s *Service) SignOut(ctx context.Context, sessionId string) error {
 }
 
 func Provide() pal.ServiceDef {
-	return pal.Provide[auth.Api](&Service{})
+	return pal.Provide[authserviceport.Api](&Service{})
 }

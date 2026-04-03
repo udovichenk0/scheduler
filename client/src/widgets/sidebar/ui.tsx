@@ -14,7 +14,12 @@ import { Tooltip } from "@/shared/ui/general/tooltip"
 import Settings from "../settings"
 
 import { Logo } from "./logo"
-import { $inboxCounter, $todayCounter } from "./sidebar.model"
+import {
+  $$projectManager,
+  $$projectModel,
+  $inboxCounter,
+  $todayCounter,
+} from "./sidebar.model"
 
 export const Sidebar = () => {
   const { t } = useTranslation()
@@ -22,11 +27,9 @@ export const Sidebar = () => {
   const todayTasksCount = useUnit($todayCounter)
 
   return (
-    <aside
-      className={`border-cBorder bg-main-light text-primary border-r-[1px]`}
-    >
-      <div className="grid h-full w-[250px] grid-rows-[auto_1fr_auto] flex-col">
-        <Container className="border-cBorder border-b-[1px]">
+    <aside className={`border-cBorder bg-main-light text-primary border-r`}>
+      <div className="w-62.5 grid h-full grid-rows-[auto_1fr_auto] flex-col">
+        <Container className="border-cBorder border-b">
           <div className="mb-2 flex items-center justify-between px-2">
             <div className="flex items-center gap-1">
               <Logo />
@@ -53,7 +56,7 @@ export const Sidebar = () => {
               <span className="text-cOpacitySecondFont">{inboxTasksCount}</span>
             </Button>
 
-            <Button
+            {/*<Button
               activeClassName="bg-cFocus rounded-[5px]"
               as="link"
               to={routes.home}
@@ -69,9 +72,27 @@ export const Sidebar = () => {
                 {t("task.today")}
               </div>
               <span className="text-cOpacitySecondFont">{todayTasksCount}</span>
-            </Button>
+            </Button>*/}
 
             <Button
+              activeClassName="bg-cFocus rounded-[5px]"
+              as="link"
+              to={routes.home2}
+              intent={"primary"}
+              className="flex w-full items-center justify-between"
+              size={"sm"}
+            >
+              <div className="flex items-center justify-center">
+                <Icon
+                  name={"common/outlined-star"}
+                  className="fill-accent mr-4 text-[20px]"
+                />
+                Home
+              </div>
+              <span className="text-cOpacitySecondFont">{todayTasksCount}</span>
+            </Button>
+
+            {/*<Button
               activeClassName="bg-cFocus rounded-[5px]"
               as="link"
               to={routes.upcoming}
@@ -84,9 +105,9 @@ export const Sidebar = () => {
                 className="fill-accent mr-4 text-[20px]"
               />
               {t("task.upcoming")}
-            </Button>
+            </Button>*/}
 
-            <Button
+            {/*<Button
               activeClassName="bg-cFocus rounded-[5px]"
               as="link"
               to={routes.calendar}
@@ -99,17 +120,17 @@ export const Sidebar = () => {
                 className="fill-accent mr-4 text-[20px]"
               />
               {t("task.calendar")}
-            </Button>
+            </Button>*/}
           </div>
         </Container>
         <Container>
-          <div className="px-2">
+          <div className="mb-1 px-2">
             <span className="text-cOpacitySecondFont text-xs">Projects</span>
           </div>
-          <ProjectList />
-          <CreateProjectModal />
+          <ProjectList $projectModel={$$projectModel} />
+          <CreateProjectModal projectManager={$$projectManager} />
         </Container>
-        <Container className="border-cBorder text-cIconDefault flex gap-2 border-t-[1px]">
+        <Container className="border-cBorder text-cIconDefault flex gap-2 border-t">
           <Tooltip text={t("setting.title")} dir="tr">
             <Settings />
           </Tooltip>

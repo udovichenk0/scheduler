@@ -39,7 +39,7 @@ const Upcoming = () => {
   const upcomingDate = useUnit($upcomingDate)
   const activeSort = useUnit($$sort.$sortType)
 
-  const onDeleteTask = useUnit($$taskTrasher.removeTaskById)
+  const onDeleteTask = useUnit($$taskTrasher.trashTaskById)
   const onSelectViewVariant = useUnit(upcomingDateSelected)
   const onSortChange = useUnit($$sort.sort)
   const onChangeCreateDate = useUnit($$taskCreator.dateChanged)

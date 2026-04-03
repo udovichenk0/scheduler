@@ -2,20 +2,19 @@ FROM golang:1.24.1-alpine AS base
 
 WORKDIR /app
 
-COPY config ./server/config
-COPY migrations ./server/migrations
-RUN chmod +x ./server/migrations/entrypoint.sh
-ENTRYPOINT ["sh", "/app/server/migrations/entrypoint.sh"]
+COPY config config
+COPY migrations migrations
+RUN chmod +x ./migrations/entrypoint.sh
+ENTRYPOINT ["sh", "/app/migrations/entrypoint.sh"]
 
-RUN cd /app/server/migrations && go build -o /app/bin ./main.go
+RUN cd /app/migrations && go build -o /app/bin ./main.go
 
-
-FROM golang:1.24.1-alpine AS final
+FROM base
 
 WORKDIR /app
 
 COPY --from=base /app/bin ./bin
-COPY --from=base /app/server/migrations/entrypoint.sh ./
+COPY --from=base /app/migrations/entrypoint.sh ./
 
 ENTRYPOINT ["sh", "/app/entrypoint.sh"]
 

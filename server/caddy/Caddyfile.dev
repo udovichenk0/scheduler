@@ -1,0 +1,11 @@
+{
+	debug
+}
+
+localhost:443 {
+  tls internal
+  reverse_proxy /api/* localhost:3000
+
+  reverse_proxy localhost:4173
+}
+

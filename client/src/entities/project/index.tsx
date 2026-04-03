@@ -1,33 +1,51 @@
 import { useUnit } from "effector-react"
 import { clsx } from "clsx"
-import { Link } from "atomic-router-react"
 
 import { buttonCva } from "@/shared/ui/buttons/main-button/cva.styles"
+
+import { Project } from "./type"
+import { Button } from "@/shared/ui/buttons/main-button"
+import { useState } from "react"
+import { ProjectModel } from "./model"
+import { ListItems } from "./list"
 import { routes } from "@/shared/routing/router"
 
-import { $projects } from "./model"
-import { Project } from "./type"
+const ProjectItem = ({ project }: { project: Project }) => {
+  const isListRouteOpened = useUnit(routes.list.$isOpened)
+  const activeProjectId = useUnit(routes.list.$params)
 
-export const ProjectItem = ({ project }: { project: Project }) => {
+  const [listExpanded, setListExpanded] = useState(
+    !!isListRouteOpened && !!activeProjectId,
+  )
+  const clickOnItem = () => {
+    setListExpanded(!listExpanded)
+  }
+
   return (
-    <Link
-      tabIndex={0}
-      params={{ projectId: project.id }}
-      to={routes.project}
-      className={clsx(
-        "block cursor-pointer text-sm",
-        buttonCva({ intent: "primary", size: "base" }),
-      )}
-    >
-      {project.name}
-    </Link>
+    <div>
+      <Button
+        onClick={clickOnItem}
+        className={clsx(
+          "mb-1 block w-full cursor-pointer text-sm",
+          buttonCva({ intent: "primary", size: "xs" }),
+        )}
+      >
+        {project.name}
+      </Button>
+      {listExpanded && <ListItems lists={project.lists} />}
+    </div>
   )
 }
 
-export const ProjectList = () => {
-  const projects = useUnit($projects)
+export const ProjectList = ({
+  $projectModel,
+}: {
+  $projectModel: ProjectModel
+}) => {
+  const projects = useUnit($projectModel.$projects)
+
   return (
-    <div>
+    <div className="mb-1">
       {projects.map((project) => (
         <ProjectItem key={project.id} project={project} />
       ))}

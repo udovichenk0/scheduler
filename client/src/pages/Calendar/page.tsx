@@ -27,7 +27,7 @@ const CalendarPage = () => {
       <Layout.Content className="flex h-full flex-col">
         <CalendarWidget
           $$taskCreator={$$taskCreator}
-          $$taskRemover={$$taskTrasher}
+          $$taskTrasher={$$taskTrasher}
           $$taskUpdater={$$taskUpdater}
           $tasks={$unplacedTasks}
           onChange={setHeaderDate}

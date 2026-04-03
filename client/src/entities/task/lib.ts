@@ -1,27 +1,12 @@
 import { t } from "i18next"
 
-import { Priority, TaskDto } from "@/shared/api/scheduler.schemas"
+import { Priority, TaskDto, TaskFields } from "@/shared/api/scheduler.schemas"
 import { SHORT_MONTHS_NAMES } from "@/shared/config/constants"
 import { SDate, sdate } from "@/shared/lib/date/lib"
-import { unixToDate } from "@/shared/api/task/task.dto"
 
-import { TaskStatuses } from "./config"
 import { EditableTaskFields, Task, TaskId, Status, TaskDate } from "./type"
-import { TaskPriority } from "./model/task.model"
-
-export const findTaskById = (tasks: Task[], id: TaskId) =>
-  tasks.find((task) => task.id === id)!
-
-export const changeTaskStatus = (status: Status) => {
-  switch (true) {
-    case status === TaskStatuses.FINISHED:
-      return TaskStatuses.INPROGRESS
-    case status === TaskStatuses.INPROGRESS:
-      return TaskStatuses.FINISHED
-    default:
-      return TaskStatuses.INPROGRESS
-  }
-}
+import { TaskPriority, TaskStatus } from "./model/task.model"
+import { IconName } from "@/shared/ui/icon"
 
 export function deleteById(tasks: Task[], deletedTaskId: TaskId) {
   return tasks.filter((task) => task.id != deletedTaskId)
@@ -35,11 +20,16 @@ export const isInbox = (task: Task) => task.type == "inbox"
 export const taskToDomain = (taskDto: TaskDto): Task => {
   return {
     ...taskDto,
-    start_date: taskDto.start_date
-      ? sdate(unixToDate(taskDto.start_date))
-      : null,
-    due_date: taskDto.due_date ? sdate(unixToDate(taskDto.due_date)) : null,
-    date_created: new Date(taskDto.date_created),
+    start_date: taskDto.start_date ? sdate(taskDto.start_date) : null,
+    due_date: taskDto.due_date ? sdate(taskDto.due_date) : null,
+    date_created: sdate(taskDto.date_created),
+  }
+}
+
+export const fieldsToDomain = (fields: TaskFields) => {
+  return {
+    start_date: fields.start_date ? sdate(fields.start_date) : null,
+    due_date: fields.due_date ? sdate(fields.due_date) : null,
   }
 }
 
@@ -55,7 +45,6 @@ export const getTaskFields = ({
   type,
   due_date,
   priority,
-  project_id,
 }: Task): EditableTaskFields => {
   return {
     title,
@@ -65,7 +54,6 @@ export const getTaskFields = ({
     due_date,
     type,
     priority,
-    project_id,
   }
 }
 
@@ -102,10 +90,67 @@ export function getPriorityColor(priority: Priority) {
     case TaskPriority.NORMAL:
       return "blue"
     case TaskPriority.LOW:
-    case TaskPriority.NONE:
       return "cFont"
+    case TaskPriority.NONE:
+      return "cOpacitySecondFont"
     default:
       console.log("Unknown priority: ", priority)
       return "cFont"
+  }
+}
+
+export function getPriorityLabel(priority: Priority) {
+  switch (priority) {
+    case TaskPriority.URGENT:
+      return "Urgent"
+    case TaskPriority.HIGH:
+      return "High"
+    case TaskPriority.NORMAL:
+      return "Normal"
+    case TaskPriority.LOW:
+      return "Low"
+    default:
+      return ""
+  }
+}
+
+export function getIconNameByStatus(status: Status): IconName {
+  switch (status) {
+    case TaskStatus.TODO: {
+      return "common/circle"
+    }
+    case TaskStatus.INPROGRESS: {
+      return "common/loader"
+    }
+    case TaskStatus.FINISHED: {
+      return "common/circle-done"
+    }
+  }
+}
+export function getStatusColor(status: Status) {
+  switch (status) {
+    case TaskStatus.TODO: {
+      return "cOpacitySecondFont"
+    }
+    case TaskStatus.INPROGRESS: {
+      return "purple"
+    }
+    case TaskStatus.FINISHED: {
+      return "green"
+    }
+  }
+}
+
+export const getStatusLabel = (status: Status) => {
+  switch (status) {
+    case TaskStatus.TODO: {
+      return "TO DO"
+    }
+    case TaskStatus.INPROGRESS: {
+      return "IN PROGRESS"
+    }
+    case TaskStatus.FINISHED: {
+      return "FINISHED"
+    }
   }
 }

@@ -34,7 +34,7 @@ func (s *Server) Init(_ context.Context) error {
 	})
 	s.App = app
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     config.GetEnv("CLIENT_URL"),
+		AllowOrigins:     config.GetEnv("CLIENT_URL", "", true),
 		AllowMethods:     "GET,DELETE,POST,PUT,PATCH",
 		AllowHeaders:     "Content-Type",
 		AllowCredentials: true,

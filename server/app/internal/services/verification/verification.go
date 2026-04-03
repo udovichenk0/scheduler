@@ -1,83 +1,87 @@
-package verification
+package verificationservice
 
 import (
 	"context"
 
-	"github.com/udovichenk0/scheduler/internal/entity"
-	smtpservice "github.com/udovichenk0/scheduler/internal/ports/api/smtp"
-	userApi "github.com/udovichenk0/scheduler/internal/ports/api/user"
-	"github.com/udovichenk0/scheduler/internal/ports/api/verification"
-	verificationRepo "github.com/udovichenk0/scheduler/internal/ports/repository/verification"
-	"github.com/udovichenk0/scheduler/pkg"
+	"github.com/udovichenk0/scheduler/internal/domain"
+	smtpserviceport "github.com/udovichenk0/scheduler/internal/ports/api/smtp"
+	userserviceport "github.com/udovichenk0/scheduler/internal/ports/api/user"
+	verificationserviceport "github.com/udovichenk0/scheduler/internal/ports/api/verification"
+	verificationrepoport "github.com/udovichenk0/scheduler/internal/ports/repository/verification"
 	"github.com/udovichenk0/scheduler/pkg/errs"
 	"github.com/zhulik/pal"
 )
 
 type Service struct {
-	VerificationRepo verificationRepo.Repository
-	UserService      userApi.Api
-	SmtpService      smtpservice.Api
+	VerificationRepo verificationrepoport.Repository
+	UserService      userserviceport.Api
+	SmtpService      smtpserviceport.Api
 }
 
-func New(verificationRepo verificationRepo.Repository, userService userApi.Api, smtpService smtpservice.Api) *Service {
+func New(verificationRepo verificationrepoport.Repository, userService userserviceport.Api, smtpService smtpserviceport.Api) *Service {
 	return &Service{verificationRepo, userService, smtpService}
 }
 
-func (v *Service) VerifyUser(ctx context.Context, code, userId string) (entity.User, error) {
+func (v *Service) VerifyUser(ctx context.Context, code, userId string) (verificationserviceport.VerifyUserOutput, error) {
 	verifications, err := v.VerificationRepo.GetByUserId(ctx, userId)
 	if err != nil {
-		return entity.User{}, errs.NewInternalError(err)
+		return verificationserviceport.VerifyUserOutput{}, errs.NewInternalError(err)
 	}
 
-	verification := entity.GetLatestVerification(verifications)
+	verification := domain.GetLatestVerification(verifications)
 
-	if entity.IsExpired(verification.ExpiresAt) {
+	if verification.IsExpired() {
 		v.VerificationRepo.Delete(ctx, verification.Id)
-		return entity.User{}, errs.NewError(err, "verification code is expired")
+		return verificationserviceport.VerifyUserOutput{}, errs.NewError(err, "verification code is expired")
 	}
-	if !entity.IsCodeValid(verification.Code, code) {
-		return entity.User{}, errs.NewError(err, "verification code is invalid")
+	if !verification.IsCodeValid(code) {
+		return verificationserviceport.VerifyUserOutput{}, errs.NewError(err, "verification code is invalid")
 	}
 
 	if err := v.VerificationRepo.Delete(ctx, verification.Id); err != nil {
-		return entity.User{}, errs.NewInternalError(err)
+		return verificationserviceport.VerifyUserOutput{}, errs.NewInternalError(err)
 	}
-	if err := v.UserService.Verify(ctx, userId); err != nil {
-		return entity.User{}, err
+	if err := v.UserService.MarkAsVerified(ctx, userId); err != nil {
+		return verificationserviceport.VerifyUserOutput{}, err
 	}
 
-	user, err := v.UserService.GetUserById(ctx, userId)
+	user, err := v.UserService.GetById(ctx, userId)
 	if err != nil {
-		return entity.User{}, err
+		return verificationserviceport.VerifyUserOutput{}, err
 	}
 
-	return user, nil
+	return verificationserviceport.VerifyUserOutput{
+		Id:        user.Id,
+		Email:     user.Email,
+		Verified:  user.Verified,
+		CreatedAt: "",
+	}, nil
 }
 
 func (v *Service) CreateCode(ctx context.Context, userId string) (string, error) {
-	code := entity.GenerateVerificationCode()
-	err := v.VerificationRepo.Create(ctx, verificationRepo.CreateInput{
-		Id:        pkg.NewUUID(),
+	verification := domain.NewVerification(userId)
+	err := v.VerificationRepo.Create(ctx, verificationrepoport.CreateInput{
+		Id:        verification.Id,
 		UserId:    userId,
-		Code:      code,
-		ExpiresAt: pkg.UnixToDateTime(entity.GetVerificationExpiration()),
+		Code:      verification.Code,
+		ExpiresAt: verification.ExpiresAt,
 	})
 
 	if err != nil {
 		return "", errs.NewInternalError(err)
 	}
 
-	return code, nil
+	return verification.Code, nil
 }
 
 func (v *Service) ChangeCode(ctx context.Context, userId string, email string) error {
-	params := verificationRepo.UpdateInput{
+	params := verificationrepoport.UpdateInput{
 		UserId:    userId,
-		Code:      entity.GenerateVerificationCode(),
-		ExpiresAt: pkg.UnixToDateTime(entity.GetVerificationExpiration()),
+		Code:      domain.GenerateVerificationCode(),
+		ExpiresAt: domain.GetVerificationExpiration(),
 	}
 
-	err := v.SmtpService.SendEmail(smtpservice.SendInput{
+	err := v.SmtpService.SendEmail(smtpserviceport.SendInput{
 		To:      email,
 		Subject: "Your Verification Code is Ready!",
 		Body:    params.Code,
@@ -96,5 +100,5 @@ func (v *Service) ChangeCode(ctx context.Context, userId string, email string) e
 }
 
 func Provide() pal.ServiceDef {
-	return pal.Provide[verification.Api](&Service{})
+	return pal.Provide[verificationserviceport.Api](&Service{})
 }

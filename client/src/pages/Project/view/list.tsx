@@ -2,8 +2,8 @@ import { useStoreMap, useUnit } from "effector-react"
 import { Store } from "effector"
 import { useState } from "react"
 
-import { EditableTask } from "@/widgets/editable-task"
-import { ExpandedTask } from "@/widgets/expanded-task"
+// import { EditableTask } from "@/widgets/editable-task"
+// import { ExpandedTask } from "@/widgets/expanded-task"
 
 import { Task } from "@/entities/task/type"
 import { TaskStatus, TaskType } from "@/entities/task/model/task.model"
@@ -16,6 +16,7 @@ import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { routes } from "@/shared/routing/router"
 
 import { $$taskCreator, $$taskTrasher, $$taskUpdater } from "../model"
+import { sdate } from "@/shared/lib/date/lib"
 
 export const List = ({ $tasks }: { $tasks: Store<Nullable<Task[]>> }) => {
   const inprogressTasks = useStoreMap({
@@ -49,6 +50,7 @@ const InprogressTasks = ({ tasks }: { tasks: Task[] }) => {
   const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
   const initFields = useUnit($$taskCreator.setFieldsTriggered)
   const params = useUnit(routes.project.$params)
+
   const {
     isOpened: isCreateFormOpened,
     open: onOpenCreateForm,
@@ -58,8 +60,10 @@ const InprogressTasks = ({ tasks }: { tasks: Task[] }) => {
     onClose: onCreateTask,
     onOpen: () => {
       initFields({
-        project_id: params.projectId,
+        // project_id: params.projectId,
         type: TaskType.UNPLACED,
+        status: TaskStatus.INPROGRESS,
+        start_date: sdate(),
       })
     },
   })
@@ -74,7 +78,7 @@ const InprogressTasks = ({ tasks }: { tasks: Task[] }) => {
         disclose={disclose}
         display={!!tasks.length}
       />
-      <ExpandedTask
+      {/*<ExpandedTask
         className="mb-2"
         isExpanded={isCreateFormOpened}
         $$taskManager={$$taskCreator}
@@ -96,7 +100,7 @@ const InprogressTasks = ({ tasks }: { tasks: Task[] }) => {
               ref={null}
             />
           )
-        })}
+        })}*/}
     </>
   )
 }
@@ -105,7 +109,6 @@ const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
   const [isDisclosed, disclose] = useState(true)
   const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
   const initFields = useUnit($$taskCreator.setFieldsTriggered)
-  const params = useUnit(routes.project.$params)
   const {
     isOpened: isCreateFormOpened,
     open: onOpenCreateForm,
@@ -115,9 +118,10 @@ const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
     onClose: onCreateTask,
     onOpen: () => {
       initFields({
-        project_id: params.projectId,
+        // list_id: params.projectId,
         type: TaskType.UNPLACED,
         status: TaskStatus.FINISHED,
+        start_date: sdate(),
       })
     },
   })
@@ -132,7 +136,7 @@ const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
         color="purple"
         display={!!tasks.length}
       />
-      <ExpandedTask
+      {/*<ExpandedTask
         className="mb-2"
         isExpanded={isCreateFormOpened}
         $$taskManager={$$taskCreator}
@@ -155,7 +159,7 @@ const CompletedTasks = ({ tasks }: { tasks: Task[] }) => {
               ref={null}
             />
           )
-        })}
+        })}*/}
     </>
   )
 }

@@ -45,7 +45,7 @@ type (
 
 	ValidationError struct {
 		Field string
-		Value interface{}
+		Value any
 		Msg   string
 	}
 	ValidationErrors struct {
@@ -105,7 +105,7 @@ func NewUnauthorizedError() UnauthorizedError {
 	return UnauthorizedError{}
 }
 
-func (err UnauthorizedError) Error() string {
+func (UnauthorizedError) Error() string {
 	return "Unauthorized"
 }
 
@@ -131,7 +131,7 @@ func (err BadRequestError) Error() string {
 	return err.err.Error()
 }
 
-func NewValidationError(field string, value interface{}, msg string) ValidationError {
+func NewValidationError(field string, value any, msg string) ValidationError {
 	return ValidationError{field, value, msg}
 }
 

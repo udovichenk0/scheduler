@@ -1,4 +1,4 @@
-import { combine, createEvent, createStore, sample, split } from "effector"
+import { combine, createEvent, createStore, sample } from "effector"
 import { spread } from "patronum"
 
 import { SDate, getToday } from "@/shared/lib/date/lib.ts"
@@ -8,7 +8,6 @@ import type {
   Type as Type,
   EditableTaskFields,
   Priority,
-  ProjectId,
 } from "../type.ts"
 import { hasDate } from "../lib.ts"
 
@@ -29,15 +28,16 @@ export const createTaskEditor = () => {
 
   const $title = createStore("")
   const $description = createStore<Nullable<string>>(null)
-  const $status = createStore<Status>(TaskStatus.INPROGRESS)
+  const $status = createStore<Status>(TaskStatus.TODO)
   const $startDate = createStore<Nullable<SDate>>(null)
   const $dueDate = createStore<Nullable<SDate>>(null)
   const $type = createStore<Type>(TaskType.INBOX)
-  const $isDirty = createStore(false)
   const $priority = createStore<Priority>(TaskPriority.NONE)
-  const $projectId = createStore<Nullable<ProjectId>>(null)
+  const $isDirty = createStore(false)
   const $isAllowToSubmit = createStore(false)
   const setFieldsTriggered = createEvent<Partial<EditableTaskFields>>()
+  const initTaskFields = createEvent<EditableTaskFields>()
+
   const $fields = combine(
     $title,
     $description,
@@ -46,7 +46,6 @@ export const createTaskEditor = () => {
     $startDate,
     $dueDate,
     $priority,
-    $projectId,
     (
       title,
       description,
@@ -55,8 +54,7 @@ export const createTaskEditor = () => {
       start_date,
       due_date,
       priority,
-      project_id,
-    ) => ({
+    ): EditableTaskFields => ({
       title,
       description,
       status,
@@ -64,8 +62,27 @@ export const createTaskEditor = () => {
       start_date,
       due_date,
       priority,
-      project_id,
     }),
+  )
+
+  const $initialTaskFields = createStore<EditableTaskFields>(
+    {} as EditableTaskFields,
+  )
+  sample({
+    clock: initTaskFields,
+    target: $initialTaskFields,
+  })
+
+  const $changedFields = combine(
+    $fields,
+    $initialTaskFields,
+    (currentFields, initialFields): Partial<EditableTaskFields> => {
+      return Object.fromEntries(
+        Object.entries(initialFields).filter(([key, value]) => {
+          return value !== currentFields[key as keyof EditableTaskFields]
+        }),
+      )
+    },
   )
 
   sample({
@@ -81,6 +98,7 @@ export const createTaskEditor = () => {
     clock: titleChanged,
     target: $title,
   })
+
   sample({
     clock: setStatus,
     target: $status,
@@ -103,20 +121,17 @@ export const createTaskEditor = () => {
       type: $type,
       due_date: $dueDate,
       priority: $priority,
-      project_id: $projectId,
     }),
   })
 
-  split({
-    source: statusChanged,
-    match: {
-      FINISHED: (value) => value == TaskStatus.FINISHED,
-      INPROGRESS: (value) => value == TaskStatus.INPROGRESS,
-    },
-    cases: {
-      INPROGRESS: setStatus.prepend<void>(() => TaskStatus.FINISHED),
-      FINISHED: setStatus.prepend<void>(() => TaskStatus.INPROGRESS),
-    },
+  sample({
+    clock: setFieldsTriggered,
+    source: $fields,
+  })
+
+  sample({
+    clock: statusChanged,
+    target: setStatus,
   })
   sample({
     clock: descriptionChanged,
@@ -191,6 +206,7 @@ export const createTaskEditor = () => {
       $startDate.reinit,
       $dueDate.reinit,
       $priority.reinit,
+      $initialTaskFields.reinit,
     ],
   })
 
@@ -203,6 +219,7 @@ export const createTaskEditor = () => {
     descriptionChanged,
     resetFieldsTriggered,
     setFieldsTriggered,
+    initTaskFields,
     $title,
     $description,
     $status,
@@ -213,6 +230,7 @@ export const createTaskEditor = () => {
     $isAllowToSubmit,
     $fields,
     $isDirty,
+    $changedFields,
   }
 }
 

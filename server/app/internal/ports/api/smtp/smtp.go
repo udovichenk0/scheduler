@@ -1,4 +1,4 @@
-package smtp
+package smtpserviceport
 
 type SmtpConfig struct {
 	Host     string

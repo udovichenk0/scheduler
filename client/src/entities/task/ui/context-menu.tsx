@@ -2,8 +2,6 @@ import clsx from "clsx"
 import { useUnit } from "effector-react"
 import { ReactNode, useRef } from "react"
 
-import { TaskRemover } from "@/features/manage-task/interface"
-
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import {
   Disclosure,
@@ -11,7 +9,8 @@ import {
 } from "@/shared/lib/disclosure/use-disclosure"
 import { Button } from "@/shared/ui/buttons/main-button"
 import { Icon } from "@/shared/ui/icon"
-import { Modal } from "@/shared/ui/modal"
+import { Dialog } from "@/shared/ui/disclosure/dialog"
+import { TaskRemover } from "@/features/manage-task/delete"
 
 type TaskContextModalProps = {
   children: ReactNode
@@ -26,7 +25,7 @@ export const TaskContextMenu = ({
   const contextMenu = useDisclosure({ prefix: ModalName.TaskContextMenu })
   const { close } = contextMenu
 
-  const onRemoveTask = useUnit($$taskRemover.removeTaskById)
+  const onRemoveTask = useUnit($$taskRemover.deleteTaskById)
 
   return (
     <ContextMenu modal={contextMenu} child={children}>
@@ -64,20 +63,20 @@ export const ContextMenu = ({
   const { isOpened, open, close } = modal
   return (
     <div className="relative" onContextMenu={(e) => e.preventDefault()}>
-      <Modal
+      <Dialog
         label="Context Menu"
         isOpened={isOpened}
-        closeModal={close}
+        closeDialog={close}
         overlay={false}
         portal={false}
       >
-        <Modal.Content
+        <Dialog.Content
           className={clsx(className)}
           styles={{ left: dist.current, top: 20, width }}
         >
           {children}
-        </Modal.Content>
-      </Modal>
+        </Dialog.Content>
+      </Dialog>
       <div
         onContextMenu={(e) => {
           if (e.button != 2) return

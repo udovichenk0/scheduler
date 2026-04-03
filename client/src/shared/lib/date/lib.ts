@@ -49,6 +49,9 @@ export class SDate {
   get isTomorrow() {
     return this.d.isTomorrow()
   }
+  get isYesterday() {
+    return this.d.isYesterday()
+  }
 
   get isBeforeToday() {
     return this.d.isBefore(getToday().toDate(), "date")
@@ -65,6 +68,9 @@ export class SDate {
   }
   toDate() {
     return this.d.toDate()
+  }
+  toISOString() {
+    return this.d.toISOString() //iso 8601
   }
   toString() {
     return this.d.toString()
@@ -193,7 +199,7 @@ export class SDate {
   }
 }
 
-export const sdate = (date?: Nullable<Date | string>) => {
+export const sdate = (date?: Nullable<SDate | Date | string>) => {
   return new SDate(date)
 }
 
@@ -265,4 +271,25 @@ export const getSaturday = () => {
     return dayjs().weekday(13).toDate()
   }
   return dayjs().weekday(6).toDate()
+}
+
+export const defaultDateFormat = (inputdate: Date | SDate) => {
+  const date = sdate(inputdate)
+  let formattedDate = ""
+  const today = sdate()
+  const daysDiff = date.rangeInDays(today)
+  if (date.isBeforeToday) {
+    if (date.isYesterday) formattedDate = "Yesterday"
+    else if (daysDiff < 7) formattedDate = `${daysDiff} days ago`
+    else formattedDate = date.format("L")
+  }
+
+  if (date.isToday) formattedDate = "Today"
+  else if (date.isTomorrow) formattedDate = "Tomorrow"
+  else if (daysDiff > 0 && daysDiff < 7) formattedDate = date.format("ddd")
+  else formattedDate = date.format("L")
+  if (date.hasTime) {
+    formattedDate += ", " + date.format("LT")
+  }
+  return formattedDate
 }

@@ -15,7 +15,7 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string
   error?: Nullable<string>
   autoFocus?: boolean
-  ref: RefObject<any>
+  ref?: RefObject<any>
   outerStyles?: string
 }
 
@@ -59,7 +59,7 @@ export const Input = ({
           aria-invalid={!!error}
           value={value}
           className={clsx(
-            "border-cSecondBorder hover:border-hover focus:border-hover aria-[invalid=true]:text-error flex w-full items-center border-b-[1px] bg-transparent py-1 pr-8 text-sm outline-none duration-100",
+            "border-cSecondBorder hover:border-hover focus:border-hover aria-[invalid=true]:text-error flex w-full items-center border-b-[1px] bg-transparent py-1 pl-2 pr-8 text-sm outline-none duration-100",
             className,
           )}
         />

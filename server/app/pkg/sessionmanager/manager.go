@@ -22,11 +22,11 @@ type ISessionManager interface {
 	ClearSessionFromCookie(ctx *fiber.Ctx)
 	PersistToCookie(ctx *fiber.Ctx, session Session)
 	Load(ctx context.Context, sessionId string) (context.Context, error)
-	Find(sessionId string) (Session, error)
-	Commit(key string, val any) (Session, error)
+	Find(ctx context.Context, sessionId string) (Session, error)
+	Commit(ctx context.Context, key string, val any) (Session, error)
 	Get(ctx context.Context, key string) any
 	Decode(data []byte) (map[string]any, error)
-	Delete(sessionId string) error
+	Delete(ctx context.Context, sessionId string) error
 }
 
 type SessionManager struct {
@@ -56,11 +56,11 @@ func (m SessionManager) startCleanup() {
 	}
 }
 
-func (s SessionManager) Protected(fn fiber.Handler) fiber.Handler {
+func (m SessionManager) Protected(fn fiber.Handler) fiber.Handler {
 	return func(fc *fiber.Ctx) error {
 		sessionId := fc.Cookies("sessionId")
 
-		ctx, err := s.Load(fc.Context(), sessionId)
+		ctx, err := m.Load(fc.Context(), sessionId)
 
 		if err != nil {
 			return err
@@ -78,51 +78,51 @@ func (s SessionManager) Protected(fn fiber.Handler) fiber.Handler {
 	}
 }
 
-func (s SessionManager) Load(ctx context.Context, sessionId string) (context.Context, error) {
+func (m SessionManager) Load(ctx context.Context, sessionId string) (context.Context, error) {
 	if sessionId == "" {
 		return ctx, errs.NewUnauthorizedError()
 	}
 
-	session, err := s.Find(sessionId)
+	session, err := m.Find(ctx, sessionId)
 
 	if err != nil {
 		return ctx, errs.NewInternalError(err)
 	}
 
-	m, err := s.Decode(session.Data)
+	data, err := m.Decode(session.Data)
 
 	if err != nil {
 		return ctx, errs.NewUnauthorizedError()
 	}
 
-	return context.WithValue(ctx, ctxKey, m), nil
+	return context.WithValue(ctx, ctxKey, data), nil
 }
 
-func (s SessionManager) deleteExpiry() error {
-	_, err := s.Pool.Exec("DELETE FROM session WHERE expires_at < NOW()")
+func (m SessionManager) deleteExpiry() error {
+	_, err := m.Pool.Exec("DELETE FROM session WHERE expires_at < NOW()")
 	return err
 }
 
-func (s SessionManager) Delete(sessionId string) error {
-	_, err := s.Pool.Exec("DELETE FROM session WHERE id = ?", sessionId)
+func (m SessionManager) Delete(ctx context.Context, sessionId string) error {
+	_, err := m.Pool.ExecContext(ctx, "DELETE FROM session WHERE id = ?", sessionId)
 	return err
 }
 
-func (s SessionManager) Find(sessionId string) (Session, error) {
+func (m SessionManager) Find(ctx context.Context, sessionId string) (Session, error) {
 	session := Session{}
-	err := s.Pool.Get(&session, "SELECT id, data, UNIX_TIMESTAMP(expires_at) as expires_at FROM session WHERE id = ? AND expires_at > NOW()", sessionId)
+	err := m.Pool.GetContext(ctx, &session, "SELECT id, data, UNIX_TIMESTAMP(expires_at) as expires_at FROM session WHERE id = ? AND expires_at > NOW()", sessionId)
 	if err != nil {
 		return session, err
 	}
 	return session, nil
 }
 
-func (s SessionManager) Commit(key string, val any) (Session, error) {
+func (m SessionManager) Commit(ctx context.Context, key string, val any) (Session, error) {
 	var b bytes.Buffer
-	m := map[string]any{
+	data := map[string]any{
 		key: val,
 	}
-	err := gob.NewEncoder(&b).Encode(m)
+	err := gob.NewEncoder(&b).Encode(data)
 
 	if err != nil {
 		return Session{}, err
@@ -130,7 +130,7 @@ func (s SessionManager) Commit(key string, val any) (Session, error) {
 
 	session := NewSession(b.Bytes())
 
-	_, err = s.Pool.Exec("INSERT INTO session (id, data, expires_at) VALUES(?,?,FROM_UNIXTIME(?))", session.Id, session.Data, session.ExpiresAt)
+	_, err = m.Pool.ExecContext(ctx, "INSERT INTO session (id, data, expires_at) VALUES(?,?,FROM_UNIXTIME(?))", session.Id, session.Data, session.ExpiresAt)
 
 	if err != nil {
 		return Session{}, err
@@ -139,7 +139,7 @@ func (s SessionManager) Commit(key string, val any) (Session, error) {
 	return session, nil
 }
 
-func (s SessionManager) Get(ctx context.Context, key string) any {
+func (SessionManager) Get(ctx context.Context, key string) any {
 	data, ok := ctx.Value(ctxKey).(map[string]any)
 
 	if !ok {
@@ -149,7 +149,7 @@ func (s SessionManager) Get(ctx context.Context, key string) any {
 	return data[key]
 }
 
-func (s *SessionManager) PersistToCookie(ctx *fiber.Ctx, session Session) {
+func (*SessionManager) PersistToCookie(ctx *fiber.Ctx, session Session) {
 	ctx.Cookie(&fiber.Cookie{
 		Name:     "sessionId",
 		Value:    session.Id,
@@ -158,7 +158,7 @@ func (s *SessionManager) PersistToCookie(ctx *fiber.Ctx, session Session) {
 	})
 }
 
-func (s SessionManager) ClearSessionFromCookie(ctx *fiber.Ctx) {
+func (SessionManager) ClearSessionFromCookie(ctx *fiber.Ctx) {
 	ctx.Cookie(&fiber.Cookie{
 		Name:     "sessionId",
 		Value:    "",
@@ -167,7 +167,7 @@ func (s SessionManager) ClearSessionFromCookie(ctx *fiber.Ctx) {
 	})
 }
 
-func (s SessionManager) Decode(data []byte) (map[string]any, error) {
+func (SessionManager) Decode(data []byte) (map[string]any, error) {
 	output := map[string]any{}
 	readBuf := bytes.NewBuffer(data)
 

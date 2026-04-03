@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/udovichenk0/scheduler/internal/entity"
+	"github.com/udovichenk0/scheduler/internal/domain"
 	"github.com/zhulik/pal"
 )
 
@@ -15,9 +15,9 @@ type Validator struct {
 
 func IsStatusValid(fl validator.FieldLevel) bool {
 	s := fl.Field().String()
-	canceled := string(entity.Canceled)
-	finished := string(entity.Finished)
-	inprogress := string(entity.Inprogress)
+	canceled := string(domain.ToDo)
+	finished := string(domain.Finished)
+	inprogress := string(domain.Inprogress)
 	isStatusValid := (s == canceled) || (s == finished) || (s == inprogress)
 
 	return isStatusValid
@@ -25,18 +25,18 @@ func IsStatusValid(fl validator.FieldLevel) bool {
 
 func IsPriorityValid(fl validator.FieldLevel) bool {
 	s := fl.Field().String()
-	none := string(entity.None)
-	low := string(entity.Low)
-	normal := string(entity.Normal)
-	high := string(entity.High)
-	urgent := string(entity.Urgent)
+	none := string(domain.None)
+	low := string(domain.Low)
+	normal := string(domain.Normal)
+	high := string(domain.High)
+	urgent := string(domain.Urgent)
 	return (s == none) || (s == low) || (s == normal) || (s == high) || (s == urgent)
 }
 
 func IsTypeValid(fl validator.FieldLevel) bool {
 	s := fl.Field().String()
-	inbox := string(entity.Inbox)
-	unplaced := string(entity.Unplaced)
+	inbox := string(domain.Inbox)
+	unplaced := string(domain.Unplaced)
 	isTypeValid := (s == inbox) || (s == unplaced)
 
 	return isTypeValid

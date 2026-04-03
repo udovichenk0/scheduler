@@ -39,7 +39,7 @@ func (l *Logger) Warn(msg string, args ...any) {
 }
 
 func NewLogger() ILogger {
-	env := config.GetEnv("ENV")
+	env := config.GetEnv("ENV", "", true)
 	var logWriter io.Writer
 	if env == "PROD" {
 		logWriter = os.Stderr

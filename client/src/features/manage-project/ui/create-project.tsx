@@ -5,39 +5,47 @@ import { useTranslation } from "react-i18next"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { Button } from "@/shared/ui/buttons/main-button"
-import { Icon } from "@/shared/ui/icon"
-import { Modal } from "@/shared/ui/modal"
+import { Dialog } from "@/shared/ui/disclosure/dialog"
 import { Input } from "@/shared/ui/data-entry/main-input"
 
-import { createProject } from "../model"
+import { ProjectManager } from "../model"
 
-export const CreateProjectModal = () => {
+export const CreateProjectModal = ({
+  projectManager,
+}: {
+  projectManager: ProjectManager
+}) => {
   const { t } = useTranslation()
   const { isOpened, open, close } = useDisclosure({
     id: ModalName.CreateProjectForm,
   })
   const [projectName, setProjectName] = useState<string>("")
-  const onCreateProject = useUnit(createProject)
+  const onCreateProject = useUnit(projectManager.createProject)
   const ref = useRef<HTMLInputElement>(null)
+
   return (
     <>
       <Button
         onClick={open}
-        size={"sm"}
+        size={"xs"}
         className="w-full text-start"
         intent={"primary"}
+        icon={{
+          left: {
+            name: "common/plus",
+          },
+        }}
       >
-        <Icon name="common/plus" className="text-cOpacitySecondFont mr-4" />
         <span className="text-primary text-[12px]">{t("sidebar.project")}</span>
       </Button>
-      <Modal isOpened={isOpened} label="Create Project" closeModal={close}>
-        <Modal.Content className="bg-main-light w-[400px] overflow-hidden px-0 py-0">
-          <Modal.Header className="mx-4 py-3">
-            <Modal.Title fontSize="lg" pos="left">
+      <Dialog isOpened={isOpened} label="Create Project" closeDialog={close}>
+        <Dialog.Content className="bg-main-light w-100 overflow-hidden px-0 py-0">
+          <Dialog.Header className="mx-4 py-3">
+            <Dialog.Title fontSize="lg" pos="left">
               Create a Project
-            </Modal.Title>
-            <Modal.CloseButton close={close} />
-          </Modal.Header>
+            </Dialog.Title>
+            <Dialog.CloseButton />
+          </Dialog.Header>
           <div>
             <form
               onSubmit={(e) => {
@@ -56,14 +64,14 @@ export const CreateProjectModal = () => {
                 />
               </div>
               <div className="bg-main border-t-cBorder grid w-full border-t px-4 py-2">
-                <Button intent="filled" className=" justify-self-end" size="xs">
+                <Button intent="filled" className="justify-self-end" size="xs">
                   Create Project
                 </Button>
               </div>
             </form>
           </div>
-        </Modal.Content>
-      </Modal>
+        </Dialog.Content>
+      </Dialog>
     </>
   )
 }

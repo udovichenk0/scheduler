@@ -5,10 +5,20 @@ import { RouteInstance, RouteParams, RouteQuery } from "atomic-router"
 import { Link } from "atomic-router-react"
 
 import { buttonCva } from "./cva.styles"
+import { Icon, IconName } from "../../icon"
+
+type IconProps = {
+  name: IconName
+  className?: string
+}
+
 type BaseProps = VariantProps<typeof buttonCva> & {
-  children: ReactNode
+  children?: ReactNode
   ref?: Ref<HTMLButtonElement>
-  icon?: ReactNode
+  icon?: {
+    left?: IconProps
+    right?: IconProps
+  }
 }
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   BaseProps & {
@@ -30,6 +40,7 @@ export const Button = ({
   size,
   children,
   className,
+  icon,
   ...props
 }: ButtonOrLinkProps) => {
   if (props.as == "link") {
@@ -44,8 +55,21 @@ export const Button = ({
     )
   }
   return (
-    <button className={clsx(className, buttonCva({ size, intent }))} {...props}>
+    <button
+      className={clsx(
+        "inline-flex items-center gap-x-1",
+        className,
+        buttonCva({ size, intent }),
+      )}
+      {...props}
+    >
+      {icon && icon.left && (
+        <Icon name={icon.left.name} className={icon.left.className} />
+      )}
       {children}
+      {icon && icon.right && (
+        <Icon name={icon.right.name} className={icon.right.className} />
+      )}
     </button>
   )
 }

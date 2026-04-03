@@ -1,23 +1,13 @@
-FROM node:20-alpine
+FROM node:24-slim AS builder
 
+RUN corepack enable
 WORKDIR /app
-
-COPY package.json yarn.lock ./
-
-RUN yarn
-
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm i --frozen-lockfile
 COPY . .
+RUN pnpm build
 
-RUN yarn build && npm -g install http-server
-
-FROM node:20-alpine
-
-USER node
-
-WORKDIR /app
-
-USER node
-
-COPY --from=0 --chown=node:node /app/dist /app
-
-CMD ["npx", "http-server", "--proxy http://localhost:4173", "/app", "-p 4173", "-d false"]
+FROM devforth/spa-to-http:latest AS runner
+ENV GZIP=true
+ENV BROTLI=true
+COPY --from=builder /app/dist .

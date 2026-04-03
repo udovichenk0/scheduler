@@ -5,9 +5,9 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/udovichenk0/scheduler/internal/adapters/rest/dto"
-	"github.com/udovichenk0/scheduler/internal/entity"
 	authservice "github.com/udovichenk0/scheduler/internal/ports/api/auth"
-	userservice "github.com/udovichenk0/scheduler/internal/ports/api/user"
+	authserviceport "github.com/udovichenk0/scheduler/internal/ports/api/auth"
+	userserviceport "github.com/udovichenk0/scheduler/internal/ports/api/user"
 	"github.com/udovichenk0/scheduler/pkg/errs"
 	"github.com/udovichenk0/scheduler/pkg/logger"
 	sessionManager "github.com/udovichenk0/scheduler/pkg/sessionmanager"
@@ -17,7 +17,7 @@ import (
 
 type AuthHandler struct {
 	AuthService authservice.Api
-	UserService userservice.Api
+	UserService userserviceport.Api
 	*validator.Validator
 	Sm     sessionManager.ISessionManager
 	Logger logger.ILogger
@@ -40,9 +40,10 @@ func (h *AuthHandler) Singup(fc *fiber.Ctx) error {
 		return err
 	}
 	fc.JSON(dto.UserDto{
-		Id:       user.Id,
-		Email:    user.Email,
-		Verified: user.Verified,
+		Id:        user.Id,
+		Email:     user.Email,
+		Verified:  user.Verified,
+		CreatedAt: user.CreatedAt,
 	})
 	return nil
 }
@@ -65,11 +66,11 @@ func (h *AuthHandler) Singin(fc *fiber.Ctx) error {
 	}
 
 	h.Sm.PersistToCookie(fc, result.Session)
-
 	fc.JSON(dto.UserDto{
-		Id:       result.User.Id,
-		Email:    result.User.Email,
-		Verified: result.User.Verified,
+		Id:        result.User.Id,
+		Email:     result.User.Email,
+		Verified:  result.User.Verified,
+		CreatedAt: result.User.CreatedAt,
 	})
 	return nil
 }
@@ -93,7 +94,7 @@ func (h *AuthHandler) CheckSession(fc *fiber.Ctx) error {
 		return err
 	}
 
-	user := h.Sm.Get(ctx, "user").(entity.User)
+	user := h.Sm.Get(ctx, "user").(authserviceport.AuthUser)
 
 	fc.JSON(user)
 	return nil

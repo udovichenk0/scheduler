@@ -31,7 +31,7 @@ const Unplaced = () => {
   const tasks = useUnit($unplacedTasks)
   const activeSort = useUnit($$sort.$sortType)
 
-  const onDeleteTask = useUnit($$taskTrasher.removeTaskById)
+  const onDeleteTask = useUnit($$taskTrasher.trashTaskById)
   const onCreateTask = useUnit($$taskCreator.createTaskTriggered)
   const onChangeDate = useUnit($$taskCreator.dateChanged)
   const onSortChange = useUnit($$sort.sort)

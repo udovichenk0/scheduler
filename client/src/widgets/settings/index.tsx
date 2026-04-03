@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { useRef, useState } from "react"
+import { useState } from "react"
 
 import { PomodoroSettings } from "@/entities/settings/pomodoro/ui.tsx"
 import { ThemeChanger } from "@/entities/settings/theme/ui.tsx"
@@ -7,7 +7,7 @@ import { GeneralSettings } from "@/entities/settings/general/general.tsx"
 
 import { Icon } from "@/shared/ui/icon"
 import { Tabs } from "@/shared/ui/tab"
-import { Modal } from "@/shared/ui/modal"
+import { Dialog } from "@/shared/ui/disclosure/dialog.tsx"
 import { Button } from "@/shared/ui/buttons/main-button/index.tsx"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure.ts"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names.ts"
@@ -33,9 +33,9 @@ const Settings = ({
   const [tab, setTab] = useState<string>(defaultTab)
 
   return (
-    <Modal
+    <Dialog
       label={t("setting.title")}
-      closeModal={onCloseSettings}
+      closeDialog={onCloseSettings}
       isOpened={isSettingsOpened}
     >
       <Button
@@ -46,11 +46,11 @@ const Settings = ({
       >
         <Icon name="common/settings" className="text-[24px]" />
       </Button>
-      <Modal.Content className="w-[600px]">
-        <Modal.Header>
-          <Modal.Title>{t("setting.title")}</Modal.Title>
-          <Modal.CloseButton close={onCloseSettings} />
-        </Modal.Header>
+      <Dialog.Content className="w-[600px]">
+        <Dialog.Header>
+          <Dialog.Title>{t("setting.title")}</Dialog.Title>
+          <Dialog.CloseButton />
+        </Dialog.Header>
         <Tabs
           contentStyles="px-6 py-4"
           value={tab}
@@ -106,8 +106,8 @@ const Settings = ({
             <PomodoroSettings />
           </Tabs.Content>
         </Tabs>
-      </Modal.Content>
-    </Modal>
+      </Dialog.Content>
+    </Dialog>
   )
 }
 

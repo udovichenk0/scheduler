@@ -1,9 +1,10 @@
 package dto
 
 type UserDto struct {
-	Id       string `json:"id"`
-	Email    string `json:"email"`
-	Verified bool   `json:"verified"`
+	Id        string `json:"id"`
+	Email     string `json:"email"`
+	Verified  bool   `json:"verified"`
+	CreatedAt string `json:"createdAt"`
 }
 
 type GetUserRequestDto struct {

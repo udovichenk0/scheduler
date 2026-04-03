@@ -11,7 +11,7 @@ import { Icon, IconName } from "@/shared/ui/icon"
 import { Container } from "@/shared/ui/general/container"
 import { Pomodoro } from "@/shared/ui/pomodoro"
 import { Tooltip } from "@/shared/ui/general/tooltip"
-import { Modal } from "@/shared/ui/modal"
+import { Dialog } from "@/shared/ui/disclosure/dialog"
 import { normalizeSeconds } from "@/shared/lib/date/normalize-time.ts"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
@@ -35,28 +35,28 @@ export const Header = ({ iconName, title, slot }: HeaderProps) => {
   return (
     <Container padding="xl" className="text-primary">
       <div className="mb-2 flex h-10 items-center justify-end">
-        <Modal
+        <Dialog
           label="Pomodoro"
           isOpened={isPomodoroOpened}
-          closeModal={onClosePomodoro}
+          closeDialog={onClosePomodoro}
         >
           <PomodoroButton onOpenPomodoro={onOpenPomodoro} />
-          <Modal.Content>
-            <Modal.Header>
-              <Modal.Title>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>
                 <span className="w-full pl-6 text-center text-[12px]">
                   Pomodoro
                 </span>
-              </Modal.Title>
-              <Modal.CloseButton close={onClosePomodoro} />
-            </Modal.Header>
+              </Dialog.Title>
+              <Dialog.CloseButton />
+            </Dialog.Header>
             <Pomodoro
               pomodoroModel={$$pomodoro}
               $customDuration={$$pomodoroSettings.$customDuration}
               leftSlot={<Settings defaultTab="pomodoro" />}
             />
-          </Modal.Content>
-        </Modal>
+          </Dialog.Content>
+        </Dialog>
       </div>
       <div className="flex h-10 w-full items-center justify-between">
         <div className="flex items-center gap-4">
@@ -78,7 +78,7 @@ const PomodoroButton = ({ onOpenPomodoro }: { onOpenPomodoro: () => void }) => {
   return (
     <Tooltip text={t("pomodoro.title")} dir="bl">
       {isPomodoroRunning ? (
-        <Modal.Trigger
+        <Dialog.Trigger
           intent={"primary"}
           size={"xs"}
           onClick={onOpenPomodoro}
@@ -91,9 +91,9 @@ const PomodoroButton = ({ onOpenPomodoro }: { onOpenPomodoro: () => void }) => {
             $isPomodoroRunning={$$pomodoro.$isPomodoroRunning}
           />
           <span className="text-[12px]">{normalizeSeconds(passingTime)}</span>
-        </Modal.Trigger>
+        </Dialog.Trigger>
       ) : (
-        <Modal.Trigger
+        <Dialog.Trigger
           title={t("setting.tab.pomodoro")}
           intent={"primary"}
           size={"xs"}
@@ -101,7 +101,7 @@ const PomodoroButton = ({ onOpenPomodoro }: { onOpenPomodoro: () => void }) => {
         >
           <Icon className="text-cIconDefault text-2xl" name="common/timer" />
           <span className="sr-only">Open pomodoro</span>
-        </Modal.Trigger>
+        </Dialog.Trigger>
       )}
     </Tooltip>
   )

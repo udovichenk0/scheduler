@@ -1,8 +1,6 @@
 import { Fragment } from "react/jsx-runtime"
 import { useState } from "react"
 
-import { TaskRemover } from "@/features/manage-task/interface"
-
 import { Task } from "@/entities/task/type"
 import { TaskContextMenu } from "@/entities/task/ui/context-menu"
 
@@ -11,6 +9,7 @@ import { Button } from "@/shared/ui/buttons/main-button"
 
 import { Cell as CellType } from "./type"
 import { ITEM_HEIGHT, MAX_TASKS_PER_CELL, MIN_HEIGHT } from "./config"
+import { TaskRemover } from "@/features/manage-task/delete"
 
 type CellProps = {
   cell?: CellType
@@ -94,16 +93,7 @@ export const Cell = ({
           </Button>
           <div
             data-current-date={date.isToday}
-            className="
-              text-cFont
-              data-[current-date=true]:bg-accent
-              flex
-              aspect-square
-              w-5
-              items-center
-              justify-center
-              rounded-full
-              text-xs"
+            className="text-cFont data-[current-date=true]:bg-accent flex aspect-square w-5 items-center justify-center rounded-full text-xs"
           >
             {date.date}
           </div>

@@ -7,7 +7,7 @@ import { Icon } from "@/shared/ui/icon"
 import { routes } from "@/shared/routing/router.ts"
 import { DatePicker } from "@/shared/ui/date-picker"
 import { LONG_MONTHS_NAMES } from "@/shared/config/constants"
-import { Modal } from "@/shared/ui/modal"
+import { Dialog } from "@/shared/ui/disclosure/dialog"
 import { SDate, sdate } from "@/shared/lib/date/lib"
 import { buttonCva } from "@/shared/ui/buttons/main-button/cva.styles"
 
@@ -73,7 +73,7 @@ export const TaskItem = ({
           return (
             <div className="mr-2 w-5">
               {onUpdateDate && (
-                <Modal.Trigger
+                <Dialog.Trigger
                   className="size-5"
                   intent="base"
                   onClick={onClick}
@@ -83,7 +83,7 @@ export const TaskItem = ({
                     name="common/upcoming"
                     className="text-accent invisible translate-y-1 text-lg group-hover:visible"
                   />
-                </Modal.Trigger>
+                </Dialog.Trigger>
               )}
             </div>
           )

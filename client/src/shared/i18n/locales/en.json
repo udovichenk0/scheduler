@@ -5,7 +5,8 @@
     "upcoming": "Upcoming",
     "calendar": "Calendar",
     "trash": "Trash",
-    "unplaced": "Unplaced"
+    "unplaced": "Unplaced",
+    "notifications": "Notifications"
   },
   "taskForm": {
     "newTask": "New Task",
@@ -171,6 +172,30 @@
   "noTasks": {
     "title": "There is nothing here",
     "description": "Press + icon to create a new task"
+  },
+  "noNotifications": {
+    "title": "No notifications",
+    "description": "You're all caught up! No new notifications."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "badge": {
+      "new": "New"
+    },
+    "time": {
+      "justNow": "Just now",
+      "minutesAgo": "{{count}} min ago",
+      "hoursAgo": "{{count}} hour ago",
+      "daysAgo": "{{count}} day ago"
+    },
+    "filters": {
+      "all": "All",
+      "unread": "Unread",
+      "task_assignment": "Tasks",
+      "invitation": "Invitations",
+      "message": "Messages"
+    }
   },
   "sort": {
     "title": "Sorting",

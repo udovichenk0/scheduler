@@ -1,4 +1,3 @@
-import { SpritesMap } from "@/shared/ui/icon/sprite.gen"
 import { SDate } from "@/shared/lib/date/lib"
 
 import { TaskPriority, TaskStatus, TaskType } from "./model/task.model"
@@ -19,8 +18,8 @@ export type Task = {
   start_date: TaskDate
   due_date: TaskDate
   user_id: Nullable<string>
-  project_id: Nullable<ProjectId>
-  date_created: Date
+  list_id: ProjectId
+  date_created: SDate
   is_trashed: boolean
   priority: Priority
 }
@@ -33,10 +32,14 @@ export type EditableTaskFields = {
   due_date: TaskDate
   type: Type
   priority: Priority
-  project_id: Nullable<ProjectId>
 }
 
-export type SortType = SpritesMap["sort"]
+export type SortType =
+  | "alph_asc"
+  | "alph_desc"
+  | "date_created_asc"
+  | "time_asc"
+  | "time_desc"
 export type SortConfig = {
   label: string
   value: SortType

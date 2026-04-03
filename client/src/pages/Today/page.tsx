@@ -2,9 +2,9 @@ import { useGate, useList, useUnit } from "effector-react"
 import { useTranslation } from "react-i18next"
 import { useState } from "react"
 
-import { ExpandedTask } from "@/widgets/expanded-task"
+// import { ExpandedTask } from "@/widgets/expanded-task"
 import { Layout } from "@/widgets/layout/main/ui.tsx"
-import { EditableTask } from "@/widgets/editable-task"
+// import { EditableTask } from "@/widgets/editable-task"
 
 import { Sort } from "@/entities/task/ui/sorting.tsx"
 import { CompletedToggle } from "@/entities/task/ui/toggle-completed"
@@ -43,7 +43,7 @@ const Today = () => {
   const overdueTasks = useUnit($overdueTasks)
   const todayTasks = useUnit($todayTasks)
 
-  const onDeleteTask = useUnit($$taskTrasher.removeTaskById)
+  const onDeleteTask = useUnit($$taskTrasher.trashTaskById)
   const onInitDate = useUnit($$taskCreator.setFieldsTriggered)
   const { isOpened, open: onOpen } = useDisclosure({
     id: ModalName.CreateTaskForm,
@@ -110,16 +110,17 @@ const OverdueTasks = ({
 
   const list = useList($overdueTasks, (task, index) => {
     return (
-      <EditableTask
-        key={task.id}
-        ref={(node) => addNode(node!, index)}
-        task={task}
-        typeLabel
-        $$taskUpdater={$$taskUpdater}
-        $$taskRemover={$$taskTrasher}
-        onSelect={() => onSelect(index)}
-        onBlur={onUnselect}
-      />
+      <div></div>
+      // <EditableTask
+      //   key={task.id}
+      //   ref={(node) => addNode(node!, index)}
+      //   task={task}
+      //   typeLabel
+      //   $$taskUpdater={$$taskUpdater}
+      //   $$taskRemover={$$taskTrasher}
+      //   onSelect={() => onSelect(index)}
+      //   onBlur={onUnselect}
+      // />
     )
   })
 
@@ -174,16 +175,17 @@ const TodayTasks = ({
   })
   const list = useList($todayTasks, (task, index) => {
     return (
-      <EditableTask
-        $$taskRemover={$$taskTrasher}
-        key={task.id}
-        ref={(node) => addNode(node!, index)}
-        task={task}
-        typeLabel
-        $$taskUpdater={$$taskUpdater}
-        onSelect={() => onSelect(index)}
-        onBlur={onUnselect}
-      />
+      <div></div>
+      // <EditableTask
+      //   $$taskRemover={$$taskTrasher}
+      //   key={task.id}
+      //   ref={(node) => addNode(node!, index)}
+      //   task={task}
+      //   typeLabel
+      //   $$taskUpdater={$$taskUpdater}
+      //   onSelect={() => onSelect(index)}
+      //   onBlur={onUnselect}
+      // />
     )
   })
 
@@ -191,7 +193,7 @@ const TodayTasks = ({
     <section>
       {!!overdueTasks?.length && !!tasks?.length && (
         <div
-          className={`border-b-1 border-cBorder text-primary mb-2 flex items-center gap-1 px-5 py-2`}
+          className={`border-cBorder text-primary mb-2 flex items-center gap-1 border-b px-5 py-2`}
         >
           <Icon
             name="common/outlined-star"
@@ -207,13 +209,13 @@ const TodayTasks = ({
         </div>
       )}
       <div className="mx-3">{list}</div>
-      <ExpandedTask
+      {/*<ExpandedTask
         className="mx-3"
         isExpanded={isCreateTaskFormOpened}
         closeTaskForm={onCloseCreateTaskForm}
         $$taskManager={$$taskCreator}
         dateModifier={true}
-      />
+      />*/}
     </section>
   )
 }

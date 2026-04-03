@@ -1,4 +1,4 @@
-openai: "3.0.0"
+openapi: "3.0.0"
 info:
   title: "Swagger Scheduler"
   version: "1.0.0"
@@ -9,13 +9,14 @@ paths:
       parameters:
         - name: email
           in: query
-          allowReserved: true
+          # allowReserved: true
           required: true
           schema:
             $ref: "#/components/schemas/Email"
       responses:
         "200":
           $ref: "#/components/responses/GetEmailExists200"
+          description: "Check if user by specified email exist"
   /auth/signin:
     post:
       summary: "Sign in a user"
@@ -87,12 +88,52 @@ paths:
     get:
       responses:
         "200":
+          description: "Get user's public projects"
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ProjectDto"
+                  type: object
+                  properties:
+                    id:
+                      $ref: "#/components/schemas/Id"
+                    name:
+                      type: string
+                    createdBy:
+                      $ref: "#/components/schemas/Id"
+                    isPrivate:
+                      type: boolean
+                    lists:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+                          projectId:
+                            type: string
+                          createdAt:
+                            type: string
+                          createdBy:
+                            type: string
+                          isPrivate:
+                            type: boolean
+                        required:
+                          - id
+                          - name
+                          - projectId
+                          - createdAt
+                          - createdBy
+                          - isPrivate
+                  required:
+                    - id
+                    - name
+                    - createdBy
+                    - lists
+                    - isPrivate
     post:
       requestBody:
         required: true
@@ -107,23 +148,133 @@ paths:
                 - name
       responses:
         "200":
+          description: "Create project"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProjectDto"
-  #*task endpoints
-  /tasks:
+                $ref: "#/components/schemas/Project"
+  /project/private:
     get:
       responses:
         "200":
+          description: "Get private project with private list"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: "#/components/schemas/Id"
+                  name:
+                    type: string
+                  createdBy:
+                    $ref: "#/components/schemas/Id"
+                  isPrivate:
+                    type: boolean
+                  list:
+                    $ref: "#/components/schemas/List"
+                required:
+                  - id
+                  - name
+                  - createdBy
+                  - isPrivate
+                  - list
+  #*invitation endpoints
+  /invitation:
+    get:
+      responses:
+        "200":
+          description: "Get invitations"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InvitationDto"
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                projectId:
+                  type: string
+              required:
+                - email
+                - projectId
+      responses:
+        "200":
+          description: OK
+  #*List endpoints
+  /lists/{id}/tasks:
+    get:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      responses:
+        "200":
+          description: "Get tasks"
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: "#/components/schemas/TaskDto"
+  /lists/{list_id}/tasks/{task_id}:
+    put:
+      parameters:
+        - name: list_id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                  nullable: true
+                status:
+                  $ref: "#/components/schemas/TaskStatus"
+                priority:
+                  $ref: "#/components/schemas/Priority"
+                start_date:
+                  type: string
+                  nullable: true
+                due_date:
+                  type: string
+                  nullable: true
+                type:
+                  $ref: "#/components/schemas/TaskType"
+      responses:
+        "200":
+          description: "Update task"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskDto"
+
+  #*task endpoints
+  /tasks:
     post:
-      summary: Create task
       requestBody:
         required: true
         content:
@@ -132,6 +283,7 @@ paths:
               $ref: "#/components/schemas/TaskFields"
       responses:
         "200":
+          description: "Create task"
           content:
             application/json:
               schema:
@@ -141,26 +293,8 @@ paths:
       responses:
         "200":
           description: OK
-  /tasks/{projectId}:
-    get:
-      summary: Get Project Tasks
-      parameters:
-        - name: projectId
-          in: path
-          required: true
-          schema:
-            $ref: "#/components/schemas/Id"
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/TaskDto"
   /tasks/{id}:
     put:
-      summary: Update task's fields
       parameters:
         - name: id
           in: path
@@ -175,6 +309,7 @@ paths:
               $ref: "#/components/schemas/TaskFields"
       responses:
         "200":
+          description: "Update task fields"
           content:
             application/json:
               schema:
@@ -190,77 +325,77 @@ paths:
       responses:
         "200":
           description: OK
-  /tasks/{id}/date:
-    patch:
-      summary: Update task's date
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            $ref: "#/components/schemas/Id"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                start_date:
-                  $ref: "#/components/schemas/StartDate"
-                due_date:
-                  $ref: "#/components/schemas/DueDate"
-              required:
-                - start_date
-                - due_date
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TaskDto"
-  /tasks/{id}/status:
-    patch:
-      parameters:
-        - name: id
-          in: path
-          schema:
-            $ref: "#/components/schemas/Id"
-          required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                status:
-                  $ref: "#/components/schemas/TaskStatus"
-              required:
-                - status
-      responses:
-        "200":
-          description: OK
-  /tasks/{id}/priority:
-    patch:
-      parameters:
-        - name: id
-          in: path
-          schema:
-            $ref: "#/components/schemas/Id"
-          required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                priority:
-                  $ref: "#/components/schemas/Priority"
-              required:
-                - priority
-      responses:
-        "200":
-          description: OK
+  # /tasks/{id}/date:
+  #   patch:
+  #     parameters:
+  #       - name: id
+  #         in: path
+  #         required: true
+  #         schema:
+  #           $ref: "#/components/schemas/Id"
+  #     requestBody:
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               start_date:
+  #                 $ref: "#/components/schemas/StartDate"
+  #               due_date:
+  #                 $ref: "#/components/schemas/DueDate"
+  #             required:
+  #               - start_date
+  #               - due_date
+  #     responses:
+  #       "200":
+  #         description: "Update task's start_date and due_date"
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/TaskDto"
+  # /tasks/{id}/status:
+  #   patch:
+  #     parameters:
+  #       - name: id
+  #         in: path
+  #         schema:
+  #           $ref: "#/components/schemas/Id"
+  #         required: true
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               status:
+  #                 $ref: "#/components/schemas/TaskStatus"
+  #             required:
+  #               - status
+  #     responses:
+  #       "200":
+  #         description: OK
+  # /tasks/{id}/priority:
+  #   patch:
+  #     parameters:
+  #       - name: id
+  #         in: path
+  #         schema:
+  #           $ref: "#/components/schemas/Id"
+  #         required: true
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               priority:
+  #                 $ref: "#/components/schemas/Priority"
+  #             required:
+  #               - priority
+  #     responses:
+  #       "200":
+  #         description: OK
   /tasks/{id}/trash:
     post:
       parameters:
@@ -276,6 +411,7 @@ paths:
 components:
   responses:
     GetEmailExists200:
+      description: "Check if user is present with such email"
       content:
         application/json:
           schema:
@@ -291,15 +427,16 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/UserDto"
+
   schemas:
     Description:
       type: string
       nullable: true
     StartDate:
-      type: integer
+      type: string
       nullable: true
     DueDate:
-      type: integer
+      type: string
       nullable: true
     Email:
       type: string
@@ -328,22 +465,25 @@ components:
           $ref: "#/components/schemas/Email"
         verified:
           type: boolean
+        createdAt:
+          type: string
       required:
         - id
         - email
         - verified
-        - created_at
+        - createdAt
     TaskStatus:
       type: string
       enum:
         - inprogress
         - finished
+        - todo
     TaskType:
       type: string
       enum:
         - inbox
         - unplaced
-    ProjectDto:
+    Project:
       type: object
       properties:
         id:
@@ -352,10 +492,18 @@ components:
           type: string
         createdBy:
           $ref: "#/components/schemas/Id"
+        isPrivate:
+          type: boolean
+        lists:
+          type: array
+          items:
+            $ref: "#/components/schemas/List"
       required:
         - id
         - name
         - createdBy
+        - isPrivate
+        - lists
     Priority:
       type: string
       enum:
@@ -377,14 +525,13 @@ components:
         priority:
           $ref: "#/components/schemas/Priority"
         start_date:
-          type: integer
-          nullable: true
-        due_date:
-          type: integer
-          nullable: true
-        project_id:
           type: string
           nullable: true
+        due_date:
+          type: string
+          nullable: true
+        list_id:
+          type: string
         type:
           $ref: "#/components/schemas/TaskType"
       required:
@@ -395,7 +542,7 @@ components:
         - due_date
         - type
         - priority
-        - project_id
+        - list_id
     TaskDto:
       type: object
       properties:
@@ -409,15 +556,15 @@ components:
         status:
           $ref: "#/components/schemas/TaskStatus"
         start_date:
-          type: integer
+          type: string
           nullable: true
         due_date:
-          type: integer
+          type: string
           nullable: true
         user_id:
           $ref: "#/components/schemas/Id"
-        project_id:
-          $ref: "#/components/schemas/UuidOrEmpty"
+        list_id:
+          $ref: "#/components/schemas/Id"
         type:
           $ref: "#/components/schemas/TaskType"
         date_created:
@@ -434,11 +581,53 @@ components:
         - start_date
         - due_date
         - user_id
-        - project_id
         - type
         - date_created
         - is_trashed
+        - list_id
         - priority
+    List:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        createdBy:
+          $ref: "#/components/schemas/Id"
+        projectId:
+          $ref: "#/components/schemas/UuidOrEmpty"
+        createdAt:
+          type: string
+        isPrivate:
+          type: boolean
+      required:
+        - isPrivate
+        - createdAt
+        - projectId
+        - createdBy
+        - name
+        - id
+
+    InvitationDto:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        invitedBy:
+          $ref: "#/components/schemas/Id"
+        userId:
+          $ref: "#/components/schemas/Id"
+        projectId:
+          $ref: "#/components/schemas/Id"
+        invitedAt:
+          type: string
+      required:
+        - id
+        - invitedBy
+        - userId
+        - projectId
+        - invitedAt
 
   requestBodies:
     AuthEmailCreds:

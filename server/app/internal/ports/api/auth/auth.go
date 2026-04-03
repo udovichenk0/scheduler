@@ -1,19 +1,25 @@
-package auth
+package authserviceport
 
 import (
 	"context"
 
-	"github.com/udovichenk0/scheduler/internal/entity"
 	sessionManager "github.com/udovichenk0/scheduler/pkg/sessionmanager"
 )
 
-type AuthResult struct {
-	User    entity.User
-	Session sessionManager.Session
-}
-
 type Api interface {
 	SignIn(ctx context.Context, email, pass string) (AuthResult, error)
-	SignUp(ctx context.Context, email, pass string) (entity.User, error)
+	SignUp(ctx context.Context, email, pass string) (AuthUser, error)
 	SignOut(ctx context.Context, sessionId string) error
+}
+
+type AuthUser struct {
+	Id        string `json:"id"`
+	Email     string `json:"email"`
+	Verified  bool   `json:"verified"`
+	CreatedAt string `json:"createdAt"`
+}
+
+type AuthResult struct {
+	User    AuthUser
+	Session sessionManager.Session
 }

@@ -77,10 +77,7 @@ export const ProgressCircle = ({
           return (
             <div
               key={id}
-              className={`h-[10px] w-[10px] rounded-full border-2 
-              ${isWorkTime ? "border-cPomodoroRed" : "border-cPomodoroGreen"} 
-              ${isWorkTime && fulfilled && "bg-cPomodoroRed"}
-              ${!isWorkTime && fulfilled && "bg-cPomodoroGreen"}`}
+              className={`h-[10px] w-[10px] rounded-full border-2 ${isWorkTime ? "border-cPomodoroRed" : "border-cPomodoroGreen"} ${isWorkTime && fulfilled && "bg-cPomodoroRed"} ${!isWorkTime && fulfilled && "bg-cPomodoroGreen"}`}
             />
           )
         })}

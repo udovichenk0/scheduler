@@ -34,7 +34,7 @@ func (h VerificationHandler) VerifyCode(fc *fiber.Ctx) error {
 		return err
 	}
 
-	session, err := h.Sm.Commit("user", user)
+	session, err := h.Sm.Commit(fc.Context(), "user", user)
 
 	if err != nil {
 		return err

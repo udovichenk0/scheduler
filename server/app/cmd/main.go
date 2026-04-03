@@ -11,13 +11,15 @@ import (
 	"github.com/udovichenk0/scheduler/internal/adapters/db"
 	"github.com/udovichenk0/scheduler/internal/adapters/rest"
 	"github.com/udovichenk0/scheduler/internal/adapters/smtp"
-	"github.com/udovichenk0/scheduler/internal/services/auth"
-	"github.com/udovichenk0/scheduler/internal/services/project"
-	"github.com/udovichenk0/scheduler/internal/services/task"
-	"github.com/udovichenk0/scheduler/internal/services/user"
-	"github.com/udovichenk0/scheduler/internal/services/verification"
+	"github.com/udovichenk0/scheduler/internal/adapters/sse"
+	authservice "github.com/udovichenk0/scheduler/internal/services/auth"
+	projectservice "github.com/udovichenk0/scheduler/internal/services/project"
+	taskservice "github.com/udovichenk0/scheduler/internal/services/task"
+	userservice "github.com/udovichenk0/scheduler/internal/services/user"
+	verificationservice "github.com/udovichenk0/scheduler/internal/services/verification"
 	log "github.com/udovichenk0/scheduler/pkg/logger"
 	"github.com/udovichenk0/scheduler/pkg/sessionmanager"
+	ssebroker "github.com/udovichenk0/scheduler/pkg/sse-broker"
 	validator "github.com/udovichenk0/scheduler/pkg/validation"
 	"github.com/zhulik/pal"
 )
@@ -30,16 +32,18 @@ func main() {
 		smtp.Provide(),
 		sessionmanager.Provide(),
 		validator.Provide(),
+		ssebroker.Provide(),
 		// services
-		auth.Provide(),
-		project.Provide(),
-		task.Provide(),
-		user.Provide(),
-		verification.Provide(),
+		authservice.Provide(),
+		projectservice.Provide(),
+		taskservice.Provide(),
+		userservice.Provide(),
+		verificationservice.Provide(),
 		//app
 		app.Provide(),
 		//handlers
 		rest.Provide(),
+		sse.Provide(),
 	).
 		InitTimeout(time.Second).         // Set the timeout for the initialization phase.
 		HealthCheckTimeout(time.Second).  // Set the timeout for the health check phase.

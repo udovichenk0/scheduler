@@ -1,22 +1,26 @@
-package user
+package userserviceport
 
 import (
 	"context"
-
-	"github.com/udovichenk0/scheduler/internal/entity"
 )
 
-type CreateInput struct {
-	UserId string
-	Email  string
-	Hash   string
+type Api interface {
+	GetByEmail(ctx context.Context, email string) (UserOutput, error)
+	GetById(ctx context.Context, id string) (UserOutput, error)
+	Create(ctx context.Context, params CreateInput) (UserOutput, error)
+	Delete(ctx context.Context, id string) error
+	ExistsVerified(ctx context.Context, email string) (bool, error)
+	MarkAsVerified(ctx context.Context, id string) error
 }
 
-type Api interface {
-	GetUserByEmail(ctx context.Context, email string) (entity.User, error)
-	CreateUser(ctx context.Context, params CreateInput) (entity.User, error)
-	DeleteUser(ctx context.Context, id string) error
-	IsVerifiedUserExist(ctx context.Context, email string) (bool, error)
-	GetUserById(ctx context.Context, id string) (entity.User, error)
-	Verify(ctx context.Context, id string) error
+type CreateInput struct {
+	Email        string
+	HashPassword string
+}
+
+type UserOutput struct {
+	Id        string `json:"id"`
+	Email     string `json:"email"`
+	Verified  bool   `json:"verified"`
+	CreatedAt string `json:"createdAt"`
 }

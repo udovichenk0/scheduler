@@ -31,12 +31,12 @@ func (s *Service) Init(_ context.Context) error {
 }
 
 func Provide() pal.ServiceDef {
-	return pal.Provide(&Service{})
+	return pal.Provide[smtpport.Api](&Service{})
 }
 
 func (s Service) SendEmail(opts smtpport.SendInput) error {
 	addr := fmt.Sprintf("%s:%s", s.Host, s.Port)
-	msg := []byte(fmt.Sprintf("To: %s\r\nSubject: %s\r\n\r\n%s", opts.To, opts.Subject, opts.Body))
+	msg := fmt.Appendf(nil, "To: %s\r\nSubject: %s\r\n\r\n%s", opts.To, opts.Subject, opts.Body)
 	err := smtp.SendMail(addr, s.auth, s.From, []string{opts.To}, []byte(msg))
 	if err != nil {
 		return err

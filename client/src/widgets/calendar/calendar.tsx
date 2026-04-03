@@ -4,7 +4,6 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { TaskCreator } from "@/features/manage-task/create"
-import { TaskRemover } from "@/features/manage-task/interface"
 import { TaskUpdater } from "@/features/manage-task/update"
 
 import { TaskType } from "@/entities/task/model/task.model"
@@ -14,27 +13,23 @@ import { SHORT_WEEKS_NAMES } from "@/shared/config/constants"
 import { SDate, sdate } from "@/shared/lib/date/lib"
 import { ModalName } from "@/shared/lib/disclosure/disclosure-names"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
-import { Modal } from "@/shared/ui/modal"
 
-import { ExpandedTask } from "../expanded-task"
-
-import { ActionsButton } from "./actions-button"
 import { MonthSwitcher } from "./date-switcher"
 import { generateCalendar, processTasks } from "./lib"
 import { Cell } from "./cell"
+import { TaskTrasher } from "@/features/manage-task/trash"
 
 export const CalendarWidget = ({
   $tasks,
   $$taskUpdater,
   $$taskCreator,
-  $$taskRemover,
-  projectId = null,
+  $$taskTrasher: $$taskRemover,
   onChange,
 }: {
   $tasks: Store<Task[]>
   $$taskUpdater: TaskUpdater
   $$taskCreator: TaskCreator
-  $$taskRemover: TaskRemover
+  $$taskTrasher: TaskTrasher
   projectId?: Nullable<string>
   onChange?: (date: SDate) => void
 }) => {
@@ -84,12 +79,12 @@ export const CalendarWidget = ({
 
   return (
     <div>
-      <Modal
+      {/*<Dialog
         label="Create task"
         isOpened={isCreateTaskFormOpened}
-        closeModal={onCloseCreateTaskForm}
+        closeDialog={onCloseCreateTaskForm}
       >
-        <Modal.Content className="p-0! w-[600px]">
+        <Dialog.Content className="p-0! w-[600px]">
           <ExpandedTask
             $$taskManager={$$taskCreator}
             dateModifier={true}
@@ -101,14 +96,14 @@ export const CalendarWidget = ({
               />
             }
           />
-        </Modal.Content>
-      </Modal>
-      <Modal
+        </Dialog.Content>
+      </Dialog>*/}
+      {/*<Dialog
         label="Update task"
         isOpened={isUpdateTaskOpened}
-        closeModal={onCloseUpdateTaskForm}
+        closeDialog={onCloseUpdateTaskForm}
       >
-        <Modal.Content className="p-0! w-[600px]">
+        <Dialog.Content className="p-0! w-[600px]">
           <ExpandedTask
             $$taskManager={$$taskUpdater}
             dateModifier={true}
@@ -120,8 +115,8 @@ export const CalendarWidget = ({
               />
             }
           />
-        </Modal.Content>
-      </Modal>
+        </Dialog.Content>
+      </Dialog>*/}
       <MonthSwitcher changeMonth={changeMonth} date={month} />
       <CalendarHeader />
       <div>
@@ -143,7 +138,7 @@ export const CalendarWidget = ({
                       onInitCreateFormFields({
                         start_date: date,
                         type: TaskType.UNPLACED,
-                        project_id: projectId,
+                        // project_id: projectId, !FIX
                       })
                       onOpenCreateTaskForm()
                     }}

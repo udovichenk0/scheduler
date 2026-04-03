@@ -31,7 +31,8 @@ export default defineConfig({
     // }),
     tsconfigPaths(),
     svg({
-      root: "assets",
+      //root: "assets",
+      inputRoot: "assets",
       group: true,
       output: "public/sprites",
       metadata: "src/shared/ui/icon/sprite.gen.ts",

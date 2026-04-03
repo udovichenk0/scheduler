@@ -8,7 +8,7 @@ type PropsType = {
   children: ReactNode
   title?: string
 }
-
+// <div className="flex h-full grow flex-col">
 export const Layout = ({ children, title }: PropsType) => {
   return (
     <div className="grid h-screen w-full grid-rows-[auto_1fr_auto]">

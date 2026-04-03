@@ -1,5 +1,5 @@
 import { createEvent, createStore, sample, split } from "effector"
-import * as z from "@zod/mini"
+import * as z from "zod/mini"
 
 import { $$session } from "@/entities/session/session.model.ts"
 

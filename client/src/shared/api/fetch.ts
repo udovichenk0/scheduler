@@ -8,12 +8,7 @@ const getData = async (res: Response) => {
   return await res.text()
 }
 const getUrl = (contextUrl: string) => {
-  const baseUrl =
-    MODE === "production"
-      ? "http://localhost:3000/api"
-      : "http://localhost:3000/api"
-
-  return `${baseUrl}${contextUrl}`
+  return `http://localhost:3000/api${contextUrl}`
 }
 
 const customInstance = async <T>(

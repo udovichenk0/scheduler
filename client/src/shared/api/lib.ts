@@ -19,7 +19,7 @@ export function handleResponse<T extends E, S>(
   if (getHandledError(response.data)) {
     throw response.data
   }
-
+  console.log(parsed.error)
   throw parsed.error
 }
 export function throwIfError(data: any) {

@@ -18,7 +18,7 @@ export const Calendar = ({ $tasks }: { $tasks: Store<Task[]> }) => {
     <div>
       <CalendarWidget
         $$taskCreator={$$taskCreator}
-        $$taskRemover={$$taskTrasher}
+        $$taskTrasher={$$taskTrasher}
         $$taskUpdater={$$taskUpdater}
         projectId={params.projectId}
         $tasks={$tasks}

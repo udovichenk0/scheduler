@@ -4,7 +4,7 @@ import clsx from "clsx"
 import { SDate } from "@/shared/lib/date/lib"
 import { useDisclosure } from "@/shared/lib/disclosure/use-disclosure"
 
-import { Modal } from "../../modal"
+import { Dialog } from "../../disclosure/dialog"
 import { parseDateInput } from "../lib"
 import { formatDate } from "../formator"
 import { Hint } from "../type"
@@ -99,14 +99,14 @@ export const DateInput = ({
           className="text-cFont px-2 py-1 text-sm"
         />
       </div>
-      <Modal
+      <Dialog
         label="Select date"
         isOpened={isOpened}
         portal={false}
         overlay={false}
-        closeModal={close}
+        closeDialog={close}
       >
-        <Modal.Content className="mt-2 w-full">
+        <Dialog.Content className="mt-2 w-full">
           <div
             ref={dialog}
             className="bg-main-dark text-cFont top-full flex max-h-80 w-full flex-col items-start overflow-y-auto rounded-lg shadow-lg"
@@ -121,8 +121,8 @@ export const DateInput = ({
               </button>
             ))}
           </div>
-        </Modal.Content>
-      </Modal>
+        </Dialog.Content>
+      </Dialog>
     </div>
   )
 }

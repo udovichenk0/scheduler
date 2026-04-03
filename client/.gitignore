@@ -29,3 +29,6 @@ env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+localhost.pem
+localhost-key.pem
+todo.txt
